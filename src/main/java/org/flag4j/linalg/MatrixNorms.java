@@ -446,7 +446,7 @@ public final class MatrixNorms {
      */
     public static double norm(CooMatrix src, double p, double q) {
         // Sparse implementation is usually only faster for very sparse matrices.
-        return src.sparsity()>=0.95 ? RealSparseNorms.matrixNormLpq(src, p, q) :
+        return src.getSparsity()>=0.95 ? RealSparseNorms.matrixNormLpq(src, p, q) :
                 norm(src.toDense(), p, q);
     }
 
@@ -466,7 +466,7 @@ public final class MatrixNorms {
      */
     public static double norm(CooCMatrix src, double p, double q) {
         // Sparse implementation is usually only faster for very sparse matrices.
-        return src.sparsity()>=0.95 ? CooRingNorms.matrixNormLpq(src, p, q) :
+        return src.getSparsity()>=0.95 ? CooRingNorms.matrixNormLpq(src, p, q) :
                 norm(src.toDense(), p, q);
     }
 
@@ -480,7 +480,7 @@ public final class MatrixNorms {
      */
     public static double norm(CooMatrix src) {
         // Sparse implementation is usually only faster for very sparse matrices.
-        return src.sparsity()>=0.95 ? RealSparseNorms.matrixNormL2(src) :
+        return src.getSparsity()>=0.95 ? RealSparseNorms.matrixNormL2(src) :
                 norm(src.toDense());
     }
 
@@ -494,7 +494,7 @@ public final class MatrixNorms {
      */
     public static double norm(CooCMatrix src) {
         // Sparse implementation is usually only faster for very sparse matrices.
-        return src.sparsity()>=0.95 ? CooRingNorms.matrixNormL22(src) :
+        return src.getSparsity()>=0.95 ? CooRingNorms.matrixNormL22(src) :
                 norm(src.toDense());
     }
 

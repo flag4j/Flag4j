@@ -52,9 +52,6 @@ import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 import org.flag4j.util.exceptions.TensorShapeException;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -410,21 +407,27 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * The sparsity of this sparse tensor. That is, the percentage of elements in this tensor which are zero as a decimal.
+     * The sparsity of this sparse tensor. That is, the decimal percentage of elements in this tensor which are zero.
      *
      * @return The density of this sparse tensor.
      */
-    public double sparsity() {
+    public double getSparsity() {
         // Check if the sparsity has already been computed.
-        if (this.sparsity < 0) {
-            BigInteger totalEntries = totalEntries();
-            BigDecimal sparsity = new BigDecimal(totalEntries).subtract(BigDecimal.valueOf(nnz));
-            sparsity = sparsity.divide(new BigDecimal(totalEntries), RoundingMode.HALF_UP);
-
-            this.sparsity = sparsity.doubleValue();
-        }
+        if (this.sparsity < 0)
+            this.sparsity = SparseUtils.computeSparsity(shape, nnz);
 
         return sparsity;
+    }
+
+
+    /**
+     * Gets the density of this matrix as a decimal percentage.
+     * That is, the percentage of data in this matrix that are non-zero.
+     * @return The density of this matrix as a decimal percentage.
+     * @see #getSparsity()
+     */
+    public double getDensity() {
+        return 1.0 - getSparsity();
     }
 
 
@@ -559,7 +562,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} is not broadcastable to {@link #shape this.shape}.
+     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public CooMatrix reshape(Shape newShape) {

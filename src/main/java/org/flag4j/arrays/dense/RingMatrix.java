@@ -24,8 +24,6 @@
 
 package org.flag4j.arrays.dense;
 
-import org.flag4j.numbers.Field;
-import org.flag4j.numbers.Ring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.ring_arrays.AbstractDenseRingMatrix;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
@@ -34,6 +32,8 @@ import org.flag4j.arrays.sparse.CooRingTensor;
 import org.flag4j.arrays.sparse.CsrRingMatrix;
 import org.flag4j.io.PrettyPrint;
 import org.flag4j.linalg.ops.common.ring_ops.RingOps;
+import org.flag4j.numbers.Field;
+import org.flag4j.numbers.Ring;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
 
@@ -278,7 +278,7 @@ public class RingMatrix<T extends Ring<T>> extends AbstractDenseRingMatrix<
     /**
      * Converts this matrix to an equivalent tensor with the specified {@code newShape}.
      *
-     * @param newShape Shape of the tensor. Can be any rank but must be broadcastable to the shape of this matrix.
+     * @param newShape Shape of the tensor. Can be any rank but must have the same number of total entries as the shape of this matrix.
      *
      * @return A tensor with the specified {@code newShape} and the same data as this matrix.
      */

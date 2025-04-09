@@ -256,7 +256,7 @@ public class CooSemiringTensor<T extends Semiring<T>> extends AbstractCooSemirin
 
     /**
      * Converts this tensor to a matrix with the specified shape.
-     * @param matShape Shape of the resulting matrix. Must be {@link ValidateParameters#ensureTotalEntriesEqual(Shape, Shape) broadcastable}
+     * @param matShape Shape of the resulting matrix. Must have the same number of {@link ValidateParameters#ensureTotalEntriesEqual(Shape, Shape) total entries}.
      * with the shape of this tensor.
      * @return A matrix of shape {@code matShape} with the values of this tensor.
      * @throws org.flag4j.util.exceptions.LinearAlgebraException If {@code matShape} is not of rank 2.
@@ -264,7 +264,7 @@ public class CooSemiringTensor<T extends Semiring<T>> extends AbstractCooSemirin
     public CooSemiringMatrix<T> toMatrix(Shape matShape) {
         ValidateParameters.ensureRank(matShape, 2);
 
-        CooSemiringTensor<T> t = reshape(matShape); // Reshape as rank 2 tensor. Broadcastable check is made here.
+        CooSemiringTensor<T> t = reshape(matShape); // Reshape as rank 2 tensor. Total entries check is made here.
         int[][] tIndices = RealDenseTranspose.standardIntMatrix(t.indices);
 
         return new CooSemiringMatrix<T>(matShape, t.data.clone(), tIndices[0], tIndices[1]);

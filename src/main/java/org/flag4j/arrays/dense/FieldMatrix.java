@@ -312,7 +312,7 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
     /**
      * Converts this matrix to an equivalent tensor with the specified {@code newShape}.
      *
-     * @param newShape Shape of the tensor. Can be any rank but must be broadcastable to the shape of this matrix.
+     * @param newShape Shape of the tensor. Can be any rank but must have the same number of total entries as the shape of this matrix.
      *
      * @return A tensor with the specified {@code newShape} and the same data as this matrix.
      */

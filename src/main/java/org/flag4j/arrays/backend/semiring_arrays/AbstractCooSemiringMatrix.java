@@ -43,8 +43,6 @@ import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 import org.flag4j.util.exceptions.TensorShapeException;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -119,7 +117,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     /**
      * The sparsity of this matrix.
      */
-    public final double sparsity;
+    private double sparsity = -1.0;
 
 
     /**
@@ -139,7 +137,6 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         nnz = data.length;
         numRows = shape.get(0);
         numCols = shape.get(1);
-        sparsity = BigDecimal.valueOf(nnz).divide(new BigDecimal(shape.totalEntries()), RoundingMode.HALF_UP).doubleValue();
 
         // Attempt to set the zero element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
@@ -164,7 +161,6 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         nnz = data.length;
         numRows = shape.get(0);
         numCols = shape.get(1);
-        sparsity = BigDecimal.valueOf(nnz).divide(new BigDecimal(shape.totalEntries()), RoundingMode.HALF_UP).doubleValue();
 
         // Attempt to set the zero element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
@@ -240,9 +236,13 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * Gets the sparsity of this matrix as a decimal percentage.
      * That is, the percentage of data in this matrix that are zero.
      * @return The sparsity of this matrix as a decimal percentage.
-     * @see #density()
+     * @see #getDensity()
      */
-    public double sparsity() {
+    public double getSparsity() {
+        // Check if the sparsity has already been computed.
+        if (this.sparsity < 0)
+            this.sparsity = SparseUtils.computeSparsity(shape, nnz);
+
         return sparsity;
     }
 
@@ -251,9 +251,9 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * Gets the density of this matrix as a decimal percentage.
      * That is, the percentage of data in this matrix that are non-zero.
      * @return The density of this matrix as a decimal percentage.
-     * @see #sparsity
+     * @see #getSparsity()
      */
-    public double density() {
+    public double getDensity() {
         return 1.0 - sparsity;
     }
 
@@ -448,7 +448,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} is not broadcastable to {@link #shape this.shape}.
+     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
@@ -1314,7 +1314,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
     /**
      * Converts this matrix to an equivalent tensor with the specified shape.
-     * @param newShape New shape for the tensor. Can be any rank but must be broadcastable to {@link #shape this.shape}.
+     * @param newShape New shape for the tensor. Can be any rank but must have the same number of total entries as {@link #shape this.shape}.
      * @return A tensor equivalent to this matrix which has been reshaped to {@code newShape}
      */
     public abstract AbstractCooSemiringTensor<?, ?, W> toTensor(Shape newShape);

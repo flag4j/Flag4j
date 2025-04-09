@@ -125,7 +125,7 @@ public final class SparseValidation {
 
             if(idx.length != rank) {
                 throw new IllegalArgumentException(String.format(
-                        "The dimension of each index must match the rank but got rank=%d and indices[%d].length=$d",
+                        "The dimension of each index must match the rank but got rank=%d and indices[%d].length=%d",
                         rank, i, idx.length));
             }
 

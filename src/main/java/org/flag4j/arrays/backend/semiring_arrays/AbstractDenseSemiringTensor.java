@@ -197,11 +197,11 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} is not broadcastable to {@link #shape this.shape}.
+     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
-        // No need to make explicit broadcastable check as the constructor should verify that the number of data in the shape
+        // No need to make explicit total entries check as the constructor should verify that the number of data in the shape
         // matches the number of data in the array.
         return makeLikeTensor(newShape, data.clone());
     }

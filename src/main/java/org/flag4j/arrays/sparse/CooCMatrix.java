@@ -408,7 +408,7 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
     /**
      * Converts this matrix to an equivalent tensor with the specified shape.
      *
-     * @param newShape New shape for the tensor. Can be any rank but must be broadcastable to {@link #shape this.shape}.
+     * @param newShape New shape for the tensor. Can be any rank but must have the same number of total entries as {@link #shape this.shape}.
      *
      * @return A tensor equivalent to this matrix which has been reshaped to {@code newShape}
      */

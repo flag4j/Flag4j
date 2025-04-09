@@ -58,8 +58,8 @@ import java.math.RoundingMode;
  *   <li>{@link #ONE} - Complex number representing one (1 + 0i).</li>
  *   <li>{@link #TWO} - Complex number representing two (2 + 0i).</li>
  *   <li>{@link #THREE} - Complex number representing three (3 + 0i).</li>
- *   <li>{@link #IMAGINARY_UNIT} - The imaginary unit (0 + 1i).</li>
- *   <li>{@link #INV_IMAGINARY_UNIT} - Negative imaginary unit (0 - 1i).</li>
+ *   <li>{@link #I} - The imaginary unit (0 + 1i).</li>
+ *   <li>{@link #NEGATIVE_I} - Negative imaginary unit (0 - 1i).</li>
  *   <li>{@link #NaN} - Complex number representing a Not-a-Number value.</li>
  *   <li>{@link #POSITIVE_INFINITY} - Complex number with infinite real part.</li>
  *   <li>{@link #NEGATIVE_INFINITY} - Complex number with negative infinite real part.</li>
@@ -113,11 +113,11 @@ public class Complex128 implements Field<Complex128> {
     /**
      * The imaginary unit i.
      */
-    public static final Complex128 IMAGINARY_UNIT = new Complex128(0, 1);
+    public static final Complex128 I = new Complex128(0, 1);
     /**
      * The additive inverse of the imaginary unit, -i.
      */
-    public static final Complex128 INV_IMAGINARY_UNIT = new Complex128(0, -1);
+    public static final Complex128 NEGATIVE_I = new Complex128(0, -1);
     /**
      * Complex number with real part equal to {@link Double#POSITIVE_INFINITY}.
      */
@@ -856,8 +856,8 @@ public class Complex128 implements Field<Complex128> {
      */
     public static Complex128 atan(Complex128 num) {
         Complex128 factor = TWO.multInv();
-        Complex128 numerator = IMAGINARY_UNIT.sub(num);
-        Complex128 denominator = IMAGINARY_UNIT.add(num);
+        Complex128 numerator = I.sub(num);
+        Complex128 denominator = I.add(num);
         Complex128 log = Complex128.ln(numerator.div(denominator));
 
         return factor.mult(log);

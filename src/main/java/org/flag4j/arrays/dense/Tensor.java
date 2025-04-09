@@ -25,7 +25,6 @@
 package org.flag4j.arrays.dense;
 
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleTensor;
 import org.flag4j.arrays.sparse.CooCTensor;
@@ -38,6 +37,7 @@ import org.flag4j.linalg.ops.dense.real.RealDenseEquals;
 import org.flag4j.linalg.ops.dense.real_field_ops.RealFieldDenseOps;
 import org.flag4j.linalg.ops.dense_sparse.coo.real.RealDenseCooTensorOps;
 import org.flag4j.linalg.ops.dense_sparse.coo.real_complex.RealComplexDenseCooOps;
+import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
@@ -60,6 +60,17 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Creates a zero tensor with the specified dimensions.
+     *
+     * @param dims The dimension of each axis of the tensor. The returned tensor will have shape equivalent to {@code new Shape(dims)}.
+     */
+    public Tensor(int... dims) {
+        this(new Shape(dims));
+    }
+
+
+
+    /**
      * Creates a zero tensor with the shape.
      *
      * @param shape Shape of this tensor.
@@ -75,8 +86,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * @throws IllegalArgumentException If {@code nDArray} is not an array or not rectangular.
      */
     public Tensor(Object nDArray) {
-        super(ArrayUtils.nDArrayShape(nDArray),
-                new double[ArrayUtils.nDArrayShape(nDArray).totalEntriesIntValueExact()]);
+        this(ArrayUtils.nDArrayShape(nDArray));
         ArrayUtils.nDFlatten(nDArray, shape, data, 0);
     }
 
@@ -88,7 +98,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * @param fillValue Value to fill this tensor with.
      */
     public Tensor(Shape shape, double fillValue) {
-        super(shape, new double[shape.totalEntries().intValueExact()]);
+        this(shape);
         Arrays.fill(data, fillValue);
     }
 
@@ -97,10 +107,10 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Entries of this tensor.
+     * @param data Entries of this tensor.
      */
-    public Tensor(Shape shape, double... entries) {
-        super(shape, entries);
+    public Tensor(Shape shape, double... data) {
+        super(shape, data);
     }
 
 
@@ -139,11 +149,11 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Entries of this tensor.
+     * @param data Entries of this tensor.
      */
-    public Tensor(Shape shape, int... entries) {
-        super(shape, new double[entries.length]);
-        ArrayConversions.asDouble(entries, this.data);
+    public Tensor(Shape shape, int... data) {
+        super(shape, new double[data.length]);
+        ArrayConversions.asDouble(data, this.data);
     }
 
 
@@ -160,11 +170,11 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Entries of this tensor.
+     * @param data Entries of this tensor.
      */
-    public Tensor(Shape shape, Double[] entries) {
-        super(shape, new double[entries.length]);
-        ArrayConversions.unbox(entries, super.data);
+    public Tensor(Shape shape, Double[] data) {
+        super(shape, new double[data.length]);
+        ArrayConversions.unbox(data, super.data);
     }
 
 
@@ -172,11 +182,11 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Entries of this tensor.
+     * @param data Entries of this tensor.
      */
-    public Tensor(Shape shape, Integer[] entries) {
-        super(shape, new double[entries.length]);
-        ArrayConversions.asDouble(entries, super.data);
+    public Tensor(Shape shape, Integer[] data) {
+        super(shape, new double[data.length]);
+        ArrayConversions.asDouble(data, super.data);
     }
 
 
@@ -184,13 +194,13 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * Constructs a tensor of the same type as this tensor with the given the shape and data.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type as this tensor with the given the shape and data.
      */
     @Override
-    public Tensor makeLikeTensor(Shape shape, double[] entries) {
-        return new Tensor(shape, entries);
+    public Tensor makeLikeTensor(Shape shape, double[] data) {
+        return new Tensor(shape, data);
     }
 
 
@@ -217,9 +227,9 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
 
     /**
      * Converts this tensor to an equivalent matrix with the specified shape.
-     * @param shape New shape for the matrix. Must be rank-2 and broadcastable to {@code this.shape}.
+     * @param shape New shape for the matrix. Must be rank-2 and have the same number of total entries as {@code this.shape}.
      * @return A matrix with the specified shape and data equivalent to this tensor.
-     * @throws IllegalArgumentException If {@code shape} is not broadcastable to {@code this.shape}.
+     * @throws IllegalArgumentException If {@code shape} does not have the same total number of entries {@code this.shape}.
      * @throws org.flag4j.util.exceptions.TensorShapeException If {@code shape.getRank() != 2}.
      */
     public Matrix toMatrix(Shape shape) {

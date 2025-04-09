@@ -57,8 +57,8 @@ import java.math.RoundingMode;
  *   <li>{@link #ONE} - Complex number representing one (1 + 0i).</li>
  *   <li>{@link #TWO} - Complex number representing two (2 + 0i).</li>
  *   <li>{@link #THREE} - Complex number representing three (3 + 0i).</li>
- *   <li>{@link #IMAGINARY_UNIT} - The imaginary unit (0 + 1i).</li>
- *   <li>{@link #INV_IMAGINARY_UNIT} - Negative imaginary unit (0 - 1i).</li>
+ *   <li>{@link #I} - The imaginary unit (0 + 1i).</li>
+ *   <li>{@link #NEGATIVE_I} - Negative imaginary unit (0 - 1i).</li>
  *   <li>{@link #NaN} - Complex number representing a Not-a-Number value.</li>
  *   <li>{@link #POSITIVE_INFINITY} - Complex number with infinite real part.</li>
  *   <li>{@link #NEGATIVE_INFINITY} - Complex number with negative infinite real part.</li>
@@ -112,11 +112,11 @@ public class Complex64 implements Field<Complex64> {
     /**
      * The imaginary unit i.
      */
-    public static final Complex64 IMAGINARY_UNIT = new Complex64(0, 1);
+    public static final Complex64 I = new Complex64(0, 1);
     /**
      * The additive inverse of the imaginary unit, -i.
      */
-    public static final Complex64 INV_IMAGINARY_UNIT = new Complex64(0, -1);
+    public static final Complex64 NEGATIVE_I = new Complex64(0, -1);
     /**
      * Complex number with real part equal to {@link Float#POSITIVE_INFINITY}.
      */
@@ -838,8 +838,8 @@ public class Complex64 implements Field<Complex64> {
      */
     public static Complex64 atan(Complex64 num) {
         Complex64 factor = TWO.multInv();
-        Complex64 numerator = IMAGINARY_UNIT.sub(num);
-        Complex64 denominator = IMAGINARY_UNIT.add(num);
+        Complex64 numerator = I.sub(num);
+        Complex64 denominator = I.add(num);
         Complex64 log = Complex64.ln(numerator.div(denominator));
         return factor.mult(log);
     }

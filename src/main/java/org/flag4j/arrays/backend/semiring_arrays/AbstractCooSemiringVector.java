@@ -41,8 +41,6 @@ import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 import org.flag4j.util.exceptions.TensorShapeException;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BinaryOperator;
@@ -105,9 +103,9 @@ public abstract class AbstractCooSemiringVector<
      */
     public final int size;
     /**
-     * The sparsity of this matrix.
+     * The sparsity of this vector.
      */
-    public final double sparsity;
+    private double sparsity = -1.0;
 
 
     /**
@@ -125,7 +123,6 @@ public abstract class AbstractCooSemiringVector<
 
         this.indices = indices;
         this.nnz = data.length;
-        sparsity = BigDecimal.valueOf(nnz).divide(new BigDecimal(shape.totalEntries()), RoundingMode.HALF_UP).doubleValue();
 
         // Attempt to set the zero element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
@@ -146,7 +143,6 @@ public abstract class AbstractCooSemiringVector<
         this.size = shape.get(0);
         this.indices = indices;
         this.nnz = data.length;
-        sparsity = BigDecimal.valueOf(nnz).divide(new BigDecimal(shape.totalEntries()), RoundingMode.HALF_UP).doubleValue();
 
         // Attempt to set the zero element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
@@ -214,23 +210,27 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * Gets the sparsity of this matrix as a decimal percentage.
-     * That is, the percentage of data in this matrix that are zero.
-     * @return The sparsity of this matrix as a decimal percentage.
-     * @see #density()
+     * Gets the sparsity of this vector as a decimal percentage.
+     * That is, the percentage of data in this vector that are zero.
+     * @return The sparsity of this vector as a decimal percentage.
+     * @see #getDensity()
      */
-    public double sparsity() {
+    public double getSparsity() {
+        // Check if the sparsity has already been computed.
+        if (this.sparsity < 0)
+            this.sparsity = SparseUtils.computeSparsity(shape, nnz);
+
         return sparsity;
     }
 
 
     /**
-     * Gets the density of this matrix as a decimal percentage.
-     * That is, the percentage of data in this matrix that are non-zero.
-     * @return The density of this matrix as a decimal percentage.
-     * @see #sparsity
+     * Gets the density of this vector as a decimal percentage.
+     * That is, the percentage of data in this vector that are non-zero.
+     * @return The density of this vector as a decimal percentage.
+     * @see #getSparsity()
      */
-    public double density() {
+    public double getDensity() {
         return 1.0 - sparsity;
     }
 
@@ -383,7 +383,7 @@ public abstract class AbstractCooSemiringVector<
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} is not broadcastable to {@link #shape this.shape}.
+     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
@@ -683,8 +683,8 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * Converts this sparse COO matrix to an equivalent dense matrix.
-     * @return A dense matrix equivalent to this sparse COO matrix.
+     * Converts this sparse COO vector to an equivalent dense vector.
+     * @return A dense vector equivalent to this sparse COO vector.
      */
     public U toDense() {
         Y[] entries = makeEmptyDataArray(shape.totalEntriesIntValueExact());
@@ -698,16 +698,16 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * Converts this matrix to an equivalent rank 1 tensor.
-     * @return A tensor which is equivalent to this matrix.
+     * Converts this vector to an equivalent rank 1 tensor.
+     * @return A tensor which is equivalent to this vector.
      */
     public abstract AbstractTensor<?, Y[], Y> toTensor();
 
 
     /**
      * Converts this vector to an equivalent tensor with the specified shape.
-     * @param newShape New shape for the tensor. Can be any rank but must be broadcastable to {@link #shape this.shape}.
-     * @return A tensor equivalent to this matrix which has been reshaped to {@code newShape}
+     * @param newShape New shape for the tensor. Can be any rank but must have the same number of total entries as {@link #shape this.shape}.
+     * @return A tensor equivalent to this vector which has been reshaped to {@code newShape}
      */
     public abstract AbstractTensor<?,  Y[], Y> toTensor(Shape newShape);
 

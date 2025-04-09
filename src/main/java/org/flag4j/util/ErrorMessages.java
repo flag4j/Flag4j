@@ -97,13 +97,13 @@ public final class ErrorMessages {
     private static final String INDICES_RANK_ERR = "Number of indices does not match the rank of the tensor." +
             " Got %s indices but expected %s";
     /**
-     * Error message for shapes which do not contain the same total number of entries.
+     * Error message for shapes which do not contain the same number of total entries.
      */
     private static final String SHAPE_EQ_ENTRIES_ERR = "Shapes %s and %s do not contain the same number of entries.";
     /**
      * Error message for arrays which do not have the same total number of data.
      */
-    private static final String TOTAL_ENTRIES_ERR = "Arrays do not have the same total number of entries.";
+    private static final String TOTAL_ENTRIES_ERR = "Arrays do not have the same number of total entries.";
     /**
      * Error message for parameters which are expected to be greater than or equal to some threshold.
      */
@@ -279,10 +279,10 @@ public final class ErrorMessages {
 
 
     /**
-     * Gets an error message for two shapes which cannot be broadcast together.
+     * Gets an error message for two shapes which do not specify the same total number of entries.
      * @param shape1 First shape.
      * @param shape2 Second shape.
-     * @return An error message for two shapes which cannot be broadcast together.
+     * @return An error message for two shapes which do not specify the same total number of entries.
      */
     public static String getShapeTotalEntriesErr(Shape shape1, Shape shape2) {
         return String.format(SHAPE_EQ_ENTRIES_ERR, shape1, shape2);

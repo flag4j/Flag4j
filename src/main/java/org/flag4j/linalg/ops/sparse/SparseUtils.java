@@ -33,6 +33,9 @@ import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringEquals;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.function.BinaryOperator;
 
@@ -47,6 +50,20 @@ public final class SparseUtils {
 
     public SparseUtils() {
         // Utility class cannot be instanced.
+    }
+
+
+    /**
+     * Computes the sparsity of a sparse tensor with the specified shape and non-zero entries.
+     * @param shape The shape of the sparse tensor.
+     * @param nnz The number of non-zero entries in the sparse tensor.
+     * @return The sparsity of a sparse tensor with the specified {@code shape} and {@code nnz}.
+     */
+    public static double computeSparsity(Shape shape, int nnz) {
+        BigInteger totalEntries = shape.totalEntries();
+        BigDecimal sparsity = new BigDecimal(totalEntries).subtract(BigDecimal.valueOf(nnz));
+        sparsity = sparsity.divide(new BigDecimal(totalEntries), RoundingMode.HALF_UP);
+        return sparsity.doubleValue();
     }
 
 

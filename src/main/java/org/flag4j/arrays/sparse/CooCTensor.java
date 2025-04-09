@@ -305,12 +305,13 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
 
     /**
      * Converts this tensor to a matrix with specified shape.
-     * @param newShape Shape of matrix to convert this tensor to. Shape must be broadcastable with this tensors shape and have rank 2.
+     * @param newShape Shape of matrix to convert this tensor to. Shape must be rank 2 and have the same number of total entries as
+     * this tensors shape.
      * @return A matrix of the specified shape with the same non-zero data as this tensor.
      */
     public CooCMatrix toMatrix(Shape newShape) {
         ValidateParameters.ensureRank(newShape, 2);
-        CooCTensor t = reshape(newShape); // Reshape as rank 2 tensor. Broadcastable check made here.
+        CooCTensor t = reshape(newShape); // Reshape as rank 2 tensor. Total entries check made here.
         int[][] tIndices = RealDenseTranspose.standardIntMatrix(t.indices);
 
         return CooCMatrix.unsafeMake(newShape, t.data.clone(), tIndices[0], tIndices[1]);

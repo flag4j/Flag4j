@@ -103,6 +103,10 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      * The number of non-zero values in this sparse COO vector.
      */
     public final int nnz;
+    /**
+     * The sparsity of this vector.
+     */
+    private double sparsity = -1.0;
 
 
     /**
@@ -599,9 +603,25 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      * The sparsity of this sparse tensor. That is, the percentage of elements in this tensor which are zero as a decimal.
      *
      * @return The density of this sparse tensor.
+     * @see #getDensity()
      */
-    public double sparsity() {
-        return 1.0 - ((double) nnz / (double) size);
+    public double getSparsity() {
+        // Check if the sparsity has already been computed.
+        if (this.sparsity < 0)
+            this.sparsity = SparseUtils.computeSparsity(shape, nnz);
+
+        return sparsity;
+    }
+
+
+    /**
+     * Gets the density of this matrix as a decimal percentage.
+     * That is, the percentage of data in this matrix that are non-zero.
+     * @return The density of this matrix as a decimal percentage.
+     * @see #getSparsity()
+     */
+    public double getDensity() {
+        return 1.0 - sparsity;
     }
 
 
@@ -719,7 +739,8 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code newShape} is not broadcastable to {@link #shape this.shape}.
+     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code newShape} does not have the same number of total entries as
+     * {@link #shape this.shape}.
      */
     @Override
     public CooVector reshape(Shape newShape) {

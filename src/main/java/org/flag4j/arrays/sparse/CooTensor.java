@@ -43,9 +43,6 @@ import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.TensorShapeException;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -109,10 +106,11 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param data Non-zero data of this tensor of this tensor. If this tensor is dense, this specifies all data within the
-     * tensor.
-     * If this tensor is sparse, this specifies only the non-zero data of the tensor.
-     * @param indices
+     * @param data Non-zero data of this tensor of this COO tensor.
+     * @param indices The non-zero indices of this COO tensor. Must have dimensions {@code (nnz, rank)}.
+     *
+     * @throws IllegalArgumentException If {@code shape}, {@code data}, and {@code indices} do <em>not</em>
+     * specify a valid COO tensor.
      */
     public CooTensor(Shape shape, double[] data, int[][] indices) {
         super(shape, data);
@@ -126,10 +124,11 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param data Non-zero data of this tensor of this tensor. If this tensor is dense, this specifies all data within the
-     * tensor.
-     * If this tensor is sparse, this specifies only the non-zero data of the tensor.
-     * @param indices
+     * @param data Non-zero data of this tensor of this tensor.
+     * @param indices The non-zero indices of this COO tensor. Must have dimensions {@code (nnz, rank)}.
+     *
+     * @throws IllegalArgumentException If {@code shape}, {@code data}, and {@code indices} do <em>not</em>
+     * specify a valid COO tensor.
      */
     public CooTensor(Shape shape, List<Double> data, List<int[]> indices) {
         super(shape, ArrayConversions.fromDoubleList(data));
@@ -264,21 +263,27 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * The sparsity of this sparse tensor. That is, the percentage of elements in this tensor which are zero as a decimal.
-     *
+     * The sparsity of this sparse tensor. That is, the decimal percentage of elements in this tensor which are zero.
      * @return The density of this sparse tensor.
+     * @see #getDensity()
      */
-    public double sparsity() {
+    public double getSparsity() {
         // Check if the sparsity has already been computed.
-        if (this.sparsity < 0) {
-            BigInteger totalEntries = totalEntries();
-            BigDecimal sparsity = new BigDecimal(totalEntries).subtract(BigDecimal.valueOf(nnz));
-            sparsity = sparsity.divide(new BigDecimal(totalEntries), 50, RoundingMode.HALF_UP);
-
-            this.sparsity = sparsity.doubleValue();
-        }
+        if (this.sparsity < 0)
+            this.sparsity = SparseUtils.computeSparsity(shape, nnz);
 
         return sparsity;
+    }
+
+
+    /**
+     * Gets the density of this tensor as a decimal percentage.
+     * That is, the percentage of data in this tensor that are non-zero.
+     * @return The density of this tensor as a decimal percentage.
+     * @see #getSparsity()
+     */
+    public double getDensity() {
+        return 1.0 - getSparsity();
     }
 
 
@@ -427,7 +432,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} is not broadcastable to {@link #shape this.shape}.
+     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public CooTensor reshape(Shape newShape) {

@@ -187,7 +187,7 @@ public abstract class AbstractTensor<T extends AbstractTensor<T, U, V>, U, V>
      * Copies and reshapes this tensor.
      * @param newShape New shape for the tensor.
      * @return A copy of this tensor with the new shape.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code newShape} is not broadcastable to {@link #shape this.shape}.
+     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     public abstract T reshape(Shape newShape);
 
@@ -196,8 +196,8 @@ public abstract class AbstractTensor<T extends AbstractTensor<T, U, V>, U, V>
      * Copies and reshapes this tensor.
      * @param dims The dimensions of the new shape.
      * @return A copy of this tensor with the new shape.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code dims} does not represent a shape broadcastable to
-     * {@link #shape this.shape}.
+     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code dims} does not represent a shape with the same total number
+     * of entries as {@link #shape this.shape}.
      */
     public T reshape(int... dims) {
         return reshape(new Shape(dims));

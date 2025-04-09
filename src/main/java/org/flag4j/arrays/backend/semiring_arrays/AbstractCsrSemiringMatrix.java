@@ -29,6 +29,7 @@ import org.flag4j.arrays.SparseMatrixData;
 import org.flag4j.arrays.backend.AbstractTensor;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.sparse.SparseValidation;
+import org.flag4j.linalg.ops.sparse.SparseUtils;
 import org.flag4j.linalg.ops.sparse.csr.CsrConversions;
 import org.flag4j.linalg.ops.sparse.csr.CsrOps;
 import org.flag4j.linalg.ops.sparse.csr.CsrProperties;
@@ -40,8 +41,6 @@ import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 import org.flag4j.util.exceptions.TensorShapeException;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BinaryOperator;
@@ -122,7 +121,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
     /**
      * The sparsity of this matrix.
      */
-    protected final double sparsity;
+    protected double sparsity;
 
 
     /**
@@ -145,8 +144,6 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         this.nnz = entries.length;
         this.numRows = shape.get(0);
         this.numCols = shape.get(1);
-
-        sparsity = BigDecimal.valueOf(nnz).divide(new BigDecimal(shape.totalEntries()), RoundingMode.HALF_UP).doubleValue();
 
         // Attempt to set the zero element for the semiring.
         this.zeroElement = (entries.length > 0 && entries[0] != null) ? entries[0].getZero() : null;
@@ -173,8 +170,6 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         this.nnz = entries.length;
         this.numRows = shape.get(0);
         this.numCols = shape.get(1);
-
-        sparsity = BigDecimal.valueOf(nnz).divide(new BigDecimal(shape.totalEntries()), RoundingMode.HALF_UP).doubleValue();
 
         // Attempt to set the zero element for the semiring.
         this.zeroElement = (entries.length > 0 && entries[0] != null) ? entries[0].getZero() : null;
@@ -231,9 +226,13 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * Gets the sparsity of this matrix as a decimal percentage.
      * That is, the percentage of data in this matrix that are zero.
      * @return The sparsity of this matrix as a decimal percentage.
-     * @see #density()
+     * @see #getDensity()
      */
-    public double sparsity() {
+    public double getSparsity() {
+        // Check if the sparsity has already been computed.
+        if (this.sparsity < 0)
+            this.sparsity = SparseUtils.computeSparsity(shape, nnz);
+
         return sparsity;
     }
 
@@ -242,9 +241,9 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * Gets the density of this matrix as a decimal percentage.
      * That is, the percentage of data in this matrix that are non-zero.
      * @return The density of this matrix as a decimal percentage.
-     * @see #sparsity
+     * @see #getSparsity()
      */
-    public double density() {
+    public double getDensity() {
         return 1.0 - sparsity;
     }
 
@@ -387,7 +386,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} is not broadcastable to {@link #shape this.shape}.
+     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
@@ -1076,7 +1075,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
 
     /**
      * Converts this CSR matrix to an equivalent COO tensor with the specified shape.
-     * @param newShape New shape for the COO tensor. Can be any rank but must be broadcastable to {@link #shape this.shape}.
+     * @param newShape New shape for the COO tensor. Can be any rank but must have the same number of total entries as {@link #shape this.shape}.
      * @return A COO tensor equivalent to this CSR matrix which has been reshaped to {@code newShape}
      */
     public AbstractCooSemiringTensor<?, ?, W> toTensor(Shape shape) {

@@ -59,11 +59,11 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Entries of this tensor.
+     * @param data Entries of this tensor.
      */
-    public CTensor(Shape shape, Complex128[] entries) {
-        super(shape, entries);
-        if(entries.length == 0 || entries[0] == null) setZeroElement(Complex128.ZERO);
+    public CTensor(Shape shape, Complex128[] data) {
+        super(shape, data);
+        if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
     }
 
 
@@ -75,6 +75,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
     public CTensor(Object nDArray) {
         super(ArrayUtils.nDArrayShape(nDArray),
                 new Complex128[ArrayUtils.nDArrayShape(nDArray).totalEntriesIntValueExact()]);
+        if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
         ArrayUtils.nDFlatten(nDArray, shape, data, 0);
     }
 
@@ -83,16 +84,24 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Entries of this tensor.
+     * @param data Entries of this tensor.
      */
-    public CTensor(Shape shape, Complex64[] entries) {
-        super(shape, new Complex128[entries.length]);
-        if(entries.length == 0 || entries[0] == null) setZeroElement(Complex128.ZERO);
+    public CTensor(Shape shape, Complex64[] data) {
+        super(shape, new Complex128[data.length]);
+        if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
 
-        tensorDot(this, new int[3], new int[3]);
+        for(int i=0, size=data.length; i<size; i++)
+            this.data[i] = new Complex128(data[i]);
+    }
 
-        for(int i=0, size=entries.length; i<size; i++)
-            this.data[i] = new Complex128(entries[i]);
+
+    /**
+     * Creates a zero tensor with the specified dimensions.
+     *
+     * @param dims The dimension of each axis of the tensor. The returned tensor will have shape equivalent to {@code new Shape(dims)}.
+     */
+    public CTensor(int... dims) {
+        this(new Shape(dims));
     }
 
 
@@ -115,8 +124,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * @param fillValue Value to fill this tensor with.
      */
     public CTensor(Shape shape, Complex128 fillValue) {
-        super(shape, new Complex128[shape.totalEntriesIntValueExact()]);
-        if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
+        this(shape);
         Arrays.fill(data, fillValue);
     }
 
@@ -165,7 +173,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Entries of this tensor. Each value in {@code data} must be formated as a complex number such as:
+     * @param data Entries of this tensor. Each value in {@code data} must be formated as a complex number such as:
      * <ul>
      *     <li>"a"</li>
      *     <li>"a + bi", "a - bi", "a + i", or "a - i"</li>
@@ -174,12 +182,12 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      *
      * where "a" and "b" are integers or decimal numbers and white space does not matter.
      */
-    public CTensor(Shape shape, String[] entries) {
-        super(shape, new Complex128[entries.length]);
-        if(entries.length == 0 || entries[0] == null) setZeroElement(Complex128.ZERO);
+    public CTensor(Shape shape, String[] data) {
+        super(shape, new Complex128[data.length]);
+        if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
 
-        for(int i=0, size=entries.length; i<size; i++)
-            this.data[i] = new Complex128(entries[i]);
+        for(int i=0, size=data.length; i<size; i++)
+            this.data[i] = new Complex128(data[i]);
     }
 
 
@@ -187,10 +195,10 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Entries of this tensor.
+     * @param data Entries of this tensor.
      */
-    public CTensor(Shape shape, double[] entries) {
-        super(shape, ArrayConversions.toComplex128(entries, null));
+    public CTensor(Shape shape, double[] data) {
+        super(shape, ArrayConversions.toComplex128(data, null));
         setZeroElement(Complex128.ZERO);
     }
 
@@ -214,13 +222,13 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * Constructs a tensor of the same type as this tensor with the given the shape and data.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type as this tensor with the given the shape and data.
      */
     @Override
-    public CTensor makeLikeTensor(Shape shape, Complex128[] entries) {
-        return new CTensor(shape, entries);
+    public CTensor makeLikeTensor(Shape shape, Complex128[] data) {
+        return new CTensor(shape, data);
     }
 
 
@@ -228,14 +236,14 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * Constructs a sparse COO tensor which is of a similar type as this dense tensor.
      *
      * @param shape Shape of the COO tensor.
-     * @param entries Non-zero data of the COO tensor.
+     * @param data Non-zero data of the COO tensor.
      * @param indices
      *
      * @return A sparse COO tensor which is of a similar type as this dense tensor.
      */
     @Override
-    protected CooCTensor makeLikeCooTensor(Shape shape, Complex128[] entries, int[][] indices) {
-        return new CooCTensor(shape, entries, indices);
+    protected CooCTensor makeLikeCooTensor(Shape shape, Complex128[] data, int[][] indices) {
+        return new CooCTensor(shape, data, indices);
     }
 
 

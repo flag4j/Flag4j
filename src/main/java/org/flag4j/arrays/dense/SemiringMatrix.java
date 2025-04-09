@@ -24,9 +24,6 @@
 
 package org.flag4j.arrays.dense;
 
-import org.flag4j.numbers.BoolSemiring;
-import org.flag4j.numbers.Field;
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractDenseSemiringMatrix;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
@@ -34,6 +31,9 @@ import org.flag4j.arrays.sparse.CooSemiringMatrix;
 import org.flag4j.arrays.sparse.CooSemiringTensor;
 import org.flag4j.arrays.sparse.CsrSemiringMatrix;
 import org.flag4j.io.PrettyPrint;
+import org.flag4j.numbers.BoolSemiring;
+import org.flag4j.numbers.Field;
+import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
 
@@ -284,7 +284,7 @@ public class SemiringMatrix<T extends Semiring<T>> extends AbstractDenseSemiring
     /**
      * Converts this matrix to an equivalent tensor with the specified {@code newShape}.
      *
-     * @param newShape Shape of the tensor. Can be any rank but must be broadcastable to the shape of this matrix.
+     * @param newShape Shape of the tensor. Can be any rank but must have the same number of total entries as the shape of this matrix.
      *
      * @return A tensor with the specified {@code newShape} and the same data as this matrix.
      */

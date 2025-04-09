@@ -304,7 +304,7 @@ public class CooFieldTensor<T extends Field<T>>
 
     /**
      * Converts this tensor to a matrix with the specified shape.
-     * @param matShape Shape of the resulting matrix. Must be {@link ValidateParameters#ensureTotalEntriesEqual(Shape, Shape) broadcastable}
+     * @param matShape Shape of the resulting matrix. Must have the same number of {@link ValidateParameters#ensureTotalEntriesEqual(Shape, Shape) total entries}.
      * with the shape of this tensor.
      * @return A matrix of shape {@code matShape} with the values of this tensor.
      * @throws org.flag4j.util.exceptions.LinearAlgebraException If {@code matShape} is not of rank 2.
@@ -312,7 +312,7 @@ public class CooFieldTensor<T extends Field<T>>
     public CooFieldMatrix<T> toMatrix(Shape matShape) {
         ValidateParameters.ensureRank(matShape, 2);
 
-        CooFieldTensor<T> t = reshape(matShape); // Reshape as rank 2 tensor. Broadcastable check is made here.
+        CooFieldTensor<T> t = reshape(matShape); // Reshape as rank 2 tensor. Total entries check is made here.
         int[][] tIndices = RealDenseTranspose.standardIntMatrix(t.indices);
 
         return new CooFieldMatrix<T>(matShape, t.data.clone(), tIndices[0], tIndices[1]);

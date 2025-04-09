@@ -47,8 +47,6 @@ import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 import org.flag4j.util.exceptions.TensorShapeException;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -425,7 +423,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} is not broadcastable to {@link #shape this.shape}.
+     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public CsrMatrix reshape(Shape newShape) {
@@ -517,15 +515,23 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @return The density of this sparse matrix.
      */
-    public double sparsity() {
-        // Compute sparsity if needed.
-        if(this.sparsity == -1) {
-            BigDecimal sparsity = new BigDecimal(this.totalEntries()).subtract(BigDecimal.valueOf(this.nnz));
-            sparsity = sparsity.divide(new BigDecimal(this.totalEntries()), 50, RoundingMode.HALF_UP);
-            this.sparsity = sparsity.doubleValue();
-        }
+    public double getSparsity() {
+        // Check if the sparsity has already been computed.
+        if (this.sparsity < 0)
+            this.sparsity = SparseUtils.computeSparsity(shape, nnz);
 
         return sparsity;
+    }
+
+
+    /**
+     * Gets the density of this tensor as a decimal percentage.
+     * That is, the percentage of data in this tensor that are non-zero.
+     * @return The density of this tensor as a decimal percentage.
+     * @see #getSparsity()
+     */
+    public double getDensity() {
+        return 1.0 - getSparsity();
     }
 
 
