@@ -260,7 +260,7 @@ class NormTests {
         a = new Matrix(5, 5);
         assertEquals(0, MatrixNorms.inducedNorm(a, 1), 1e-16);
         assertEquals(0, MatrixNorms.inducedNorm(a, -1), 1e-16);
-        // TODO: SVD does not converge here (i.e. Schur decomp does not converge). Need to do some work. Balancing first may
+        // TODO: SVD does not converge here (i.e., Schur decomp does not converge). Need to do some work. Balancing first may
         //  fix or partly fix this.
 //        assertEquals(0, MatrixNorms.inducedNorm(a, 2), 1e-16);
 //        assertEquals(0, MatrixNorms.inducedNorm(a, -2), 1e-16);

@@ -24,7 +24,6 @@
 
 package org.flag4j.io;
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.Pair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
@@ -34,6 +33,7 @@ import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.arrays.sparse.CooCMatrix;
 import org.flag4j.arrays.sparse.CooMatrix;
 import org.flag4j.linalg.ops.sparse.coo.CooDataSorter;
+import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.exceptions.Flag4jParsingException;
 

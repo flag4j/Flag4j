@@ -45,7 +45,7 @@ import java.util.Arrays;
  * The base class for all dense matrices whose elements are members of a {@link Semiring}.
  * @param <T> The type of this matrix.
  * @param <U> The type of the vector which is of similar type to {@code T}.
- * @param <V> The type of the semiring the data of the matrix belong to.
+ * @param <V> The type of the semiring the data of the matrix belongs to.
  */
 public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemiringMatrix<T, U, V>,
         U extends AbstractDenseSemiringVector<U, T, V>, V extends Semiring<V>>
@@ -94,7 +94,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
 
 
     /**
-     * Constructs a sparse COO matrix which is of a similar type as this dense matrix.
+     * Constructs a sparse COO matrix, which is of a similar type as this dense matrix.
      * @param shape Shape of the COO matrix.
      * @param entries Non-zero data of the COO matrix.
      * @param rowIndices Non-zero row indices of the COO matrix.
@@ -106,7 +106,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
 
 
     /**
-     * Constructs a sparse CSR matrix which is of a similar type as this dense matrix.
+     * Constructs a sparse CSR matrix, which is of a similar type as this dense matrix.
      * @param shape Shape of the CSR matrix.
      * @param entries Non-zero data of the CSR matrix.
      * @param rowPointers Non-zero row pointers of the CSR matrix.
@@ -215,7 +215,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     public boolean isTriU() {
         if(!isSquare()) return false;
 
-        // Ensure lower half is zeros.
+        // Ensure the lower half is zeros.
         for(int i=1; i<numRows; i++) {
             int rowOffset = i*numCols;
 
@@ -276,7 +276,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
             return false; // An identity matrix must be square.
         }
 
-        // If we make it to this point this matrix must be an identity matrix.
+        // If we make it to this point, this matrix must be an identity matrix.
         return true;
     }
 
@@ -288,7 +288,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      *
      * @return The result of multiplying this matrix with {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the size of
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the size of
      *                                {@code b}.
      */
     @Override
@@ -414,7 +414,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
 
 
     /**
-     * Swaps specified rows in the matrix. This is done in place.
+     * Swaps specified rows in the matrix. This is done in-place.
      *
      * @param rowIndex1 Index of the first row to swap.
      * @param rowIndex2 Index of the second row to swap.
@@ -431,7 +431,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
 
 
     /**
-     * Swaps specified columns in the matrix. This is done in place.
+     * Swaps specified columns in the matrix. This is done in-place.
      *
      * @param colIndex1 Index of the first column to swap.
      * @param colIndex2 Index of the second column to swap.
@@ -612,9 +612,8 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      *
      * @return A reference to this matrix.
      *
-     * @throws IllegalArgumentException If rowStart or colStart are not within the matrix.
-     * @throws IllegalArgumentException If the values slice, with upper left corner at the specified location, does not
-     *                                  fit completely within this matrix.
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector,
+     * or if {@code values} does not fit within this vector when its first entry is placed at {@code startIdx}.
      */
     public T setSlice(T values, int rowStart, int colStart) {
         ValidateParameters.validateArrayIndices(numRows, rowStart);
@@ -644,7 +643,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      * @return A copy of this matrix with the given slice set to the specified values.
      *
      * @throws IndexOutOfBoundsException If rowStart or colStart are not within the matrix.
-     * @throws IllegalArgumentException  If the values slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException  If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                   fit completely within this matrix.
      */
     @Override
@@ -710,7 +709,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      *
      * @return A reference to this matrix.
      *
-     * @throws IllegalArgumentException If the values array has a different shape then this matrix.
+     * @throws IllegalArgumentException If the {@code values} array has a different shape then this matrix.
      */
     public T setValues(V[][] values) {
         ValidateParameters.ensureAllEqual(numRows, values.length);
@@ -731,7 +730,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      * Extracts the upper-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for upper-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the upper-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -768,7 +767,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      * Extracts the lower-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for lower-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the lower-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -860,11 +859,11 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     /**
      * Sets a specified row of this matrix to a vector.
      *
-     * @param row Vector to replace specified row in this matrix.
+     * @param row Vector to replace the specified row in this matrix.
      * @param rowIdx Index of the row to set.
      *
-     * @return If this matrix is dense, the row set operation is done in place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new row and returned.
+     * @return If this matrix is dense, the row set operation is done in-place and a reference to this matrix is returned.
+     * If this matrix is sparse, a copy will be created with the new row and returned.
      */
     @Override
     public T setRow(U row, int rowIdx) {
@@ -875,11 +874,11 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     /**
      * Sets a specified row of this matrix to an array.
      *
-     * @param row Array containing values to replace specified row in this matrix.
+     * @param row Array containing values to replace the specified row in this matrix.
      * @param rowIdx Index of the row to set.
      *
-     * @return If this matrix is dense, the row set operation is done in place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new row and returned.
+     * @return If this matrix is dense, the row set operation is done in-place and a reference to this matrix is returned.
+     * If this matrix is sparse, a copy will be created with the new row and returned.
      */
     public T setRow(V[] row, int rowIdx) {
         ValidateParameters.ensureArrayLengthsEq(row.length, this.numCols);
@@ -894,11 +893,11 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     /**
      * Sets a specified column of this matrix to a vector.
      *
-     * @param col Vector to replace specified column in this matrix.
+     * @param col Vector to replace the specified column in this matrix.
      * @param colIdx Index of the column to set.
      *
-     * @return If this matrix is dense, the column set operation is done in place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new column and returned.
+     * @return If this matrix is dense, the column set operation is done in-place and a reference to this matrix is returned.
+     * If this matrix is sparse, a copy will be created with the new column and returned.
      */
     @Override
     public T setCol(U col, int colIdx) {
@@ -909,11 +908,11 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     /**
      * Sets a specified column of this matrix to an array.
      *
-     * @param col Vector to replace specified column in this matrix.
+     * @param col Vector to replace the specified column in this matrix.
      * @param colIdx Index of the column to set.
      *
-     * @return If this matrix is dense, the column set operation is done in place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new column and returned.
+     * @return If this matrix is dense, the column set operation is done in-place and a reference to this matrix is returned.
+     * If this matrix is sparse, a copy will be created with the new column and returned.
      */
     public T setCol(V[] col, int colIdx) {
         ValidateParameters.ensureArrayLengthsEq(col.length, this.numRows);
@@ -931,7 +930,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     /**
      * Gets a specified row of this matrix between {@code colStart} (inclusive) and {@code colEnd} (exclusive).
      *
-     * @param rowIdx Index of the row of this matrix to get.
+     * @param rowIdx Index of the row in this matrix to get.
      * @param colStart Starting column of the row (inclusive).
      * @param colEnd Ending column of the row (exclusive).
      *
@@ -957,14 +956,14 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     /**
      * Gets a specified column of this matrix between {@code rowStart} (inclusive) and {@code rowEnd} (exclusive).
      *
-     * @param colIdx Index of the column of this matrix to get.
+     * @param colIdx Index of the column in this matrix to get.
      * @param rowStart Starting row of the column (inclusive).
      * @param rowEnd Ending row of the column (exclusive).
      *
      * @return The column at index {@code colIdx} of this matrix between the {@code rowStart} and {@code rowEnd}
      * indices.
      *
-     * @throws IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the  shape of this matrix.
+     * @throws IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the shape of this matrix.
      * @throws IllegalArgumentException If {@code rowEnd} is less than {@code rowStart}.
      */
     @Override
@@ -1037,7 +1036,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      * Converts this matrix to an equivalent sparse COO matrix.
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern, it is better to underestimate the sparsity.
      * @return A sparse COO matrix that is equivalent to this dense matrix.
      * @see #toCoo() 
      */
@@ -1066,7 +1065,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      * Converts this matrix to an equivalent sparse CSR matrix.
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern, it is better to underestimate the sparsity.
      * @return A sparse CSR matrix that is equivalent to this dense matrix.
      * @see #toCsr()
      */
@@ -1076,8 +1075,8 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
 
 
     /**
-     * Converts this matrix to an equivalent vector. If this matrix is not a row or column vector it will first be flattened then
-     * converted to a vector.
+     * Converts this matrix to an equivalent vector.
+     * If this matrix is not a row or column vector, it will first be flattened, then converted to a vector.
      *
      * @return A vector which contains the same data as this matrix.
      */

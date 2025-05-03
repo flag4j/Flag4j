@@ -32,6 +32,7 @@ import java.util.StringJoiner;
  * <p>IntTuples are immutable.
  *
  * @param data The values of the integer tuple.
+ * @see IntPair
  * @see Tuple
  * @see Pair
  * @see Triple

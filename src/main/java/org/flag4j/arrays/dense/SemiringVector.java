@@ -24,13 +24,13 @@
 
 package org.flag4j.arrays.dense;
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractDenseSemiringMatrix;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractDenseSemiringVector;
 import org.flag4j.arrays.sparse.CooSemiringVector;
 import org.flag4j.io.PrettyPrint;
 import org.flag4j.io.PrintOptions;
+import org.flag4j.numbers.Semiring;
 
 import java.util.Arrays;
 
@@ -61,7 +61,7 @@ import java.util.Arrays;
  * RealInt32 inner = vector.inner(vector);
  * SemiringMatrix<BoolSemiring> outer = vector.outer(vector);
  *
- * // Checking if the vector only contains zeros (i.e. false).
+ * // Checking if the vector only contains zeros (i.e., false).
  * boolean isZero = vector.isZeros();
  * }</pre>
  *
@@ -94,6 +94,17 @@ public class SemiringVector<T extends Semiring<T>> extends AbstractDenseSemiring
      */
     public SemiringVector(Shape shape, T[] data) {
         super(shape, data);
+    }
+
+
+    /**
+     * Creates a semiring vector with the specified data and shape.
+     *
+     * @param shape Shape of the vector to construct.
+     * @param data Entries of the vector.
+     */
+    public SemiringVector(int size, T[] data) {
+        super(new Shape(size), data);
     }
 
 

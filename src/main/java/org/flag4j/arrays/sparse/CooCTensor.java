@@ -51,7 +51,7 @@ import java.util.List;
  *
  * <p>Sparse tensors allow for the efficient storage of and ops on tensors that contain many zero values.
  *
- * <p>COO tensors are optimized for hyper-sparse tensors (i.e. tensors which contain almost all zeros relative to the size of the
+ * <p>COO tensors are optimized for hyper-sparse tensors (i.e., tensors which contain almost all zeros relative to the size of the
  * tensor).
  *
  * <p>A sparse COO tensor is stored as:
@@ -60,7 +60,7 @@ import java.util.List;
  *     <li>The non-zero {@link #data} of the tensor. All other data in the tensor are
  *     assumed to be zero. Zero value can also explicitly be stored in {@link #data}.</li>
  *     <li><p>The {@link #indices} of the non-zero value in the sparse tensor. Many ops assume indices to be sorted in a
- *     row-major format (i.e. last index increased fastest) but often this is not explicitly verified.
+ *     row-major format (i.e., last index increased fastest) but often this is not explicitly verified.
  *
  *     <p>The {@link #indices} array has shape {@code (nnz, rank)} where {@link #nnz} is the number of non-zero data in this
  *     sparse tensor and {@code rank} is the {@link #getRank() tensor rank} of the tensor. This means {@code indices[i]} is the nD
@@ -274,7 +274,7 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
 
     /**
      * Rounds all data within this tensor to the specified precision.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A new tensor containing the data of this tensor rounded to the specified precision.
      */
     public CooCTensor round(int precision) {
@@ -283,8 +283,8 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
 
 
     /**
-     * Sets all elements of this tensor to zero if they are within {@code tol} of zero. This is <em>not</em> done in place.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * Sets all elements of this tensor to zero if they are within {@code tol} of zero. This is <em>not</em> done in-place.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A copy of this tensor with all data within {@code tol} of zero set to zero.
      */
     public CooCTensor roundToZero(double tolerance) {

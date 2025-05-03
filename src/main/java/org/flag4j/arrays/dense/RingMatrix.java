@@ -294,7 +294,7 @@ public class RingMatrix<T extends Ring<T>> extends AbstractDenseRingMatrix<
      *
      * @param size Size of the identity matrix.
      * @param fieldValue Value of field to create identity matrix for.
-     * @return An identity matrix of specified size.
+     * @return An identity matrix of the specified size.
      * @throws IllegalArgumentException If the specified size is less than 1.
      * @see #I(Shape, Ring)
      * @see #I(int, int, Ring)
@@ -311,7 +311,7 @@ public class RingMatrix<T extends Ring<T>> extends AbstractDenseRingMatrix<
      * @param numRows Number of rows in the identity-like matrix.
      * @param numCols Number of columns in the identity-like matrix.
      * @param fieldValue Value of field to create identity matrix for.
-     * @return An identity matrix of specified shape.
+     * @return An identity matrix of the specified shape.
      * @throws IllegalArgumentException If the specified number of rows or columns is less than 1.
      * @see #I(int, Ring)
      * @see #I(Shape, Ring)
@@ -327,7 +327,7 @@ public class RingMatrix<T extends Ring<T>> extends AbstractDenseRingMatrix<
      *
      * @param shape The shape of the identity-like matrix to construct.
      * @param fieldValue Value of field to create identity matrix for.
-     * @return An identity matrix of specified shape.
+     * @return An identity matrix of the specified shape.
      * @throws IllegalArgumentException If the specified number of rows or columns is less than 1.
      * @see #I(int, Ring)
      * @see #I(Shape, Ring)
@@ -352,7 +352,7 @@ public class RingMatrix<T extends Ring<T>> extends AbstractDenseRingMatrix<
      *
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      *
      * @return A sparse COO matrix that is equivalent to this dense matrix.
      *
@@ -393,7 +393,7 @@ public class RingMatrix<T extends Ring<T>> extends AbstractDenseRingMatrix<
      *
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      *
      * @return A sparse CSR matrix that is equivalent to this dense matrix.
      *

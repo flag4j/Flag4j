@@ -29,7 +29,6 @@ class VectorPerpParallelTests {
 
         assertTrue(a.isParallel(b));
 
-
         // ----------------------- sub-case 3 -----------------------
         aEntries = new double[]{0, 0, 0, 0};
         a = new Vector(aEntries);

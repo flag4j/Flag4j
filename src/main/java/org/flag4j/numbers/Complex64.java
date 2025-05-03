@@ -170,7 +170,7 @@ public class Complex64 implements Field<Complex64> {
 
     /**
      * Constructs a complex number from a string of the form {@code "a +/- bi"} where {@code a} and {b} are real values and either may be
-     * omitted. i.e. {@code "a", "bi", "a +/- i"}, and {@code "i"} are all also valid.
+     * omitted. i.e., {@code "a", "bi", "a +/- i"}, and {@code "i"} are all also valid.
      * @param num The string representation of a complex number.
      */
     public Complex64(String num) {
@@ -192,7 +192,7 @@ public class Complex64 implements Field<Complex64> {
     /**
      * Checks if an object is equal to this Field element.
      * @param b Object to compare to this Field element.
-     * @return True if the objects are the same or are both {@link Complex64}'s and have equal real and imaginary parts.
+     * @return True if the objects are the same or are both {@link Complex64}s and have equal real and imaginary parts.
      */
     @Override
     public boolean equals(Object b) {
@@ -723,26 +723,14 @@ public class Complex64 implements Field<Complex64> {
 
 
     /**
-     * Computes the 2 argument arc-tangent function for a complex number. That is, for a complex number a+bi, atan2(b, a)
-     * is computed. This method wraps {@link Math#atan2(double, double)}. <br>
-     * @param num The input to the atan2 function.
-     * @return The output of the atan2 function given the specified input. If the complex number is zero, then {@link Float#NaN}
-     * is returned.
-     */
-    public static float atan2(Complex64 num) {
-        return (float) Math.atan2(num.im, num.re);
-    }
-
-
-    /**
      * Computes the complex argument function for a complex number.
-     * is computed. This method is equivalent to {@link Complex64#atan2(Complex64)}. <br>
+     * This method is equivalent to {@link Math#atan2(double, double) atan2(this.im, this.re)}.
      * @param num The input to the atan2 function.
-     * @return The output of the atan2 function given the specified input. If the complex number is zero, then {@link Float#NaN}
+     * @return The output of the atan2 function given the specified input. If the complex number is zero, then {@link Double#NaN}
      * is returned.
      */
     public static float arg(Complex64 num) {
-        return atan2(num);
+        return (float) Math.atan2(num.im, num.re);
     }
 
 
@@ -1194,7 +1182,7 @@ public class Complex64 implements Field<Complex64> {
      * <p>NOTE: It may be possible for this method to return true and {@link #mag()} to return {@link Float#POSITIVE_INFINITY},
      * {@link Float#NEGATIVE_INFINITY}, or {@link Float#NaN} if both components are finite but computing the magnitude explicitly
      * results in an overflow. 
-     * @return True if this field element is finite in magnitude. False otherwise (i.e. infinite, NaN etc.).
+     * @return True if this field element is finite in magnitude. False otherwise (i.e., infinite, NaN etc.).
      */
     public boolean isFinite() {
         // If both components are finite then the complex number will have finite magnitude.
@@ -1204,7 +1192,7 @@ public class Complex64 implements Field<Complex64> {
 
     /**
      * Checks if this field element is infinite in magnitude.
-     * @return True if this field element is infinite in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is infinite in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     public boolean isInfinite() {
         // If either components is infinite then the complex number will have infinite magnitude.
@@ -1214,7 +1202,7 @@ public class Complex64 implements Field<Complex64> {
 
     /**
      * Checks if this field element is NaN in magnitude.
-     * @return True if this field element is NaN in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is NaN in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     @Override
     public boolean isNaN() {
@@ -1226,7 +1214,7 @@ public class Complex64 implements Field<Complex64> {
      * Gets the real component of this complex number.
      * @return The real component of this complex number.
      */
-    public float re() {
+    public float getReal() {
         return re;
     }
 
@@ -1235,7 +1223,7 @@ public class Complex64 implements Field<Complex64> {
      * Gets the imaginary component of this complex number.
      * @return The imaginary component of this complex number.
      */
-    public float im() {
+    public float getImag() {
         return im;
     }
 

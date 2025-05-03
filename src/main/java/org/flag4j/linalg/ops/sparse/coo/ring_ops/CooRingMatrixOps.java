@@ -158,7 +158,7 @@ public final class CooRingMatrixOps {
      * @param rowIndices Non-zero row indices of the COO matrix.
      * @param colIndices Non-zero column indices of the COO matrix.
      * @return {@code true} if the specified COO matrix is Hermitian
-     * (i.e. equal to its conjugate transpose); {@code false} otherwise.
+     * (i.e., equal to its conjugate transpose); {@code false} otherwise.
      * @param <T> The ring to which the data values of the COO matrix belong.
      */
     public static <T extends Ring<T>> boolean isHermitian(Shape shape, T[] data, int[] rowIndices, int[] colIndices) {

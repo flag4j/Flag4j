@@ -61,7 +61,7 @@ import org.flag4j.util.exceptions.LinearAlgebraException;
  * If eigenvectors are not required, setting {@code computeU = false} <em>may</em> improve performance.
  *
  * <p>This class was inspired by code from the <a href="http://ejml.org/wiki/index.php?title=Main_Page">EJML</a>
- * library and the description of the Francis implicit double shifted QR algorithm from
+ * library and the description of the Francis implicit double-shifted QR algorithm from
  * <a href="https://www.math.wsu.edu/faculty/watkins/books.html">Fundamentals of Matrix
  * Computations 3rd Edition by David S. Watkins</a>.
  *
@@ -134,7 +134,7 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
      */
     protected U householderVector;
     /**
-     * Stores the non-zero data of the first column of the shifted matrix
+     * Stores the non-zero data of the first column in the shifted matrix
      * <span class="latex-inline">(A- &rho;<sub>1</sub>I)(A-&rho;<sub>2</sub> I)</span>
      * where <span class="latex-inline">&rho;<sub>1</sub></span> and <span class="latex-inline">&rho;<sub>2</sub></span>
      * are the two shifts.
@@ -162,7 +162,7 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
      */
     protected int exceptionalThreshold;
     /**
-     * The number of iterations run in the QR algorithm without deflating or performing an exceptional shift.
+     * The number of iterations runs in the QR algorithm without deflating or performing an exceptional shift.
      */
     protected int sinceLastExceptional;
     /**
@@ -215,15 +215,15 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
 
 
     /**
-     * <p>Sets the number of iterations of the QR algorithm to perform without deflation before performing a random shift.
+     * <p>Sets the number of iterations in the QR algorithm to perform without deflation before performing a random shift.
      *
      * <p>That is, if {@code exceptionalThreshold = 10}, then at most 10 iterations QR algorithm iterations will be performed.
      * If, by the 10th iteration, no convergence has been detected which allows for deflation, then a QR algorithm iteration
-     * will be performed with a random (i.e. exceptional) shift.
+     * will be performed with a random (i.e., exceptional) shift.
      *
      * <p>By default, the threshold is set to {@link #DEFAULT_EXCEPTIONAL_ITERS}
      *
-     * @param exceptionalThreshold The new exceptional shift threshold. i.e. the number of iterations to perform without
+     * @param exceptionalThreshold The new exceptional shift threshold. I.e., the number of iterations to perform without
      * deflation before performing an iteration with random shifts.
      *
      * @return A reference to this Schur decomposer.
@@ -238,7 +238,7 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
 
 
     /**
-     * <p>Specify maximum iteration factor for computing the total number of iterations to run the QR algorithm
+     * <p>Specify a maximum iteration factor for computing the total number of iterations to run the QR algorithm
      * for when computing the decomposition. The maximum number of iterations is computed as
      * {@code maxIteration = maxIterationFactor * src.numRows;} If the algorithm does not converge within this limit, an
      * exception will be thrown.
@@ -261,7 +261,7 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
 
 
     /**
-     * <p>Sets flag indicating if a check should be made to ensure the matrix being decomposed only contains finite values.
+     * <p>Sets a flag indicating if a check should be made to ensure the matrix being decomposed only contains finite values.
      * <p>By default, this will be {@code false}.
      * @param enforceFinite Flag indicating if a check should be made to ensure matrices decomposed by this instance only contain
      * finite values.
@@ -304,10 +304,10 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
     /**
      * <p>Computes the Schur decomposition of the input matrix.
      *
-     * @implNote The Schur decomposition is computed using Francis implicit double shifted QR algorithm.
-     * There are known cases where this variant of the QR algorithm <em>may</em> fail to converge. Random shifting is employed when the
-     * matrix is not converging which greatly minimizes this issue. It is unlikely that a general matrix will fail to converge with
-     * these random shifts however, no guarantees of convergence can be made.
+     * @implNote The Schur decomposition is computed using Francis implicit double-shifted QR algorithm.
+     * There are known cases where this variant of the QR algorithm <em>may</em> fail to converge. Random shifting is used when the
+     * matrix is not converging, which greatly minimizes this issue. It is unlikely that a general matrix will fail to converge with
+     * these random shifts; however, no guarantees of convergence can be made.
      * @param src The source matrix to decompose.
      * @throws LinearAlgebraException If the decomposition does not converge within the specified number of max iterations.
      */
@@ -327,7 +327,7 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
                 performExceptionalShift(workEnd);
             } else {
                 // Perform a normal double shift iteration.
-                sinceLastExceptional++; // Increase number of iterations performed without an exceptional shift.
+                sinceLastExceptional++; // Increase the number of iterations performed without an exceptional shift.
                 performDoubleShift(workEnd);
             }
 
@@ -382,7 +382,7 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
 
 
     /**
-     * <p>Reverts the scaling and permutations applied during the balancing step to obtain the correct form.
+     * <p>Reverts the scaling and permutations applied during the balancing step to get the correct form.
      *
      * <p>Specifically, this method computes
      * <span class="latex-eq-align"><pre>
@@ -401,7 +401,7 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
 
 
     /**
-     * Performs a full iteration of the single shifted QR algorithm (this includes the bulge chase) where the shift is
+     * Performs a full iteration of the single-shifted QR algorithm (this includes the bulge chase) where the shift is
      * chosen to be a random value with the same magnitude as the lower right element of the working matrix. This can help the
      * QR converge for certain pathological cases where the double shift algorithm oscillates or fails to converge for
      * repeated eigenvalues.
@@ -411,19 +411,19 @@ public abstract class Schur<T extends MatrixMixin<T, ?, ?, ?>, U> extends Decomp
 
 
     /**
-     * Performs a full iteration of the Francis implicit double shifted QR algorithm (this includes the bulge chase).
+     * Performs a full iteration of the Francis implicit double-shifted QR algorithm (this includes the bulge chase).
      * @param workEnd The ending row (inclusive) of the current active working block.
      */
     protected abstract void performDoubleShift(int workEnd);
 
 
     /**
-     * Checks for convergence of lower <span class="latex-inline">2&times;2</span> sub-matrix within working matrix to upper
+     * Checks for convergence of lower <span class="latex-inline">2&times;2</span> submatrix within working matrix to an upper
      * triangular or block upper triangular form.
      * If convergence is found, this will also zero out the values which have converged to near zero.
      * @param workEnd The ending row (inclusive) of the current active working block.
      * @return Returns the amount the working matrix size should be deflated. Will be zero if no convergence is detected, one if
-     * convergence to upper triangular form is detected and two if convergence to block upper triangular form is detected.
+     * convergence to an upper triangular form is detected and two if convergence to block upper triangular form is detected.
      */
     protected abstract int checkConvergence(int workEnd);
 

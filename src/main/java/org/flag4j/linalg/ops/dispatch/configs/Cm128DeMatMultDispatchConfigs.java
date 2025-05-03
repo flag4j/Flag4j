@@ -73,7 +73,7 @@ public final class Cm128DeMatMultDispatchConfigs {
     private static int squareMtReorderedThreshold = 2_048;
 
     /**
-     * Thresholds for non-square wide matrices. i.e. {@code m = max(m, n, k)} and {@code max(m, n, k) / min(m, n, k) >  aspectThreshold}.
+     * Thresholds for non-square wide matrices. i.e., {@code m = max(m, n, k)} and {@code max(m, n, k) / min(m, n, k) >  aspectThreshold}.
      */
     private static int wideMtReorderedThreshold = 25;
 

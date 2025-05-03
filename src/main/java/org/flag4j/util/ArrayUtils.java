@@ -79,8 +79,8 @@ import java.util.function.UnaryOperator;
  *   <li>Multidimensional arrays are expected to be rectangular for all methods in this class.
  *   However, this is not explicitly enforced and jagged arrays may cause unexpected behavior.</li>
  *   <li>Many methods assume that input arrays are non-null unless explicitly stated otherwise.</li>
- *   <li>Sorting is required, but not enforced, for some methods to function correctly, such as {@link #contains(int[], int)} and
- *   {@link #findFirstLast(int[], int)}. Passing non-sorted arrays to such method results in undefined behavior.</li>
+ *   <li>Sorting is required but not enforced for some methods to function correctly, such as {@link #contains(int[], int)} and
+ *   {@link #findFirstLast(int[], int)}. Passing non-sorted arrays to such a method results in undefined behavior.</li>
  * </ul>
  *
  * <p><strong>Note:</strong> This class is a utility class and cannot be instantiated.
@@ -97,11 +97,11 @@ public final class ArrayUtils {
 
 
     /**
-     * Computes the cumulative sum of the elements of  an array.
-     * @param src Source array to compute cumulative sum within.
+     * Computes the cumulative sum of the elements in an array.
+     * @param src Source array to compute the cumulative sum of.
      * @param dest Array to store the result of the cumulative sum. May be the same array as {@code src} or {@code null}.
      * @return If {@code dest != null} then a reference to {@code dest} is returned. If {@code dest == null} then a new array of
-     * appropriate size will be constructed and returned.
+     * the appropriate size will be constructed and returned.
      * @throws IllegalArgumentException If {@code dest != null && dest.length != src.length}.
      */
     public static int[] cumSum(int[] src, int[] dest) {
@@ -138,7 +138,7 @@ public final class ArrayUtils {
      *
      * @param src1 Double array.
      * @param src2 Complex number array.
-     * @return {@code true} if all data in {@code src2} have zero imaginary component and real component equal to the
+     * @return {@code true} if all data in {@code src2} have zero imaginary parts and real parts equal to the
      * corresponding entry in {@code src1}; {@code false} otherwise.
      */
     public static boolean equals(double[] src1, Complex128[] src2) {
@@ -166,7 +166,7 @@ public final class ArrayUtils {
      * @param dest Destination array of copy. If {@code null}, a new array will be initialized.
      * @return A reference to {@code dest} if it was not {@code null}. In the case where {@code dest} is {@code null}, then a new
      * array will be initialized and returned.
-     * @throws IllegalArgumentException If the two arrays are not the same shape.
+     * @throws IllegalArgumentException If the two arrays do <em>not</em> have the same shape.
      */
     public static int[][] deepCopy2D(int[][] src, int[][] dest) {
         if(dest == null) dest = new int[src.length][src[0].length];
@@ -217,11 +217,11 @@ public final class ArrayUtils {
 
 
     /**
-     * Swaps to elements in an array. This is done in place.
+     * Swaps to elements in an array. This is done in-place.
      *
      * @param arr Array to swap elements in. This array is modified.
-     * @param i   Index of first value to swap.
-     * @param j   Index of second value to swap.
+     * @param i   Index of the first value to swap.
+     * @param j   Index of the second value to swap.
      * @throws IndexOutOfBoundsException If {@code i} or {@code j} are out of the bounds of {@code arr}.
      */
     public static void swap(int[] arr, int i, int j) {
@@ -272,11 +272,11 @@ public final class ArrayUtils {
 
 
     /**
-     * Swaps to elements in an array. This is done in place.
+     * Swaps to elements in an array. This is done in-place.
      *
      * @param arr Array to swap elements in. This array is modified.
-     * @param i   Index of first value to swap.
-     * @param j   Index of second value to swap.
+     * @param i   Index of the first value to swap.
+     * @param j   Index of the second value to swap.
      * @throws IndexOutOfBoundsException If {@code i} or {@code j} are out of the bounds of {@code arr}.
      */
     public static void swap(double[] arr, int i, int j) {
@@ -287,11 +287,11 @@ public final class ArrayUtils {
 
 
     /**
-     * Swaps to elements in an array. This is done in place.
+     * Swaps to elements in an array. This is done in-place.
      *
      * @param arr Array to swap elements in. This array is modified.
-     * @param i   Index of first value to swap.
-     * @param j   Index of second value to swap.
+     * @param i   Index of the first value to swap.
+     * @param j   Index of the second value to swap.
      * @throws IndexOutOfBoundsException If {@code i} or {@code j} are out of the bounds of {@code arr}.
      */
     public static void swap(Object[] arr, int i, int j) {
@@ -387,7 +387,7 @@ public final class ArrayUtils {
      *
      * @param nDArray The nD Java array to infer the shape from.
      * @return The shape of the nD array as a {@code Shape} object.
-     * @throws IllegalArgumentException If {@code nDArray} is not an array or has inconsistent (i.e. non-rectangular) dimensions.
+     * @throws IllegalArgumentException If {@code nDArray} is not an array or has inconsistent (i.e., non-rectangular) dimensions.
      */
     public static Shape nDArrayShape(Object nDArray) {
         if (!nDArray.getClass().isArray()) {
@@ -410,7 +410,7 @@ public final class ArrayUtils {
 
 
     /**
-     * Validates that the nD array has consistent (i.e. rectangular) dimensions.
+     * Validates that the nD array has consistent (i.e., rectangular) dimensions.
      *
      * @param array The nD array to validate.
      * @param dimensions List of dimensions inferred so far.
@@ -643,7 +643,7 @@ public final class ArrayUtils {
      * in no particular order, compute the integers which are in {@code {0, 1, 2, ...., dim-1}} but not in
      * {@code srcAxes}.
      *
-     * @param srcAxes Source axes which contains a subset of {@code {0, 1, 2, ...., dim-1}} in no particular order.
+     * @param srcAxes Source axes that contain a subset of {@code {0, 1, 2, ...., dim-1}} in no particular order.
      * @param dim     Dimension of space which contains the axes of interest.
      * @return An array containing the set subtraction {@code {0, 1, 2, ...., dim-1}} - srcAxes.
      */
@@ -669,34 +669,34 @@ public final class ArrayUtils {
 
 
     /**
-     * Shifts all indices in an array by a specified amount.
+     * Shifts all elements of an array by a specified amount.
      *
-     * @param shift   Amount to shift indices by.
-     * @param indices Array of indices to shift.
-     * @return A reference to {@code indices}.
+     * @param shift Amount to shift array elements by.
+     * @param arr Array of to shift.
+     * @return A reference to {@code arr}.
      * @see #shiftRange(int, int[], int, int)
      */
-    public static int[] shift(int shift, int[] indices) {
-        return shiftRange(shift, indices, 0, indices.length);
+    public static int[] shift(int shift, int[] arr) {
+        return shiftRange(shift, arr, 0, arr.length);
     }
 
 
     /**
-     * Shifts a range of indices in an array by a specified amount.
+     * Shifts a range of elements in an array by a specified amount.
      *
-     * @param shift   Amount to shift indices by.
-     * @param indices Array of indices to shift.
-     * @param start   Starting index of range to shift (inclusive).
-     * @param stop    Stopping index of range to shift (exclusive).
-     * @return A reference to {@code indices}.
-     * @throws ArrayIndexOutOfBoundsException If start or stop is not within the bounds of the {@code indices} array.
+     * @param shift Amount to shift array elements by.
+     * @param arr Array to shift.
+     * @param start Starting index of range to shift (inclusive).
+     * @param stop Stopping index of range to shift (exclusive).
+     * @return A reference to {@code arr}.
+     * @throws ArrayIndexOutOfBoundsException If start or stop is not within the bounds of the {@code arr} array.
      * @see #shift(int, int[])
      */
-    public static int[] shiftRange(int shift, int[] indices, int start, int stop) {
+    public static int[] shiftRange(int shift, int[] arr, int start, int stop) {
         for (int i = start; i < stop; i++)
-            indices[i] += shift;
+            arr[i] += shift;
 
-        return indices;
+        return arr;
     }
 
 
@@ -800,7 +800,7 @@ public final class ArrayUtils {
     /**
      * Finds the first and last index of a specified key within a sorted array.
      *
-     * @param src The source array to search within. This array is assumed ot be sorted. If the array is not sorted,
+     * @param src The source array to search within. This array is assumed to be sorted. If the array is not sorted,
      *            call {@link Arrays#sort(int[]) Arrays.sort(src)} before this method. If this is not done, and an
      *            unsorted array is passed to this method, the results are undefined.
      * @param key The key value to find the first and last index of within the {@code src} array.
@@ -814,7 +814,7 @@ public final class ArrayUtils {
 
         if (keyIdx < 0) return new int[]{keyIdx, keyIdx}; // Row not found.
 
-        // Find first entry with the specified row key.
+        // Find the first entry with the specified row key.
         int lowerBound = keyIdx;
         for (int i = keyIdx; i >= 0; i--) {
             if (src[i] == key) lowerBound = i;
@@ -832,7 +832,7 @@ public final class ArrayUtils {
 
 
     /**
-     * Applies a transform to an array. This is done in place.
+     * Applies a transform to an array. This is done in-place.
      * @param src Array to apply transform to. Modified.
      * @param opp Operation to use to transform the array.
      * @return A reference to the {@code src} array.
@@ -846,7 +846,7 @@ public final class ArrayUtils {
 
 
     /**
-     * Applies a transform to an array. This is done in place.
+     * Applies a transform to an array. This is done in-place.
      * @param src Array to apply transform to. Modified.
      * @param opp Operation to use to transform the array.
      * @return A reference to the {@code src} array.

@@ -87,7 +87,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         implements SemiringTensorMixin<T, U, W>, MatrixMixin<T, U, V, W> {
 
     /**
-     * The zero element for the semiring that this tensor's elements belong to.
+     * The zero-element for the semiring that this tensor's elements belong to.
      */
     protected W zeroElement;
     /**
@@ -145,7 +145,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         this.numRows = shape.get(0);
         this.numCols = shape.get(1);
 
-        // Attempt to set the zero element for the semiring.
+        // Attempt to set the zero-element for the semiring.
         this.zeroElement = (entries.length > 0 && entries[0] != null) ? entries[0].getZero() : null;
     }
 
@@ -171,7 +171,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         this.numRows = shape.get(0);
         this.numCols = shape.get(1);
 
-        // Attempt to set the zero element for the semiring.
+        // Attempt to set the zero-element for the semiring.
         this.zeroElement = (entries.length > 0 && entries[0] != null) ? entries[0].getZero() : null;
     }
 
@@ -260,8 +260,8 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
 
 
     /**
-     * Gets the zero element for the semiring of this tensor.
-     * @return The zero element for the semiring of this tensor. If it could not be determined during construction of this object
+     * Gets the zero-element for the semiring of this tensor.
+     * @return The zero-element for the semiring of this tensor. If it could not be determined during construction of this object
      * and has not been set explicitly by {@link #setZeroElement(Semiring)} then {@code null} will be returned.
      *
      * @see #setZeroElement(Semiring)
@@ -272,8 +272,8 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
 
 
     /**
-     * Sets the zero element for the semiring of this tensor.
-     * @param zeroElement The zero element of this tensor.
+     * Sets the zero-element for the semiring of this tensor.
+     * @param zeroElement The zero-element of this tensor.
      * @throws IllegalArgumentException If {@code zeroElement} is not an additive identity for the semiring.
      *
      * @see #getZeroElement()
@@ -434,7 +434,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -456,18 +456,18 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     @Override
     public T tensorTr(int axis1, int axis2) {
@@ -484,7 +484,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -733,7 +733,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * @param row Vector to replace specified row in this matrix.
      * @param rowIdx Index of the row to set.
      *
-     * @return If this matrix is dense, the row set operation is done in place and a reference to this matrix is returned.
+     * @return If this matrix is dense, the row set operation is done in-place and a reference to this matrix is returned.
      * If this matrix is sparse a copy will be created with the new row and returned.
      */
     @Override
@@ -748,7 +748,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * @param col Vector to replace specified column in this matrix.
      * @param colIdx Index of the column to set.
      *
-     * @return If this matrix is dense, the column set operation is done in place and a reference to this matrix is returned.
+     * @return If this matrix is dense, the column set operation is done in-place and a reference to this matrix is returned.
      * If this matrix is sparse a copy will be created with the new column and returned.
      */
     @Override
@@ -758,7 +758,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
 
 
     /**
-     * Swaps specified rows in the matrix. This is done in place.
+     * Swaps specified rows in the matrix. This is done in-place.
      *
      * @param rowIndex1 Index of the first row to swap.
      * @param rowIndex2 Index of the second row to swap.
@@ -775,7 +775,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
 
 
     /**
-     * Swaps specified columns in the matrix. This is done in place.
+     * Swaps specified columns in the matrix. This is done in-place.
      *
      * @param colIndex1 Index of the first column to swap.
      * @param colIndex2 Index of the second column to swap.
@@ -1047,7 +1047,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * 
      * <p>The zero data of this CSR matrix will be attempted to be filled with a zero value if it could be determined during
      * construction of this sparse CSR matrix. If the zero value could not be determined the zero data will be filled with
-     * {@code null} (this only happens when {@code nnz==0}). To avoid this, the zero element of the semiring for this
+     * {@code null} (this only happens when {@code nnz==0}). To avoid this, the zero-element of the semiring for this
      * matrix can be set explicitly using {@link #setZeroElement(Semiring)}.
      * 
      * @return A dense matrix which is equivalent to this sparse CSR matrix.
@@ -1118,7 +1118,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
     /**
      * Coalesces this sparse CSR matrix. An uncoalesced matrix is a sparse matrix with multiple data for a single index. This
      * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
-     * than summing is desired, use {@link #coalesce(BinaryOperator)}.
+     * than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse CSR matrix which is equivalent to this CSR matrix.
      * @see #coalesce(BinaryOperator)
      */

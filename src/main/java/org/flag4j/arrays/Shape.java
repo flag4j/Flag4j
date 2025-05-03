@@ -41,7 +41,7 @@ import java.util.StringJoiner;
  * the shape when traversing an array with the given shape. Strides will always be row-major contiguous and allow for efficient
  * array traversal and mapping of nD indices to 1D contiguous indices.
  *
- * <p>This class also supports converting between multidimensional and flat indices, computing the shapes rank (i.e. number of
+ * <p>This class also supports converting between multidimensional and flat indices, computing the shapes rank (i.e., number of
  * dimensions), computing the total number of data of an array with the given shape, and manipulating dimensions through swaps or
  * permutations.
  *

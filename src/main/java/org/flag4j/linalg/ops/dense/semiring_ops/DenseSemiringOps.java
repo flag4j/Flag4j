@@ -24,8 +24,8 @@
 
 package org.flag4j.linalg.ops.dense.semiring_ops;
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
+import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.ValidateParameters;
 
@@ -89,14 +89,14 @@ public final class DenseSemiringOps {
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
      * @param shape Shape of the tensor to compute the trace of.
      * @param src Entries of the tensor to compute the trace of.
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      * @param destShape The resulting shape of the tensor trace. Use {@link #getTrShape(Shape, int, int)} to compute this.
      * @param dest Array to store the result of the generalized tensor trace of. Must satisfy
      * {@code dest.length == destShape.totalEntriesIntValueExact()}.
@@ -105,7 +105,7 @@ public final class DenseSemiringOps {
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      * @throws IllegalArgumentException If {@code dest.length == destShape.totalEntriesIntValueExact()}.
      */
     public static <T extends Semiring<T>> void tensorTr(Shape shape, T[] src,
@@ -137,7 +137,7 @@ public final class DenseSemiringOps {
                 }
             }
 
-            // Sum over diagonal elements of the 2D sub-array.
+            // Sum over diagonal elements of the 2D subarray.
             T sum = src[baseOffset];
             int offset = baseOffset + diagonalStride;
             for(int diag=1; diag<traceLength; diag++) {

@@ -248,7 +248,7 @@ public final class RandomArray {
 
 
     /**
-     * Randomly shuffles array using the Fisher–Yates algorithm. This is done in place.
+     * Randomly shuffles array using the Fisher–Yates algorithm. This is done in-place.
      *
      * @param arr Array to shuffle.
      * @return A reference to {@code arr}.
@@ -264,7 +264,7 @@ public final class RandomArray {
 
 
     /**
-     * Randomly shuffles array using the Fisher–Yates algorithm. This is done in place.
+     * Randomly shuffles array using the Fisher–Yates algorithm. This is done in-place.
      *
      * @param arr Array to shuffle.
      */
@@ -279,7 +279,7 @@ public final class RandomArray {
 
 
     /**
-     * Randomly shuffles array using the Fisher–Yates algorithm. This is done in place.
+     * Randomly shuffles array using the Fisher–Yates algorithm. This is done in-place.
      *
      * @param arr Array to shuffle.
      */

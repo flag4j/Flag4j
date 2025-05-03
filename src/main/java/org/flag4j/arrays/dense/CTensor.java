@@ -47,7 +47,7 @@ import java.util.Arrays;
 
 
 /**
- * <p>A dense complex tensor backed by an array of {@link Complex128}'s.
+ * <p>A dense complex tensor backed by an array of {@link Complex128}s.
  *
  * <p>The {@link #data} of a tensor are mutable but the {@link #shape} is fixed.
  */
@@ -98,7 +98,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
     /**
      * Creates a zero tensor with the specified dimensions.
      *
-     * @param dims The dimension of each axis of the tensor. The returned tensor will have shape equivalent to {@code new Shape(dims)}.
+     * @param dims The dimension of each axis in the tensor. The returned tensor will have shape equivalent to {@code new Shape(dims)}.
      */
     public CTensor(int... dims) {
         this(new Shape(dims));
@@ -219,12 +219,12 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
 
 
     /**
-     * Constructs a tensor of the same type as this tensor with the given the shape and data.
+     * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
      * @param data Entries of the tensor to construct.
      *
-     * @return A tensor of the same type as this tensor with the given the shape and data.
+     * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
     public CTensor makeLikeTensor(Shape shape, Complex128[] data) {
@@ -357,7 +357,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -371,7 +371,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -387,7 +387,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -435,7 +435,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      *
      * @param estimatedSparsity Estimated sparsity of the tensor. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      *
      * @return A sparse COO tensor that is equivalent to this dense tensor.
      *
@@ -477,7 +477,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
 
     /**
      * Rounds all data within this tensor to the specified precision.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A new tensor containing the data of this tensor rounded to the specified precision.
      */
     public CTensor round(int precision) {
@@ -486,8 +486,8 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
 
 
     /**
-     * Sets all elements of this tensor to zero if they are within {@code tol} of zero. This is <em>not</em> done in place.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * Sets all elements of this tensor to zero if they are within {@code tol} of zero. This is <em>not</em> done in-place.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A copy of this tensor with all data within {@code tol} of zero set to zero.
      */
     public CTensor roundToZero(double tolerance) {

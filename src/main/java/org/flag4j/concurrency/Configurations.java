@@ -52,7 +52,7 @@ import java.util.logging.Logger;
 public final class Configurations {
 
     /**
-     * The default parallelism (i.e. number of threads) to use for concurrent algorithms.
+     * The default parallelism (i.e., number of threads) to use for concurrent algorithms.
      */
     public static final int DEFAULT_PARALLELISM = Runtime.getRuntime().availableProcessors();
     /**
@@ -94,13 +94,13 @@ public final class Configurations {
 
 
     /**
-     * Sets the parallelism level (i.e. number of threads) for use in concurrent ops as the number of processors available to the Java
+     * Sets the parallelism level (i.e., number of threads) for use in concurrent ops as the number of processors available to the Java
      * virtual machine. Note that this value may change during runtime. This method will include logical cores so the value
      * returned may be higher than the number of physical cores on the machine if hyper-threading is enabled.
      * <br><br>
      * @implNote This is implemented as:
      * {@code parallelism = {@link Runtime#availableProcessors() Runtime.getRuntime().availableProcessors()};}
-     * @return The new parallelism value, i.e. the number of available processors.
+     * @return The new parallelism value, i.e., the number of available processors.
      */
     public static int setParallelismLevelAsAvailableProcessors() {
         ThreadManager.setParallelismLevel(Runtime.getRuntime().availableProcessors());
@@ -109,8 +109,8 @@ public final class Configurations {
 
 
     /**
-     * Gets the current parallelism (i.e. number of threads) to be used in concurrent algorithms.
-     * @return Current parallelism (i.e. number of threads) to use in concurrent algorithms.
+     * Gets the current parallelism (i.e., number of threads) to be used in concurrent algorithms.
+     * @return Current parallelism (i.e., number of threads) to use in concurrent algorithms.
      */
     public static int getParallelismLevel() {
         return ThreadManager.getParallelismLevel();
@@ -118,8 +118,8 @@ public final class Configurations {
 
 
     /**
-     * Sets the parallelism level (i.e. number of threads) to use in concurrent algorithms.
-     * @param parallelismLevel The parallelism level (i.e. number of threads) to use in concurrent algorithms.
+     * Sets the parallelism level (i.e., number of threads) to use in concurrent algorithms.
+     * @param parallelismLevel The parallelism level (i.e., number of threads) to use in concurrent algorithms.
      * <ul>
      *     <li>If {@code parallelismLevel > 0}: The parallelism level is used as is.</li>
      *     <li>If {@code parallelismLevel <= 0}: The parallelism level will be set to

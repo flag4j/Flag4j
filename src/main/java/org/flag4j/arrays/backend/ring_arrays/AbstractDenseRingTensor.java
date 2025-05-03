@@ -92,7 +92,7 @@ public abstract class AbstractDenseRingTensor<T extends AbstractDenseRingTensor<
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()

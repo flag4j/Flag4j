@@ -24,9 +24,9 @@
 
 package org.flag4j.linalg.ops.sparse.csr.semiring_ops;
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
+import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ValidateParameters;
 
@@ -182,12 +182,12 @@ public final class SemiringCsrMatMult {
         zero = (zero == null && src1.length > 0) ? src1[0].getZero() : zero;
         Arrays.fill(dest, zero);
 
-        // Iterate over the non-zero elements of the sparse vector.
+        // Iterate over the non-zero-elements of the sparse vector.
         for (int k=0, src2Nnz = src2.length; k < src2Nnz; k++) {
             int col = indices[k];
             T val = src2[k];
 
-            // Perform multiplication only for the non-zero elements.
+            // Perform multiplication only for the non-zero-elements.
             for (int i=0; i<rows1; i++) {
                 int start = rowPointers[i];
                 int stop = rowPointers[i + 1];

@@ -353,12 +353,12 @@ public class RealSchur extends Schur<Matrix, double[]> {
     protected void computeImplicitDoubleShift(int workEnd) {
         // The shift computed here, p, represents the double shift
         //  p = (T - rho1*I)(T - rho2*I)*e1 where I is the identity matrix, e1 is the first column of I, and (rho1, rho2)
-        //  are taken to be the eigenvalues of the lower 2x2 sub-matrix within the working matrix.
+        //  are taken to be the eigenvalues of the lower 2x2 submatrix within the working matrix.
         //  Note: (rho1, rho2) are either both real, or both complex (and specifically complex conjugates). In either case, has
         //  only three non-zero data (the first three data) all of which are real. Hence, all arithmetic may be carried out in
         //  real arithmetic. As such, eigenvalues are not explicitly computed as that would require complex arithmetic.
 
-        // Extract values from lower right 2x2 sub-matrix within the working block.
+        // Extract values from lower right 2x2 submatrix within the working block.
         int topIdx = (workEnd - 1)*numRows + workEnd;
         int bottomIdx = workEnd*numRows + workEnd;
         double x11 = T.data[topIdx - 1];
@@ -504,7 +504,7 @@ public class RealSchur extends Schur<Matrix, double[]> {
 
 
     /**
-     * Checks for convergence of lower <span class="latex-inline">2&times;2</span> sub-matrix within working matrix to upper triangular or block upper triangular form. If
+     * Checks for convergence of lower <span class="latex-inline">2&times;2</span> submatrix within working matrix to upper triangular or block upper triangular form. If
      * convergence is found, this will also zero out the values which have converged to near zero.
      * @param workEnd The ending row (inclusive) of the current active working block.
      * @return Returns the amount the working matrix size should be deflated. Will be zero if no convergence is detected, one if
@@ -547,7 +547,7 @@ public class RealSchur extends Schur<Matrix, double[]> {
      */
     @Override
     protected void checkFinite(Matrix src) {
-        if(!src.isFinite())
+        if(!src.isAllFinite())
             throw new IllegalArgumentException("Matrix is not finite.");
     }
 
@@ -556,7 +556,7 @@ public class RealSchur extends Schur<Matrix, double[]> {
      * <p>Converts the real schur form computed in the last decomposition to the complex Schur form.
      *
      * <p>That is, converts the real block
-     * upper triangular Schur matrix to a complex valued properly upper triangular matrix. If the unitary transformation matrix
+     * upper triangular Schur matrix to a complex-valued properly upper triangular matrix. If the unitary transformation matrix
      * <span class="latex-inline">U</span> was computed, the transformations will also be updated accordingly.
      *
      * <p>This method was adapted from the code given by

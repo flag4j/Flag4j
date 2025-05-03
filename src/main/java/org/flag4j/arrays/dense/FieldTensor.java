@@ -168,12 +168,12 @@ public class FieldTensor<T extends Field<T>> extends AbstractDenseFieldTensor<Fi
 
 
     /**
-     * Constructs a tensor of the same type as this tensor with the given the shape and data.
+     * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
      * @param entries Entries of the tensor to construct.
      *
-     * @return A tensor of the same type as this tensor with the given the shape and data.
+     * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
     public FieldTensor<T> makeLikeTensor(Shape shape, T[] entries) {

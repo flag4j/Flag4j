@@ -127,7 +127,7 @@ public abstract class UnitaryDecomposition<T extends MatrixMixin<T, ?, ?, ?>, U>
     /**
      * Flag indicating if the decomposition should be done in-place.
      * <ul>
-     *     <li>If {@code true}, then the decomposition will be done in place.</li>
+     *     <li>If {@code true}, then the decomposition will be done in-place.</li>
      *     <li>If {@code false}, then the decomposition will be done out-of-place.</li>
      * </ul>
      */
@@ -146,7 +146,7 @@ public abstract class UnitaryDecomposition<T extends MatrixMixin<T, ?, ?, ?>, U>
      * </ul>
      * @param inPlace Flag indicating if the decomposition should be done in-place.
      * <ul>
-     *     <li>If {@code true}, then the decomposition will be done in place.</li>
+     *     <li>If {@code true}, then the decomposition will be done in-place.</li>
      *     <li>If {@code false}, then the decomposition will be done out-of-place.</li>
      * </ul>
      * @throws IllegalArgumentException If {@code 1 < subDiagonal < 0}.
@@ -263,8 +263,8 @@ public abstract class UnitaryDecomposition<T extends MatrixMixin<T, ?, ?, ?>, U>
 
 
     /**
-     * Computes the Householder vector for the first column of the sub-matrix with upper left corner at {@code (j, j)}.
-     * @param j Index of the upper left corner of the sub-matrix for which to compute the Householder vector for the first column.
+     * Computes the Householder vector for the first column of the submatrix with upper left corner at {@code (j, j)}.
+     * @param j Index of the upper left corner of the submatrix for which to compute the Householder vector for the first column.
      *          That is, a Householder vector will be computed for the portion of column {@code j} below row {@code j}.
      */
     protected abstract void computeHouseholder(int j);
@@ -272,7 +272,7 @@ public abstract class UnitaryDecomposition<T extends MatrixMixin<T, ?, ?, ?>, U>
 
     /**
      * Updates the {@link #transformMatrix} matrix using the computed Householder vector from {@link #computeHouseholder(int)}.
-     * @param j Index of sub-matrix for which the Householder reflector was computed for.
+     * @param j Index of submatrix for which the Householder reflector was computed for.
      */
     protected abstract void updateData(int j);
 

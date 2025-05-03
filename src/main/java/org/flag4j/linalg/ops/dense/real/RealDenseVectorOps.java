@@ -55,9 +55,8 @@ public final class RealDenseVectorOps {
         ValidateParameters.ensureArrayLengthsEq(src1.length, src2.length);
         double innerProd=0;
 
-        for(int i=0; i<src1.length; i++) {
+        for(int i=0, size=src1.length; i<size; i++)
             innerProd += src1[i]*src2[i];
-        }
 
         return innerProd;
     }
@@ -73,13 +72,12 @@ public final class RealDenseVectorOps {
         int destIndex;
         double[] dest = new double[src1.length*src2.length];
 
-        for(int i=0; i<src1.length; i++) {
+        for(int i=0, size=src1.length; i<size; i++) {
             destIndex = i*src2.length;
             double v1 = src1[i];
 
-            for(double v2 : src2) {
+            for(double v2 : src2)
                 dest[destIndex++] = v1*v2;
-            }
         }
 
         return dest;
@@ -100,9 +98,8 @@ public final class RealDenseVectorOps {
                 int destIndex = i*src2.length;
                 double v1 = src1[i];
 
-                for(double v2 : src2) {
+                for(double v2 : src2)
                     dest[destIndex++] = v1*v2;
-                }
             }
         });
 

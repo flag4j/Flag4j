@@ -24,10 +24,10 @@
 
 package org.flag4j.linalg.decompositions.lu;
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.dense.FieldMatrix;
 import org.flag4j.arrays.sparse.PermutationMatrix;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
 
@@ -129,7 +129,7 @@ public class FieldLU<T extends Field<T>> extends LU<FieldMatrix<T>> {
 
 
     /**
-     * Computes the LU decomposition using no pivoting (i.e. rows and columns are not swapped).
+     * Computes the LU decomposition using no pivoting (i.e., rows and columns are not swapped).
      */
     @Override
     protected void noPivot() {
@@ -144,7 +144,7 @@ public class FieldLU<T extends Field<T>> extends LU<FieldMatrix<T>> {
 
 
     /**
-     * Computes the LU decomposition using partial pivoting (i.e. row swapping).
+     * Computes the LU decomposition using partial pivoting (i.e., row swapping).
      */
     @Override
     protected void partialPivot() {
@@ -168,7 +168,7 @@ public class FieldLU<T extends Field<T>> extends LU<FieldMatrix<T>> {
 
 
     /**
-     * Computes the LU decomposition using full/rook pivoting (i.e. row and column swapping).
+     * Computes the LU decomposition using full/rook pivoting (i.e., row and column swapping).
      */
     @Override
     protected void fullPivot() {

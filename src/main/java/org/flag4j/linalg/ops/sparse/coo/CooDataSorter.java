@@ -63,7 +63,7 @@ public class CooDataSorter<T> {
 
     /**
      * <p>Creates a sorter which can sort the indices and values of a COO matrix lexicographically.
-     * <p>When {@link #sparseSort()} is called on an instance created with this constructor, the sorting will be done in place.
+     * <p>When {@link #sparseSort()} is called on an instance created with this constructor, the sorting will be done in-place.
      * @param values Non-zero values of the sparse COO matrix.
      * @param rowIndices Row indices of the sparse COO matrix.
      * @param colIndices Row indices of the sparse COO matrix.

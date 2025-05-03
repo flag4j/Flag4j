@@ -78,14 +78,14 @@ public interface VectorMixin<T extends VectorMixin<T, U, V, W>,
     /**
      * Gets the length of a vector. Same as {@link #size()}.
      *
-     * @return The length, i.e. the number of data, in this vector.
+     * @return The length, i.e., the number of data, in this vector.
      */
     int length();
 
 
     /**
      * Gets the size/length of a vector. Same as {@link #length()}.
-     * @return The length, i.e. the number of data, in this vector.
+     * @return The length, i.e., the number of data, in this vector.
      */
     default int size() {
         return length();
@@ -95,7 +95,7 @@ public interface VectorMixin<T extends VectorMixin<T, U, V, W>,
     /**
      * Repeats a vector {@code n} times along a certain axis to create a matrix.
      *
-     * @param n Number of times to repeat vector.
+     * @param n Number of times to repeat a vector.
      * @param axis Axis along which to repeat vector:
      * <ul>
      *     <li>If {@code axis=0}, then the vector will be treated as a row vector and stacked vertically {@code n} times.</li>
@@ -122,7 +122,7 @@ public interface VectorMixin<T extends VectorMixin<T, U, V, W>,
 
     /**
      * <p>
-     * Stacks two vectors along specified axis.
+     * Stacks two vectors along the specified axis.
      * 
      *
      * <p>
@@ -141,7 +141,7 @@ public interface VectorMixin<T extends VectorMixin<T, U, V, W>,
      * @return The result of stacking this vector and the vector {@code b}.
      * @throws IllegalArgumentException If the number of data in this vector is different from the number of
      *                                  data in the vector {@code b}.
-     * @throws IllegalArgumentException If axis is not either 0 or 1.
+     * @throws IllegalArgumentException If the axis is not either 0 or 1.
      */
     U stack(T b, int axis);
 
@@ -191,9 +191,73 @@ public interface VectorMixin<T extends VectorMixin<T, U, V, W>,
 
 
     /**
+     * Gets multiple items from this vector.
+     * @param indices The indices of each item to get from this vector.
+     * @return A vector containing the entries of this vector at the specified {@code indices}.
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @see #get(int) 
+     * @see #getSlice(int, int) 
+     */
+    VectorMixin<?, ?, ?, W> getItems(int... indices);
+
+
+    /**
      * Gets the element of this vector at the specified index.
      * @param idx Index of the element to get within this vector.
      * @return The element of this vector at index {@code idx}.
+     * @throws IndexOutOfBoundsException If {@code idx} is not within the bounds of this vector.
+     * @see #getSlice(int, int)
+     * @see #getItems(int...) 
      */
     W get(int idx);
+
+
+    /**
+     * Gets a slice of this vector over the specified range of indices.
+     * @param startIdx Staring index of slice (inclusive).
+     * @param endIdx Ending index of slice (exclusive).
+     * @return A vector of length {@code endIdx - startIdx} whose entries are the elements of this vector
+     * over the specified range of indices [{@code startIdx}, {@code endIdx}).
+     * @throws IndexOutOfBoundsException If {@code startIdx} or {@code endIdx - 1} are not within the bounds of this vector.
+     * @throws IllegalArgumentException If {@code startIdx > endIdx}.
+     * @see #get(int)
+     * @see #getItems(int...)
+     */
+    T getSlice(int startIdx, int endIdx);
+
+
+    /**
+     * Sets a slice of this vector to the entries of another vector.
+     * @param values A vector containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     * @return If this vector is dense, the operation will be done in-place and a reference to this tensor will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and this copy will be returned.
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector,
+     * or if {@code values} does not fit within this vector when its first entry is placed at {@code startIdx}.
+     */
+    T setSlice(T values, int startIdx);
+
+
+    /**
+     * Sets a slice of this vector to the entries of an array.
+     * @param values Array containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     * @return If this vector is dense, the operation will be done in-place and a reference to this tensor will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and this copy will be returned.
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector,
+     * or if {@code values} does not fit within this vector when its first entry is placed at {@code startIdx}.
+     */
+    T setSlice(W[] values, int startIdx);
+
+
+    /**
+     * Sets multiple items of this vector.
+     * @param values New values it set the specified items to.
+     * @param indices The indices indicating where each value in {@code values} should be set within this vector.
+     * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @throws IllegalArgumentException If {@code values.length != indices.length}.
+     */
+    T setItems(W[] values, int[] indices);
 }

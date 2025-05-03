@@ -207,19 +207,19 @@ public abstract class LU<T extends MatrixMixin<T, ?, ?, ?>> extends Decompositio
 
 
     /**
-     * Computes the LU decomposition using no pivoting (i.e. rows and columns are not swapped).
+     * Computes the LU decomposition using no pivoting (i.e., rows and columns are not swapped).
      */
     protected abstract void noPivot();
 
 
     /**
-     * Computes the LU decomposition using partial pivoting (i.e. row swapping).
+     * Computes the LU decomposition using partial pivoting (i.e., row swapping).
      */
     protected abstract void partialPivot();
 
 
     /**
-     * Computes the LU decomposition using full/rook pivoting (i.e. row and column swapping).
+     * Computes the LU decomposition using full/rook pivoting (i.e., row and column swapping).
      */
     protected abstract void fullPivot();
 

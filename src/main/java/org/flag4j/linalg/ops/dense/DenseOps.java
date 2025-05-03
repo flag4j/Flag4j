@@ -35,7 +35,7 @@ public final class DenseOps {
 
 
     /**
-     * Swaps specified rows in the matrix. This is done in place.
+     * Swaps specified rows in the matrix. This is done in-place.
      *
      * @param shape Shape of the matrix.
      * @param data Data of the matrix (modified).
@@ -59,7 +59,7 @@ public final class DenseOps {
      * <p>Swaps two rows, over a specified range of columns, within a matrix. Specifically, all elements in the matrix within rows
      * {@code rowIdx1}
      * and {@code rowIdx2} and between columns {@code start} (inclusive) and {@code stop} (exclusive).
-     * This operation is done in place.
+     * This operation is done in-place.
      *
      * <p>No bounds checking is done within this method to ensure that the indices provided are valid. As such, it is
      * <i>highly</i> recommended to us {@link #swapRows(Shape, Object[], int, int)} in most cases.
@@ -89,7 +89,7 @@ public final class DenseOps {
 
 
     /**
-     * Swaps specified columns in the matrix. This is done in place.
+     * Swaps specified columns in the matrix. This is done in-place.
      *
      * @param shape Shape of the matrix.
      * @param data Data of the matrix (modified).
@@ -112,7 +112,7 @@ public final class DenseOps {
     /**
      * <p>Swaps two columns, over a specified range of rows, within a matrix. Specifically, all elements in the matrix within columns
      * {@code colIdx1} and {@code colIdx2} and between rows {@code start} (inclusive) and {@code stop} (exclusive). This operation
-     * is done in place.
+     * is done in-place.
      *
      * <p>No bounds checking is done within this method to ensure that the indices provided are valid. As such, it is
      * <i>highly</i> recommended to us {@link #swapCols(Shape, Object[], int, int)} in most cases.

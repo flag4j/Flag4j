@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.function.BinaryOperator;
 
 /**
- * <p>Instances of this class represent a sparse matrix whose non-zero elements are stored in Coordinate List (COO) format, with all
+ * <p>Instances of this class represent a sparse matrix whose non-zero-elements are stored in Coordinate List (COO) format, with all
  * data elements belonging to a specified {@link Field} type.
  *
  * <p>The COO format stores sparse matrix data as a list of coordinates (row and column indices) coupled with their
@@ -62,11 +62,11 @@ import java.util.function.BinaryOperator;
  *
  *     <li><b>Indices:</b> Non-zero values are associated with their coordinates in the matrix via two parallel 1D arrays:
  *     {@link #rowIndices} and {@link #colIndices}. These arrays specify the row and column positions of each
- *     non-zero entry in {@link #data}. The total number of non-zero elements is given by {@link #nnz}.
+ *     non-zero entry in {@link #data}. The total number of non-zero-elements is given by {@link #nnz}.
  *     Each pair of indices corresponds directly to the position of a single non-zero value in {@link #data}.</li>
  * </ul>
  *
- * <p>The total number of non-zero elements ({@link #nnz}) and the shape are fixed for a given instance, but the values
+ * <p>The total number of non-zero-elements ({@link #nnz}) and the shape are fixed for a given instance, but the values
  * in {@link #data} and their corresponding {@link #rowIndices} and {@link #colIndices} may be updated. Many operations
  * assume that the indices are sorted lexicographically by row, and then by column, but this is not strictly enforced.
  * All provided operations preserve the lexicographical sorting of indices. If there is any doubt about the ordering of
@@ -74,7 +74,7 @@ import java.util.function.BinaryOperator;
  * for the same index (referred to as an uncoalesced tensor). To combine all duplicated entries use {@link #coalesce()} or
  * {@link #coalesce(BinaryOperator)}.
  *
- * <p>COO matrices are optimized for "hyper-sparse" scenarios where the proportion of non-zero elements is extremely low,
+ * <p>COO matrices are optimized for "hyper-sparse" scenarios where the proportion of non-zero-elements is extremely low,
  * offering significant memory savings and potentially more efficient computational operations than equivalent dense
  * representations.
  *

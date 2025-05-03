@@ -42,8 +42,8 @@ public final class RealCsrManipulations {
 
 
     /**
-     * Swaps two rows in a sparse CSR matrix. This is done in place.
-     * @param src The matrix to swap rows within, done in place.
+     * Swaps two rows in a sparse CSR matrix. This is done in-place.
+     * @param src The matrix to swap rows within, done in-place.
      * @param rowIdx1 Index of the first row to swap.
      * @param rowIdx2 Index of the second row to swap.
      * @throws IndexOutOfBoundsException If either {@code rowIdx1} or {@code rowIdx2} is out of bounds of the rows of this matrix.
@@ -97,8 +97,8 @@ public final class RealCsrManipulations {
 
 
     /**
-     * Swaps two columns in a sparse CSR matrix. This is done in place.
-     * @param src The matrix to swap rows within, done in place.
+     * Swaps two columns in a sparse CSR matrix. This is done in-place.
+     * @param src The matrix to swap rows within, done in-place.
      * @param colIdx1 Index of the first column to swap.
      * @param colIdx2 Index of the second column to swap.
      * @throws IndexOutOfBoundsException If either {@code colIndex1} or {@code colIndex2} is out of bounds of the columns of this

@@ -50,7 +50,7 @@ import java.util.function.BinaryOperator;
 /**
  * <p>Instances of this class represent a sparse matrix using the compressed sparse row (CSR) format where
  * all data elements belonging to a specified {@link Semiring} type.
- * This class is optimized for efficient storage and operations on matrices with a high proportion of zero elements.
+ * This class is optimized for efficient storage and operations on matrices with a high proportion of zero-elements.
  * The non-zero values of the matrix are stored in a compact form, reducing memory usage and improving performance for many matrix
  * operations.
  *
@@ -70,7 +70,7 @@ import java.util.function.BinaryOperator;
  *   value in {@code data}.</li>
  * </ul>
  *
- * <p>The total number of non-zero elements ({@link #nnz}) and the shape are fixed for a given instance, but the values
+ * <p>The total number of non-zero-elements ({@link #nnz}) and the shape are fixed for a given instance, but the values
  * in {@link #data} and their corresponding {@link #rowPointers} and {@link #colIndices} may be updated. Many operations
  * assume that the indices are sorted lexicographically by row, and then by column, but this is not strictly enforced.
  * All provided operations preserve the lexicographical row-major sorting of data and indices. If there is any doubt about the
@@ -78,7 +78,7 @@ import java.util.function.BinaryOperator;
  * for the same index (referred to as an uncoalesced tensor). To combine all duplicated entries use {@link #coalesce()} or
  * {@link #coalesce(BinaryOperator)}.
  *
- * <p>CSR matrices are optimized for efficient storage and operations on matrices with a high proportion of zero elements.
+ * <p>CSR matrices are optimized for efficient storage and operations on matrices with a high proportion of zero-elements.
  * CSR matrices are ideal for row-wise operations and matrix-vector multiplications. In general, CSR matrices are not efficient at
  * handling many incremental updates. In this case {@link CooMatrix COO matrices} are usually preferred.
  *

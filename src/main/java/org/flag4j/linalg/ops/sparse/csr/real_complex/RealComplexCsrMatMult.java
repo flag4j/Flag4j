@@ -25,7 +25,6 @@
 package org.flag4j.linalg.ops.sparse.csr.real_complex;
 
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.CVector;
@@ -33,6 +32,7 @@ import org.flag4j.arrays.sparse.CooCVector;
 import org.flag4j.arrays.sparse.CooVector;
 import org.flag4j.arrays.sparse.CsrCMatrix;
 import org.flag4j.arrays.sparse.CsrMatrix;
+import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ValidateParameters;
 
@@ -248,12 +248,12 @@ public final class RealComplexCsrMatMult {
         Arrays.fill(destEntries, Complex128.ZERO);
         int rows1 = src1.numRows;
 
-        // Iterate over the non-zero elements of the sparse vector.
+        // Iterate over the non-zero-elements of the sparse vector.
         for (int k = 0; k < src2.data.length; k++) {
             int col = src2.indices[k];
             Complex128 val = src2.data[k];
 
-            // Perform multiplication only for the non-zero elements.
+            // Perform multiplication only for the non-zero-elements.
             for (int i=0; i<rows1; i++) {
                 int start = src1.rowPointers[i];
                 int stop = src1.rowPointers[i + 1];
@@ -288,12 +288,12 @@ public final class RealComplexCsrMatMult {
         Arrays.fill(destEntries, Complex128.ZERO);
         int rows1 = src1.numRows;
 
-        // Iterate over the non-zero elements of the sparse vector.
+        // Iterate over the non-zero-elements of the sparse vector.
         for (int k = 0; k < src2.data.length; k++) {
             int col = src2.indices[k];
             double val = src2.data[k];
 
-            // Perform multiplication only for the non-zero elements.
+            // Perform multiplication only for the non-zero-elements.
             for (int i=0; i<rows1; i++) {
                 int start = src1.rowPointers[i];
                 int stop = src1.rowPointers[i + 1];

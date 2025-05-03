@@ -153,7 +153,7 @@ public abstract class AbstractCsrFieldMatrix<T extends AbstractCsrFieldMatrix<T,
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()
@@ -220,11 +220,11 @@ public abstract class AbstractCsrFieldMatrix<T extends AbstractCsrFieldMatrix<T,
      *
      * @return {@code true} if this tensor only contains finite values; {@code false} otherwise.
      *
-     * @see #isInfinite()
-     * @see #isNaN()
+     * @see #containsInf()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isFinite() {
+    public boolean isAllFinite() {
         return FieldOps.isFinite(data);
     }
 
@@ -234,11 +234,11 @@ public abstract class AbstractCsrFieldMatrix<T extends AbstractCsrFieldMatrix<T,
      *
      * @return {@code true} if this tensor contains at least one infinite value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isNaN()
+     * @see #isAllFinite()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isInfinite() {
+    public boolean containsInf() {
         return FieldOps.isInfinite(data);
     }
 
@@ -248,11 +248,11 @@ public abstract class AbstractCsrFieldMatrix<T extends AbstractCsrFieldMatrix<T,
      *
      * @return {@code true} if this tensor contains at least one NaN value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isInfinite()
+     * @see #isAllFinite()
+     * @see #containsInf()
      */
     @Override
-    public boolean isNaN() {
-        return FieldOps.isNaN(data);
+    public boolean containsNaN() {
+        return FieldOps.isAllNaN(data);
     }
 }

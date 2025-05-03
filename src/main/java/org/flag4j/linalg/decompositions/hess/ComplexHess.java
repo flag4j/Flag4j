@@ -120,7 +120,7 @@ public class ComplexHess extends ComplexUnitaryDecomposition {
      * needed, setting this to {@code false} <i>may</i> yield an increase in performance.
      * @param inPlace Flag indicating if the decomposition should be done in-place.
      * <ul>
-     *     <li>If {@code true}, then the decomposition will be done in place.</li>
+     *     <li>If {@code true}, then the decomposition will be done in-place.</li>
      *     <li>If {@code false}, then the decomposition will be done out-of-place.</li>
      * </ul>
      *
@@ -180,8 +180,8 @@ public class ComplexHess extends ComplexUnitaryDecomposition {
      * during the reduction of <span class="latex-inline">B</span> so the full matrix must still be passed.
      *
      * @param src The source matrix to decompose.
-     * @param iLow Lower bound (inclusive) of the sub-matrix to reduce to upper Hessenburg form.
-     * @param iHigh Upper bound (exclusive) of the sub-matrix to reduce to upper Hessenburg form.
+     * @param iLow Lower bound (inclusive) of the submatrix to reduce to upper Hessenburg form.
+     * @param iHigh Upper bound (exclusive) of the submatrix to reduce to upper Hessenburg form.
      * @return A reference to this decomposer.
      * @throws LinearAlgebraException If {@code src} is not a square matrix.
      */

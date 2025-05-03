@@ -493,7 +493,7 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
 
     /**
      * Rounds all data within this matrix to the specified precision.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A new matrix containing the data of this matrix rounded to the specified precision.
      */
     public CooCMatrix round(int precision) {
@@ -502,8 +502,8 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
 
 
     /**
-     * Sets all elements of this matrix to zero if they are within {@code tol} of zero. This is <em>not</em> done in place.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * Sets all elements of this matrix to zero if they are within {@code tol} of zero. This is <em>not</em> done in-place.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A copy of this matrix with all data within {@code tol} of zero set to zero.
      */
     public CooCMatrix roundToZero(double tolerance) {

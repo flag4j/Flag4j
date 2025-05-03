@@ -38,7 +38,7 @@ import org.flag4j.util.exceptions.LinearAlgebraException;
  *     A = QHQ<sup>T</sup></pre></span>
  * where <span class="latex-inline">Q</span> is an orthogonal matrix and <span class="latex-inline">H</span>
  * is a symmetric tri-diagonal matrix (special case of Hessenburg form)
- * which is similar to <span class="latex-inline">A</span> (i.e. has the same eigenvalues)
+ * which is similar to <span class="latex-inline">A</span> (i.e., has the same eigenvalues)
  *
  * <p>A matrix <span class="latex-inline">H</span> is in tri-diagonal form if it has all zeros below the first sub-diagonal
  * and above the first super-diagonal.
@@ -138,7 +138,7 @@ public class SymmHess extends RealHess {
      * If the matrix is not symmetric, then the values in the upper triangular portion of the matrix are taken to be the values.
      * @param inPlace Flag indicating if the decomposition should be done in-place.
      * <ul>
-     *     <li>If {@code true}, then the decomposition will be done in place.</li>
+     *     <li>If {@code true}, then the decomposition will be done in-place.</li>
      *     <li>If {@code false}, then the decomposition will be done out-of-place.</li>
      * </ul>
      */
@@ -257,7 +257,7 @@ public class SymmHess extends RealHess {
 
     /**
      * Updates the {@link #transformMatrix} matrix using the computed Householder vector from {@link #computeHouseholder(int)}.
-     * @param j Index of sub-matrix for which the Householder reflector was computed for.
+     * @param j Index of submatrix for which the Householder reflector was computed for.
      */
     @Override
     protected void updateData(int j) {

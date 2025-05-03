@@ -25,10 +25,10 @@
 package org.flag4j.linalg.ops.sparse.csr.ring_ops;
 
 
-import org.flag4j.numbers.Ring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.ring_arrays.AbstractCsrRingMatrix;
 import org.flag4j.linalg.ops.common.ring_ops.RingProperties;
+import org.flag4j.numbers.Ring;
 import org.flag4j.util.ArrayConversions;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public final class CsrRingProperties {
      * @param relTol Relative tolerance.
      * @param absTol Absolute tolerance.
      * @return True if the {@code src1} matrix is the same shape as the {@code src2} matrix and all data
-     * are 'close', i.e. elements {@code a} and {@code b} at the same positions in the two matrices respectively
+     * are "close", i.e., elements {@code a} and {@code b} at the same positions in the two matrices respectively
      * satisfy {@code |a-b| <= (absTol + relTol*|b|)}. Otherwise, returns false.
      */
     public static <T extends Ring<T>> boolean allClose(
@@ -64,7 +64,7 @@ public final class CsrRingProperties {
         boolean close = src1.shape.equals(src2.shape);
 
         if(close) {
-            // Remove values which are 'close' to zero.
+            // Remove values which are "close" to zero.
             List<T> src1Entries = new ArrayList<>(src1.data.length);
             List<Integer> src1ColIndices = new ArrayList<>(src1Entries.size());
             int[] src1RowPointers = new int[src1.rowPointers.length];
@@ -162,7 +162,7 @@ public final class CsrRingProperties {
      * @param values Non-zero values of a CSR matrix.
      * @param rowPointers Non-zero row pointers of the CSR matrix.
      * @param colIndices Non-zero column indices of the CSR matrix.
-     * @return {@code true} if the CSR matrix is Hermitian (i.e. equal to its conjugate transpose); {@code false} otherwise.
+     * @return {@code true} if the CSR matrix is Hermitian (i.e., equal to its conjugate transpose); {@code false} otherwise.
      */
     public static <T extends Ring<T>> boolean isHermitian(Shape shape, T[] values, int[] rowPointers, int[] colIndices) {
         int numRows = shape.get(0);

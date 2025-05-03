@@ -25,10 +25,10 @@
 package org.flag4j.linalg.ops.dense_sparse.coo.field_ops;
 
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.backend.field_arrays.AbstractCooFieldVector;
 import org.flag4j.arrays.backend.field_arrays.AbstractDenseFieldVector;
 import org.flag4j.linalg.ops.common.field_ops.FieldOps;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class DenseCooFieldVectorOps {
      * @param src1 Entries of the dense vector.
      * @param src2 Non-zero data of the sparse vector.
      * @param indices Indices of nonzero values in sparse vector.
-     * @param sparseSize Full size of the sparse vector (i.e. total number of data including zeros).
+     * @param sparseSize Full size of the sparse vector (i.e., total number of data including zeros).
      * @return The inner product of the two vectors.
      * @throws IllegalArgumentException If the number of data in the two vectors is not equivalent.
      */
@@ -72,7 +72,7 @@ public final class DenseCooFieldVectorOps {
      * @param src1 Entries of the dense vector.
      * @param src2 Non-zero data of the sparse vector.
      * @param indices Indices of nonzero values in sparse vector.
-     * @param sparseSize Full size of the sparse vector (i.e. total number of data including zeros).
+     * @param sparseSize Full size of the sparse vector (i.e., total number of data including zeros).
      * @return The inner product of the two vectors.
      * @throws IllegalArgumentException If the number of data in the two vectors is not equivalent.
      */

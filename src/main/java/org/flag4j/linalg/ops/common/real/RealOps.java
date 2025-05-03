@@ -192,7 +192,7 @@ public final class RealOps {
      * Rounds the values of a tensor with specified precision. Note, if precision is zero, {@link #round(double[])} is
      * preferred.
      * @param src Entries of the tensor to round.
-     * @param precision Precision to round to (i.e. the number of decimal places).
+     * @param precision Precision to round to (i.e., the number of decimal places).
      * @return The result of rounding all data of the source tensor with the specified precision.
      * @throws IllegalArgumentException If {@code precision} is negative.
      */

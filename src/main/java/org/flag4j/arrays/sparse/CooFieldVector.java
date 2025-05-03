@@ -42,7 +42,7 @@ import java.util.function.BinaryOperator;
 
 
 /**
- * Represents a sparse vector whose non-zero elements are stored in Coordinate List (COO) format, with all data elements
+ * Represents a sparse vector whose non-zero-elements are stored in Coordinate List (COO) format, with all data elements
  * belonging to a specified {@link Field} type.
  *
  * <p>The COO format stores sparse vector data as a list of coordinates (indices) coupled with their
@@ -60,10 +60,10 @@ import java.util.function.BinaryOperator;
  *
  *     <li><b>Indices:</b> Non-zero values are associated with their coordinates in the vector via a single 1D array:
  *     {@link #indices}. This array specifies the positions of each
- *     non-zero entry in {@link #data}. The total number of non-zero elements is given by {@link #nnz}.</li>
+ *     non-zero entry in {@link #data}. The total number of non-zero-elements is given by {@link #nnz}.</li>
  * </ul>
  *
- * <p>The total number of non-zero elements ({@link #nnz}) and the shape/size is fixed for a given instance, but the values
+ * <p>The total number of non-zero-elements ({@link #nnz}) and the shape/size is fixed for a given instance, but the values
  * in {@link #data} and their corresponding {@link #indices} may be updated. Many operations
  * assume that the indices are sorted lexicographically, but this is not strictly enforced.
  * All provided operations preserve the lexicographical sorting of indices. If there is any doubt about the ordering of
@@ -71,7 +71,7 @@ import java.util.function.BinaryOperator;
  * for the same index (referred to as an uncoalesced tensor). To combine all duplicated entries use {@link #coalesce()} or
  * {@link #coalesce(BinaryOperator)}.
  *
- * <p>COO vectors are optimized for "hyper-sparse" scenarios where the proportion of non-zero elements is extremely low,
+ * <p>COO vectors are optimized for "hyper-sparse" scenarios where the proportion of non-zero-elements is extremely low,
  * offering significant memory savings and potentially more efficient computational operations than equivalent dense
  * representations.
  *

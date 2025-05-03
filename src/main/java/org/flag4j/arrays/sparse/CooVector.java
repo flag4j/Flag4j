@@ -46,14 +46,10 @@ import org.flag4j.linalg.ops.sparse.coo.real.RealCooVectorOps;
 import org.flag4j.linalg.ops.sparse.coo.real.RealSparseEquals;
 import org.flag4j.linalg.ops.sparse.coo.real_complex.RealComplexSparseVectorOps;
 import org.flag4j.numbers.Complex128;
-import org.flag4j.util.ArrayConversions;
-import org.flag4j.util.StringUtils;
-import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.*;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.BinaryOperator;
 
 
@@ -66,7 +62,7 @@ import java.util.function.BinaryOperator;
  *
  * <p>Sparse vectors allow for the efficient storage of and ops on vectors that contain many zero values.
  *
- * <p>COO vectors are optimized for hyper-sparse vectors (i.e. vectors which contain almost all zeros relative to the size of the
+ * <p>COO vectors are optimized for hyper-sparse vectors (i.e., vectors which contain almost all zeros relative to the size of the
  * vector).
  *
  * <p>A sparse COO vector is stored as:
@@ -219,6 +215,27 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
+     * Constructs a sparse COO vector from index value pairs.
+     * @param shape The shape of this COO vector. Must be rank 1.
+     * @param indexDataMap A map containing the index value pairs of this vector.
+     */
+    public CooVector(Shape shape, HashMap<Integer, Double> indexDataMap) {
+        super(shape, new double[indexDataMap.size()]);
+        this.size = shape.get(0);
+        this.nnz = data.length;
+        indices = new int[nnz];
+
+        int loc = 0;
+        for(Map.Entry<Integer, Double> kv : indexDataMap.entrySet()) {
+            data[loc] = kv.getValue();
+            indices[loc++] = kv.getKey();
+        }
+
+        SparseValidation.validateCoo(this.size, this.nnz, this.indices);
+    }
+
+
+    /**
      * Constructor useful for avoiding parameter validation while constructing COO vectors.
      * @param shape Shape of the COO vector to construct.
      * @param data The non-zero data of this vector.
@@ -291,12 +308,12 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * Constructs a tensor of the same type as this tensor with the given the shape and data.
+     * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
      * @param data Entries of the tensor to construct.
      *
-     * @return A tensor of the same type as this tensor with the given the shape and data.
+     * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
     public CooVector makeLikeTensor(Shape shape, double[] data) {
@@ -305,13 +322,13 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * Constructs a vector of the same type as this tensor with the given the shape and data.
+     * Constructs a vector of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the vector to construct.
      * @param data Non-zero data of the vector to construct.
      * @param indices Indices of the non-zero values in this vector.
      *
-     * @return A vector of the same type as this tensor with the given the shape and data.
+     * @return A vector of the same type as this tensor with the given shape and data.
      */
     public CooVector makeLikeTensor(int size, double[] data, int[] indices) {
         return new CooVector(size, data, indices);
@@ -328,7 +345,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -354,7 +371,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -481,7 +498,8 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
     /**
      * Computes a unit vector in the same direction as this vector.
      *
-     * @return A unit vector with the same direction as this vector. If this vector is zeros, then an equivalently sized
+     * @return A unit vector with the same direction as this vector.
+     * If this vector is all zeros, then an equivalently sized
      * zero vector will be returned.
      */
     public CooVector normalize() {
@@ -502,6 +520,28 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
+     * Gets multiple items from this vector.
+     *
+     * @param indices The indices of each item to get from this vector.
+     *
+     * @return A vector containing the entries of this vector at the specified {@code indices}.
+     *
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @see #get(int)
+     * @see #getSlice(int, int)
+     */
+    @Override
+    public Vector getItems(int... indices) {
+        double[] itemData = new double[indices.length];
+
+        for(int i=0; i<indices.length; i++)
+            itemData[i] = get(indices[i]);
+
+        return new Vector(itemData);
+    }
+
+
+    /**
      * Gets the element of this vector at the specified index.
      *
      * @param target Index of the element to get within this vector.
@@ -513,6 +553,196 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
         ValidateParameters.validateTensorIndex(shape, target);
         int idx = Arrays.binarySearch(indices, target);
         return idx>=0 ? data[idx] : 0;
+    }
+
+
+    /**
+     * Gets a slice of this vector over the specified range of indices.
+     *
+     * @param startIdx Staring index of slice (inclusive).
+     * @param endIdx Ending index of slice (exclusive).
+     *
+     * @return A vector of length {@code endIdx - startIdx} whose entries are the elements of this vector
+     * over the specified range of indices [{@code startIdx}, {@code endIdx}).
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} or {@code endIdx - 1} are not within the bounds of this vector.
+     * @throws IllegalArgumentException  If {@code startIdx >= endIdx}.
+     * @see #get(int)
+     */
+    @Override
+    public CooVector getSlice(int startIdx, int endIdx) {
+        if (startIdx >= endIdx) {
+            throw new IllegalArgumentException("startIdx must be less than endIdx but got startIdx="
+                    + startIdx + " and endIdx=" + endIdx + ".");
+        }
+        ValidateParameters.validateTensorIndex(shape, startIdx);
+        ValidateParameters.validateTensorIndex(shape, endIdx-1);
+
+        int startLoc = Arrays.binarySearch(indices, startIdx);
+        if(startLoc < 0) startLoc = -startLoc - 1;
+
+        int endLoc = Arrays.binarySearch(indices, endIdx);
+        if(endLoc < 0) endLoc = -endLoc - 1;
+
+        int[] slicesIndices = Arrays.copyOfRange(indices, startLoc, endLoc);
+        ArrayUtils.shift(-startIdx, slicesIndices);
+
+        return new CooVector(endIdx-startIdx,
+                Arrays.copyOfRange(data, startLoc, endLoc),
+                slicesIndices);
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of another vector.
+     *
+     * @param values A vector containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return The operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values} does not fit within this vector when its first entry is placed
+     *                                   at {@code startIdx}.
+     */
+    @Override
+    public CooVector setSlice(CooVector values, int startIdx) {
+        int startLoc = Arrays.binarySearch(indices, startIdx);
+        int endLoc = Arrays.binarySearch(indices, startIdx + values.size);
+
+        if(startLoc < 0) startLoc = -startLoc - 1;
+        if(endLoc < 0) endLoc = -endLoc - 1;
+
+        int inVectorSliceSize = endLoc - startLoc;
+
+        double[] newValues = new double[values.nnz + nnz - inVectorSliceSize];
+        int[] newIndices = new int[newValues.length];
+
+        System.arraycopy(data, 0, newValues, 0, startLoc);
+        System.arraycopy(data, endLoc, newValues, startLoc, nnz - endLoc);
+        System.arraycopy(values.data, 0, newValues, startLoc + nnz - endLoc, values.nnz);
+
+        System.arraycopy(indices, 0, newIndices, 0, startLoc);
+        System.arraycopy(indices, endLoc, newIndices, startLoc, nnz - endLoc);
+        System.arraycopy(values.indices, 0, newIndices, startLoc + nnz - endLoc, values.nnz);
+
+        ArrayUtils.shift(startIdx, newIndices);
+
+        return new CooVector(shape, newValues, newIndices);
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of an array.
+     *
+     * @param values Array containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this tensor will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and this copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values} does not fit within this vector when its first entry is placed
+     *                                   at {@code startIdx}.
+     */
+    @Override
+    public CooVector setSlice(Double[] values, int startIdx) {
+        return setSlice(ArrayConversions.unbox(values, null), startIdx);
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of an array.
+     *
+     * @param values Array containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this tensor will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and this copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values} does not fit within this vector when its first entry is placed
+     *                                   at {@code startIdx}.
+     */
+    public CooVector setSlice(double[] values, int startIdx) {
+        int startLoc = Arrays.binarySearch(indices, startIdx);
+        int endLoc = Arrays.binarySearch(indices, startIdx + values.length);
+
+        if(startLoc < 0) startLoc = -startLoc - 1;
+        if(endLoc < 0) endLoc = -endLoc - 1;
+
+        int inVectorSliceSize = endLoc - startLoc;
+
+        double[] newValues = new double[values.length + nnz - inVectorSliceSize];
+        int[] newIndices = new int[newValues.length];
+        int[] valueIndices = ArrayBuilder.intRange(startIdx, startIdx + values.length);
+
+        System.arraycopy(data, 0, newValues, 0, startLoc);
+        System.arraycopy(data, endLoc, newValues, startLoc, nnz - endLoc);
+        System.arraycopy(values, 0, newValues, startLoc + nnz - endLoc, values.length);
+
+        System.arraycopy(indices, 0, newIndices, 0, startLoc);
+        System.arraycopy(indices, endLoc, newIndices, startLoc, nnz - endLoc);
+        System.arraycopy(valueIndices, 0, newIndices, startLoc + nnz - endLoc, values.length);
+
+        return new CooVector(shape, newValues, newIndices);
+    }
+
+
+    /**
+     * Sets multiple items of this vector.
+     *
+     * @param values New values it set the specified items to.
+     * @param indices The indices indicating where each value in {@code values} should be set within this vector.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values.length != indices.length}.
+     */
+    @Override
+    public CooVector setItems(Double[] values, int[] indices) {
+        ValidateParameters.ensureArrayLengthsEq(values.length, indices.length);
+
+        // Create a map with the vector's indices and values
+        HashMap<Integer, Double> valueMap = new HashMap<>(nnz);
+        for(int i=0; i<nnz; i++)
+            valueMap.put(indices[i], values[i]);
+
+        // Add or overwrite the vector's values.
+        for(int i=0, size=values.length; i<size; i++)
+            valueMap.put(indices[i], values[i]);
+
+        return new CooVector(shape, valueMap);
+    }
+
+
+    /**
+     * Sets multiple items of this vector.
+     *
+     * @param values New values it set the specified items to.
+     * @param indices The indices indicating where each value in {@code values} should be set within this vector.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values.length != indices.length}.
+     */
+    public CooVector setItems(double[] values, int[] indices) {
+        ValidateParameters.ensureArrayLengthsEq(values.length, indices.length);
+
+        // Create a map with the vector's indices and values
+        HashMap<Integer, Double> valueMap = new HashMap<>(nnz);
+        for(int i=0; i<nnz; i++)
+            valueMap.put(indices[i], values[i]);
+
+        // Add or overwrite the vector's values.
+        for(int i=0, size=values.length; i<size; i++)
+            valueMap.put(indices[i], values[i]);
+
+        return new CooVector(shape, valueMap);
     }
 
 
@@ -539,14 +769,14 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
             return false;
         } else if(this.size<=1) {
             return true;
-        } else if(this.isZeros() || b.isZeros()) {
+        } else if(this.isAllZeros() || b.isAllZeros()) {
             return true; // Any vector is parallel to a zero vector.
         } else {
             result = true;
             int sparseIndex = 0;
             double scale = 0;
 
-            // Find first non-zero entry in b and compute the scaling factor (we know there is at least one from else-if).
+            // Find the first non-zero entry in b and compute the scaling factor (we know there is at least one from else-if).
             for(int i=0; i<b.size; i++) {
                 if(b.data[i]!=0) {
                     scale = this.data[i]/b.data[this.indices[i]];
@@ -576,7 +806,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      *
      * @param b Vector to compare to this vector.
      *
-     * @return {@code true} if the vector {@code b} is perpendicular to this vector and the same size; {@code false} otherwise.
+     * @return {@code true} if the vector {@code b} is the same size and perpendicular to this vector; {@code false} otherwise.
      *
      * @see #isParallel(CooVector)
      * @implNote This method checks if the vector is perpendicular by checking if the inner product is essentially zero:
@@ -591,7 +821,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
     /**
      * Gets the length of a vector.
      *
-     * @return The length, i.e. the number of data, in this vector.
+     * @return The length, i.e., the number of data, in this vector.
      */
     @Override
     public int length() {
@@ -705,7 +935,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * Flattens tensor to single dimension while preserving order of data.
+     * Flattens tensor to a single dimension while preserving the order of data.
      *
      * @return The flattened tensor.
      *
@@ -871,7 +1101,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -888,19 +1118,19 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}. This will be a tensor of rank
      * {@code this.getRank() - 2} with the same shape as this tensor but with {@code axis1} and {@code axis2} removed.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than, this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal, or the tensor does not have the same length along the two axes.)
      */
     @Override
     public CooVector tensorTr(int axis1, int axis2) {
@@ -955,7 +1185,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()
@@ -1038,9 +1268,9 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * Computes the element-wise reciprocals of the non-zero values of this tensor.
+     * Computes the element-wise reciprocals of the non-zero values in this tensor.
      *
-     * @return A tensor containing the reciprocal elements of the non-zero values of this tensor.
+     * @return A tensor containing the reciprocal elements of the non-zero values in this tensor.
      */
     @Override
     public CooVector recip() {
@@ -1050,7 +1280,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * Adds a scalar value to each non-zero element of this tensor.
+     * Adds a scalar value to each non-zero-element of this tensor.
      *
      * @param b Value to add to each non-zero entry of this tensor.
      *
@@ -1131,7 +1361,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
     /**
      * Repeats a vector {@code n} times along a certain axis to create a matrix.
      *
-     * @param n Number of times to repeat vector.
+     * @param n Number of times to repeat a vector.
      * @param axis Axis along which to repeat vector:
      * <ul>
      *     <li>If {@code axis=0}, then the vector will be treated as a row vector and stacked vertically {@code n} times.</li>
@@ -1163,19 +1393,13 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * <p>
-     * Stacks two vectors along specified axis.
-     * 
+     * <p>Stacks two vectors along the specified axis.
      *
-     * <p>
-     * Stacking two vectors of length {@code n} along axis 0 stacks the vectors
+     * <p>Stacking two vectors of length {@code n} along axis 0 stacks the vectors
      * as if they were row vectors resulting in a {@code 2&times;n} matrix.
-     * 
      *
-     * <p>
-     * Stacking two vectors of length {@code n} along axis 1 stacks the vectors
+     * <p>Stacking two vectors of length {@code n} along axis 1 stacks the vectors
      * as if they were column vectors resulting in a {@code n&times;2} matrix.
-     * 
      *
      * @param b Vector to stack with this vector.
      * @param axis Axis along which to stack vectors. If {@code axis=0}, then vectors are stacked as if they are row
@@ -1185,7 +1409,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      *
      * @throws IllegalArgumentException If the number of data in this vector is different from the number of
      *                                  data in the vector {@code b}.
-     * @throws IllegalArgumentException If axis is not either 0 or 1.
+     * @throws IllegalArgumentException If {@code axis} is not either 0 or 1.
      */
     @Override
     public CooMatrix stack(CooVector b, int axis) {
@@ -1249,7 +1473,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      * Computes the element-wise multiplication between this vector and a real dense vector.
      * @param b The real dense vector in the element-wise product.
      * @return The element-wise product of this vector and {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If the two vectors are not the same size.
+     * @throws org.flag4j.util.exceptions.TensorShapeException If the two vectors have different sizes.
      */
     public CooVector elemMult(Vector b) {
         return RealDenseSparseVectorOps.elemMult(b, this);
@@ -1313,8 +1537,8 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
     /**
      * Coalesces this sparse COO vector. An uncoalesced vector is a sparse vector with multiple data for a single index. This
-     * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
-     * than summing is desired, use {@link #coalesce(BinaryOperator)}.
+     * method will ensure that each index only has one non-zero value by summing up duplicated data. 
+     * If another form of aggregation other than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse COO vector which is equivalent to this COO vector.
      * @see #coalesce(BinaryOperator)
      */
@@ -1383,7 +1607,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
                 result.append(String.format("%-" + width + "s", value));
             }
 
-            // Get last entry now
+            // Get the last entry now
             value = StringUtils.ValueOfRound(data[size-1], precision);
             width = padding + value.length();
             value = centering ? StringUtils.center(value, width) : value;

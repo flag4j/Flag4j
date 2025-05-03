@@ -33,10 +33,12 @@ import org.flag4j.numbers.Field;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
 
+import java.util.Arrays;
+
 /**
  * <p>The base class for all dense vectors whose data are {@link Semiring} elements.
  *
- * <p>Vectors are 1D tensors (i.e. rank 1 tensor).
+ * <p>Vectors are 1D tensors (i.e., rank 1 tensor).
  *
  * <p>AbstractDenseSemiringVector vectors have mutable {@link #data} but a fixed {@link #shape}.
  *
@@ -79,10 +81,10 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
 
 
     /**
-     * Constructs a matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * Constructs a matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      * @param shape Shape of the matrix to construct.
      * @param entries Entries of the matrix to construct.
-     * @return A matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * @return A matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      */
     protected abstract U makeLikeMatrix(Shape shape, V[] entries);
 
@@ -115,9 +117,8 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
      */
     @Override
     public V inner(T b) {
-        return dot(b); // For a semiring, simply delegate to dot product since semirings do not define conjugates.
+        return dot(b); // For a semiring, delegate to dot product since semirings do not define conjugates.
     }
-
 
 
     /**
@@ -142,7 +143,7 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
     /**
      * Gets the length of a vector. Same as {@link #size()}.
      *
-     * @return The length, i.e. the number of data, in this vector.
+     * @return The length, i.e., the number of data, in this vector.
      */
     @Override
     public int length() {
@@ -153,7 +154,7 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
     /**
      * Repeats a vector {@code n} times along a certain axis to create a matrix.
      *
-     * @param n Number of times to repeat vector. Must be positive.
+     * @param n Number of times to repeat this vector. Must be positive.
      * @param axis Axis along which to repeat vector. Must be either 1 or 0.
      * <ul>
      *     <li>If {@code axis=0}, then the vector will be treated as a row vector and stacked vertically {@code n} times.</li>
@@ -173,8 +174,7 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
 
     /**
      * <p>
-     * Stacks two vectors along specified axis.
-     * 
+     * Stacks two vectors along the specified axis.
      *
      * <p>
      * Stacking two vectors of length {@code n} along axis 0 stacks the vectors
@@ -194,7 +194,7 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
      *
      * @throws IllegalArgumentException If the number of data in this vector is different from the number of
      *                                  data in the vector {@code b}.
-     * @throws IllegalArgumentException If axis is not either 0 or 1.
+     * @throws IllegalArgumentException If {@code axis} is not either 0 or 1.
      */
     @Override
     public U stack(T b, int axis) {
@@ -266,15 +266,145 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
 
 
     /**
+     * Gets multiple items from this vector.
+     *
+     * @param indices The indices of each item to get from this vector.
+     *
+     * @return A vector containing the entries of this vector at the specified {@code indices}.
+     *
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @see #get(int)
+     * @see #getSlice(int, int)
+     */
+    @Override
+    public T getItems(int... indices) {
+       V[] itemData = makeEmptyDataArray(indices.length);
+
+        for(int i=0; i<indices.length; i++)
+            itemData[i] = data[indices[i]];
+
+        return makeLikeTensor(itemData);
+    }
+    
+
+    /**
      * Gets the element of this vector at the specified index.
-     *
      * @param idx Index of the element to get within this vector.
-     *
      * @return The element of this vector at index {@code idx}.
+     * @throws IndexOutOfBoundsException If {@code idx} is not within the bounds of this vector.
+     * @see #getSlice(int, int)
+     * @see #getItems(int...) 
      */
     @Override
     public V get(int idx) {
         ValidateParameters.validateTensorIndex(shape, idx);
         return data[idx];
+    }
+
+
+    /**
+     * Gets a slice of this vector over the specified range of indices.
+     *
+     * @param startIdx Staring index of slice (inclusive).
+     * @param endIdx Ending index of slice (exclusive).
+     *
+     * @return A vector of length {@code endIdx - startIdx} whose entries are the elements of this vector
+     * over the specified range of indices [{@code startIdx}, {@code endIdx}).
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} or {@code endIdx - 1} are not within the bounds of this vector.
+     * @throws IllegalArgumentException  If {@code startIdx >= endIdx}.
+     * @see #get(int)
+     * @see #getItems(int...)
+     */
+    @Override
+    public T getSlice(int startIdx, int endIdx) {
+        if (startIdx > endIdx) {
+            throw new IllegalArgumentException("startIdx must be less than endIdx but got startIdx="
+                    + startIdx + " and endIdx=" + endIdx + ".");
+        }
+        ValidateParameters.validateTensorIndex(shape, startIdx);
+        ValidateParameters.validateTensorIndex(shape, endIdx-1);
+
+        return makeLikeTensor(Arrays.copyOfRange(data, startIdx, endIdx));
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of another vector.
+     *
+     * @param values A vector containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this tensor will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and this copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values} does not fit within this vector when its first entry is placed
+     *                                   at {@code startIdx}.
+     */
+    @Override
+    public T setSlice(T values, int startIdx) {
+        return setSlice(values.data, startIdx);
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of an array.
+     *
+     * @param values Array containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this tensor will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and this copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values} does not fit within this vector when its first entry is placed
+     *                                   at {@code startIdx}.
+     */
+    @Override
+    public T setSlice(V[] values, int startIdx) {
+        ValidateParameters.validateVectorSlice(startIdx, values.length + startIdx, size);
+        System.arraycopy(values, 0, data, startIdx , values.length);
+        return (T) this;
+    }
+
+
+    /**
+     * Sets multiple items of this vector.
+     *
+     * @param values Vector containing new values it set the specified items to.
+     * @param indices The indices indicating where each value in {@code values} should be set within this vector.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values.length != indices.length}.
+     */
+    public T setItems(T values, int[] indices) {
+        return setItems(values.data, indices);
+    }
+
+
+    /**
+     * Sets multiple items of this vector.
+     *
+     * @param values New values it set the specified items to.
+     * @param indices The indices indicating where each value in {@code values} should be set within this vector.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values.length != indices.length}.
+     */
+    @Override
+    public T setItems(V[] values, int[] indices) {
+        ValidateParameters.ensureArrayLengthsEq(values.length, indices.length);
+
+        for(int i=0; i<indices.length; i++)
+            data[indices[i]] = values[i];
+
+        return (T) this;
     }
 }

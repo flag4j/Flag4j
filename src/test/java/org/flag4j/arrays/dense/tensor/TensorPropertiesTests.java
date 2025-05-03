@@ -23,7 +23,7 @@ class TensorPropertiesTests {
         shape = new Shape(1, 1024, 1, 9, 4, 1, 1);
         A = new Tensor(shape, entries);
 
-        assertTrue(A.isZeros());
+        assertTrue(A.isAllZeros());
 
         // ----------------------- sub-case 2 -----------------------
         entries = new double[1024*4*9];
@@ -31,21 +31,21 @@ class TensorPropertiesTests {
         shape = new Shape(1, 1024, 1, 9, 4, 1, 1);
         A = new Tensor(shape, entries);
 
-        assertFalse(A.isZeros());
+        assertFalse(A.isAllZeros());
 
         // ----------------------- sub-case 3 -----------------------
         entries = new double[]{0, 0.0, -0.0};
         shape = new Shape(3);
         A = new Tensor(shape, entries);
 
-        assertTrue(A.isZeros());
+        assertTrue(A.isAllZeros());
 
         // ----------------------- sub-case 4 -----------------------
         entries = new double[]{0, 0.0, -0.0, 1.34};
         shape = new Shape(4);
         A = new Tensor(shape, entries);
 
-        assertFalse(A.isZeros());
+        assertFalse(A.isAllZeros());
     }
 
 
@@ -57,7 +57,7 @@ class TensorPropertiesTests {
         shape = new Shape(1, 1024, 1, 9, 4, 1, 1);
         A = new Tensor(shape, entries);
 
-        assertTrue(A.isOnes());
+        assertTrue(A.isAllOnes());
 
         // ----------------------- sub-case 2 -----------------------
         entries = new double[1024*4*9];
@@ -66,21 +66,21 @@ class TensorPropertiesTests {
         shape = new Shape(1, 1024, 1, 9, 4, 1, 1);
         A = new Tensor(shape, entries);
 
-        assertFalse(A.isOnes());
+        assertFalse(A.isAllOnes());
 
         // ----------------------- sub-case 3 -----------------------
         entries = new double[]{1, 1.0, 1};
         shape = new Shape(3);
         A = new Tensor(shape, entries);
 
-        assertTrue(A.isOnes());
+        assertTrue(A.isAllOnes());
 
         // ----------------------- sub-case 4 -----------------------
         entries = new double[]{1, 1.0, -1};
         shape = new Shape(3);
         A = new Tensor(shape, entries);
 
-        assertFalse(A.isOnes());
+        assertFalse(A.isAllOnes());
     }
 
 
@@ -92,7 +92,7 @@ class TensorPropertiesTests {
         shape = new Shape(1, 1024, 1, 9, 4, 1, 1);
         A = new Tensor(shape, entries);
 
-        assertTrue(A.isPos());
+        assertTrue(A.isAllPos());
 
         // ----------------------- sub-case 2 -----------------------
         entries = new double[1024*4*9];
@@ -101,21 +101,21 @@ class TensorPropertiesTests {
         shape = new Shape(1, 1024, 1, 9, 4, 1, 1);
         A = new Tensor(shape, entries);
 
-        assertFalse(A.isPos());
+        assertFalse(A.isAllPos());
 
         // ----------------------- sub-case 3 -----------------------
         entries = new double[]{144, 1, 1.31415, 512.234345};
         shape = new Shape(4);
         A = new Tensor(shape, entries);
 
-        assertTrue(A.isPos());
+        assertTrue(A.isAllPos());
 
         // ----------------------- sub-case 4 -----------------------
         entries = new double[]{1, 1.0, -1};
         shape = new Shape(3);
         A = new Tensor(shape, entries);
 
-        assertFalse(A.isPos());
+        assertFalse(A.isAllPos());
     }
 
 
@@ -127,7 +127,7 @@ class TensorPropertiesTests {
         shape = new Shape(1, 1024, 1, 9, 4, 1, 1);
         A = new Tensor(shape, entries);
 
-        assertTrue(A.isNeg());
+        assertTrue(A.isAllNeg());
 
         // ----------------------- sub-case 2 -----------------------
         entries = new double[1024*4*9];
@@ -136,20 +136,20 @@ class TensorPropertiesTests {
         shape = new Shape(1, 1024, 1, 9, 4, 1, 1);
         A = new Tensor(shape, entries);
 
-        assertFalse(A.isNeg());
+        assertFalse(A.isAllNeg());
 
         // ----------------------- sub-case 3 -----------------------
         entries = new double[]{-144, -1, -1.31415, -512.234345};
         shape = new Shape(4);
         A = new Tensor(shape, entries);
 
-        assertTrue(A.isNeg());
+        assertTrue(A.isAllNeg());
 
         // ----------------------- sub-case 4 -----------------------
         entries = new double[]{1, -1.0, -1};
         shape = new Shape(3);
         A = new Tensor(shape, entries);
 
-        assertFalse(A.isNeg());
+        assertFalse(A.isAllNeg());
     }
 }

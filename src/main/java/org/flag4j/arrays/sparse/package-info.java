@@ -33,7 +33,7 @@
  * These benefits depend on the degree of sparsity and the algorithms used.
  *
  * <p>It should be noted that certain ops on sparse arrays can result in catastrophic loss of sparsity significantly increasing
- * the number of non-zero elements, resulting in higher memory consumption and degraded performance. These effects can be
+ * the number of non-zero-elements, resulting in higher memory consumption and degraded performance. These effects can be
  * particularly problematic for algorithms optimized for sparse data.
  * Such ops will be documented and should be used with care.
  *

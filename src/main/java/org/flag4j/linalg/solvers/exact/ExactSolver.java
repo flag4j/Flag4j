@@ -41,7 +41,7 @@ import static org.flag4j.linalg.decompositions.lu.LU.Pivoting.PARTIAL;
 /**
  * <p>Solves a well determined system of equations <span class="latex-inline">Ax = b</span> or 
  * <span class="latex-inline">AX = B</span> in an exact sense.
- * <p>If the system is not well determined, i.e. <span class="latex-inline">A</span> is not square or not full rank, then use a
+ * <p>If the system is not well determined, i.e., <span class="latex-inline">A</span> is not square or not full rank, then use a
  * {@link org.flag4j.linalg.solvers.lstsq.LstsqSolver least-squares solver}.
  *
  * <h2>Usage:</h2>
@@ -213,7 +213,7 @@ public abstract class ExactSolver<T extends MatrixMixin<T, ?, U, ?>,
      * {@link #decompose(MatrixMixin)} on the same solver instance.
      *
      * @param A Coefficient matrix, <span class="latex-inline">A</span>, in the linear system. Must be square and have full rank
-     *          (i.e. all rows, or equivalently columns, must be linearly independent).
+     *          (i.e., all rows, or equivalently columns, must be linearly independent).
      * @param b Vector of constants, <span class="latex-inline">b</span>, in the linear system.
      * @return The solution to <span class="latex-inline">x</span> in the linear system <span class="latex-inline">Ax = b</span>.
      * @throws IllegalArgumentException If the number of columns in {@code A} is not equal to the number of data in
@@ -240,7 +240,7 @@ public abstract class ExactSolver<T extends MatrixMixin<T, ?, U, ?>,
      * {@link #decompose(MatrixMixin)} on the same solver instance.
      *
      * @param A Coefficient matrix, <span class="latex-inline">A</span>, in the linear system. Must be square and have full rank
-     *          (i.e. all rows, or equivalently columns, must be linearly independent).
+     *          (i.e., all rows, or equivalently columns, must be linearly independent).
      * @param B Matrix of constants, <span class="latex-inline">B</span>, in the linear system.
      * @return The solution to <span class="latex-inline">x</span> in the linear system <span class="latex-inline">AX = B</span>.
      * @throws IllegalArgumentException If the number of columns in {@code A} is not equal to the number of rows in

@@ -150,7 +150,7 @@ public class Complex128 implements Field<Complex128> {
 
     /**
      * Constructs a complex number with specified real component and zero imaginary component.
-     * @param re Real component of complex number.
+     * @param re Real component of the complex number.
      */
     public Complex128(double re) {
         this.re = re;
@@ -160,7 +160,7 @@ public class Complex128 implements Field<Complex128> {
 
     /**
      * Constructs a complex number with specified complex and real components.
-     * @param re Real component of complex number.
+     * @param re Real component of the complex number.
      * @param im Imaginary component of complex number.
      */
     public Complex128(double re, double im) {
@@ -171,7 +171,7 @@ public class Complex128 implements Field<Complex128> {
 
     /**
      * Constructs a complex number from a string of the form {@code "a +/- bi"} where {@code a} and {@code b} are real values where
-     * either may be omitted. i.e. {@code "a", "bi", "a +/- i"}, and {@code "i"} are all also valid. Excess white space is ignored.
+     * either may be omitted. i.e., {@code "a", "bi", "a +/- i"}, and {@code "i"} are all also valid. Excess white space is ignored.
      * @param num The string representation of a complex number. Must be parsable by
      * {@link ComplexNumberParser#parseNumberToComplex128(String)}.
      * @throws Flag4jParsingException If {@code num} cannot be parsed.
@@ -205,7 +205,7 @@ public class Complex128 implements Field<Complex128> {
     /**
      * Checks if an object is equal to this Field element.
      * @param b Object to compare to this Field element.
-     * @return True if the objects are the same or are both {@link Complex128}'s and have equal real and imaginary parts.
+     * @return True if the objects are the same or are both {@link Complex128}s and have equal real and imaginary parts.
      */
     @Override
     public boolean equals(Object b) {
@@ -235,8 +235,8 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Checks if this complex number has zero imaginary part.
-     * @return True if this complex number has zero imaginary part. False otherwise.
+     * Checks if this complex number has zero imaginary parts.
+     * @return True if this complex number has zero imaginary parts. False otherwise.
      * @see #isComplex()
      * @see #isImaginary()
      */
@@ -269,7 +269,7 @@ public class Complex128 implements Field<Complex128> {
 
     /**
      * Sums two elements of this field (associative and commutative).
-     * @param b Second field element in sum.
+     * @param b Second field element in the sum.
      * @return The sum of this element and {@code b}.
      */
     @Override
@@ -279,8 +279,8 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Sums an elements of this field with a real number.
-     * @param b Second element in sum.
+     * Sums an element of this field with a real number.
+     * @param b Second element in a sum.
      * @return The sum of this element and {@code b}.
      */
     public Complex128 add(double b) {
@@ -310,7 +310,7 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Computes the sum of all data of specified array.
+     * Computes the sum of all data in the specified array.
      * @param values Values to compute product of.
      * @return The sum of all values in {@code values}.
      */
@@ -329,7 +329,7 @@ public class Complex128 implements Field<Complex128> {
 
     /**
      * Multiplies two elements of this field (associative and commutative).
-     * @param b Second field element in product.
+     * @param b Second field element in the product.
      * @return The product of this field element and {@code b}.
      */
     @Override
@@ -395,7 +395,7 @@ public class Complex128 implements Field<Complex128> {
 
     /**
      * Multiplies an element of this field with a real number.
-     * @param b Second element in product.
+     * @param b Second element in the product.
      * @return The product of this field element and {@code b}.
      */
     @Override
@@ -430,7 +430,7 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Computes the quotient of an elements of this field and a real number.
+     * Computes the quotient of an element in this field and a real number.
      * @param b Second element in quotient.
      * @return The quotient of this field element and {@code b}.
      */
@@ -517,15 +517,14 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Compute a raised to the power of {@code b}.
-     * and returns a {@link Complex128}.
+     * Compute {@code a} to the power of {@code b}.
      * @param a The base.
      * @param b The exponent.
-     * @return a to the power of {@code b}.
+     * @return {@code a} to the power of {@code b}.
      */
     public static Complex128 pow(double a, Complex128 b) {
         if(a < 0) {
-            // Wrap base as complex number and compute using logarithms to avoid NaN in Math.pow method.
+            // Wrap base as a complex number and compute using logarithms to avoid NaN in Math.pow method.
             return pow(new Complex128(a), b);
         } else if(b.im == 0) {
             // b is a real number.
@@ -540,11 +539,11 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Compute a raised to the power of b.
+     * Compute {@code a} to the power of {@code b}.
      * and returns a {@link Complex128}.
      * @param a The base.
      * @param b The exponent.
-     * @return a to the power of b.
+     * @return {@code a} to the power of {@code b}.
      */
     public static Complex128 pow(Complex128 a, Complex128 b) {
         if(a.im == 0 && a.re >= 0) {
@@ -620,7 +619,8 @@ public class Complex128 implements Field<Complex128> {
     /**
      * Computes the complex logarithm base 10 of a complex number. Please note, this is <b>NOT</b> the natural logarithm.
      * If the complex natural logarithm is desired see {@link #ln(double)}. To specify a base, see {@link #log(double, Complex128)}
-     * or {@link #log(Complex128, Complex128)}. If the argument is non-negative, then this function is equivalent to {@link Math#log(double)}.
+     * or {@link #log(Complex128, Complex128)}. If the argument is non-negative, then this function is
+     * equivalent to {@link Math#log(double)}.
      * @param num Input to the complex logarithm base 10 function.
      * @return The principle value of the complex logarithm base 10 for the given input.
      */
@@ -656,10 +656,10 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Computes the complex logarithm, with specified base, of a complex number.
+     * Computes the complex logarithm, with a specified base, of a complex number.
      * @param base Base of the logarithm.
-     * @param num Input to the complex logarithm function with specified base.
-     * @return The principle value of the complex logarithm, with specified base, for the given input.
+     * @param num Input to the complex logarithm function with the specified {@code base}.
+     * @return The principle value of the complex logarithm, with the specified {@code base}, for the given input.
      */
     public static Complex128 log(double base, double num) {
         return Complex128.log(new Complex128(base), new Complex128(num));
@@ -667,10 +667,10 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Computes the complex logarithm, with specified base, of a complex number.
+     * Computes the complex logarithm, with the specified base, of a complex number.
      * @param base Base of the logarithm.
-     * @param num Input to the complex logarithm function with specified base.
-     * @return The principle value of the complex logarithm, with specified base, for the given input.
+     * @param num Input to the complex logarithm function with the specified {@code base}.
+     * @return The principle value of the complex logarithm, with the specified {@code base}, for the given input.
      */
     public static Complex128 log(double base, Complex128 num) {
         return Complex128.log(new Complex128(base), num);
@@ -678,10 +678,10 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Computes the complex logarithm, with specified base, of a complex number.
+     * Computes the complex logarithm, with the specified base, of a complex number.
      * @param base Base of the logarithm.
-     * @param num Input to the complex logarithm function with specified base.
-     * @return The principle value of the complex logarithm, with specified base, for the given input.
+     * @param num Input to the complex logarithm function with the specified {@code base}.
+     * @return The principle value of the complex logarithm, with the specified {@code base}, for the given input.
      */
     public static Complex128 log(Complex128 base, Complex128 num) {
         // Using the change of base formula
@@ -734,26 +734,14 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Computes the 2 argument arc-tangent function for a complex number. That is, for a complex number a+bi, atan2(b, a)
-     * is computed. This method wraps {@link Math#atan2(double, double)}. <br>
-     * @param num The input to the atan2 function.
-     * @return The output of the atan2 function given the specified input. If the complex number is zero, then {@link Double#NaN}
-     * is returned.
-     */
-    public static double atan2(Complex128 num) {
-        return Math.atan2(num.im, num.re);
-    }
-
-
-    /**
      * Computes the complex argument function for a complex number.
-     * is computed. This method is equivalent to {@link Complex128#atan2(Complex128)}. <br>
+     * This method is equivalent to {@link Math#atan2(double, double) atan2(this.im, this.re)}.
      * @param num The input to the atan2 function.
      * @return The output of the atan2 function given the specified input. If the complex number is zero, then {@link Double#NaN}
      * is returned.
      */
     public static double arg(Complex128 num) {
-        return atan2(num);
+        return Math.atan2(num.im, num.re);
     }
 
 
@@ -883,7 +871,7 @@ public class Complex128 implements Field<Complex128> {
      * return zero.
      *
      * @param value Value to evaluate the signum function at.
-     * @return If the number is zero then this function returns zero. Otherwise, returns the number divided by its magnitude.
+     * @return If the number is zero, then this function returns zero. Otherwise, returns the number divided by its magnitude.
      */
     public static Complex128 sgn(Complex128 value) {
         if(value.equals(ZERO)) {
@@ -910,7 +898,7 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Rounds number to specified number of decimal places. If the number is complex,
+     * Rounds number to the specified number of decimal places. If the number is complex,
      * both the real and imaginary parts will be rounded.
      *
      * @param n Number to round.
@@ -1217,7 +1205,7 @@ public class Complex128 implements Field<Complex128> {
      * <p>NOTE: It may be possible for this method to return true and {@link #mag()} to return {@link Double#POSITIVE_INFINITY},
      * {@link Double#NEGATIVE_INFINITY}, or {@link Double#NaN} if both components are finite but computing the magnitude explicitly
      * results in an overflow. 
-     * @return True if this field element is finite in magnitude. False otherwise (i.e. infinite, NaN etc.).
+     * @return True if this field element is finite in magnitude. False otherwise (i.e., infinite, NaN etc.).
      */
     public boolean isFinite() {
         // If both components are finite then the complex number will have finite magnitude.
@@ -1227,7 +1215,7 @@ public class Complex128 implements Field<Complex128> {
 
     /**
      * Checks if this field element is infinite in magnitude.
-     * @return True if this field element is infinite in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is infinite in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     public boolean isInfinite() {
         // If either components is infinite then the complex number will have infinite magnitude.
@@ -1237,7 +1225,7 @@ public class Complex128 implements Field<Complex128> {
 
     /**
      * Checks if this field element is NaN in magnitude.
-     * @return True if this field element is NaN in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is NaN in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     @Override
     public boolean isNaN() {
@@ -1249,7 +1237,7 @@ public class Complex128 implements Field<Complex128> {
      * Gets the real component of this complex number.
      * @return The real component of this complex number.
      */
-    public double re() {
+    public double getReal() {
         return re;
     }
 
@@ -1258,7 +1246,7 @@ public class Complex128 implements Field<Complex128> {
      * Gets the imaginary component of this complex number.
      * @return The imaginary component of this complex number.
      */
-    public double im() {
+    public double getImag() {
         return im;
     }
 

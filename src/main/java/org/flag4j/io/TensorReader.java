@@ -24,13 +24,13 @@
 
 package org.flag4j.io;
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.Pair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.AbstractTensor;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.Matrix;
+import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 
 import java.io.*;

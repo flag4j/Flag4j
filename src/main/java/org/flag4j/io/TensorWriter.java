@@ -111,7 +111,7 @@ public final class TensorWriter {
      * @param fileName Path of the file to write to.
      * @param src Matrix to write to file.
      * @param comments Comments to prepend to file. Each comment will be written to its own line.
-     * May be {@code null} or length zero (i.e. nothing passed); in this case the parameter will be ignored.
+     * May be {@code null} or length zero (i.e., nothing passed); in this case the parameter will be ignored.
      * @throws IOException If an I/O error occurs.
      * @throws IllegalArgumentException If {@code src} is not a supported matrix type for writing to a
      * Matrix Market Exchange Format file.

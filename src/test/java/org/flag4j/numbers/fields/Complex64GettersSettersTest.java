@@ -17,7 +17,7 @@ class Complex64GettersSettersTest {
         expReFloat = 692.13f;
         expImFloat = -9673.134f;
 
-        Assertions.assertEquals(expReFloat, num.re());
-        Assertions.assertEquals(expImFloat, num.im());
+        Assertions.assertEquals(expReFloat, num.getReal());
+        Assertions.assertEquals(expImFloat, num.getImag());
     }
 }

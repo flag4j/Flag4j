@@ -42,7 +42,7 @@ import java.math.RoundingMode;
  * <h2>Features:</h2>
  * <ul>
  *   <li>Generate sparse matrices and tensors with specified sparsity levels.</li>
- *   <li>Support for uniform and annular (complex valued) distributions for non-zero values.</li>
+ *   <li>Support for uniform and annular (complex-valued) distributions for non-zero values.</li>
  *   <li>Create symmetric sparse matrices.</li>
  * </ul>
  *
@@ -194,7 +194,7 @@ public class RandomSparseTensor {
      * @param cols Number of columns in the sparse matrix.
      * @param min Minimum value for random non-zero values in the sparse matrix.
      * @param max Maximum value for random non-zero values
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      *                 a value in {@code [0.0, 1.0]}.
      * @return A sparse matrix with sparsity approximately equal to {@code sparsity} filled with random values uniformly
      * distributed in {@code [min, max)}.
@@ -210,7 +210,7 @@ public class RandomSparseTensor {
      * @param shape Shape of the sparse matrix to generate.
      * @param min Minimum value for random non-zero values in the sparse matrix.
      * @param max Maximum value for random non-zero values
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      *                 a value in {@code [0.0, 1.0]}.
      * @return A sparse matrix with sparsity approximately equal to {@code sparsity} filled with random values uniformly
      * distributed in {@code [min, max)}.
@@ -266,7 +266,7 @@ public class RandomSparseTensor {
      * @param cols Number of columns in the sparse matrix.
      * @param min Minimum value for random non-zero values in the sparse matrix.
      * @param max Maximum value for random non-zero values
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      *                 a value in {@code [0.0, 1.0]}.
      * @return A sparse matrix with sparsity approximately equal to {@code sparsity} filled with random values uniformly
      * distributed in {@code [min, max)}.
@@ -282,7 +282,7 @@ public class RandomSparseTensor {
      * @param shape Shape of the sparse matrix to generate.
      * @param min Minimum value for random non-zero values in the sparse matrix.
      * @param max Maximum value for random non-zero values
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      *                 a value in {@code [0.0, 1.0]}.
      * @return A sparse matrix with sparsity approximately equal to {@code sparsity} filled with random values uniformly
      * distributed in {@code [min, max)}.
@@ -336,7 +336,7 @@ public class RandomSparseTensor {
      * @param size Number of rows and columns in the resulting matrix (the result will be a square matrix).
      * @param min Minimum value in uniform distribution.
      * @param max Maximum value in uniform distribution.
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      * a value in {@code [0.0, 1.0]}. The true sparsity may slightly differ to ensure the matrix is symmetric.
      * @return A symmetric matrix filled with pseudorandom values uniformly distributed in {@code [min, max)}.
      * @throws IllegalArgumentException If {@code sparsity} is not in the range {@code [0.0, 1.0]}.
@@ -372,7 +372,7 @@ public class RandomSparseTensor {
      * @param size Number of rows and columns in the resulting matrix (the result will be a square matrix).
      * @param min Minimum value in uniform distribution (inclusive).
      * @param max Maximum value in uniform distribution (exclusive).
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      * a value in {@code [0.0, 1.0]}. The true sparsity may slightly differ to ensure the matrix is symmetric.
      * @return A symmetric matrix filled with pseudorandom values uniformly distributed in {@code [min, max)}.
      * @throws IllegalArgumentException If {@code sparsity} is not in the range {@code [0.0, 1.0]}.
@@ -384,13 +384,13 @@ public class RandomSparseTensor {
 
     /**
      * Generates a random sparse matrix with the specified sparsity. The non-zero values will have
-     * a uniform distribution in the annulus (i.e. washer) with inner radius {@code min} (inclusive) and outer radius
+     * a uniform distribution in the annulus (i.e., washer) with inner radius {@code min} (inclusive) and outer radius
      * {@code max} (exclusive). Values will be uniformly distributed throughout the matrix.
      * @param rows Number of rows in the sparse matrix.
      * @param cols Number of columns in the sparse matrix.
      * @param min Inner radius of the annular distribution (inclusive).
      * @param max Outer radius of the annular distribution (exclusive).
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      *                 a value in {@code [0.0, 1.0]}.
      * @return A sparse matrix with sparsity approximately equal to {@code sparsity} filled with random values uniformly
      * distributed in an annulus.
@@ -402,12 +402,12 @@ public class RandomSparseTensor {
 
     /**
      * Generates a random sparse matrix with the specified sparsity. The non-zero values will have
-     * a uniform distribution in the annulus (i.e. washer) with inner radius {@code min} (inclusive) and outer radius
+     * a uniform distribution in the annulus (i.e., washer) with inner radius {@code min} (inclusive) and outer radius
      * {@code max} (exclusive). Values will be uniformly distributed throughout the matrix.
      * @param shape Shape of the sparse matrix to generate.
      * @param min Inner radius of the annular distribution (inclusive).
      * @param max Outer radius of the annular distribution (exclusive).
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      *                 a value in {@code [0.0, 1.0]}.
      * @return A sparse matrix with sparsity approximately equal to {@code sparsity} filled with random values uniformly
      * distributed in an annulus.
@@ -420,7 +420,7 @@ public class RandomSparseTensor {
 
     /**
      * Generates a random sparse matrix with the specified number of non-zero data. The non-zero values will have
-     * a uniform distribution in the annulus (i.e. washer) with inner radius {@code min} (inclusive) and outer radius
+     * a uniform distribution in the annulus (i.e., washer) with inner radius {@code min} (inclusive) and outer radius
      * {@code max} (exclusive). Values will be uniformly distributed throughout the matrix.
      * @param rows Number of rows in the random sparse matrix.
      * @param cols Number of columns in the random sparse matrix.
@@ -437,7 +437,7 @@ public class RandomSparseTensor {
 
     /**
      * Generates a random sparse matrix with the specified number of non-zero data. The non-zero values will have
-     * a uniform distribution in the annulus (i.e. washer) with inner radius {@code min} (inclusive) and outer radius
+     * a uniform distribution in the annulus (i.e., washer) with inner radius {@code min} (inclusive) and outer radius
      * {@code max} (exclusive). Non-zero values will be uniformly distributed throughout the matrix.
      * @param shape Shape of the sparse matrix to generate.
      * @param min Inner radius of the annular distribution (inclusive).
@@ -463,7 +463,7 @@ public class RandomSparseTensor {
      * @param size Number of rows and columns in the resulting matrix (the result will be a square matrix).
      * @param min Inner radius of the annulus (inclusive).
      * @param max Outer radius of the annulus (exclusive).
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      * a value in {@code [0.0, 1.0]}. The true sparsity may slightly differ to ensure the matrix is symmetric.
      * @return A symmetric matrix filled with pseudorandom values uniformly distributed in {@code [min, max)}.
      * @throws IllegalArgumentException If {@code sparsity} is not in the range {@code [0.0, 1.0]}.
@@ -500,7 +500,7 @@ public class RandomSparseTensor {
      * @param size Number of rows and columns in the resulting matrix (the result will be a square matrix).
      * @param min Inner radius of the annulus (inclusive).
      * @param max Outer radius of the annulus (exclusive).
-     * @param sparsity Desired sparsity of the resulting matrix. i.e. the percent of values which are zero. Must be
+     * @param sparsity Desired sparsity of the resulting matrix. i.e., the percent of values which are zero. Must be
      * a value in {@code [0.0, 1.0]}. The true sparsity may slightly differ to ensure the matrix is symmetric.
      * @return A symmetric matrix filled with pseudorandom values uniformly distributed in {@code [min, max)}.
      * @throws IllegalArgumentException If {@code sparsity} is not in the range {@code [0.0, 1.0]}.

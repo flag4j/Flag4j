@@ -25,6 +25,7 @@
 package org.flag4j.arrays.backend.semiring_arrays;
 
 
+import org.flag4j.arrays.IntPair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
 import org.flag4j.arrays.SparseVectorData;
@@ -59,7 +60,7 @@ import static org.flag4j.linalg.ops.sparse.SparseUtils.copyRanges;
  *
  * <p>Sparse matrices allow for the efficient storage of and ops on matrices that contain many zero values.
  *
- * <p>COO matrices are optimized for hyper-sparse matrices (i.e. matrices which contain almost all zeros relative to the size of the
+ * <p>COO matrices are optimized for hyper-sparse matrices (i.e., matrices which contain almost all zeros relative to the size of the
  * matrix).
  *
  * <h2>COO Representation:</h2>
@@ -73,7 +74,7 @@ import static org.flag4j.linalg.ops.sparse.SparseUtils.copyRanges;
  * </ul>
  *
  * <p>Note: many ops assume that the data of the COO matrix are sorted lexicographically by the row and column indices.
- * (i.e.) by row indices first then column indices. However, this is not explicitly verified but any ops implemented in this
+ * (i.e.) by row indices first then column indices. However, this is not explicitly verified, but any ops implemented in this
  * class will preserve the lexicographical sorting.
  *
  * <p>If indices need to be sorted, call {@link #sortIndices()}.
@@ -91,11 +92,11 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         implements SemiringTensorMixin<T, U, W>, MatrixMixin<T, U, V, W> {
 
     /**
-     * The zero element for the semiring that this tensor's elements belong to.
+     * The zero-element for the semiring that this tensor's elements belong to.
      */
     protected W zeroElement;
     /**
-     * Row indices for non-zero value of this sparse COO matrix.
+     * Row indices for the non-zero value of this sparse COO matrix.
      */
     public final int[] rowIndices;
     /**
@@ -138,7 +139,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         numRows = shape.get(0);
         numCols = shape.get(1);
 
-        // Attempt to set the zero element for the semiring.
+        // Attempt to set the zero-element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
     }
 
@@ -162,7 +163,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         numRows = shape.get(0);
         numCols = shape.get(1);
 
-        // Attempt to set the zero element for the semiring.
+        // Attempt to set the zero-element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
     }
 
@@ -221,8 +222,8 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
 
     /**
-     * Gets the zero element for the semiring of this tensor.
-     * @return The zero element for the semiring of this tensor. If it could not be determined during construction of this object
+     * Gets the zero-element for the semiring of this tensor.
+     * @return The zero-element for the semiring of this tensor. If it could not be determined during construction of this object
      * and has not been set explicitly by {@link #setZeroElement(Semiring)} then {@code null} will be returned.
      *
      * @see #setZeroElement(Semiring)
@@ -234,7 +235,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
     /**
      * Gets the sparsity of this matrix as a decimal percentage.
-     * That is, the percentage of data in this matrix that are zero.
+     * That is, the percentage of data in this matrix that is zero.
      * @return The sparsity of this matrix as a decimal percentage.
      * @see #getDensity()
      */
@@ -270,8 +271,8 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
 
     /**
-     * Sets the zero element for the semiring of this tensor.
-     * @param zeroElement The zero element of this tensor.
+     * Sets the zero-element for the semiring of this tensor.
+     * @param zeroElement The zero-element of this tensor.
      * @throws IllegalArgumentException If {@code zeroElement} is not an additive identity for the semiring.
      *
      * @see #getZeroElement()
@@ -291,12 +292,12 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * @param index Indices of the element to get.
      *
      * @return The element of this tensor at the specified index. If there is a non-zero value with the specified index, that value
-     * will be returned. If there is no non-zero value at the specified index than the zero element will attempt to be
-     * returned (i.e. the additive identity of the semiring). However, if the zero element could not be determined during
+     * will be returned. If there is no non-zero value at the specified index, then the zero-element will attempt to be
+     * returned (i.e., the additive identity of the semiring). However, if the zero-element could not be determined during
      * construction or if it was not set with {@link #setZeroElement(Semiring)} then
      * {@code null} will be returned.
      *
-     * @throws ArrayIndexOutOfBoundsException If any index are not within this tensor.
+     * @throws ArrayIndexOutOfBoundsException If any index is not within this tensor.
      */
     @Override
     public W get(int... index) {
@@ -343,7 +344,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         if(idx < 0) {
             idx = -idx - 1;
 
-            // No non-zero element with these indices exists. Insert new value.
+            // No non-zero-element with these indices exists. Insert new value.
             destEntries = makeEmptyDataArray(data.length + 1);
             destRowIndices = new int[data.length + 1];
             destColIndices = new int[data.length + 1];
@@ -353,7 +354,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
                     data, rowIndices, colIndices, idx,
                     destEntries, destRowIndices, destColIndices);
         } else {
-            // Value with these indices exists. Simply update value.
+            // Value with these indices exists. Simply update the value.
             destEntries = Arrays.copyOf(data, data.length);
             destEntries[idx] = value;
             destRowIndices = rowIndices.clone();
@@ -367,11 +368,11 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     /**
      * Sets a specified row of this matrix to a vector.
      *
-     * @param row Vector to replace specified row in this matrix.
+     * @param row Vector containing data to replace the specified row in this matrix.
      * @param rowIdx Index of the row to set.
      *
-     * @return If this matrix is dense, the row set operation is done in place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new row and returned.
+     * @return If this matrix is dense, the row set operation is done in-place and a reference to this matrix is returned.
+     * If this matrix is sparse, a copy will be created with the new row and returned.
      */
     @Override
     public T setRow(V row, int rowIdx) {
@@ -390,7 +391,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      *
      * @return A copy of this matrix with the specified column set to {@code col}.
      *
-     * @throws IllegalArgumentException If the {@code col} vector has a different length than the number of rows of this matrix.
+     * @throws IllegalArgumentException If the {@code col} vector has a different length than the number of rows in this matrix.
      * @throws IndexOutOfBoundsException If {@code colIndex < 0 || colIndex >= this.numCols}.
      */
     public T setCol(V col, int colIndex) {
@@ -493,7 +494,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -554,7 +555,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     /**
      * Gets the element of this matrix at this specified {@code row} and {@code col}.
      *
-     * @param row Row index of the item to get from this matrix.
+     * @param row The row index of the item to get from this matrix.
      * @param col Column index of the item to get from this matrix.
      *
      * @return The element of this matrix at the specified index.
@@ -598,7 +599,8 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     @Override
     public boolean isTriU() {
         for(int i = 0; i< data.length; i++)
-            if(rowIndices[i] > colIndices[i] && !data[i].isZero()) return false; // Then non-zero entry is not in upper triangle.
+            if(rowIndices[i] > colIndices[i] && !data[i].isZero())
+                return false; // Then a non-zero entry is not in the upper triangle.
 
         return true;
     }
@@ -616,7 +618,8 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     @Override
     public boolean isTriL() {
         for(int i = 0; i< data.length; i++)
-            if(rowIndices[i] < colIndices[i] && !data[i].isZero()) return false; // Then non-zero entry is not in lower triangle.
+            if(rowIndices[i] < colIndices[i] && !data[i].isZero())
+                return false; // Then the non-zero entry is not in the lower triangle.
 
         return true;
     }
@@ -752,7 +755,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
 
     /**
-     * Swaps specified rows in the matrix. This is done in place.
+     * Swaps specified rows in the matrix. This is done in-place.
      *
      * @param rowIndex1 Index of the first row to swap.
      * @param rowIndex2 Index of the second row to swap.
@@ -769,7 +772,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
 
     /**
-     * Swaps specified columns in the matrix. This is done in place.
+     * Swaps specified columns in the matrix. This is done in-place.
      *
      * @param colIndex1 Index of the first column to swap.
      * @param colIndex2 Index of the second column to swap.
@@ -820,7 +823,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
 
     /**
-     * Gets a range of a row of this matrix.
+     * Gets a range of a row in this matrix.
      *
      * @param rowIdx The index of the row to get.
      * @param start The staring column of the row range to get (inclusive).
@@ -842,7 +845,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
 
     /**
-     * Gets a range of a column of this matrix.
+     * Gets a range of a column in this matrix.
      *
      * @param colIdx The index of the column to get.
      * @param start The staring row of the column range to get (inclusive).
@@ -900,8 +903,11 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         Shape shape = new Shape(numRows-1, numCols);
 
         // Find the start and end index within the data array which have the given row index.
-        int[] startEnd = SparseElementSearch.matrixFindRowStartEnd(rowIndices, rowIndex);
-        int size = data.length - (startEnd[1]-startEnd[0]);
+        IntPair startEnd = SparseElementSearch.matrixFindRowStartEnd(rowIndices, rowIndex);
+        int start = startEnd.first();
+        int end = startEnd.second();
+
+        int size = data.length - (end - start);
 
         // Initialize arrays.
         W[] entries = makeEmptyDataArray(size);
@@ -910,8 +916,8 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         copyRanges(this.data, this.rowIndices, this.colIndices, entries, rowIndices, colIndices, startEnd);
 
         // Shift all row indices occurring after removed row.
-        if (startEnd[0] > 0) {
-            for(int i=startEnd[0], length=rowIndices.length; i<rowIndices.length; i++)
+        if (start > 0) {
+            for(int i=start, length=rowIndices.length; i<rowIndices.length; i++)
                 rowIndices[i]--;
         } else {
             for(int i=0, length=rowIndices.length; i<rowIndices.length; i++) {
@@ -943,7 +949,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         List<Integer> newColIndices = new ArrayList<>(nnz);
 
         int j = 0; // Points into the rowIdxs array
-        int removeCount = 0; // Tracks number of removed rows.
+        int removeCount = 0; // Tracks the number of removed rows.
 
         for (int i = 0; i < nnz; i++) {
             int oldRow = rowIndices[i];
@@ -989,7 +995,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
         for(int i = 0; i< data.length; i++) {
             if(colIndices[i] != colIndex) {
-                // Then entry is not in the specified column, so remove it.
+                // Then the entry is not in the specified column, so remove it.
                 destEntries.add(data[i]);
                 destRowIndices.add(rowIndices[i]);
 
@@ -1054,7 +1060,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * @return A copy of this matrix with the given slice set to the specified values.
      *
      * @throws IndexOutOfBoundsException If rowStart or colStart are not within the matrix.
-     * @throws IllegalArgumentException  If the values slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException  If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                   fit completely within this matrix.
      */
     @Override
@@ -1093,7 +1099,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * Extracts the upper-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for upper-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the upper-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -1116,7 +1122,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * Extracts the lower-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for lower-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the lower-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -1160,7 +1166,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     /**
      * Finds the minimum value in this tensor. If this tensor is complex, then this method finds the smallest value in magnitude.
      *
-     * @return The minimum value (smallest in magnitude for a complex valued tensor) in this tensor.
+     * @return The minimum value (smallest in magnitude for a complex-valued tensor) in this tensor.
      */
     @Override
     public W min() {
@@ -1171,7 +1177,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     /**
      * Finds the maximum value in this tensor. If this tensor is complex, then this method finds the largest value in magnitude.
      *
-     * @return The maximum value (largest in magnitude for a complex valued tensor) in this tensor.
+     * @return The maximum value (largest in magnitude for a complex-valued tensor) in this tensor.
      */
     @Override
     public W max() {
@@ -1225,7 +1231,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -1246,18 +1252,18 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     @Override
     public T tensorTr(int axis1, int axis2) {
@@ -1321,8 +1327,8 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
 
     /**
-     * Converts this sparse CSR matrix to an equivalent vector. If this matrix is not a row or column vector it will be flattened
-     * before conversion.
+     * Converts this sparse CSR matrix to an equivalent vector.
+     * If this matrix is not a row or column vector, it will be flattened before conversion.
      * @return A vector equivalent to this CSR matrix.
      */
     public V toVector() {
@@ -1337,7 +1343,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     /**
      * Coalesces this sparse COO matrix. An uncoalesced matrix is a sparse matrix with multiple data for a single index. This
      * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
-     * than summing is desired, use {@link #coalesce(BinaryOperator)}.
+     * than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse COO matrix which is equivalent to this COO matrix.
      * @see #coalesce(BinaryOperator) 
      */

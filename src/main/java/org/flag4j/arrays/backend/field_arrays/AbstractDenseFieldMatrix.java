@@ -135,11 +135,11 @@ public abstract class AbstractDenseFieldMatrix<T extends AbstractDenseFieldMatri
      *
      * @return {@code true} if this tensor only contains finite values; {@code false} otherwise.
      *
-     * @see #isInfinite()
-     * @see #isNaN()
+     * @see #containsInf()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isFinite() {
+    public boolean isAllFinite() {
         return FieldOps.isFinite(data);
     }
 
@@ -149,11 +149,11 @@ public abstract class AbstractDenseFieldMatrix<T extends AbstractDenseFieldMatri
      *
      * @return {@code true} if this tensor contains at least one infinite value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isNaN()
+     * @see #isAllFinite()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isInfinite() {
+    public boolean containsInf() {
         return FieldOps.isInfinite(data);
     }
 
@@ -163,20 +163,20 @@ public abstract class AbstractDenseFieldMatrix<T extends AbstractDenseFieldMatri
      *
      * @return {@code true} if this tensor contains at least one NaN value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isInfinite()
+     * @see #isAllFinite()
+     * @see #containsInf()
      */
     @Override
-    public boolean isNaN() {
+    public boolean containsNaN() {
         return FieldOps.isInfinite(data);
     }
 
 
     /**
-     * Checks if all data of this matrix are 'close' as defined below. Custom tolerances may be specified using
+     * Checks if all data of this matrix are "close" as defined below. Custom tolerances may be specified using
      * {@link #allClose(AbstractDenseFieldMatrix, double, double)}.
      * @param b Second tensor in the comparison.
-     * @return True if both tensors have the same shape and all data are 'close' element-wise, i.e.
+     * @return True if both tensors have the same shape and all data are "close" element-wise, i.e.
      * elements {@code x} and {@code y} at the same positions in the two tensors respectively and satisfy
      * {@code |x-y| <= (1E-08 + 1E-05*|y|)}. Otherwise, returns false.
      * @see #allClose(AbstractDenseFieldMatrix, double, double) (AbstractDenseFieldTensor, double, double)
@@ -187,9 +187,9 @@ public abstract class AbstractDenseFieldMatrix<T extends AbstractDenseFieldMatri
 
 
     /**
-     * Checks if all data of this matrix are 'close' as defined below.
+     * Checks if all data of this matrix are "close" as defined below.
      * @param b Second tensor in the comparison.
-     * @return True if both tensors have the same length and all data are 'close' element-wise, i.e.
+     * @return True if both tensors have the same length and all data are "close" element-wise, i.e.
      * elements {@code x} and {@code y} at the same positions in the two tensors respectively and satisfy
      * {@code |x-y| <= (absTol + relTol*|y|)}. Otherwise, returns false.
      * @see #allClose(AbstractDenseFieldMatrix)

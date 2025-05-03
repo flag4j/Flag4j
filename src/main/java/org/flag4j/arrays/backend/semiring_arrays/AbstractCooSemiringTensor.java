@@ -51,7 +51,7 @@ import java.util.function.BinaryOperator;
  *
  * <p>Sparse tensors allow for the efficient storage of and ops on tensors that contain many zero values.
  *
- * <p>COO tensors are optimized for hyper-sparse tensors (i.e. tensors which contain almost all zeros relative to the size of the
+ * <p>COO tensors are optimized for hyper-sparse tensors (i.e., tensors which contain almost all zeros relative to the size of the
  * tensor).
  *
  * <p>A sparse COO tensor is stored as:
@@ -60,7 +60,7 @@ import java.util.function.BinaryOperator;
  *     <li>The non-zero {@link #data} of the tensor. All other data in the tensor are
  *     assumed to be zero. Zero value can also explicitly be stored in {@link #data}.</li>
  *     <li><p>The {@link #indices} of the non-zero value in the sparse tensor. Many ops assume indices to be sorted in a
- *     row-major format (i.e. last index increased fastest) but often this is not explicitly verified.
+ *     row-major format (i.e., last index increased fastest) but often this is not explicitly verified.
  *
  *     <p>The {@link #indices} array has shape {@code (nnz, rank)} where {@link #nnz} is the number of non-zero data in this
  *     sparse tensor and {@code rank} is the {@link #getRank() tensor rank} of the tensor. This means {@code indices[i]} is the nD
@@ -79,7 +79,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
         implements SemiringTensorMixin<T, T, V> {
 
     /**
-     * The zero element for the semiring that this tensor's elements belong to.
+     * The zero-element for the semiring that this tensor's elements belong to.
      */
     protected V zeroElement;
     /**
@@ -113,7 +113,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
         this.indices = indices;
         this.nnz = data.length;
 
-        // Attempt to set the zero element for the semiring.
+        // Attempt to set the zero-element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
     }
 
@@ -131,7 +131,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
         this.indices = indices;
         this.nnz = data.length;
 
-        // Attempt to set the zero element for the semiring.
+        // Attempt to set the zero-element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
     }
 
@@ -176,8 +176,8 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
 
 
     /**
-     * Gets the zero element for the field of this tensor.
-     * @return The zero element for the field of this tensor. If it could not be determined during construction of this object
+     * Gets the zero-element for this tenor's field.
+     * @return The zero-element for this tenor's field. If it could not be determined during construction of this object
      * and has not been set explicitly by {@link #setZeroElement(Semiring)} then {@code null} will be returned.
      */
     public V getZeroElement() {
@@ -186,8 +186,8 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
 
 
     /**
-     * Sets the zero element for the field of this tensor.
-     * @param zeroElement The zero element of this tensor.
+     * Sets the zero-element for this tenor's field.
+     * @param zeroElement The zero-element of this tensor.
      * @throws IllegalArgumentException If {@code zeroElement} is not an additive identity for the semiring.
      */
     public void setZeroElement(V zeroElement) {
@@ -245,7 +245,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -290,18 +290,18 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     @Override
     public T tensorTr(int axis1, int axis2) {
@@ -334,7 +334,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -434,8 +434,8 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      * @param target Index of the element to get.
      *
      * @return The element of this tensor at the specified index. If there is a non-zero value with the specified index, that value
-     * will be returned. If there is no non-zero value at the specified index than the zero element will attempt to be
-     * returned (i.e. the additive identity of the semiring). However, if the zero element could not be determined during
+     * will be returned. If there is no non-zero value at the specified index than the zero-element will attempt to be
+     * returned (i.e., the additive identity of the semiring). However, if the zero-element could not be determined during
      * construction or if it was not set with {@link #setZeroElement(Semiring)} then
      * {@code null} will be returned.
      *
@@ -561,7 +561,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
     /**
      * Coalesces this sparse COO tensor. An uncoalesced tensor is a sparse tensor with multiple data for a single index. This
      * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
-     * than summing is desired, use {@link #coalesce(BinaryOperator)}.
+     * than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse COO tensor which is equivalent to this COO tensor.
      * @see #coalesce(BinaryOperator)
      */

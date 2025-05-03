@@ -29,7 +29,7 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.rng.RandomComplex;
 
 /**
- * <p>A uniform distribution over an annulus (i.e. washer) on the complex plane.
+ * <p>A uniform distribution over an annulus (i.e., washer) on the complex plane.
  *
  * <p>A uniform distribution over an annulus is defined over the region between two concentric circles
  * with inner radius <span class="latex-replace">r<sub>inner</sub></span> <!-- LATEX: \( r_{\text{inner}} \) -->

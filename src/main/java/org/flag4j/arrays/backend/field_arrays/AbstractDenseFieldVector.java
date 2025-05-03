@@ -27,6 +27,7 @@ package org.flag4j.arrays.backend.field_arrays;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.VectorMixin;
 import org.flag4j.arrays.backend.ring_arrays.AbstractDenseRingVector;
+import org.flag4j.arrays.backend.semiring_arrays.AbstractDenseSemiringVector;
 import org.flag4j.arrays.dense.Vector;
 import org.flag4j.linalg.VectorNorms;
 import org.flag4j.linalg.ops.common.field_ops.FieldOps;
@@ -36,12 +37,13 @@ import org.flag4j.linalg.ops.dense.field_ops.DenseFieldElemDiv;
 import org.flag4j.linalg.ops.dense.field_ops.DenseFieldVectorOps;
 import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.TensorShapeException;
 
 
 /**
  * <p>The base class for all dense vectors whose data are {@link Field} elements.
  *
- * <p>Vectors are 1D tensors (i.e. rank 1 tensor).
+ * <p>Vectors are 1D tensors (i.e., rank 1 tensor).
  *
  * <p>AbstractDenseFieldVectors have mutable {@link #data} but a fixed {@link #shape}.
  *
@@ -73,7 +75,7 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()
@@ -94,7 +96,7 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
      * @return The inner product between this vector and the vector {@code b}.
      *
      * @throws IllegalArgumentException If this vector and vector {@code b} do not have the same number of data.
-     * @see #dot(AbstractDenseFieldVector)
+     * @see #dot(AbstractDenseSemiringVector) 
      */
     @Override
     public V inner(T b) {
@@ -199,6 +201,21 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
 
 
     /**
+     * Computes the element-wise division between two tensors and stores the result in this tensor.
+     *
+     * @param b The denominator tensor in the element-wise quotient.
+     *
+     * @throws TensorShapeException If this tensor and {@code b}s shapes are not equal.
+     */
+    public void divEq(T b) {
+        ValidateParameters.ensureEqualShape(shape, b.shape);
+
+        for(int i=0; i<size; i++)
+            data[i] = data[i].div(b.data[i]);
+    }
+
+
+    /**
      * Computes the element-wise square root of this tensor.
      *
      * @return The element-wise square root of this tensor.
@@ -212,15 +229,69 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
 
 
     /**
+     * Checks if another vector is parallel to this vector.
+     *
+     * @param b Vector to compare to this vector.
+     *
+     * @return {@code true} if the vector {@code b} is parallel to this vector and the same size; {@code false} otherwise.
+     *
+     * @see #isPerp(AbstractDenseFieldVector)
+     */
+    public boolean isParallel(T b) {
+        if(this.size!=b.size) {
+            return false;
+        } else if(this.size==1) {
+            return true;
+        } else if(this.isAllZeros() || b.isAllZeros()) {
+            return true; // Any vector is parallel to the zero vector.
+        } else {
+            V scale = getZeroElement();
+
+            // Find the first non-zero entry of b to compute the scaling factor.
+            for(int i=0, size=b.size; i<size; i++) {
+                if(!b.data[i].isZero()) {
+                    scale = this.data[i].div(b.data[i]);
+                    break;
+                }
+            }
+
+            // Ensure all data of b are the approximately same scalar multiple of the data in this vector.
+            for(int i=0, size=this.size; i<size; i++) {
+                if (!RingProperties.isClose(b.data[i].mult(scale), this.data[i]))
+                    return false;
+            }
+        }
+
+        return true; // If we make it to here, the vectors must be parallel.
+    }
+
+
+    /**
+     * Checks if another vector is perpendicular to this vector.
+     *
+     * @param b Vector to compare to this vector.
+     *
+     * @return {@code true} if the vector {@code b} is the same size and perpendicular to this vector; {@code false} otherwise.
+     *
+     * @see #isParallel(Vector)
+     */
+    public boolean isPerp(T b) {
+        return this.size != b.size
+                ? false
+                : this.inner(b).isZero();
+    }
+
+
+    /**
      * Checks if this tensor only contains finite values.
      *
      * @return {@code true} if this tensor only contains finite values; {@code false} otherwise.
      *
-     * @see #isInfinite()
-     * @see #isNaN()
+     * @see #containsInf()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isFinite() {
+    public boolean isAllFinite() {
         return FieldOps.isFinite(data);
     }
 
@@ -230,11 +301,11 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
      *
      * @return {@code true} if this tensor contains at least one infinite value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isNaN()
+     * @see #isAllFinite()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isInfinite() {
+    public boolean containsInf() {
         return FieldOps.isInfinite(data);
     }
 
@@ -244,20 +315,21 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
      *
      * @return {@code true} if this tensor contains at least one NaN value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isInfinite()
+     * @see #isAllFinite()
+     * @see #containsInf()
      */
     @Override
-    public boolean isNaN() {
+    public boolean containsNaN() {
         return FieldOps.isInfinite(data);
     }
 
 
     /**
-     * Checks if all data of this matrix are 'close' as defined below. Custom tolerances may be specified using
+     * Checks if all data of this matrix are "close" as defined below.
+     * Custom tolerances may be specified using
      * {@link #allClose(AbstractDenseFieldVector, double, double)}.
      * @param b Second tensor in the comparison.
-     * @return True if both tensors have the same shape and all data are 'close' element-wise, i.e.
+     * @return True if both tensors have the same shape and all data are "close" element-wise, i.e.,
      * elements {@code x} and {@code y} at the same positions in the two tensors respectively and satisfy
      * {@code |x-y| <= (1E-08 + 1E-05*|y|)}. Otherwise, returns false.
      * @see #allClose(AbstractDenseFieldVector, double, double) 
@@ -268,9 +340,9 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
 
 
     /**
-     * Checks if all data of this matrix are 'close' as defined below.
+     * Checks if all data of this matrix are "close" as defined below.
      * @param b Second tensor in the comparison.
-     * @return True if both tensors have the same length and all data are 'close' element-wise, i.e.
+     * @return True if both tensors have the same length and all data are "close" element-wise, i.e.,
      * elements {@code x} and {@code y} at the same positions in the two tensors respectively and satisfy
      * {@code |x-y| <= (absTol + relTol*|y|)}. Otherwise, returns false.
      * @see #allClose(AbstractDenseFieldVector)

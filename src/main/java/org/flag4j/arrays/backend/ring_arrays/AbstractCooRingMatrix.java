@@ -42,7 +42,7 @@ import org.flag4j.util.exceptions.TensorShapeException;
  *
  * <p>Sparse matrices allow for the efficient storage of and ops on matrices that contain many zero values.
  *
- * <p>COO matrices are optimized for hyper-sparse matrices (i.e. matrices which contain almost all zeros relative to the size of the
+ * <p>COO matrices are optimized for hyper-sparse matrices (i.e., matrices which contain almost all zeros relative to the size of the
  * matrix).
  *
  * <h2>COO Representation:</h2>
@@ -178,7 +178,7 @@ public abstract class AbstractCooRingMatrix<T extends AbstractCooRingMatrix<T, U
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()

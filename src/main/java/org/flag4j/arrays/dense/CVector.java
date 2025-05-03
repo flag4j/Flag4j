@@ -65,8 +65,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * @param entries Entries of this vector.
      */
     public CVector(Complex64... entries) {
-        super(new Shape(entries.length), ArrayConversions.toComplex128(entries, null));
-        setZeroElement(Complex128.ZERO);
+        this(new Shape(entries.length), ArrayConversions.toComplex128(entries, null));
     }
 
 
@@ -76,8 +75,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * @param entries Entries of this vector.
      */
     public CVector(double... entries) {
-        super(new Shape(entries.length), ArrayConversions.toComplex128(entries, null));
-        setZeroElement(Complex128.ZERO);
+        this(new Shape(entries.length), ArrayConversions.toComplex128(entries, null));
     }
 
 
@@ -87,8 +85,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * @param entries Entries of this vector.
      */
     public CVector(int... entries) {
-        super(new Shape(entries.length), ArrayConversions.toComplex128(entries, null));
-        setZeroElement(Complex128.ZERO);
+        this(new Shape(entries.length), ArrayConversions.toComplex128(entries, null));
     }
 
 
@@ -98,9 +95,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * @param fillValue The value to fill the vector with.
      */
     public CVector(int size, Complex128 fillValue) {
-        super(new Shape(size), new Complex128[size]);
-        Arrays.fill(data, fillValue);
-        setZeroElement(Complex128.ZERO);
+        this(new Shape(size), fillValue);
     }
 
 
@@ -110,9 +105,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * @param fillValue The value to fill the vector with.
      */
     public CVector(int size, Complex64 fillValue) {
-        super(new Shape(size), new Complex128[size]);
-        Arrays.fill(data, new Complex128(fillValue));
-        setZeroElement(Complex128.ZERO);
+        this(new Shape(size), fillValue);
     }
 
 
@@ -122,9 +115,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * @param fillValue The value to fill the vector with.
      */
     public CVector(int size, double fillValue) {
-        super(new Shape(size), new Complex128[size]);
-        Arrays.fill(data, new Complex128(fillValue));
-        setZeroElement(Complex128.ZERO);
+        this(new Shape(size), fillValue);
     }
 
 
@@ -133,9 +124,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * @param size The size of the vector.
      */
     public CVector(int size) {
-        super(new Shape(size), new Complex128[size]);
-        Arrays.fill(data, Complex128.ZERO);
-        setZeroElement(Complex128.ZERO);
+        this(new Shape(size), Complex128.ZERO);
     }
 
 
@@ -144,8 +133,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * @param vector Vector to create a copy of.
      */
     public CVector(CVector vector) {
-        super(vector.shape, vector.data.clone());
-        setZeroElement(Complex128.ZERO);
+        this(vector.shape, vector.data.clone());
     }
 
 
@@ -167,9 +155,47 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * @param shape Shape of the zero vector to construct. Must be rank 1.
      */
     public CVector(Shape shape) {
+        this(shape, Complex128.ZERO);
+    }
+
+
+    /**
+     * Constructs an empty vector with size 0.
+     */
+    public CVector() {
+        super(new Shape(0), new Complex128[]{});
+    }
+
+
+    /**
+     * Constructs a vector of the specified {@code shape} filled with {@code fillValue}.
+     * @param shape Shape of the vector. Must be rank 1.
+     * @param fillValue Value to fill this vector with.
+     */
+    public CVector(Shape shape, double fillValue) {
+        this(shape, new Complex128(fillValue));
+    }
+
+
+    /**
+     * Constructs a vector of the specified {@code shape} filled with {@code fillValue}.
+     * @param shape Shape of the vector. Must be rank 1.
+     * @param fillValue Value to fill this vector with.
+     */
+    public CVector(Shape shape, Complex64 fillValue) {
+        this(shape, new Complex128(fillValue));
+    }
+
+
+    /**
+     * Constructs a vector of the specified {@code shape} filled with {@code fillValue}.
+     * @param shape Shape of the vector. Must be rank 1.
+     * @param fillValue Value to fill this vector with.
+     */
+    public CVector(Shape shape, Complex128 fillValue) {
         super(shape, new Complex128[shape.get(0)]);
+        Arrays.fill(data, fillValue);
         setZeroElement(Complex128.ZERO);
-        Arrays.fill(data, Complex128.ZERO);
     }
 
 
@@ -194,7 +220,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      * Constructs an empty vector with the specified size. The data of the resulting vector will be
      * all be {@code null}.
      * @param size The size of the vector to construct.
-     * @return An empty vector (i.e. filled with {@code null} values) with the specified size.
+     * @return An empty vector (i.e., filled with {@code null} values) with the specified size.
      */
     public static CVector getEmpty(int size) {
         return new CVector(new Complex128[size]);
@@ -213,12 +239,12 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
 
 
     /**
-     * Constructs a matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * Constructs a matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      *
      * @param shape Shape of the matrix to construct.
      * @param entries Entries of the matrix to construct.
      *
-     * @return A matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * @return A matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      */
     @Override
     public CMatrix makeLikeMatrix(Shape shape, Complex128[] entries) {
@@ -328,7 +354,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication between two tensors of the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -342,7 +368,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication between two tensors of the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -358,7 +384,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication between two tensors of the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -425,7 +451,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
 
 
     /**
-     * Constructs a sparse COO tensor which is of a similar type as this dense tensor.
+     * Constructs a sparse COO tensor, which is of a similar type as this dense tensor.
      *
      * @param shape Shape of the COO tensor.
      * @param entries Non-zero data of the COO tensor.
@@ -435,7 +461,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      */
     @Override
     protected CooCVector makeLikeCooTensor(Shape shape, Complex128[] entries, int[][] indices) {
-        // Check for case when vector contains no non-zero data.
+        // Check for the case when the vector contains no non-zero data.
         return (indices.length == 0)
                 ? CooCVector.unsafeMake(shape, entries, new int[0])
                 : CooCVector.unsafeMake(shape, entries, indices[0]);
@@ -460,7 +486,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      *
      * @param estimatedSparsity Estimated sparsity of the tensor. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern, it is better to underestimate the sparsity.
      *
      * @return A sparse COO tensor that is equivalent to this dense tensor.
      *
@@ -494,7 +520,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
     /**
      * Converts this complex vector to a real vector. This conversion is done by taking the real component of each entry and
      * ignoring the imaginary component.
-     * @return A real vector containing the real components of the data of this vector.
+     * @return A real vector containing the real components of all elements in this vector.
      */
     public Vector toReal() {
         return new Vector(shape, Complex128Ops.toReal(data));
@@ -511,8 +537,8 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
 
 
     /**
-     * Checks if any entry within this vector has non-zero imaginary component.
-     * @return {@code true} if any entry of this vector has a non-zero imaginary component.
+     * Checks if any entry within this vector has a non-zero imaginary part.
+     * @return {@code true} if any entry of this vector has a non-zero imaginary part.
      */
     public boolean isComplex() {
         return Complex128Ops.isComplex(data);
@@ -521,7 +547,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
 
     /**
      * Rounds all data within this vector to the specified precision.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A new vector containing the data of this vector rounded to the specified precision.
      */
     public CVector round(int precision) {
@@ -530,8 +556,8 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
 
 
     /**
-     * Sets all elements of this vector to zero if they are within {@code tol} of zero. This is <em>not</em> done in place.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * Sets all elements of this vector to zero if they are within {@code tol} of zero. This is <em>not</em> done in-place.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A copy of this vector with all data within {@code tol} of zero set to zero.
      */
     public CVector roundToZero(double tolerance) {
@@ -549,16 +575,18 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
 
 
     /**
-     * <p>Computes the vector cross product between two vectors.
+     * <p>Computes the vector cross-product between two vectors.
      *
-     * <p><b>Note</b>: Formally speaking, the vector cross product cannot be
-     * defined for complex vectors while maintaining the same properties as vectors from &#8477<sup>3</sup> (e.g. orthogonality).
-     * However, it can still be defined algebraically in the same way as it is for real vectors though it may fail to satisfy
-     * properties of a true cross product. This is algebraic definition is what this method implements.
+     * <p><b>Note</b>: Formally speaking, the vector cross-product cannot be
+     * defined for complex vectors while maintaining the same properties as vectors from &#8477<sup>3</sup>
+     * (e.g., orthogonality).
+     * However, it can still be defined algebraically in the same way as it is for real vectors,
+     * though it may fail to satisfy the properties of a true cross-product.
+     * This is algebraic definition is what this method implements.
      *
-     * @param b Second vector in the cross product.
+     * @param b Second vector in the cross-product.
      *
-     * @return The result of the vector cross product between this vector and {@code b}.
+     * @return The result of the vector cross-product between this vector and {@code b}.
      *
      * @throws IllegalArgumentException If either this vector or {@code b} do not have exactly 3 data.
      */
@@ -569,15 +597,12 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
         }
 
         Complex128[] dest = new Complex128[3];
+        Complex128 v0 = data[0]; Complex128 v1 = data[1]; Complex128 v2 = data[2];
+        Complex128 bv0 = b.data[0]; Complex128 bv1 = b.data[1]; Complex128 bv2 = b.data[2];
 
-        dest[0] = data[1].mult(b.data[2])
-                .sub(data[2].mult(b.data[1]));
-        dest[1] = data[2].mult(b.data[0])
-                .sub(data[0].mult(b.data[2]));
-        dest[2] = data[0].mult(b.data[1])
-                .sub(data[1].mult(b.data[0]));
-
-        return new CVector(dest);
+        return new CVector(v1.mult(bv2).sub(v2.mult(bv1)),
+                v2.mult(bv0).sub(v0.mult(bv2)),
+                v0.mult(bv1).sub(v1.mult(bv0)));
     }
 
 
@@ -650,7 +675,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
             result.append(String.format("%-" + width + "s", value));
         }
 
-        // Get last entry now
+        // Get the last entry now
         value = StringUtils.ValueOfRound(data[size-1], precision);
         width = padding + value.length();
         value = centering ? StringUtils.center(value, width) : value;

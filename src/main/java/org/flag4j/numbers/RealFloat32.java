@@ -361,7 +361,7 @@ public class RealFloat32 implements Field<RealFloat32> {
     /**
      * Checks if this field element is finite in magnitude.
      *
-     * @return True if this field element is finite in magnitude. False otherwise (i.e. infinite, NaN etc.).
+     * @return True if this field element is finite in magnitude. False otherwise (i.e., infinite, NaN etc.).
      */
     @Override
     public boolean isFinite() {
@@ -372,7 +372,7 @@ public class RealFloat32 implements Field<RealFloat32> {
     /**
      * Checks if this field element is infinite in magnitude.
      *
-     * @return True if this field element is infinite in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is infinite in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     @Override
     public boolean isInfinite() {
@@ -383,7 +383,7 @@ public class RealFloat32 implements Field<RealFloat32> {
     /**
      * Checks if this field element is NaN in magnitude.
      *
-     * @return True if this field element is NaN in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is NaN in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     @Override
     public boolean isNaN() {
@@ -483,7 +483,7 @@ public class RealFloat32 implements Field<RealFloat32> {
     /**
      * Checks if an object is equal to this Field element.
      * @param b Object to compare to this Field element.
-     * @return True if the objects are the same or are both {@link RealFloat32}'s and have equal values.
+     * @return True if the objects are the same or are both {@link RealFloat32}s and have equal values.
      */
     @Override
     public boolean equals(Object b) {

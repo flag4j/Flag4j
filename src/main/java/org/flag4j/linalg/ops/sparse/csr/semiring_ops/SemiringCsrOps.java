@@ -42,7 +42,7 @@ public final class SemiringCsrOps {
      * @param rowPointers Non-zero row pointers of the CSR matrix.
      * @param colIndices Non-zero column indices of the CSR matrix.
      * @return The trace of the CSR matrix. If there are no non-zero data in this matrix along the principle diagonal, this method
-     * will attempt to return the zero element of the semiring. However, if {@code data.length == 0} then this cannot be
+     * will attempt to return the zero-element of the semiring. However, if {@code data.length == 0} then this cannot be
      * determined and {@code null} will be returned instead.
      */
     public static <T extends Semiring<T>> T trace(T[] entries, int[] rowPointers, int[] colIndices) {

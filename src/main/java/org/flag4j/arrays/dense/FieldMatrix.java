@@ -64,7 +64,7 @@ import java.util.Arrays;
  * // Performing matrix multiplication with the transpose of the matrix.
  * FieldMatrix<Complex128> result = matrix.mult(matrix.T());
  *
- * // Performing matrix conjugate transpose (i.e. Hermitian transpose).
+ * // Performing matrix conjugate transpose (i.e., Hermitian transpose).
  * FieldMatrix<Complex128> conjugateTranspose = matrix.H();  // May not be supported for all field types.
  *
  * // Checking if the matrix is upper triangular.
@@ -182,12 +182,12 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
 
 
     /**
-     * Constructs a tensor of the same type as this tensor with the given the shape and data.
+     * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
      * @param entries Entries of the tensor to construct.
      *
-     * @return A tensor of the same type as this tensor with the given the shape and data.
+     * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
     public FieldMatrix<T> makeLikeTensor(Shape shape, T[] entries) {
@@ -245,7 +245,7 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
      *
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      *
      * @return A sparse COO matrix that is equivalent to this dense matrix.
      *
@@ -286,7 +286,7 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
      *
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      *
      * @return A sparse CSR matrix that is equivalent to this dense matrix.
      *
@@ -327,7 +327,7 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
      *
      * @param size Size of the identity matrix.
      * @param fieldValue Value of field to create identity matrix for.
-     * @return An identity matrix of specified size.
+     * @return An identity matrix of the specified size.
      * @throws IllegalArgumentException If the specified size is less than 1.
      * @see #I(Shape, Field)
      * @see #I(int, int, Field)
@@ -344,7 +344,7 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
      * @param numRows Number of rows in the identity-like matrix.
      * @param numCols Number of columns in the identity-like matrix.
      * @param fieldValue Value of field to create identity matrix for.
-     * @return An identity matrix of specified shape.
+     * @return An identity matrix of the specified shape.
      * @throws IllegalArgumentException If the specified number of rows or columns is less than 1.
      * @see #I(int, Field)
      * @see #I(Shape, Field)
@@ -360,7 +360,7 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
      *
      * @param shape The shape of the identity-like matrix to construct.
      * @param fieldValue Value of field to create identity matrix for.
-     * @return An identity matrix of specified shape.
+     * @return An identity matrix of the specified shape.
      * @throws IllegalArgumentException If the specified number of rows or columns is less than 1.
      * @see #I(int, Field)
      * @see #I(Shape, Field)

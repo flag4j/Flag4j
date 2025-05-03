@@ -24,6 +24,7 @@
 
 package org.flag4j.linalg.ops.sparse;
 
+import org.flag4j.arrays.IntPair;
 import org.flag4j.util.ValidateParameters;
 
 import java.util.Arrays;
@@ -47,7 +48,7 @@ public final class SparseElementSearch {
      * @param colIndices Column indices of the matrix to search within.
      * @param rowKey Target row index.
      * @param colKey Target col index.
-     * @return The location of the non-zero element (within the non-zero values array of {@code src}) with the specified
+     * @return The location of the non-zero-element (within the non-zero values array of {@code src}) with the specified
      *         row and column indices. If this value does not exist, then <code>(-(<i>insertion point</i>) - 1)</code>
      *         will be returned. The <i>insertion point</i> is defined as the point at which the
      *         value, with the row and column key, would be inserted into the array: the index of the first
@@ -60,9 +61,9 @@ public final class SparseElementSearch {
         if(rowKey < 0 || colKey < 0)
             throw new IllegalArgumentException("rowKey and colKey must be non-negative but got " + rowKey + " and " + colKey + ".");
 
-        int[] rowStartEnd = matrixFindRowStartEnd(rowIndices, rowKey);
-        int rowStart = rowStartEnd[0];
-        int rowEnd = rowStartEnd[1];
+        IntPair rowStartEnd = matrixFindRowStartEnd(rowIndices, rowKey);
+        int rowStart = rowStartEnd.first();
+        int rowEnd = rowStartEnd.second();
 
         if(rowStart < 0) return rowStart;
 
@@ -74,30 +75,30 @@ public final class SparseElementSearch {
 
 
     /**
-     * Finds the indices of the first and last non-zero element in the specified row of a sparse matrix. If there is no non-zero
+     * Finds the indices of the first and last non-zero-element in the specified row of a sparse matrix. If there is no non-zero
      * element in the sparse matrix at the specified row, negative values will be returned.
      * @param rowIndices Row indices of the matrix to search within.
      * @param rowKey Index of the row to search for within the row indices of the {@code src} matrix.
-     * @return If it exists, the first and last index of the non-zero element in the sparse matrix which has the specified
+     * @return If it exists, the first and last index of the non-zero-element in the sparse matrix which has the specified
      * {@code rowKey} as its row index.
      */
-    public static int[] matrixFindRowStartEnd(int[] rowIndices, int rowKey) {
+    public static IntPair matrixFindRowStartEnd(int[] rowIndices, int rowKey) {
         int rowIdx = Arrays.binarySearch(rowIndices, rowKey);
-        if(rowIdx < 0) return new int[]{rowIdx, rowIdx}; // Row not found.
+        if(rowIdx < 0) return new IntPair(rowIdx, rowIdx); // Row not found.
 
-        // Find first entry with the specified row key.
+        // Find the first entry with the specified row key.
         int lowerBound = rowIdx;
         while(lowerBound > 0 && rowIndices[lowerBound - 1] == rowKey)
             lowerBound--;
 
-        // Find last entry with the specified row key.
+        // Find the last entry with the specified row key.
         int upperBound = rowIdx + 1;
         int length = rowIndices.length - 1;
 
         while(upperBound < length && rowIndices[upperBound + 1] == rowKey)
             upperBound++;
 
-        return new int[]{lowerBound, upperBound};
+        return new IntPair(lowerBound, upperBound);
     }
 
 
@@ -137,7 +138,7 @@ public final class SparseElementSearch {
                 right = mid - 1;
         }
 
-        // Target indices not found; return insertion point instead.
+        // Target indices not found; return the insertion point instead.
         return - (left + 1);
     }
 }

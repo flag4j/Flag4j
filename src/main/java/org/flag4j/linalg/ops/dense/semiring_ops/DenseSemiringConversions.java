@@ -24,10 +24,10 @@
 
 package org.flag4j.linalg.ops.dense.semiring_ops;
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
 import org.flag4j.arrays.SparseTensorData;
+import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public final class DenseSemiringConversions {
      * @param entries Entries of the matrix.
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      * @return A sparse COO matrix containing the non-zero values of the specified dense matrix.
      */
     public static <T extends Semiring<T>> SparseMatrixData<T> toCoo(
@@ -109,7 +109,7 @@ public final class DenseSemiringConversions {
      * @param entries Entries of the tensor.
      * @param estimatedSparsity Estimated sparsity of the tensor. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      * @return A sparse COO tensor containing the non-zero values of the specified dense tensor.
      */
     public static <T extends Semiring<T>> SparseTensorData<T> toCooTensor(

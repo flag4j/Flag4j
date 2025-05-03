@@ -55,7 +55,7 @@ import java.util.Arrays;
  * <p>
  *
  * <p>The determinant of any permutation matrix is always {@code +1} or
- * {@code -1}, depending on the parity of the permutation (i.e. the number of swaps in the matrix).
+ * {@code -1}, depending on the parity of the permutation (i.e., the number of swaps in the matrix).
  *
  * <p>The identity matrix is a special case of a permutation matrix, corresponding to the identity permutation
  * {@code {0, 1, ..., n-1}}.
@@ -393,7 +393,7 @@ public class PermutationMatrix implements Serializable {
      */
     public Vector rightMult(Vector src) {
         // For vectors, left/right multiplication is equivalent since vectors do not have orientation
-        // (i.e. row/column vectors.)
+        // (i.e., row/column vectors.)
         return leftMult(src);
     }
 
@@ -436,7 +436,7 @@ public class PermutationMatrix implements Serializable {
      */
     public CVector rightMult(CVector src) {
         // For vectors, left/right multiplication is equivalent since vectors do not have orientation
-        // (i.e. row/column vectors.)
+        // (i.e., row/column vectors.)
         return leftMult(src);
     }
 

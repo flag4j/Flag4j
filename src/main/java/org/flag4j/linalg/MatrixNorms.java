@@ -91,7 +91,7 @@ public final class MatrixNorms {
 
 
     /**
-     * <p>Computes the Schatten p-norm of a real dense matrix. This is equivalent to the p-norm of the vector of singular values of the
+     * <p>Computes the Schatten p-norm of a real dense matrix. This is equivalent to the p-norm of the vector containing the singular values of the
      * matrix.
      *
      * <p>This method accepts values of p which are negative. When {@code p < 0} the result is not a true norm but may still have
@@ -339,7 +339,7 @@ public final class MatrixNorms {
      * <p>Some common special cases are:
      * <ul>
      *     <li>{@code p=2}, {@code q=1}: The sum of Euclidean norms of the column vectors of the matrix.</li>
-     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector of singular values of
+     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector containing the singular values of
      *     the matrix.</li>
      * </ul>
      *
@@ -372,7 +372,7 @@ public final class MatrixNorms {
      * <p>Some common special cases are:
      * <ul>
      *     <li>{@code p=2}, {@code q=1}: The sum of Euclidean norms of the column vectors of the matrix.</li>
-     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector of singular values of
+     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector containing the singular values of
      *     the matrix.</li>
      * </ul>
      *
@@ -436,7 +436,7 @@ public final class MatrixNorms {
      * <p>Some common special cases are:
      * <ul>
      *     <li>{@code p=2}, {@code q=1}: The sum of Euclidean norms of the column vectors of the matrix.</li>
-     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector of singular values of
+     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector containing the singular values of
      *     the matrix.</li>
      * </ul>
      *
@@ -456,7 +456,7 @@ public final class MatrixNorms {
      * <p>Some common special cases are:
      * <ul>
      *     <li>{@code p=2}, {@code q=1}: The sum of Euclidean norms of the column vectors of the matrix.</li>
-     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector of singular values of
+     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector containing the singular values of
      *     the matrix.</li>
      * </ul>
      *
@@ -527,7 +527,7 @@ public final class MatrixNorms {
      * <p>Some common special cases are:
      * <ul>
      *     <li>{@code p=2}, {@code q=1}: The sum of Euclidean norms of the column vectors of the matrix.</li>
-     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector of singular values of
+     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector containing the singular values of
      *     the matrix.</li>
      * </ul>
      *
@@ -571,7 +571,7 @@ public final class MatrixNorms {
      * <p>Some common special cases are:
      * <ul>
      *     <li>{@code p=2}, {@code q=1}: The sum of Euclidean norms of the column vectors of the matrix.</li>
-     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector of singular values of
+     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector containing the singular values of
      *     the matrix.</li>
      * </ul>
      *

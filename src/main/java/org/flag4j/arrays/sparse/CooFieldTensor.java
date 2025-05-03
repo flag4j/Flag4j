@@ -43,7 +43,7 @@ import java.util.function.BinaryOperator;
 
 
 /**
- * Represents a sparse tensor whose non-zero elements are stored in Coordinate List (COO) format, with all data elements
+ * Represents a sparse tensor whose non-zero-elements are stored in Coordinate List (COO) format, with all data elements
  * belonging to a specified {@link Field} type.
  *
  * <p>The COO format stores sparse data as a list of coordinates (indices) coupled with their corresponding non-zero values,
@@ -60,16 +60,16 @@ import java.util.function.BinaryOperator;
  *     in this array. To remove any explicitly defined zeros in the tensor use {@link #dropZeros()}.</li>
  *
  *     <li><p>The {@link #indices} of the non-zero value in the sparse tensor. Many ops assume indices to be sorted in a
- *     row-major format (i.e. last index increased fastest) but often this is not explicitly verified.
+ *     row-major format (i.e., last index increased fastest) but often this is not explicitly verified.
  *
  *     <li><b>Indices:</b> The {@link #indices} array, which has dimensions {@code (nnz, rank)}, associates each non-zero
- *     value with its coordinates in the tensor. Here, {@link #nnz} is the count of non-zero elements and {@link #rank}
+ *     value with its coordinates in the tensor. Here, {@link #nnz} is the count of non-zero-elements and {@link #rank}
  *     is the tensor’s number of dimensions. Each row in {@link #indices} corresponds to the multidimensional index of the
  *     corresponding entry in {@link #data}.</li>
  *     </li>
  * </ul>
  *
- * <p>The total number of non-zero elements ({@link #nnz}) and the shape are fixed for a given instance, but the specific
+ * <p>The total number of non-zero-elements ({@link #nnz}) and the shape are fixed for a given instance, but the specific
  * values in {@link #data} and their corresponding {@link #indices} may be updated. Many operations assume the indices
  * are sorted lexicographically in row-major order (i.e., the last dimension’s index varies fastest), although this is not explicitly
  * enforced. All provided operations will preserve lexicographically row-major sorting of the indices.
@@ -77,7 +77,7 @@ import java.util.function.BinaryOperator;
  * explicitly sorted. COO tensors may also store multiple entries for the same index (referred to as an uncoalesced tensor). To combine
  * all duplicated entries use {@link #coalesce()} or {@link #coalesce(BinaryOperator)}.
  *
- * <p>COO tensors are optimized for "hyper-sparse" tensors where the proportion of non-zero elements
+ * <p>COO tensors are optimized for "hyper-sparse" tensors where the proportion of non-zero-elements
  * is extremely low, offering significant memory savings and potentially more efficient computational operations than
  * equivalent dense representations.
  *
@@ -265,13 +265,13 @@ public class CooFieldTensor<T extends Field<T>>
 
 
     /**
-     * Constructs a sparse tensor of the same type as this tensor with the given the shape, non-zero data, and non-zero indices.
+     * Constructs a sparse tensor of the same type as this tensor with the given shape, non-zero data, and non-zero indices.
      *
      * @param shape Shape of the sparse tensor to construct.
      * @param entries Non-zero data of the sparse tensor to construct.
      * @param indices Non-zero indices of the sparse tensor to construct.
      *
-     * @return A sparse tensor of the same type as this tensor with the given the shape and data.
+     * @return A sparse tensor of the same type as this tensor with the given shape and data.
      */
     @Override
     public CooFieldTensor<T> makeLikeTensor(Shape shape, List<T> entries, List<int[]> indices) {

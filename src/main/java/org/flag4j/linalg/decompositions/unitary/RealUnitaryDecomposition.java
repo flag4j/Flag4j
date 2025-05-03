@@ -124,7 +124,7 @@ public abstract class RealUnitaryDecomposition extends UnitaryDecomposition<Matr
      * triangular/Hessenburg form should be stored.
      * @param inPlace Flag indicating if the decomposition should be done in-place.
      * <ul>
-     *     <li>If {@code true}, then the decomposition will be done in place.</li>
+     *     <li>If {@code true}, then the decomposition will be done in-place.</li>
      *     <li>If {@code false}, then the decomposition will be done out-of-place.</li>
      * </ul>
      * @throws IllegalArgumentException If {@code subDiagonal < 0 || subDiagonal > 1}.
@@ -210,9 +210,9 @@ public abstract class RealUnitaryDecomposition extends UnitaryDecomposition<Matr
 
 
     /**
-     * Computes the Householder vector for the first column of the sub-matrix with upper left corner at {@code (j, j)}.
+     * Computes the Householder vector for the first column of the submatrix with upper left corner at {@code (j, j)}.
      *
-     * @param j Index of the upper left corner of the sub-matrix for which to compute the Householder vector for the first column.
+     * @param j Index of the upper left corner of the submatrix for which to compute the Householder vector for the first column.
      *          That is, a Householder vector will be computed for the portion of column {@code j} below row {@code j}.
      */
     protected void computeHouseholder(int j) {
@@ -287,14 +287,14 @@ public abstract class RealUnitaryDecomposition extends UnitaryDecomposition<Matr
 
     /**
      * Updates the {@link #transformMatrix} matrix using the computed Householder vector from {@link #computeHouseholder(int)}.
-     * @param j Index of sub-matrix for which the Householder reflector was computed for.
+     * @param j Index of submatrix for which the Householder reflector was computed for.
      */
     @Override
     protected void updateData(int j) {
-        if(subDiagonal >= 0) // Right multiply transform matrix to reflector. (i.e. left multiply reflector to matrix).
+        if(subDiagonal >= 0) // Right multiply transform matrix to reflector. (i.e., left multiply reflector to matrix).
             Householder.leftMultReflector(transformMatrix, householderVector, qFactors[j], j, j, iHigh, workArray);
 
-        if(subDiagonal == 1) // Left multiply transform matrix to reflector. (i.e. right multiply reflector to matrix).
+        if(subDiagonal == 1) // Left multiply transform matrix to reflector. (i.e., right multiply reflector to matrix).
             Householder.rightMultReflector(transformMatrix, householderVector, qFactors[j], 0, j, iHigh);
 
         if(j < numCols) transformData[j*numCols + j - subDiagonal] = -norm;

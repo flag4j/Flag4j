@@ -89,7 +89,7 @@ public final class ReDeMatMultDispatcher extends BiTensorOpDispatcher<Matrix, Ma
     private static final int SQ_MT_REORD_THRESH = ReDeMatMultDispatchConfigs.getSquareMtReorderedThreshold();
 
     /**
-     * Threshold for non-square wide matrices. i.e. {@code m = max(m, n, k)} and {@code max(m, n, k) / min(m, n, k) >  aspectThreshold}.
+     * Threshold for non-square wide matrices. i.e., {@code m = max(m, n, k)} and {@code max(m, n, k) / min(m, n, k) >  aspectThreshold}.
      */
     private static final int WIDE_MT_REORD_THRESH = ReDeMatMultDispatchConfigs.getWideMtReorderedThreshold();
     /**

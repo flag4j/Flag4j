@@ -24,6 +24,7 @@
 
 package org.flag4j.linalg.ops.sparse.coo.real;
 
+import org.flag4j.arrays.IntPair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.sparse.CooMatrix;
 import org.flag4j.linalg.ops.sparse.SparseElementSearch;
@@ -54,8 +55,11 @@ public final class RealSparseMatrixManipulations {
         Shape shape = new Shape(src.numRows-1, src.numCols);
 
         // Find the start and end index within the data array which have the given row index.
-        int[] startEnd = SparseElementSearch.matrixFindRowStartEnd(src.rowIndices, rowIdx);
-        int size = src.data.length - (startEnd[1]-startEnd[0]);
+        IntPair startEnd = SparseElementSearch.matrixFindRowStartEnd(src.rowIndices, rowIdx);
+        int start = startEnd.first();
+        int end = startEnd.second();
+
+        int size = src.data.length - (end - start);
 
         // Initialize arrays.
         double[] entries = new double[size];
@@ -65,8 +69,8 @@ public final class RealSparseMatrixManipulations {
         copyRanges(src, entries, rowIndices, colIndices, startEnd);
 
         // Shift all row indices occurring after removed row.
-        if (startEnd[0] > 0) {
-            for(int i=startEnd[0], length=rowIndices.length; i<rowIndices.length; i++)
+        if (start > 0) {
+            for(int i=start, length=rowIndices.length; i<rowIndices.length; i++)
                 rowIndices[i]--;
         } else {
             for(int i=0, length=rowIndices.length; i<rowIndices.length; i++) {
@@ -203,23 +207,26 @@ public final class RealSparseMatrixManipulations {
      *                 indices of the range to skip during the copy.
      */
     private static void copyRanges(CooMatrix src, double[] entries,
-                                   int[] rowIndices, int[] colIndices, int[] startEnd) {
-        if(startEnd[0] >= 0) {
-            System.arraycopy(src.data, 0, entries, 0, startEnd[0]);
-            System.arraycopy(src.data, startEnd[1], entries, startEnd[0], entries.length - startEnd[0]);
+                                   int[] rowIndices, int[] colIndices, IntPair startEnd) {
+        int start = startEnd.first();
+        int end = startEnd.second();
 
-            System.arraycopy(src.rowIndices, 0, rowIndices, 0, startEnd[0]);
-            System.arraycopy(src.rowIndices, startEnd[1], rowIndices, startEnd[0], entries.length - startEnd[0]);
-            ArrayUtils.shiftRange(-1, rowIndices, startEnd[0], rowIndices.length); // Apply shift to row indices.
+        if(start >= 0) {
+            System.arraycopy(src.data, 0, entries, 0, start);
+            System.arraycopy(src.data, end, entries, start, entries.length - start);
 
-            System.arraycopy(src.colIndices, 0, colIndices, 0, startEnd[0]);
-            System.arraycopy(src.colIndices, startEnd[1], colIndices, startEnd[0], entries.length - startEnd[0]);
+            System.arraycopy(src.rowIndices, 0, rowIndices, 0, start);
+            System.arraycopy(src.rowIndices, end, rowIndices, start, entries.length - start);
+            ArrayUtils.shiftRange(-1, rowIndices, start, rowIndices.length); // Apply shift to row indices.
+
+            System.arraycopy(src.colIndices, 0, colIndices, 0, start);
+            System.arraycopy(src.colIndices, end, colIndices, start, entries.length - start);
         } else {
             System.arraycopy(src.data, 0, entries, 0, entries.length);
             System.arraycopy(src.rowIndices, 0, rowIndices, 0, rowIndices.length);
             System.arraycopy(src.colIndices, 0, colIndices, 0, colIndices.length);
 
-            ArrayUtils.shiftRange(-1, rowIndices, -startEnd[0]-1, rowIndices.length);
+            ArrayUtils.shiftRange(-1, rowIndices, -start - 1, rowIndices.length);
         }
     }
 

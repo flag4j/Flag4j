@@ -68,7 +68,7 @@ public final class Projection {
      *
      * @param fov Field of view in radians (this is the fov in both the {@code x} and {@code y} directions).
      *            For distinct field of views see {@link #getPerspective(double, double, double, double, double)}.
-     * @param aspectRatio Aspect ratio of the image plane to project to (i.e. {@code width/height}).
+     * @param aspectRatio Aspect ratio of the image plane to project to (i.e., {@code width/height}).
      * @param nearClip The distance from the camera to the near clipping plane.
      * @param farClip The distance from the camera to the far clipping plane.
      * @return The perspective projection matrix based on the provided attributes.
@@ -100,7 +100,7 @@ public final class Projection {
      *
      * @param fovX Field of view, in radians, in the {@code x} direction.
      * @param fovY Field of view, in radians, in the {@code y} direction.
-     * @param aspectRatio Aspect ratio of the image plane to project to (i.e. {@code width/height}).
+     * @param aspectRatio Aspect ratio of the image plane to project to (i.e., {@code width/height}).
      * @param nearClip The distance from the camera to the near clipping plane.
      * @param farClip The distance from the camera to the far clipping plane.
      * @return The perspective projection matrix based on the provided attributes.
@@ -130,7 +130,7 @@ public final class Projection {
 
     /**
      * Creates a <span class="latex-inline">4&times;4</span> orthogonal projection matrix to project a 3D point in homogeneous coordinates
-     * onto the specified 2D coordinate grid (i.e. image plane).
+     * onto the specified 2D coordinate grid (i.e., image plane).
      * This is an orthographic projection meaning the distance from the virtual camera will not affect the projection.
      * @param xMin Minimum {@code x} value of image plane to project to.
      * @param xMax Maximum {@code x} value of image plane to project to.
@@ -164,7 +164,7 @@ public final class Projection {
 
     /**
      * Creates a <span class="latex-inline">4&times;4</span> orthogonal projection matrix to project a 3D point in homogeneous coordinates
-     * onto the specified 2D coordinate grid (i.e. image plane). Here, the minimum {@code x} and {@code y} values are
+     * onto the specified 2D coordinate grid (i.e., image plane). Here, the minimum {@code x} and {@code y} values are
      * taken to be zero.
      * This is an orthographic projection meaning the distance from the virtual camera will not affect the projection.
      * @param xMax Maximum {@code x} value of image plane to project to.

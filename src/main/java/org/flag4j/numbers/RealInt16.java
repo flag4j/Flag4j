@@ -24,9 +24,10 @@
 
 package org.flag4j.numbers;
 
+// TODO: Improve javadoc.
 
 /**
- * <p>A real number backed by a 16-bit integer number. Immutable
+ * <p>A real number backed by a 16-bit integer. Immutable.
  *
  * <p>This class wraps the primitive short type.
  */
@@ -60,7 +61,7 @@ public class RealInt16 implements Ring<RealInt16> {
 
 
     /**
-     * Numerical value of field element.
+     * Numerical value of this ring element.
      */
     private final short value;
 
@@ -86,7 +87,7 @@ public class RealInt16 implements Ring<RealInt16> {
     /**
      * Sums two elements of this ring (associative and commutative).
      *
-     * @param b Second ring element in sum.
+     * @param b Second ring element in the sum.
      *
      * @return The sum of this element and {@code b}.
      */
@@ -97,7 +98,17 @@ public class RealInt16 implements Ring<RealInt16> {
 
 
     /**
-     * Computes difference of two elements of this ring.
+     * Adds a short to this ring element.
+     * @param b The short to add to this ring element.
+     * @return
+     */
+    public RealInt32 add(short b) {
+        return new RealInt32(value + b);
+    }
+
+
+    /**
+     * Computes the difference of two elements in this ring.
      *
      * @param b Second ring element in difference.
      *
@@ -110,9 +121,21 @@ public class RealInt16 implements Ring<RealInt16> {
 
 
     /**
+     * Computes the difference of this ring element and a short.
+     *
+     * @param b Short to subtract from this ring element.
+     *
+     * @return The difference of this ring element and {@code b}.
+     */
+    public RealInt32 sub(short b) {
+        return new RealInt32(value - b);
+    }
+
+
+    /**
      * Multiplies two elements of this ring (associative and commutative).
      *
-     * @param b Second ring element in product.
+     * @param b Second ring element in the product.
      *
      * @return The product of this ring element and {@code b}.
      */
@@ -123,11 +146,23 @@ public class RealInt16 implements Ring<RealInt16> {
 
 
     /**
-     * <p>Checks if this value is an additive identity for this semiring.
+     * Multiplies this ring element with a short.
      *
-     * <p>An element 0 is an additive identity if a + 0 = a for any a in the semiring.
+     * @param b Short to multiply this ring element with.
      *
-     * @return True if this value is an additive identity for this semiring. Otherwise, false.
+     * @return The product of this ring element and {@code b}.
+     */
+    public RealInt32 mult(int b) {
+        return new RealInt32(value * b);
+    }
+
+
+    /**
+     * <p>Checks if this value is an additive identity for this ring.
+     *
+     * <p>An element 0 is an additive identity if a + 0 = a for any a in the ring.
+     *
+     * @return True if this value is an additive identity for this ring. Otherwise, false.
      */
     @Override
     public boolean isZero() {
@@ -136,11 +171,11 @@ public class RealInt16 implements Ring<RealInt16> {
 
 
     /**
-     * <p>Checks if this value is a multiplicative identity for this semiring.
+     * <p>Checks if this value is a multiplicative identity for this ring.
      *
-     * <p>An element 1 is a multiplicative identity if a * 1 = a for any a in the semiring.
+     * <p>An element 1 is a multiplicative identity if a * 1 = a for any a in the ring.
      *
-     * @return True if this value is a multiplicative identity for this semiring. Otherwise, false.
+     * @return True if this value is a multiplicative identity for this ring. Otherwise, false.
      */
     @Override
     public boolean isOne() {
@@ -149,11 +184,11 @@ public class RealInt16 implements Ring<RealInt16> {
 
 
     /**
-     * <p>Gets the additive identity for this semiring.
+     * <p>Gets the additive identity for this ring.
      *
-     * <p>An element 0 is an additive identity if a + 0 = a for any a in the semiring.
+     * <p>An element 0 is an additive identity if a + 0 = a for any a in the ring.
      *
-     * @return The additive identity for this semiring.
+     * @return The additive identity for this ring.
      */
     @Override
     public RealInt16 getZero() {
@@ -162,11 +197,11 @@ public class RealInt16 implements Ring<RealInt16> {
 
 
     /**
-     * <p>Gets the multiplicative identity for this semiring.
+     * <p>Gets the multiplicative identity for this ring.
      *
-     * <p>An element 1 is a multiplicative identity if a * 1 = a for any a in the semiring.
+     * <p>An element 1 is a multiplicative identity if a * 1 = a for any a in the ring.
      *
-     * @return The multiplicative identity for this semiring.
+     * @return The multiplicative identity for this ring.
      */
     @Override
     public RealInt16 getOne() {
@@ -237,9 +272,9 @@ public class RealInt16 implements Ring<RealInt16> {
 
 
     /**
-     * Converts this semiring value to an equivalent double value.
+     * Converts this ring value to an equivalent double value.
      *
-     * @return A double value equivalent to this semiring element.
+     * @return A double value equivalent to this ring element.
      */
     @Override
     public double doubleValue() {
@@ -250,7 +285,7 @@ public class RealInt16 implements Ring<RealInt16> {
     /**
      * Checks if an object is equal to this ring element.
      * @param b Object to compare to this ring element.
-     * @return True if the objects are the same or are both {@link RealInt16}'s and have equal values.
+     * @return True if the objects are the same or are both {@link RealInt16}s and have equal values.
      */
     @Override
     public boolean equals(Object b) {

@@ -110,7 +110,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
     /**
      * Checks if this matrix is square.
      *
-     * @return True if the matrix is square (i.e. the number of rows equals the number of columns). Otherwise, returns false.
+     * @return True if the matrix is square (i.e., the number of rows equals the number of columns). Otherwise, returns false.
      */
     default boolean isSquare() {
         return numRows()==numCols();
@@ -128,7 +128,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Checks what type of vector this matrix is. i.e. not a vector, a 1x1 matrix, a row vector, or a column vector.
+     * Checks what type of vector this matrix is. i.e., not a vector, a 1x1 matrix, a row vector, or a column vector.
      *
      * @return An int corresponding to the type of vector this matrix represents:
      * <ul>
@@ -156,7 +156,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Checks if this matrix is triangular (i.e. upper triangular, diagonal, lower triangular).
+     * Checks if this matrix is triangular (i.e., upper triangular, diagonal, lower triangular).
      * @return {@code true} is this matrix is triangular; {@code false} otherwise.
      */
     default boolean isTri() {
@@ -312,7 +312,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Swaps specified rows in the matrix. This is done in place.
+     * Swaps specified rows in the matrix. This is done in-place.
      * @param rowIndex1 Index of the first row to swap.
      * @param rowIndex2 Index of the second row to swap.
      * @return A reference to this matrix.
@@ -322,7 +322,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Swaps specified columns in the matrix. This is done in place.
+     * Swaps specified columns in the matrix. This is done in-place.
      * @param colIndex1 Index of the first column to swap.
      * @param colIndex2 Index of the second column to swap.
      * @return A reference to this matrix.
@@ -428,7 +428,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
      * Sets a specified row of this matrix to a vector.
      * @param row Vector to replace specified row in this matrix.
      * @param rowIdx Index of the row to set.
-     * @return If this matrix is dense, the row set operation is done in place and a reference to this matrix is returned.
+     * @return If this matrix is dense, the row set operation is done in-place and a reference to this matrix is returned.
      * If this matrix is sparse a copy will be created with the new row and returned.
      */
     T setRow(V row, int rowIdx);
@@ -438,7 +438,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
      * Sets a specified column of this matrix to a vector.
      * @param col Vector to replace specified column in this matrix.
      * @param colIdx Index of the column to set.
-     * @return If this matrix is dense, the column set operation is done in place and a reference to this matrix is returned.
+     * @return If this matrix is dense, the column set operation is done in-place and a reference to this matrix is returned.
      * If this matrix is sparse a copy will be created with the new column and returned.
      */
     T setCol(V col, int colIdx);

@@ -24,10 +24,10 @@
 
 package org.flag4j.linalg.ops.sparse.csr;
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
 import org.flag4j.linalg.ops.sparse.SparseUtils;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
@@ -232,7 +232,7 @@ public final class CsrOps {
 
 
     /**
-     * Swaps two rows in a sparse CSR matrix. This is done in place.
+     * Swaps two rows in a sparse CSR matrix. This is done in-place.
      * @param entries Non-zero data of the CSR matrix.
      * @param rowPointers Non-zero row pointers of the CSR matrix.
      * @param colIndices Non-zero column indices of the CSR matrix.
@@ -290,7 +290,7 @@ public final class CsrOps {
 
 
     /**
-     * Swaps two columns in a sparse CSR matrix. This is done in place.
+     * Swaps two columns in a sparse CSR matrix. This is done in-place.
      * @param entries Non-zero data of the CSR matrix.
      * @param rowPointers Non-zero row pointers of the CSR matrix.
      * @param colIndices Non-zero column indices of the CSR matrix.

@@ -91,7 +91,7 @@ public abstract class AbstractDenseRingMatrix<T extends AbstractDenseRingMatrix<
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()
@@ -178,7 +178,7 @@ public abstract class AbstractDenseRingMatrix<T extends AbstractDenseRingMatrix<
      * @param relTol Relative tolerance.
      * @param absTol Absolute tolerance.
      * @return {@code true} if the {@code src1} matrix is the same shape as the {@code src2} matrix and all data
-     * are 'close', i.e. elements {@code a} and {@code b} at the same positions in the two matrices respectively
+     * are "close", i.e., elements {@code a} and {@code b} at the same positions in the two matrices respectively
      * satisfy {@code |a-b| <= (absTol + relTol*|b|)}. Otherwise, returns {@code false}.
      * @see #allClose(AbstractDenseRingMatrix)
      */

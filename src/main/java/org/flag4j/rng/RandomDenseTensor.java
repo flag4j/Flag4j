@@ -170,12 +170,12 @@ public class RandomDenseTensor {
 
 
     /**
-     * Generates a tensor filled with pseudorandom complex values uniformly distributed in an annulus (i.e. washer) centered at the
+     * Generates a tensor filled with pseudorandom complex values uniformly distributed in an annulus (i.e., washer) centered at the
      * origin of the complex plane.
      * @param shape Shape of the tensor.
      * @param min Inner radius of annulus.
      * @param max Outer radius of annulus.
-     * @return A tensor filled with pseudorandom values with magnitudes uniformly distributed in an annulus (i.e. washer) centered
+     * @return A tensor filled with pseudorandom values with magnitudes uniformly distributed in an annulus (i.e., washer) centered
      * at the origin of the complex plane.
      * @throws IllegalArgumentException If {@code min >= max} or {@code min < 0}.
      */
@@ -313,12 +313,12 @@ public class RandomDenseTensor {
 
 
     /**
-     * Generates a vector filled with pseudorandom complex values uniformly distributed in an annulus (i.e. washer) centered at the
+     * Generates a vector filled with pseudorandom complex values uniformly distributed in an annulus (i.e., washer) centered at the
      * origin of the complex plane.
      * @param int size of the vector.
      * @param min Inner radius of annulus.
      * @param max Outer radius of annulus.
-     * @return A vector filled with pseudorandom values with magnitudes uniformly distributed in an annulus (i.e. washer) centered
+     * @return A vector filled with pseudorandom values with magnitudes uniformly distributed in an annulus (i.e., washer) centered
      * at the origin of the complex plane.
      * @throws IllegalArgumentException If {@code min >= max} or {@code min < 0}.
      */
@@ -456,12 +456,12 @@ public class RandomDenseTensor {
 
 
     /**
-     * Generates a matrix filled with pseudorandom complex values uniformly distributed in an annulus (i.e. washer) centered at the
+     * Generates a matrix filled with pseudorandom complex values uniformly distributed in an annulus (i.e., washer) centered at the
      * origin of the complex plane.
      * @param shape Shape of the matrix.
      * @param min Inner radius of annulus.
      * @param max Outer radius of annulus.
-     * @return A matrix filled with pseudorandom values with magnitudes uniformly distributed in an annulus (i.e. washer) centered
+     * @return A matrix filled with pseudorandom values with magnitudes uniformly distributed in an annulus (i.e., washer) centered
      * at the origin of the complex plane.
      * @throws IllegalArgumentException If {@code min >= max} or {@code min < 0}.
      */

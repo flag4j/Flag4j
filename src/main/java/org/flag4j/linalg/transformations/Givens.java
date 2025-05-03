@@ -25,12 +25,12 @@
 package org.flag4j.linalg.transformations;
 
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.CVector;
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.arrays.dense.Vector;
 import org.flag4j.linalg.VectorNorms;
+import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ValidateParameters;
 
 import java.util.Arrays;
@@ -272,7 +272,7 @@ public final class Givens {
 
     /**
      * <p>Left multiplies a <span class="latex-inline">2&times;2</span> Givens rotator to a matrix at the specified i.
-     * This is done in place.
+     * This is done in-place.
      *
      * <p>Specifically, computes <span class="latex-inline">GA[i-1:i+1][i-1:i+1]</span> where i={@code i},
      * <span class="latex-inline">G</span> is the
@@ -330,7 +330,7 @@ public final class Givens {
 
     /**
      * <p>Right multiplies a <span class="latex-inline">2&times;2</span> Givens rotator to a matrix at the specified i.
-     * This is done in place
+     * This is done in-place
      *
      * <p>Specifically, computes <span class="latex-inline">A[:][i-1:i+1]G<sup>H</sup></span>
      * where i={@code i}, <span class="latex-inline">G</span> is the
@@ -389,7 +389,7 @@ public final class Givens {
 
     /**
      * <p>Left multiplies a <span class="latex-inline">2&times;2</span> Givens rotator to a matrix at the specified i.
-     * This is done in place.
+     * This is done in-place.
      *
      * <p>Specifically, computes <span class="latex-inline">GA[i-1:i+1][i-1:i+1]</span> where i={@code i},
      * <span class="latex-inline">G</span> is the <span class="latex-inline">2&times;2</span> Givens rotator,
@@ -447,7 +447,7 @@ public final class Givens {
 
     /**
      * <p>Right multiplies a <span class="latex-inline">2&times;2</span> Givens rotator to a matrix at the specified i.
-     * This is done in place
+     * This is done in-place
      *
      * <p>Specifically, computes <span class="latex-inline">A[:][i-1:i+1]G<sup>H</sup></span>
      * where i={@code i}, <span class="latex-inline">G</span> is the

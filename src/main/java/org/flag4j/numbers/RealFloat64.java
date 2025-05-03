@@ -383,7 +383,7 @@ public class RealFloat64 implements Field<RealFloat64> {
     /**
      * Checks if this field element is finite in magnitude.
      *
-     * @return True if this field element is finite in magnitude. False otherwise (i.e. infinite, NaN etc.).
+     * @return True if this field element is finite in magnitude. False otherwise (i.e., infinite, NaN etc.).
      */
     @Override
     public boolean isFinite() {
@@ -394,7 +394,7 @@ public class RealFloat64 implements Field<RealFloat64> {
     /**
      * Checks if this field element is infinite in magnitude.
      *
-     * @return True if this field element is infinite in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is infinite in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     @Override
     public boolean isInfinite() {
@@ -405,7 +405,7 @@ public class RealFloat64 implements Field<RealFloat64> {
     /**
      * Checks if this field element is NaN in magnitude.
      *
-     * @return True if this field element is NaN in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is NaN in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     @Override
     public boolean isNaN() {
@@ -485,7 +485,7 @@ public class RealFloat64 implements Field<RealFloat64> {
     /**
      * Checks if an object is equal to this Field element.
      * @param b Object to compare to this Field element.
-     * @return True if the objects are the same or are both {@link RealFloat64}'s and have equal values.
+     * @return True if the objects are the same or are both {@link RealFloat64}s and have equal values.
      */
     @Override
     public boolean equals(Object b) {

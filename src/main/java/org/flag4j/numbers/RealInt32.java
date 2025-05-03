@@ -24,6 +24,7 @@
 
 package org.flag4j.numbers;
 
+// TODO: Improve javadoc.
 /**
  * <p>A real number backed by a 32-bit integer number. Immutable.
  *
@@ -60,7 +61,7 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * Numerical value of field element.
+     * Numerical value of this ring element.
      */
     private final int value;
 
@@ -84,8 +85,8 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * Gets the value of this field element.
-     * @return The value of this field element.
+     * Gets the value of this ring element.
+     * @return The value of this ring element.
      */
     public float getValue() {
         return value;
@@ -93,9 +94,9 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * Sums two elements of this field (associative and commutative).
+     * Sums two elements of this ring (associative and commutative).
      *
-     * @param b Second field element in sum.
+     * @param b Second ring element in the sum.
      *
      * @return The sum of this element and {@code b}.
      */
@@ -106,11 +107,21 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * Computes difference of two elements of this field.
+     * Adds an integer to this ring element.
+     * @param b The integer to add to this ring element.
+     * @return
+     */
+    public RealInt32 add(int b) {
+        return new RealInt32(value + b);
+    }
+
+
+    /**
+     * Computes the difference of two elements in this ring.
      *
-     * @param b Second field element in difference.
+     * @param b Second ring element in difference.
      *
-     * @return The difference of this field element and {@code b}.
+     * @return The difference of this ring element and {@code b}.
      */
     @Override
     public RealInt32 sub(RealInt32 b) {
@@ -119,11 +130,23 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * Multiplies two elements of this field (associative and commutative).
+     * Computes the difference of this ring element and an integer.
      *
-     * @param b Second field element in product.
+     * @param b Integer to subtract from this ring element.
      *
-     * @return The product of this field element and {@code b}.
+     * @return The difference of this ring element and {@code b}.
+     */
+    public RealInt32 sub(int b) {
+        return new RealInt32(value - b);
+    }
+
+
+    /**
+     * Multiplies two elements of this ring (associative and commutative).
+     *
+     * @param b Second ring element in the product.
+     *
+     * @return The product of this ring element and {@code b}.
      */
     @Override
     public RealInt32 mult(RealInt32 b) {
@@ -132,11 +155,23 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * <p>Checks if this value is an additive identity for this semiring.
+     * Multiplies this ring element with an integer.
      *
-     * <p>An element 0 is an additive identity if a + 0 = a for any a in the semiring.
+     * @param b Integer to multiply this ring element with.
      *
-     * @return True if this value is an additive identity for this semiring. Otherwise, false.
+     * @return The product of this ring element and {@code b}.
+     */
+    public RealInt32 mult(int b) {
+        return new RealInt32(value * b);
+    }
+
+
+    /**
+     * <p>Checks if this value is an additive identity for this ring.
+     *
+     * <p>An element 0 is an additive identity if a + 0 = a for any a in the ring.
+     *
+     * @return True if this value is an additive identity for this ring. Otherwise, false.
      */
     @Override
     public boolean isZero() {
@@ -145,11 +180,11 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * <p>Checks if this value is a multiplicative identity for this semiring.
+     * <p>Checks if this value is a multiplicative identity for this ring.
      *
-     * <p>An element 1 is a multiplicative identity if a * 1 = a for any a in the semiring.
+     * <p>An element 1 is a multiplicative identity if a * 1 = a for any a in the ring.
      *
-     * @return True if this value is a multiplicative identity for this semiring. Otherwise, false.
+     * @return True if this value is a multiplicative identity for this ring. Otherwise, false.
      */
     @Override
     public boolean isOne() {
@@ -158,11 +193,11 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * <p>Gets the additive identity for this semiring.
+     * <p>Gets the additive identity for this ring.
      *
-     * <p>An element 0 is an additive identity if a + 0 = a for any a in the semiring.
+     * <p>An element 0 is an additive identity if a + 0 = a for any a in the ring.
      *
-     * @return The additive identity for this semiring.
+     * @return The additive identity for this ring.
      */
     @Override
     public RealInt32 getZero() {
@@ -171,11 +206,11 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * <p>Gets the multiplicative identity for this semiring.
+     * <p>Gets the multiplicative identity for this ring.
      *
-     * <p>An element 1 is a multiplicative identity if a * 1 = a for any a in the semiring.
+     * <p>An element 1 is a multiplicative identity if a * 1 = a for any a in the ring.
      *
-     * @return The multiplicative identity for this semiring.
+     * @return The multiplicative identity for this ring.
      */
     @Override
     public RealInt32 getOne() {
@@ -184,7 +219,7 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * <p>Computes the additive inverse for an element of this field.
+     * <p>Computes the additive inverse for an element of this ring.
      *
      * <p>An element -x is an additive inverse for a filed element x if -x + x = 0 where 0 is the additive identity.
      *
@@ -241,9 +276,9 @@ public class RealInt32 implements Ring<RealInt32> {
 
 
     /**
-     * Converts this semiring value to an equivalent double value.
+     * Converts this ring value to an equivalent double value.
      *
-     * @return A double value equivalent to this semiring element.
+     * @return A double value equivalent to this ring element.
      */
     @Override
     public double doubleValue() {
@@ -254,7 +289,7 @@ public class RealInt32 implements Ring<RealInt32> {
     /**
      * Checks if an object is equal to this ring element.
      * @param b Object to compare to this ring element.
-     * @return True if the objects are the same or are both {@link RealInt32}'s and have equal values.
+     * @return True if the objects are the same or are both {@link RealInt32}s and have equal values.
      */
     @Override
     public boolean equals(Object b) {

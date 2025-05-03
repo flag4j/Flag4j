@@ -18,7 +18,7 @@ class MatrixZerosOnesTests {
         A = new Matrix(aEntries);
         exp = true;
 
-        Assertions.assertEquals(exp, A.isZeros());
+        Assertions.assertEquals(exp, A.isAllZeros());
 
         // ----------------- sub-case 2 -----------------
         aEntries = new double[46][101];
@@ -26,7 +26,7 @@ class MatrixZerosOnesTests {
         A = new Matrix(aEntries);
         exp = false;
 
-        Assertions.assertEquals(exp, A.isZeros());
+        Assertions.assertEquals(exp, A.isAllZeros());
     }
 
 
@@ -38,7 +38,7 @@ class MatrixZerosOnesTests {
         A = new Matrix(aEntries);
         exp = true;
 
-        Assertions.assertEquals(exp, A.isOnes());
+        Assertions.assertEquals(exp, A.isAllOnes());
 
         // ----------------- sub-case 2 -----------------
         aEntries = new double[46][101];
@@ -47,6 +47,6 @@ class MatrixZerosOnesTests {
         A = new Matrix(aEntries);
         exp = false;
 
-        Assertions.assertEquals(exp, A.isOnes());
+        Assertions.assertEquals(exp, A.isAllOnes());
     }
 }

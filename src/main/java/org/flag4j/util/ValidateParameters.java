@@ -449,6 +449,7 @@ public final class ValidateParameters {
      * of the specified {@code shape}.
      */
     public static void validateTensorIndex(Shape shape, int... index) {
+        // TODO: Update to better error messages.
         if(shape.getRank() != index.length) {
             throw new IndexOutOfBoundsException("Expected dimension " + shape.getRank()
                     + " index but got dimension " + index.length + ".");
@@ -507,6 +508,32 @@ public final class ValidateParameters {
         for(int axis : axes) {
             if(axis < 0 || axis >= rank)
                 throw new LinearAlgebraException(String.format("Axis %d is out of bounds for rank %d.", axis, rank));
+        }
+    }
+
+
+    /**
+     * Validates that the specified slice [{@code startIdx}, {@code endIdx}) is within the bounds of a vector with the specified
+     * length.
+     * @param startIdx Staring index of the slice (inclusive).
+     * @param endIdx Ending index of the slice (exclusive).
+     * @param length The length of the vector to be sliced.
+     * @throws IndexOutOfBoundsException If the slice is not within the bounds of the vector.
+     * @throws IllegalArgumentException If {@code startIdx >= endIdx} or {@code startIdx < 0}.
+     */
+    public static void validateVectorSlice(int startIdx, int endIdx, int length) {
+        if(startIdx < 0 || startIdx >= endIdx) {
+            throw new IllegalArgumentException("Invalid slice. Starting index must be positive and " +
+                    "less than the end index but got [" + startIdx + ", " + endIdx + ")");
+        }
+
+        int sliceLength = endIdx - startIdx;
+
+        if(endIdx > length) {
+            throw new IndexOutOfBoundsException(
+                    String.format("The specified slice [%d, %d) of length %d exceeds vector length %d.",
+                            startIdx, endIdx, sliceLength, length)
+            );
         }
     }
 }

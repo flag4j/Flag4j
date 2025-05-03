@@ -36,7 +36,7 @@ import java.util.function.BiFunction;
 /**
  * <p>Utility class for computing the condition number of a matrix.
  *
- * <p>The condition number of a matrix A is defined as the norm of A times the norm of A<sup>-1</sup> (i.e. the norm of the inverse
+ * <p>The condition number of a matrix A is defined as the norm of A times the norm of A<sup>-1</sup> (i.e., the norm of the inverse
  * of A). That is, cond(A) = ||A|| * ||A<sup>-1</sup>|| where ||A|| may be any matrix norm (generally taken to be the L2-norm).
  *
  * <p> Conditions numbers are associated with a linear equation Ax = b and provides a bound on how inaccurate the solution x will be

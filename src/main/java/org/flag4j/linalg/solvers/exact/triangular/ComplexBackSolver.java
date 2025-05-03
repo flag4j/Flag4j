@@ -100,7 +100,7 @@ public class ComplexBackSolver extends BackSolver<CMatrix, CVector, Complex128[]
      *          this solver instance was created and {@code U} is not actually upper triangular, it will be treated as if it were.
      * @param b Vector of constants in the linear system.
      * @return The solution to <span class="latex-inline">x</span></> in the linear system <span class="latex-inline">Ux = b</span>.
-     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e. has a zero on the principle diagonal).
+     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e., has a zero on the principle diagonal).
      */
     @Override
     public CVector solve(CMatrix U, CVector b) {
@@ -140,7 +140,7 @@ public class ComplexBackSolver extends BackSolver<CMatrix, CVector, Complex128[]
      *      this solver instance was created and {@code U} is not actually upper triangular, it will be treated as if it were.
      * @param B Matrix of constants in the linear system.
      * @return The solution to <span class="latex-inline">X</span> in the linear system <span class="latex-inline">UX = B</span>.
-     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e. has a zero on the principle diagonal).
+     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e., has a zero on the principle diagonal).
      */
     @Override
     public CMatrix solve(CMatrix U, CMatrix B) {
@@ -195,7 +195,7 @@ public class ComplexBackSolver extends BackSolver<CMatrix, CVector, Complex128[]
      * @param U Upper triangular coefficient matrix in the linear system. If {@code enforceTriU} was set to {@code false} when
      *      this solver instance was created and {@code U} is not actually upper triangular, it will be treated as if it were.
      * @return The solution to X in the linear system <span class="latex-inline">UX = B</span>.
-     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e. has a zero on the principle diagonal).
+     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e., has a zero on the principle diagonal).
      */
     public CMatrix solveIdentity(CMatrix U) {
         checkParams(U, U.shape);

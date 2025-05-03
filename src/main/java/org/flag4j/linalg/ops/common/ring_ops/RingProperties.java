@@ -37,10 +37,10 @@ public final class RingProperties {
 
 
     /**
-     * Checks if all data of two arrays are 'close'.
+     * Checks if all data of two arrays are "close".
      * @param src1 First array in comparison.
      * @param src2 Second array in comparison.
-     * @return True if both arrays have the same length and all data are 'close' element-wise; i.e.
+     * @return True if both arrays have the same length and all data are "close" element-wise; i.e.,
      * elements {@code a} and {@code b} at the same positions in the two arrays respectively and satisfy
      * {@code |a-b| <= (1E-08 + 1E-05*|b|)}. Otherwise, returns false.
      * @see #allClose(Ring[], Ring[], double, double)
@@ -51,10 +51,12 @@ public final class RingProperties {
 
 
     /**
-     * Checks if all data of two arrays are 'close'.
+     * Checks if all data of two arrays are "close".
      * @param src1 First array in comparison.
      * @param src2 Second array in comparison.
-     * @return True if both arrays have the same length and all data are 'close' element-wise; i.e.
+     * @param relTol The relative tolerance to determine if values are close.
+     * @param absTol The absolute tolerance to determine if values are close.
+     * @return True if both arrays have the same length and all data are "close" element-wise; i.e.,
      * elements {@code a} and {@code b} at the same positions in the two arrays respectively and satisfy
      * {@code |a-b| <= (absTol + relTol*|b|)}. Otherwise, returns false.
      * @see #allClose(Ring[], Ring[])
@@ -68,5 +70,36 @@ public final class RingProperties {
         }
 
         return true; // If we reach this point, the arrays are close.
+    }
+
+
+    /**
+     * Checks if two values are "close".
+     * @param v1 First value in comparison.
+     * @param v2 Second value in comparison.
+     * @return True if the following is satisfied: {@code |v1 - v2| <= (1e-08+ 1e-05*|v2|)}. Otherwise, returns false.
+     * @see #isClose(Ring, Ring)
+     * @see #allClose(Ring[], Ring[], double, double)
+     * @see #allClose(Ring[], Ring[])
+     */
+    public static <T extends Ring<T>> boolean isClose(T v1, T v2) {
+        return isClose(v1, v2, 1e-05, 1e-08);
+    }
+
+
+    /**
+     * Checks if two values are "close".
+     * @param v1 First value in comparison.
+     * @param v2 Second value in comparison.
+     * @param relTol The relative tolerance to determine if values are close.
+     * @param absTol The absolute tolerance to determine if values are close.
+     * @return True if the following is satisfied: {@code |v1 - v2| <= (absTol + relTol*|v2|)}. Otherwise, returns false.
+     * @see #isClose(Ring, Ring)
+     * @see #allClose(Ring[], Ring[], double, double)
+     * @see #allClose(Ring[], Ring[]) 
+     */
+    public static <T extends Ring<T>> boolean isClose(T v1, T v2, double relTol, double absTol) {
+        double tol = absTol + relTol*v2.abs();
+        return v1.sub(v2).abs() <= tol;
     }
 }

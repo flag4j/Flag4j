@@ -18,14 +18,14 @@ class CMatrixZeroOnesTests {
         A = new CMatrix(14, 567);
         exp = true;
 
-        assertEquals(exp, A.isZeros());
+        assertEquals(exp, A.isAllZeros());
 
         // ----------------- sub-case 2 -----------------
         A = new CMatrix(14, 567);
         A.set(new Complex128(-943, 133.5), 4, 5);
         exp = false;
 
-        assertEquals(exp, A.isZeros());
+        assertEquals(exp, A.isAllZeros());
     }
 
 
@@ -35,13 +35,13 @@ class CMatrixZeroOnesTests {
         A = new CMatrix(14, 567, 1);
         exp = true;
 
-        assertEquals(exp, A.isOnes());
+        assertEquals(exp, A.isAllOnes());
 
         // ----------------- sub-case 2 -----------------
         A = new CMatrix(14, 567, 1);
         A.set(new Complex128(-943, 133.5), 4, 55);
         exp = false;
 
-        assertEquals(exp, A.isOnes());
+        assertEquals(exp, A.isAllOnes());
     }
 }

@@ -132,8 +132,8 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * Checks if this tensor only contains positive values.
      * @return Returns {@code true} if this tensor only contains positive values; {@code false} otherwise.
      */
-    public boolean isPos() {
-        return RealProperties.isPos(data);
+    public boolean isAllPos() {
+        return RealProperties.isAllPos(data);
     }
 
 
@@ -141,8 +141,8 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * Checks if this tensor only contains negative values.
      * @return Returns {@code true} if this tensor only contains negative values; {@code false} otherwise.
      */
-    public boolean isNeg() {
-        return RealProperties.isNeg(data);
+    public boolean isAllNeg() {
+        return RealProperties.isAllNeg(data);
     }
 
 
@@ -209,7 +209,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()
@@ -340,8 +340,8 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * @return {@code true} if this tensor only contains zeros; {@code false} otherwise.
      */
     @Override
-    public boolean isZeros() {
-        return RealProperties.isZeros(data);
+    public boolean isAllZeros() {
+        return RealProperties.isAllZeros(data);
     }
 
 
@@ -351,8 +351,8 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * @return {@code true} if this tensor only contains ones; {@code false} otherwise.
      */
     @Override
-    public boolean isOnes() {
-        return RealProperties.isOnes(data);
+    public boolean isAllOnes() {
+        return RealProperties.isAllOnes(data);
     }
 
 
@@ -534,12 +534,12 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      *
      * @return {@code true} if this tensor only contains finite values; {@code false} otherwise.
      *
-     * @see #isInfinite()
-     * @see #isNaN()
+     * @see #containsInf()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isFinite() {
-        return RealProperties.isFinite(data);
+    public boolean isAllFinite() {
+        return RealProperties.isAllFinite(data);
     }
 
 
@@ -548,12 +548,12 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      *
      * @return {@code true} if this tensor contains at least one infinite value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isNaN()
+     * @see #isAllFinite()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isInfinite() {
-        return RealProperties.isInfinite(data);
+    public boolean containsInf() {
+        return RealProperties.containsInf(data);
     }
 
 
@@ -562,11 +562,11 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      *
      * @return {@code true} if this tensor contains at least one NaN value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isInfinite()
+     * @see #isAllFinite()
+     * @see #containsInf()
      */
     @Override
-    public boolean isNaN() {
-        return RealProperties.isNaN(data);
+    public boolean containsNaN() {
+        return RealProperties.isAllNaN(data);
     }
 }

@@ -36,7 +36,7 @@ import org.flag4j.util.exceptions.TensorShapeException;
 /**
  * <p>The base class for all dense vectors whose data are {@link Ring} elements.
  *
- * <p>Vectors are 1D tensors (i.e. rank 1 tensor).
+ * <p>Vectors are 1D tensors (i.e., rank 1 tensor).
  *
  * <p>AbstractDenseSemiringVectors have mutable {@link #data} but a fixed {@link #shape}.
  *
@@ -130,7 +130,7 @@ public abstract class AbstractDenseRingVector<T extends AbstractDenseRingVector<
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()

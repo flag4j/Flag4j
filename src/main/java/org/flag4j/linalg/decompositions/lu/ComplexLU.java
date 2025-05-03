@@ -127,7 +127,7 @@ public class ComplexLU extends LU<CMatrix> {
 
 
     /**
-     * Computes the LU decomposition using no pivoting (i.e. rows and columns are not swapped).
+     * Computes the LU decomposition using no pivoting (i.e., rows and columns are not swapped).
      */
     @Override
     protected void noPivot() {
@@ -142,7 +142,7 @@ public class ComplexLU extends LU<CMatrix> {
 
 
     /**
-     * Computes the LU decomposition using partial pivoting (i.e. row swapping).
+     * Computes the LU decomposition using partial pivoting (i.e., row swapping).
      */
     @Override
     protected void partialPivot() {
@@ -166,7 +166,7 @@ public class ComplexLU extends LU<CMatrix> {
 
 
     /**
-     * Computes the LU decomposition using full/rook pivoting (i.e. row and column swapping).
+     * Computes the LU decomposition using full/rook pivoting (i.e., row and column swapping).
      */
     @Override
     protected void fullPivot() {

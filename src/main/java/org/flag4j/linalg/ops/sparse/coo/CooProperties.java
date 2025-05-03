@@ -54,7 +54,7 @@ public final class CooProperties {
      * false}. This means passing {@code zeroValue = null} will result in all items in {@code values} being considered. This is
      * useful if there is no definable zero value for the values of the COO matrix.
      * @return {@code true} if the specified COO matrix is symmetric
-     * (i.e. equal to its transpose); {@code false} otherwise.
+     * (i.e., equal to its transpose); {@code false} otherwise.
      */
     public static <T> boolean isSymmetric(Shape shape, T[] data, int[] rowIndices, int[] colIndices, T zeroValue) {
         if(shape.get(0) != shape.get(1)) return false; // Early return for non-square matrix.

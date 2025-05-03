@@ -62,7 +62,7 @@ public class SymmTriDiag implements Serializable {
      */
     final double[] offDiag;
     /**
-     * The size (i.e. number of rows and columns) of this symmetric tri-diagonal matrix.
+     * The size (i.e., number of rows and columns) of this symmetric tri-diagonal matrix.
      */
     final int size;
 

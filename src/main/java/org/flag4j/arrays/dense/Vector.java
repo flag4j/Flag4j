@@ -33,6 +33,7 @@ import org.flag4j.io.PrintOptions;
 import org.flag4j.linalg.VectorNorms;
 import org.flag4j.linalg.ops.common.complex.Complex128Ops;
 import org.flag4j.linalg.ops.common.field_ops.FieldOps;
+import org.flag4j.linalg.ops.common.real.RealProperties;
 import org.flag4j.linalg.ops.dense.real.RealDenseVectorOps;
 import org.flag4j.linalg.ops.dense.real_field_ops.RealFieldDenseElemDiv;
 import org.flag4j.linalg.ops.dense.real_field_ops.RealFieldDenseElemMult;
@@ -54,7 +55,7 @@ import java.util.List;
 /**
  * <p>A dense vector backed by a primitive double array.
  *
- * <p>Vectors are 1D tensors (i.e. rank 1 tensor).
+ * <p>Vectors are 1D tensors (i.e., rank 1 tensor).
  *
  * <p>Vectors have mutable data but are fixed in size.
  */
@@ -83,31 +84,29 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
-     * Creates a vector of specified size filled with zeros.
+     * Creates a vector of a specified size filled with zeros.
      * @param size Size of the vector.
      */
     public Vector(int size) {
-        super(new Shape(size), new double[size]);
-        this.size = shape.get(0);
+        this(new Shape(size), new double[size]);
     }
 
 
     /**
-     * Creates a vector of specified size filled with a specified value.
+     * Creates a vector of a specified size filled with a specified value.
      * @param size Size of the vector.
-     * @param fillValue Value to fill vector with.
+     * @param fillValue Value to fill this vector with.
      */
     public Vector(int size, double fillValue) {
-        super(new Shape(size), new double[size]);
-        Arrays.fill(super.data, fillValue);
-        this.size = shape.get(0);
+        this(new Shape(size), new double[size]);
+        Arrays.fill(data, fillValue);
     }
 
 
     /**
      * Creates a vector of the specified shape filled with zeros.
      * @param shape Shape of this vector.
-     * @throws IllegalArgumentException If the shapes is not rank 1.
+     * @throws IllegalArgumentException If the shape is not rank 1.
      */
     public Vector(Shape shape) {
         super(shape, new double[shape.get(0)]);
@@ -117,10 +116,10 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
-     * Creates a vector of specified size filled with a specified value.
+     * Creates a vector of a specified size filled with a specified value.
      * @param shape Shape of the vector.
-     * @param fillValue Value to fill vector with.
-     * @throws IllegalArgumentException If the shapes is not rank 1.
+     * @param fillValue Value to fill a vector with.
+     * @throws IllegalArgumentException If the shape is not rank 1.
      */
     public Vector(Shape shape, double fillValue) {
         super(shape, new double[shape.get(0)]);
@@ -135,8 +134,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * @param entries Entries for this column vector.
      */
     public Vector(double... entries) {
-        super(new Shape(entries.length), entries);
-        size = shape.get(0);
+        this(new Shape(entries.length), entries);
     }
 
 
@@ -148,29 +146,27 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
         super(new Shape(entries.length), new double[entries.length]);
         this.size = shape.get(0);
 
-        for(int i=0; i<entries.length; i++) {
+        for(int i=0; i<entries.length; i++)
             super.data[i] = entries[i];
-        }
     }
 
 
     /**
      * Creates a vector from another vector. This essentially copies the vector.
-     * @param a Vector to make copy of.
+     * @param a Vector to make a copy of.
      */
     public Vector(Vector a) {
-        super(a.shape, a.data.clone());
-        this.size = shape.get(0);
+        this(a.shape, a.data.clone());
     }
 
 
     /**
-     * Constructs a tensor of the same type as this tensor with the given the shape and data.
+     * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
      * @param entries Entries of the tensor to construct.
      *
-     * @return A tensor of the same type as this tensor with the given the shape and data.
+     * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
     public Vector makeLikeTensor(Shape shape, double[] entries) {
@@ -179,7 +175,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
-     * Flattens tensor to single dimension while preserving order of data.
+     * Flattens tensor to a single dimension while preserving the order of data.
      *
      * @return The flattened tensor.
      *
@@ -209,8 +205,8 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
     /**
      * Repeats a vector {@code n} times along a certain axis to create a matrix.
      *
-     * @param n Number of times to repeat vector.
-     * @param axis Axis along which to repeat vector:
+     * @param n Number of times to repeat this vector.
+     * @param axis Axis along which to repeat this vector:
      * <ul>
      *     <li>If {@code axis=0}, then the vector will be treated as a row vector and stacked vertically {@code n} times.</li>
      *     <li>If {@code axis=1} then the vector will be treated as a column vector and stacked horizontally {@code n} times.</li>
@@ -264,19 +260,13 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
-     * <p>
-     * Stacks two vectors along specified axis.
-     * 
+     * <p>Stacks two vectors along a specified axis.
      *
-     * <p>
-     * Stacking two vectors of length {@code n} along axis 0 stacks the vectors
+     * <p>Stacking two vectors of length {@code n} along axis 0 stacks the vectors
      * as if they were row vectors resulting in a {@code 2&times;n} matrix.
-     * 
      *
-     * <p>
-     * Stacking two vectors of length {@code n} along axis 1 stacks the vectors
+     * <p>Stacking two vectors of length {@code n} along axis 1 stacks the vectors
      * as if they were column vectors resulting in a {@code n&times;2} matrix.
-     * 
      *
      * @param b Vector to stack with this vector.
      * @param axis Axis along which to stack vectors. If {@code axis=0}, then vectors are stacked as if they are row
@@ -286,7 +276,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      *
      * @throws IllegalArgumentException If the number of data in this vector is different from the number of
      *                                  data in the vector {@code b}.
-     * @throws IllegalArgumentException If axis is not either 0 or 1.
+     * @throws IllegalArgumentException If {@code axis} is not either 0 or 1.
      */
     @Override
     public Matrix stack(Vector b, int axis) {
@@ -406,13 +396,36 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
-     * Computes the p-norm of this vector.
+     * <p>Computes the <span class="latex-inline">&ell;<sup>p</sup></span> norm (or p-norm) of this vector.
+     * <p>Some common norms:
+     * <ul>
+     *     <li>{@code p=1}: The taxicab, city block, or Manhattan norm.</li>
+     *     <li>{@code p=2}: The Euclidean or <span class="latex-inline">&ell;<sup>2</sup></span> norm.</li>
+     * </ul>
      *
-     * @param p {@code p} value in the p-norm.
+     * @param p The {@code p} value in the p-norm.
+     * When {@code p < 1}, the result of this method is not technically a
+     * true mathematical norm.
+     * However, it may be useful for various numerical tasks.
+     * <ul>
+     *     <li>If {@code p} is finite, then the norm is computed as if by:
+     *     <pre>{@code
+     *     int norm = 0;
      *
-     * @return The Euclidean norm of this vector.
+     *     for(double v : src)
+     *         norm += Math.pow(Math.abs(v), p);
+     *
+     *     return Math.pow(norm, 1.0/p);
+     *     }</pre>
+     *     </li>
+     *     <li>If {@code p} is {@link Double#POSITIVE_INFINITY}, then this method computes the maximum/infinite norm.</li>
+     *     <li>If {@code p} is {@link Double#NEGATIVE_INFINITY}, then this method computes the minimum norm.</li>
+     * </ul>
+     *
+     * <p>Warning, if {@code p} is very large in absolute value, overflow errors may occur.
+     * @return The p-norm of the vector.
      */
-    public double norm(int p) {
+    public double norm(double p) {
         return VectorNorms.norm(data, p);
     }
 
@@ -420,7 +433,8 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
     /**
      * Computes a unit vector in the same direction as this vector.
      *
-     * @return A unit vector with the same direction as this vector. If this vector is zeros, then an equivalently sized
+     * @return A unit vector with the same direction as this vector.
+     * If this vector is all zeros, then an equivalently sized
      * zero vector will be returned.
      */
     public Vector normalize() {
@@ -441,11 +455,34 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
+     * Gets multiple items from this vector.
+     *
+     * @param indices The indices of each item to get from this vector.
+     *
+     * @return A vector containing the entries of this vector at the specified {@code indices}.
+     *
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @see #get(int)
+     * @see #getSlice(int, int)
+     */
+    @Override
+    public Vector getItems(int... indices) {
+        double[] itemData = new double[indices.length];
+
+        for(int i=0; i<indices.length; i++)
+            itemData[i] = data[indices[i]];
+
+        return new Vector(itemData);
+    }
+
+
+    /**
      * Gets the element of this vector at the specified index.
-     *
      * @param idx Index of the element to get within this vector.
-     *
      * @return The element of this vector at index {@code idx}.
+     * @throws IndexOutOfBoundsException If {@code idx} is not within the bounds of this vector.
+     * @see #getSlice(int, int)
+     * @see #getItems(int...)
      */
     @Override
     public Double get(int idx) {
@@ -455,11 +492,181 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
-     * Computes the vector cross product between two vectors.
+     * Gets a slice of this vector over the specified range of indices.
      *
-     * @param b Second vector in the cross product.
+     * @param startIdx Staring index of slice (inclusive).
+     * @param endIdx Ending index of slice (exclusive).
      *
-     * @return The result of the vector cross product between this vector and {@code b}.
+     * @return A vector of length {@code endIdx - startIdx} whose entries are the elements of this vector
+     * over the specified range of indices [{@code startIdx}, {@code endIdx}).
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} or {@code endIdx - 1} are not within the bounds of this vector.
+     * @throws IllegalArgumentException  If {@code startIdx >= endIdx}.
+     * @see #get(int)
+     * @see #getItems(int...)
+     */
+    @Override
+    public Vector getSlice(int startIdx, int endIdx) {
+        if (startIdx >= endIdx) {
+            throw new IllegalArgumentException("startIdx must be less than endIdx but got startIdx="
+                    + startIdx + " and endIdx=" + endIdx + ".");
+        }
+        ValidateParameters.validateTensorIndex(shape, startIdx);
+        ValidateParameters.validateTensorIndex(shape, endIdx-1);
+
+        return new Vector(Arrays.copyOfRange(data, startIdx, endIdx));
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of another vector. This operation is done in-place.
+     *
+     * @param values A vector containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return A reference to this vector.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector,
+     * or if {@code values} does not fit within this vector when its first entry is placed at {@code startIdx}.
+     *
+     * @see #setSlice(Double[], int)
+     * @see #setSlice(double[], int)
+     * @see #setItems(Double[], int[])
+     * @see #setItems(double[], int[])
+     * @see #set(Double, int...) 
+     */
+    @Override
+    public Vector setSlice(Vector values, int startIdx) {
+        return setSlice(values.data, startIdx);
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of an array. This operation is done in-place.
+     *
+     * @param values Array containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return A reference to this vector.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector,
+     * or if {@code values} does not fit within this vector when its first entry is placed at {@code startIdx}.
+     *
+     * @see #setSlice(Vector, int)
+     * @see #setSlice(double[], int)
+     * @see #setItems(Double[], int[])
+     * @see #setItems(double[], int[])
+     * @see #set(Double, int...)
+     */
+    @Override
+    public Vector setSlice(Double[] values, int startIdx) {
+        return setSlice(ArrayConversions.unbox(values, null), startIdx);
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of an array. This operation is done in-place.
+     *
+     * @param values Array containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return A reference to this vector.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector,
+     * or if {@code values} does not fit within this vector when its first entry is placed at {@code startIdx}.
+     * @see #setSlice(Double[], int)
+     * @see #setSlice(Vector, int)
+     * @see #setItems(Double[], int[])
+     * @see #setItems(double[], int[])
+     * @see #set(Double, int...)
+     */
+    public Vector setSlice(double[] values, int startIdx) {
+        ValidateParameters.validateVectorSlice(startIdx, values.length + startIdx, size);
+        System.arraycopy(values, 0, data, startIdx , values.length);
+        return this;
+    }
+
+
+    /**
+     * Sets multiple items of this vector. This is done in-place
+     *
+     * @param values New values it set the specified items to.
+     * @param indices The indices indicating where each value in {@code values} should be set within this vector.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @see #setSlice(Vector, int)
+     * @see #setSlice(Double[], int)
+     * @see #setSlice(double[], int)
+     * @see #setItems(double[], int[])
+     * @see #setItems(Vector, int[])
+     * @see #set(Double, int...)
+     */
+    @Override
+    public Vector setItems(Double[] values, int[] indices) {
+        ValidateParameters.ensureArrayLengthsEq(values.length, indices.length);
+
+        for(int i=0; i<indices.length; i++)
+            data[indices[i]] = values[i];
+
+        return this;
+    }
+
+
+    /**
+     * Sets multiple items of this vector. This is done in-place
+     *
+     * @param values New values it set the specified items to.
+     * @param indices The indices indicating where each value in {@code values} should be set within this vector.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @see #setSlice(Vector, int)
+     * @see #setSlice(Double[], int)
+     * @see #setSlice(double[], int)
+     * @see #setItems(Double[], int[])
+     * @see #setItems(Vector, int[])
+     * @see #set(Double, int...)
+     */
+    public Vector setItems(double[] values, int[] indices) {
+        ValidateParameters.ensureArrayLengthsEq(values.length, indices.length);
+
+        for(int i=0; i<indices.length; i++)
+            data[indices[i]] = values[i];
+
+        return this;
+    }
+
+
+    /**
+     * Sets multiple items of this vector. This is done in-place
+     *
+     * @param values New values it set the specified items to.
+     * @param indices The indices indicating where each value in {@code values} should be set within this vector.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @see #setSlice(Vector, int)
+     * @see #setSlice(Double[], int)
+     * @see #setSlice(double[], int)
+     * @see #setItems(Double[], int[])
+     * @see #setItems(double[], int[])
+     * @see #set(Double, int...)
+     */
+    public Vector setItems(Vector values, int[] indices) {
+        return setItems(values.data, indices);
+    }
+
+
+    /**
+     * Computes the vector cross-product between two vectors.
+     *
+     * @param b Second vector in the cross-product.
+     *
+     * @return The result of the vector cross-product between this vector and {@code b}.
      *
      * @throws IllegalArgumentException If either this vector or {@code b} do not have exactly 3 data.
      */
@@ -469,18 +676,18 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
                     + size + " and " + b.size);
         }
 
-        double[] entries = new double[3];
+        double v0 = data[0]; double v1 = data[1]; double v2 = data[2];
+        double bv0 = b.data[0]; double bv1 = b.data[1]; double bv2 = b.data[2];
 
-        entries[0] = data[1]*b.data[2] - data[2]*b.data[1];
-        entries[1] = data[2]*b.data[0] - data[0]*b.data[2];
-        entries[2] = data[0]*b.data[1] - data[1]*b.data[0];
-
-        return new Vector(entries);
+        return new Vector(
+                v1*bv2 - v2*bv1,
+                v2*bv0 - v0*bv2,
+                v0*bv1 - v1*bv0);
     }
 
 
     /**
-     * Checks if a vector is parallel to this vector.
+     * Checks if another vector is parallel to this vector.
      *
      * @param b Vector to compare to this vector.
      *
@@ -493,12 +700,12 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
             return false;
         } else if(this.size==1) {
             return true;
-        } else if(this.isZeros() || b.isZeros()) {
-            return true; // Any vector is parallel to zero vector.
+        } else if(this.isAllZeros() || b.isAllZeros()) {
+            return true; // Any vector is parallel to the zero vector.
         } else {
             double scale = 0;
 
-            // Find first non-zero entry of b to compute the scaling factor.
+            // Find the first non-zero entry of b to compute the scaling factor.
             for(int i=0, size=b.size; i<size; i++) {
                 if(b.data[i]!=0) {
                     scale = this.data[i]/b.data[i];
@@ -506,11 +713,10 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
                 }
             }
 
-            // Ensure all data of b are the same scalar multiple of the data in this vector.
+            // Ensure all data of b are the approximately same scalar multiple of the data in this vector.
             for(int i=0, size=this.size; i<size; i++) {
-                if(b.data[i]*scale != this.data[i]) {
+                if (!RealProperties.isClose(b.data[i]*scale, this.data[i]))
                     return false;
-                }
             }
         }
 
@@ -519,28 +725,25 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
-     * Checks if a vector is perpendicular to this vector.
+     * Checks if another vector is perpendicular to this vector.
      *
      * @param b Vector to compare to this vector.
      *
-     * @return {@code true} if the vector {@code b} is perpendicular to this vector and the same size; {@code false} otherwise.
+     * @return {@code true} if the vector {@code b} is the same size and perpendicular to this vector; {@code false} otherwise.
      *
      * @see #isParallel(Vector)
      */
     public boolean isPerp(Vector b) {
-        boolean result;
-
-        if(this.size!=b.size) result = false;
-        else result = this.inner(b)==0;
-
-        return result;
+        return this.size != b.size
+                ? false
+                : this.inner(b) == 0;
     }
 
 
     /**
      * Gets the length of a vector.
      *
-     * @return The length, i.e. the number of data, in this vector.
+     * @return The length, i.e., the number of data, in this vector.
      */
     @Override
     public int length() {
@@ -554,7 +757,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -672,7 +875,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      *
      * @param b The denominator tensor in the element-wise quotient.
      *
-     * @throws TensorShapeException If this tensor and {@code b}'s shape are not equal.
+     * @throws TensorShapeException If this tensor and {@code b}s shapes are not equal.
      */
     @Override
     public void divEq(Vector b) {
@@ -690,7 +893,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      *
      * @return The element-wise quotient of this tensor and {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b}'s shape are not equal.
+     * @throws TensorShapeException If this tensor and {@code b}s shapes are not equal.
      */
     @Override
     public Vector div(Vector b) {
@@ -933,11 +1136,13 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
             result.append(String.format("%-" + width + "s", value));
         }
 
-        // Get last entry now
-        value = StringUtils.ValueOfRound(data[size-1], PrintOptions.getPrecision());
-        width = padding + value.length();
-        value = centering ? StringUtils.center(value, width) : value;
-        result.append(String.format("%-" + width + "s", value));
+        if(size > 0) {
+            // Get the last entry now.
+            value = StringUtils.ValueOfRound(data[size-1], PrintOptions.getPrecision());
+            width = padding + value.length();
+            value = centering ? StringUtils.center(value, width) : value;
+            result.append(String.format("%-" + width + "s", value));
+        }
 
         result.append("]");
 

@@ -349,10 +349,10 @@ public class ComplexSchur extends Schur<CMatrix, Complex128[]> {
     protected void computeImplicitDoubleShift(int workEnd) {
         // The shift computed here, p, represent the double shift
         //  p = (T - rho1*I)(T - rho2*I)*e1 where I is the identity matrix, e1 is the first column of I, and (rho1, rho2)
-        //  are taken to be the eigenvalues of the lower 2x2 sub-matrix within the working matrix.
+        //  are taken to be the eigenvalues of the lower 2x2 submatrix within the working matrix.
 
 
-        // Extract values from lower right 2x2 sub-matrix within the working size.
+        // Extract values from lower right 2x2 submatrix within the working size.
         int topIdx = (workEnd - 1)*numRows + workEnd;
         int bottomIdx = workEnd*numRows + workEnd;
         Complex128 x11 = T.data[topIdx - 1];
@@ -378,7 +378,7 @@ public class ComplexSchur extends Schur<CMatrix, Complex128[]> {
         a22 = a22.mult(maxAbsInv); a32 = a32.mult(maxAbsInv);
         x11 = x11.mult(maxAbsInv); x12 = x12.mult(maxAbsInv); x21 = x21.mult(maxAbsInv); x22 = x22.mult(maxAbsInv);
 
-        // Compute shifts to be eigenvalues of trailing 2x2 sub-matrix.
+        // Compute shifts to be eigenvalues of trailing 2x2 submatrix.
         Complex128[] rho = Eigen.get2x2EigenValues(x11, x12, x21, x22);
 
         // Compute first three non-zero data of the shift p.
@@ -506,7 +506,7 @@ public class ComplexSchur extends Schur<CMatrix, Complex128[]> {
 
 
     /**
-     * Checks for convergence of lower <span class="latex-inline">2&times;2</span> sub-matrix within working matrix to upper
+     * Checks for convergence of lower <span class="latex-inline">2&times;2</span> submatrix within working matrix to upper
      * triangular or block upper triangular form. If
      * convergence is found, this will also zero out the values which have converged to near zero.
      * @param workEnd The ending row (inclusive) of the current active working block.
@@ -549,7 +549,7 @@ public class ComplexSchur extends Schur<CMatrix, Complex128[]> {
      */
     @Override
     protected void checkFinite(CMatrix src) {
-        if(!src.isFinite())
+        if(!src.isAllFinite())
             throw new IllegalArgumentException("Matrix is not finite.");
     }
 

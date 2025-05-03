@@ -25,9 +25,9 @@
 package org.flag4j.arrays.backend.semiring_arrays;
 
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayBuilder;
 
 
@@ -140,7 +140,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      * @param b Second tensor in the element-wise product.
      * @return The element-wise product between this tensor and {@code b}.
      * @throws IllegalArgumentException If this tensor and {@code b} do not have the same shape.
@@ -218,7 +218,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
     /**
      * <p>Computes the generalized tensor trace of this tensor along first and second axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by the
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by the
      * first and
      * second axes. The shape of the resulting tensor is equal to this tensor with the first and second axes removed.
      *
@@ -232,17 +232,17 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     * (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     * (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     TensorOverSemiring<?, ?, ?, W> tensorTr(int axis1, int axis2);
 
@@ -251,14 +251,14 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * Checks if this tensor only contains zeros.
      * @return {@code true} if this tensor only contains zeros; {@code false} otherwise.
      */
-    boolean isZeros();
+    boolean isAllZeros();
 
 
     /**
      * Checks if this tensor only contains ones. If this tensor is sparse, only the non-zero data are considered.
      * @return {@code true} if this tensor only contains ones; {@code false} otherwise.
      */
-    boolean isOnes();
+    boolean isAllOnes();
 
 
     /**

@@ -44,7 +44,7 @@ import org.flag4j.util.ValidateParameters;
  *
  * <p>Sparse matrices allow for the efficient storage of and ops on matrices that contain many zero values.
  *
- * <p>COO matrices are optimized for hyper-sparse matrices (i.e. matrices which contain almost all zeros relative to the size of the
+ * <p>COO matrices are optimized for hyper-sparse matrices (i.e., matrices which contain almost all zeros relative to the size of the
  * matrix).
  *
  * <h2>COO Representation:</h2>
@@ -168,7 +168,7 @@ public abstract class AbstractCooFieldMatrix<T extends AbstractCooFieldMatrix<T,
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()
@@ -248,11 +248,11 @@ public abstract class AbstractCooFieldMatrix<T extends AbstractCooFieldMatrix<T,
      *
      * @return {@code true} if this tensor only contains finite values; {@code false} otherwise.
      *
-     * @see #isInfinite()
-     * @see #isNaN()
+     * @see #containsInf()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isFinite() {
+    public boolean isAllFinite() {
         return FieldOps.isFinite(data);
     }
 
@@ -262,11 +262,11 @@ public abstract class AbstractCooFieldMatrix<T extends AbstractCooFieldMatrix<T,
      *
      * @return {@code true} if this tensor contains at least one infinite value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isNaN()
+     * @see #isAllFinite()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isInfinite() {
+    public boolean containsInf() {
         return FieldOps.isInfinite(data);
     }
 
@@ -276,11 +276,11 @@ public abstract class AbstractCooFieldMatrix<T extends AbstractCooFieldMatrix<T,
      *
      * @return {@code true} if this tensor contains at least one NaN value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isInfinite()
+     * @see #isAllFinite()
+     * @see #containsInf()
      */
     @Override
-    public boolean isNaN() {
-        return FieldOps.isNaN(data);
+    public boolean containsNaN() {
+        return FieldOps.isAllNaN(data);
     }
 }

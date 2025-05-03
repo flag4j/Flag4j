@@ -40,7 +40,7 @@ import java.math.BigInteger;
  *     indices required to uniquely identify an element within the tensor.</li>
  *     <li><b>Data:</b> A one-dimensional container for the {@link #data} of the tensor.
  *     If the tensor is dense, this contains all the data of the tensor.
- *     If the tensor is sparse, this contains only the non-zero elements of the tensor.</li>
+ *     If the tensor is sparse, this contains only the non-zero-elements of the tensor.</li>
  * </ul>
  *
  * <p>This abstract class provides common functionality and properties for all tensor types.
@@ -118,7 +118,7 @@ public abstract class AbstractTensor<T extends AbstractTensor<T, U, V>, U, V>
 
     /**
      * <p>Gets the rank of this tensor. That is, number of indices needed to uniquely select an element of the tensor. This is also te
-     * number of dimensions (i.e. order/degree) of the tensor.
+     * number of dimensions (i.e., order/degree) of the tensor.
      *
      * <p>Note, this method is distinct from the {@code matrix rank}.
      *
@@ -232,7 +232,7 @@ public abstract class AbstractTensor<T extends AbstractTensor<T, U, V>, U, V>
      *
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
      * @see #T(int...)

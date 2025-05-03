@@ -24,8 +24,6 @@
 
 package org.flag4j.linalg.ops;
 
-import org.flag4j.numbers.Ring;
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleTensor;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractDenseSemiringTensor;
@@ -33,6 +31,8 @@ import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.linalg.ops.dense.DenseTranspose;
 import org.flag4j.linalg.ops.dense.real.RealDenseTranspose;
 import org.flag4j.linalg.ops.dense.ring_ops.DenseRingHermitianTranspose;
+import org.flag4j.numbers.Ring;
+import org.flag4j.numbers.Semiring;
 
 import static org.flag4j.util.ArrayBuilder.getOrCreateArray;
 
@@ -168,7 +168,7 @@ public final class TransposeDispatcher {
 
 
     /**
-     * Dispatches a matrix Hermitian transpose (i.e. conjugate transpose) problem to the appropriate algorithm based on its shape and
+     * Dispatches a matrix Hermitian transpose (i.e., conjugate transpose) problem to the appropriate algorithm based on its shape and
      * size.
      * @param shape Shape of the matrix to transpose and conjugate.
      * @param src Entries of the matrix to transpose and conjugate.

@@ -59,7 +59,7 @@ import java.util.function.BinaryOperator;
  *
  * <p>Sparse tensors allow for the efficient storage of and ops on tensors that contain many zero values.
  *
- * <p>COO tensors are optimized for hyper-sparse tensors (i.e. tensors which contain almost all zeros relative to the size of the
+ * <p>COO tensors are optimized for hyper-sparse tensors (i.e., tensors which contain almost all zeros relative to the size of the
  * tensor).
  *
  * <p>A sparse COO tensor is stored as:
@@ -68,7 +68,7 @@ import java.util.function.BinaryOperator;
  *     <li>The non-zero {@link #data} of the tensor. All other data in the tensor are
  *     assumed to be zero. Zero value can also explicitly be stored in {@link #data}.</li>
  *     <li><p>The {@link #indices} of the non-zero value in the sparse tensor. Many ops assume indices to be sorted in a
- *     row-major format (i.e. last index increased fastest) but often this is not explicitly verified.
+ *     row-major format (i.e., last index increased fastest) but often this is not explicitly verified.
  *
  *     <p>The {@link #indices} array has shape {@code (nnz, rank)} where {@link #nnz} is the number of non-zero data in this
  *     sparse tensor and {@code rank} is the {@link #getRank() tensor rank} of the tensor. This means {@code indices[i]} is the nD
@@ -222,13 +222,13 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * Constructs a sparse tensor of the same type as this tensor with the given the shape, non-zero data, and non-zero indices.
+     * Constructs a sparse tensor of the same type as this tensor with the given shape, non-zero data, and non-zero indices.
      *
      * @param shape Shape of the sparse tensor to construct.
      * @param data Non-zero data of the sparse tensor to construct.
      * @param indices Non-zero indices of the sparse tensor to construct.
      *
-     * @return A sparse tensor of the same type as this tensor with the given the shape and data.
+     * @return A sparse tensor of the same type as this tensor with the given shape and data.
      */
     public CooTensor makeLikeTensor(Shape shape, double[] data, int[][] indices) {
         return new CooTensor(shape, data, indices);
@@ -236,13 +236,13 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * Constructs a sparse tensor of the same type as this tensor with the given the shape, non-zero data, and non-zero indices.
+     * Constructs a sparse tensor of the same type as this tensor with the given shape, non-zero data, and non-zero indices.
      *
      * @param shape Shape of the sparse tensor to construct.
      * @param data Non-zero data of the sparse tensor to construct.
      * @param indices Non-zero indices of the sparse tensor to construct.
      *
-     * @return A sparse tensor of the same type as this tensor with the given the shape and data.
+     * @return A sparse tensor of the same type as this tensor with the given shape and data.
      */
     public CooTensor makeLikeTensor(Shape shape, List<Double> data, List<int[]> indices) {
         return new CooTensor(shape, data, indices);
@@ -326,7 +326,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
     @Override
     public Double get(int... indices) {
         ValidateParameters.validateTensorIndex(shape, indices);
-        if(data.length == 0) return null; // Can not get reference of field so no way to get zero element.
+        if(data.length == 0) return null; // Can not get reference of field so no way to get zero-element.
 
         for(int i=0; i<nnz; i++)
             if(Arrays.equals(this.indices[i], indices)) return data[i];
@@ -607,7 +607,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -645,19 +645,19 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}. This will be a tensor of rank
      * {@code this.getRank() - 2} with the same shape as this tensor but with {@code axis1} and {@code axis2} removed.
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     @Override
     public CooTensor tensorTr(int axis1, int axis2) {
@@ -754,7 +754,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -826,16 +826,16 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * <p>Computes the element-wise reciprocals of the non-zero elements of this sparse tensor.
+     * <p>Computes the element-wise reciprocals of the non-zero-elements of this sparse tensor.
      *
-     * <p>Note: This method <b>only</b> computes the reciprocals of the non-zero elements.
+     * <p>Note: This method <b>only</b> computes the reciprocals of the non-zero-elements.
      *
-     * @return A tensor containing the reciprocal non-zero elements of this tensor.
+     * @return A tensor containing the reciprocal non-zero-elements of this tensor.
      */
     @Override
     public CooTensor recip() {
         /* This method is override from FieldTensorBase to make clear it is only computing the
-            multiplicative inverse for the non-zero elements of the tensor */
+            multiplicative inverse for the non-zero-elements of the tensor */
         double[] recip = new double[data.length];
 
         for(int i = 0, size = data.length; i<size; i++)
@@ -865,7 +865,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      */
     @Override
     public CooTensor add(double b) {
-        // Overrides method in super class to emphasize that the method works on the non-zero elements only.
+        // Overrides method in super class to emphasize that the method works on the non-zero-elements only.
         return super.add(b);
     }
 
@@ -879,7 +879,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      */
     @Override
     public CooTensor sub(double b) {
-        // Overrides method in super class to emphasize that the method works on the non-zero elements only.
+        // Overrides method in super class to emphasize that the method works on the non-zero-elements only.
         return super.sub(b);
     }
 
@@ -910,7 +910,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
     /**
      * Coalesces this sparse COO tensor. An uncoalesced tensor is a sparse tensor with multiple data for a single index. This
      * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
-     * than summing is desired, use {@link #coalesce(BinaryOperator)}.
+     * than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse COO tensor which is equivalent to this COO tensor.
      * @see #coalesce(BinaryOperator)
      */

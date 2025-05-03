@@ -75,7 +75,7 @@ import java.io.Serializable;
  * <ul>
  *   <li>{@link #add(Semiring)}: Performs the addition operation, returning a new semiring element.</li>
  *   <li>{@link #mult(Semiring)}: Performs the multiplication operation, returning a new semiring element.</li>
- *   <li>{@link #isZero()}: Checks if the element is the additive identity (zero element).</li>
+ *   <li>{@link #isZero()}: Checks if the element is the additive identity (zero-element).</li>
  *   <li>{@link #isOne()}: Checks if the element is the multiplicative identity (one element).</li>
  *   <li>{@link #getZero()}: Returns the additive identity element of the semiring.</li>
  *   <li>{@link #getOne()}: Returns the multiplicative identity element of the semiring.</li>

@@ -147,12 +147,12 @@ public final class RealCsrMatMult {
         double[] destEntries = new double[src1.numRows];
         int rows1 = src1.numRows;
 
-        // Iterate over the non-zero elements of the sparse vector.
+        // Iterate over the non-zero-elements of the sparse vector.
         for (int k = 0; k < src2.data.length; k++) {
             int col = src2.indices[k];
             double val = src2.data[k];
 
-            // Perform multiplication only for the non-zero elements.
+            // Perform multiplication only for the non-zero-elements.
             for (int i=0; i<rows1; i++) {
                 int start = src1.rowPointers[i];
                 int stop = src1.rowPointers[i + 1];

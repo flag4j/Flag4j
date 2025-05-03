@@ -45,7 +45,7 @@ public final class PrintOptions {
      */
     public static final int DEFAULT_MAX_COLS = 10;
     /**
-     * Default precision (i.e. number of decimals) to use when printing.
+     * Default precision (i.e., number of decimals) to use when printing.
      */
     public static final int DEFAULT_PRECISION = 8;
     /**
@@ -106,7 +106,7 @@ public final class PrintOptions {
 
 
     /**
-     * Precision of the printed matrix values. i.e. the number of decimal places printed.
+     * Precision of the printed matrix values. i.e., the number of decimal places printed.
      * If negative, max precision is used.
      * <br><br>
      * Default Value: {@link #DEFAULT_PRECISION}.

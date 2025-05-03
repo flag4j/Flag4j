@@ -18,7 +18,7 @@ class Complex128GettersSettersTest {
         expReDouble = 692.13;
         expImDouble = -9673.134;
 
-        Assertions.assertEquals(expReDouble, num.re());
-        Assertions.assertEquals(expImDouble, num.im());
+        Assertions.assertEquals(expReDouble, num.getReal());
+        Assertions.assertEquals(expImDouble, num.getImag());
     }
 }

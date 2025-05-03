@@ -267,43 +267,43 @@ public abstract class Balancer<T extends MatrixMixin<T, ?, ?, ?>> extends Decomp
 
     /**
      * Checks if a value within {@link #balancedMatrix} is zero.
-     * @param idx Index of value within {@link #balancedMatrix}'s 1D data array to check if it is zero.
+     * @param idx Index of value within {@link #balancedMatrix}s 1D data array to check if it is zero.
      */
     protected abstract boolean isZero(int idx);
 
 
     /**
-     * Computes the &ell;<sup>2</sup> norm of a vector with {@code n} elements from {@link #balancedMatrix}'s 1D data array
+     * Computes the &ell;<sup>2</sup> norm of a vector with {@code n} elements from {@link #balancedMatrix}s 1D data array
      * starting at index {@code start} and spaced by {@code stride}.
-     * @param start Starting index within {@link #balancedMatrix}'s 1D data array to compute norm of.
+     * @param start Starting index within {@link #balancedMatrix}s 1D data array to compute norm of.
      * @param n The number of elements in the vector to compute norm of.
-     * @param stride The spacing between each element within {@link #balancedMatrix}'s 1D data array to norm of.
-     * @return The norm of the vector containing the specified elements from {@link #balancedMatrix}'s 1D data array.
+     * @param stride The spacing between each element within {@link #balancedMatrix}s 1D data array to norm of.
+     * @return The norm of the vector containing the specified elements from {@link #balancedMatrix}s 1D data array.
      */
     protected abstract double vectorNorm(int start, int n, int stride);
 
 
     /**
-     * Computes the maximum absolute value of a vector with {@code n} elements from {@link #balancedMatrix}'s 1D data array
+     * Computes the maximum absolute value of a vector with {@code n} elements from {@link #balancedMatrix}s 1D data array
      * starting at index {@code start} and spaced by {@code stride}.
-     * @param start Starting index within {@link #balancedMatrix}'s 1D data array to compute maximum absolute value of.
+     * @param start Starting index within {@link #balancedMatrix}s 1D data array to compute maximum absolute value of.
      * @param n The number of elements in the vector to compute maximum absolute value of.
-     * @param stride The spacing between each element within {@link #balancedMatrix}'s 1D data array to compute maximum absolute
+     * @param stride The spacing between each element within {@link #balancedMatrix}s 1D data array to compute maximum absolute
      * value of.
-     * @return The maximum absolute value of the vector containing the specified elements from {@link #balancedMatrix}'s 1D data
+     * @return The maximum absolute value of the vector containing the specified elements from {@link #balancedMatrix}s 1D data
      * array.
      */
     protected abstract double vectorMaxAbs(int start, int n, int stride);
 
 
     /**
-     * Scales a vector with {@code n} elements from {@link #balancedMatrix}'s 1D data array
+     * Scales a vector with {@code n} elements from {@link #balancedMatrix}s 1D data array
      * starting at index {@code start} and spaced by {@code stride}. This operation must be done in-place.
      *
      * @param factor Factor to scale elements by.
-     * @param start Starting index within {@link #balancedMatrix}'s 1D data array begin scaling.
+     * @param start Starting index within {@link #balancedMatrix}s 1D data array begin scaling.
      * @param n The number of elements to scale.
-     * @param stride The spacing between each element within {@link #balancedMatrix}'s 1D data array to scale.
+     * @param stride The spacing between each element within {@link #balancedMatrix}s 1D data array to scale.
      */
     protected abstract void vectorScale(double factor, int start, int n, int stride);
 
@@ -551,9 +551,9 @@ public abstract class Balancer<T extends MatrixMixin<T, ?, ?, ?>> extends Decomp
 
 
     /**
-     * Gets the starting index (inclusive) for the sub-matrix <b>B<sub>1</sub></b> of the balanced matrix which did not isolate
+     * Gets the starting index (inclusive) for the submatrix <b>B<sub>1</sub></b> of the balanced matrix which did not isolate
      * eigenvalues.
-     * @return The starting index (inclusive) for the sub-matrix of the balanced matrix which did not isolate eigenvalues.
+     * @return The starting index (inclusive) for the submatrix of the balanced matrix which did not isolate eigenvalues.
      * @throws IllegalStateException If {@link #decompose(MatrixMixin)} has not yet been called on this instance.
      */
     public int getILow() {
@@ -563,9 +563,9 @@ public abstract class Balancer<T extends MatrixMixin<T, ?, ?, ?>> extends Decomp
 
 
     /**
-     * Gets the starting index (exclusive) for the sub-matrix <b>B<sub>1</sub></b> of the balanced matrix which did not isolate
+     * Gets the starting index (exclusive) for the submatrix <b>B<sub>1</sub></b> of the balanced matrix which did not isolate
      * eigenvalues.
-     * @return The starting index (exclusive) for the sub-matrix of the balanced matrix which did not isolate eigenvalues.
+     * @return The starting index (exclusive) for the submatrix of the balanced matrix which did not isolate eigenvalues.
      * @throws IllegalStateException If {@link #decompose(MatrixMixin)} has not yet been called on this instance.
      */
     public int getIHigh() {
@@ -586,8 +586,8 @@ public abstract class Balancer<T extends MatrixMixin<T, ?, ?, ?>> extends Decomp
 
 
     /**
-     * Gets the sub-matrix <b>B<sub>1</sub></b> of the full balanced matrix which did not isolate eigenvalues.
-     * @return The sub-matrix of the full balanced matrix which did not isolate eigenvalues.
+     * Gets the submatrix <b>B<sub>1</sub></b> of the full balanced matrix which did not isolate eigenvalues.
+     * @return The submatrix of the full balanced matrix which did not isolate eigenvalues.
      * @throws IllegalStateException If {@link #decompose(MatrixMixin)} has not yet been called on this instance.
      */
     public T getBSubMatrix() {
@@ -624,7 +624,7 @@ public abstract class Balancer<T extends MatrixMixin<T, ?, ?, ?>> extends Decomp
      * <ul>
      *     <li>If {@code true}: The full n&times;n diagonal scaling matrix will be created.</li>
      *     <li>If {@code false}: A matrix of shape 1&times;n containing only the scaling factors
-     *     (i.e. the diagonal entries of the full scaling matrix).
+     *     (i.e., the diagonal entries of the full scaling matrix).
      *     </li>
      * </ul>
      * @return If {@code full == true} then the full n&times;n scaling matrix is returned. Otherwise if {@code full == false}

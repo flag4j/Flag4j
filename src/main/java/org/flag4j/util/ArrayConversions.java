@@ -79,7 +79,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts array to an array of {@link Complex128 complex numbers}.
+     * Converts an array of {@code int}s to one of {@link Complex128}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is null, a new array will be created.
@@ -98,7 +98,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts array to an array of {@link Complex128 complex numbers}.
+     * Converts an array of {@code double}s to one of {@link Complex128}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is {@code null}, a new array will be created.
@@ -117,7 +117,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts array to an array of {@link Complex128 complex numbers}.
+     * Converts an array of {@link Integer}s to one of {@link Complex128}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is null, a new array will be created.
@@ -136,7 +136,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts array to an array of {@link Complex128 complex numbers}.
+     * Converts an array of {@code Double}s to one of {@link Complex128}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is null, a new array will be created.
@@ -155,7 +155,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts an array to an array of {@link Complex128 complex numbers}.
+     * Converts an array of {@link Complex64}s to an array of {@link Complex128}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is null, a new array will be created.
@@ -174,7 +174,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts array to an array of {@link Complex128 complex numbers}.
+     * Converts an array of {@link String}s to one of {@link Complex128}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is null, a new array will be created.
@@ -195,7 +195,7 @@ public final class ArrayConversions {
     
     
     /**
-     * Converts array to an array of {@link Complex64 complex numbers}.
+     * Converts an array of {@code int}s to one of {@link Complex64}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is null, a new array will be created.
@@ -214,7 +214,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts array to an array of {@link Complex64 complex numbers}.
+     * Converts an array of {@code float}s to one of {@link Complex64}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is {@code null}, a new array will be created.
@@ -233,7 +233,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts array to an array of {@link Complex64 complex numbers}.
+     * Converts an array of {@link src} to one of {@link Complex64}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is null, a new array will be created.
@@ -252,7 +252,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts array to an array of {@link Complex64 complex numbers}.
+     * Converts an array of {@link Float}s to one of {@link Complex64}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is null, a new array will be created.
@@ -271,7 +271,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts array to an array of {@link Complex64 complex numbers}.
+     * Converts an array of {@link String}s to one of {@link Complex64}s.
      *
      * @param src  Array to convert.
      * @param dest Destination array. If the destination array is null, a new array will be created.
@@ -355,7 +355,7 @@ public final class ArrayConversions {
     /**
      * Converts a list of {@link Double Doubles} objects to a primitive array.
      *
-     * @param src Source list to convert.
+     * @param src The source list to convert.
      * @return An array containing the same values as the {@code src} list.
      */
     public static double[] fromDoubleList(List<Double> src) {
@@ -371,7 +371,7 @@ public final class ArrayConversions {
     /**
      * Converts a list of {@link Integer Integer} objects to a primitive array.
      *
-     * @param src Source list to convert.
+     * @param src The source list to convert.
      * @return An array containing the same values as the {@code src} list.
      */
     public static int[] fromIntegerList(List<Integer> src) {
@@ -387,7 +387,7 @@ public final class ArrayConversions {
     /**
      * Converts a list of {@link Integer Integer} objects to a primitive array.
      *
-     * @param src  Source list to convert.
+     * @param src  The source list to convert.
      * @param dest Destination array to store values from {@code src} in (modified). Must be at least as large as {@code src}.
      * @return A reference to the {@code dest} array.
      */
@@ -404,7 +404,7 @@ public final class ArrayConversions {
     /**
      * Converts a list to an array.
      *
-     * @param src  Source list to convert.
+     * @param src The Source list to convert.
      * @param dest Destination array to store values from {@code src} in (modified). Must be at least as large as {@code src}.
      * @return A reference to the {@code dest} array.
      * @throws IllegalArgumentException If the {@code dest} array is not large enough to store all data of {@code src}
@@ -417,11 +417,11 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts an array of {@link Double} objects to a primitive array (i.e. unboxing).
+     * Converts an array of {@link Double} objects to a primitive array (i.e., unboxing).
      *
      * @param arr Array to unbox.
-     * @param dest Destination array for the unboxed values.
-     * @return If dest was not {@code null} then a reference to {@code dest} is returned. Otherwise, a new array with the unboxed
+     * @param dest Destination array for the unboxed values. May be {@code null}.
+     * @return If dest was <em>not</em> {@code null} then a reference to {@code dest} is returned. Otherwise, a new array with the unboxed
      * values is returned.
      */
     public static double[] unbox(Double[] arr, double[] dest) {
@@ -435,25 +435,24 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts an array of {@link Integer} objects to a primitive array (i.e. unboxing).
+     * Converts an array of {@link Integer} objects to a primitive array (i.e., unboxing).
      * @param arr Array to unbox.
-     * @param dest Destination array for the unboxed values.
-     * @return If dest was not {@code null} then a reference to {@code dest} is returned. Otherwise, a new array with the unboxed
+     * @param dest Destination array for the unboxed values. May be {@code null}.
+     * @return If dest was <em>not</em> {@code null} then a reference to {@code dest} is returned. Otherwise, a new array with the unboxed
      * values is returned.
      */
     public static int[] unbox(Integer[] arr, int[] dest) {
-        int size = arr.length;
-        int[] prim = new int[size];
+        dest = ArrayBuilder.getOrCreateArray(dest, arr.length);
 
-        for (int i = 0; i < size; i++)
-            prim[i] = arr[i];
+        for (int i = 0, size=dest.length; i < size; i++)
+            dest[i] = arr[i];
 
-        return prim;
+        return dest;
     }
 
 
     /**
-     * Converts a primitive array to an array of equivalent boxed type.
+     * Converts a primitive array to an array of an equivalent boxed type.
      *
      * @param src The source primitive array to box.
      * @return A boxed array equivalent to the {@code src} primitive array.
@@ -470,7 +469,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts a primitive array to an array of equivalent boxed type.
+     * Converts a primitive array to an array of an equivalent boxed type.
      *
      * @param src The source primitive array to box.
      * @return A boxed array equivalent to the {@code src} primitive array.

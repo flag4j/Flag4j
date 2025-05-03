@@ -25,7 +25,6 @@
 package org.flag4j.linalg.transformations;
 
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.CVector;
 import org.flag4j.arrays.dense.Matrix;
@@ -33,6 +32,7 @@ import org.flag4j.arrays.dense.Vector;
 import org.flag4j.linalg.VectorNorms;
 import org.flag4j.linalg.ops.common.real.RealOps;
 import org.flag4j.linalg.ops.common.semiring_ops.SemiringOps;
+import org.flag4j.numbers.Complex128;
 
 /**
  * This class contains methods for computing real or complex Householder reflectors (also known as elementary reflectors).
@@ -50,7 +50,7 @@ public final class Householder {
      * is normal to the specified {@code normal} vector.
      * @param normal The vector normal to the plane the Householder reflector will reflect through.
      * @return A transformation matrix which describes a reflection through a plane containing the origin with the
-     * specified {@code normal} vector, i.e. a Householder reflector.
+     * specified {@code normal} vector, i.e., a Householder reflector.
      */
     public static Matrix getReflector(Vector normal) {
         Vector v;
@@ -116,7 +116,7 @@ public final class Householder {
      *
      * @param normal The vector normal to the plane the Householder reflector will reflect through\.
      * @return A transformation matrix which describes a reflection through a plane containing the origin with the
-     * specified {@code normal} vector, i.e. a Householder reflector.
+     * specified {@code normal} vector, i.e., a Householder reflector.
      */
     public static CMatrix getReflector(CVector normal) {
         CVector v;
@@ -147,9 +147,9 @@ public final class Householder {
      * @param src Source matrix apply Householder vector to (modified).
      * @param householderVector Householder vector <span class="latex-inline">v</span>.
      * @param alpha Scalar value in Householder matrix.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
-     * @param startRow Starting row of sub-matrix in {@code src} to apply reflector to.
-     * @param endRow Starting row of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
+     * @param startRow Starting row of submatrix in {@code src} to apply reflector to.
+     * @param endRow Starting row of submatrix in {@code src} to apply reflector to.
      * @param workArray An array to store temporary column data. This can help both with cache performance and reducing unneeded
      *                  garbage collection if this method is called repeatedly.
      */
@@ -195,9 +195,9 @@ public final class Householder {
      * @param src Source matrix apply Householder vector to (modified).
      * @param householderVector Householder vector <span class="latex-inline">v</span>.
      * @param alpha Scalar value in Householder matrix.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
-     * @param startRow Starting row of sub-matrix in {@code src} to apply reflector to.
-     * @param endRow Starting row of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
+     * @param startRow Starting row of submatrix in {@code src} to apply reflector to.
+     * @param endRow Starting row of submatrix in {@code src} to apply reflector to.
      */
     public static void rightMultReflector(Matrix src,
                                           double[] householderVector,
@@ -228,9 +228,9 @@ public final class Householder {
      * @param src Source matrix apply Householder vector to (modified).
      * @param householderVector Householder vector <span class="latex-inline">v</span>.
      * @param alpha Scalar value in Householder matrix.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
-     * @param startRow Starting row of sub-matrix in {@code src} to apply reflector to.
-     * @param endRow Starting row of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
+     * @param startRow Starting row of submatrix in {@code src} to apply reflector to.
+     * @param endRow Starting row of submatrix in {@code src} to apply reflector to.
      * @param workArray An array to store temporary column data. This can help both with cache performance and reducing unneeded
      *                  garbage collection if this method is called repeatedly.
      */
@@ -274,9 +274,9 @@ public final class Householder {
      * @param src Source matrix apply Householder vector to (modified).
      * @param householderVector Householder vector <span class="latex-inline">v</span>.
      * @param alpha Scalar value in Householder matrix.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
-     * @param startRow Starting row of sub-matrix in {@code src} to apply reflector to.
-     * @param endRow Starting row of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
+     * @param startRow Starting row of submatrix in {@code src} to apply reflector to.
+     * @param endRow Starting row of submatrix in {@code src} to apply reflector to.
      */
     public static void rightMultReflector(CMatrix src,
                                           Complex128[] householderVector,
@@ -315,7 +315,7 @@ public final class Householder {
      * @param householderVector Householder vector <span class="latex-inline">v</span> from the definition of a Householder reflector
      * matrix.
      * @param alpha The scalar &alpha; value in Householder reflector matrix definition.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
      * @param workArray Array for storing temporary values during the computation. Contents will be overwritten.
      */
     public static void symmLeftRightMultReflector(Matrix src,
@@ -370,9 +370,9 @@ public final class Householder {
      * @param src Source matrix apply Householder vector to (modified).
      * @param householderVector Householder vector <span class="latex-inline">v</span>.
      * @param alpha Scalar value in Householder matrix.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
-     * @param startRow Starting row of sub-matrix in {@code src} to apply reflector to.
-     * @param endRow Starting row of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
+     * @param startRow Starting row of submatrix in {@code src} to apply reflector to.
+     * @param endRow Starting row of submatrix in {@code src} to apply reflector to.
      */
     public static void leftMultReflector(Matrix src,
                                          Vector householderVector,
@@ -394,9 +394,9 @@ public final class Householder {
      * @param src Source matrix apply Householder vector to (modified).
      * @param householderVector Householder vector <span class="latex-inline">v</span>.
      * @param alpha Scalar value in Householder matrix.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
-     * @param startRow Starting row of sub-matrix in {@code src} to apply reflector to.
-     * @param endRow Starting row of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
+     * @param startRow Starting row of submatrix in {@code src} to apply reflector to.
+     * @param endRow Starting row of submatrix in {@code src} to apply reflector to.
      */
     public static void rightMultReflector(Matrix src,
                                           Vector householderVector,
@@ -419,9 +419,9 @@ public final class Householder {
      * @param src Source matrix apply Householder vector to (modified).
      * @param householderVector Householder vector <span class="latex-inline">v</span>.
      * @param alpha Scalar value in Householder matrix.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
-     * @param startRow Starting row of sub-matrix in {@code src} to apply reflector to.
-     * @param endRow Starting row of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
+     * @param startRow Starting row of submatrix in {@code src} to apply reflector to.
+     * @param endRow Starting row of submatrix in {@code src} to apply reflector to.
      */
     public static void leftMultReflector(CMatrix src,
                                          CVector householderVector,
@@ -443,9 +443,9 @@ public final class Householder {
      * @param src Source matrix apply Householder vector to (modified).
      * @param householderVector Householder vector <span class="latex-inline">v</span>.
      * @param alpha Scalar value in Householder matrix.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
-     * @param startRow Starting row of sub-matrix in {@code src} to apply reflector to.
-     * @param endRow Starting row of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
+     * @param startRow Starting row of submatrix in {@code src} to apply reflector to.
+     * @param endRow Starting row of submatrix in {@code src} to apply reflector to.
      */
     public static void rightMultReflector(CMatrix src,
                                           CVector householderVector,
@@ -468,7 +468,7 @@ public final class Householder {
      * overwritten with the result.
      * @param householderVector Householder vector <span class="latex-inline">v</span> from the definition of a Householder reflector matrix.
      * @param alpha The scalar &alpha; value in Householder reflector matrix definition.
-     * @param startCol Starting column of sub-matrix in {@code src} to apply reflector to.
+     * @param startCol Starting column of submatrix in {@code src} to apply reflector to.
      * @param workArray Array for storing temporary values during the computation. Contents will be overwritten.
      */
     public static void hermLeftRightMultReflector(CMatrix src,

@@ -282,7 +282,7 @@ public class BoolSemiring implements Semiring<BoolSemiring> {
     /**
      * Checks if an object is equal to this semiring element.
      * @param b Object to compare to this semiring element.
-     * @return True if the objects are the same or are both {@link BoolSemiring}'s and have equal values.
+     * @return True if the objects are the same or are both {@link BoolSemiring}s and have equal values.
      */
     @Override
     public boolean equals(Object b) {
@@ -298,5 +298,14 @@ public class BoolSemiring implements Semiring<BoolSemiring> {
     @Override
     public int hashCode() {
         return Boolean.hashCode(value);
+    }
+
+
+    /**
+     * Forms a human-readable string representing this {@link BoolSemiring} instance.
+     * @return A human-readable string representing this {@link BoolSemiring} instance.
+     */
+    public String toString() {
+        return Boolean.toString(value);
     }
 }

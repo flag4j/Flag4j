@@ -28,7 +28,7 @@ package org.flag4j.numbers;
  * Defines a mathematical ring structure and specifies the operations that ring elements must support.
  *
  * <p>A <b>ring</b> is an algebraic structure consisting of a set <b>R</b> equipped with two binary operations:
- * addition (+) and multiplication (*). Rings generalize {@link Field fields} by not requiring every non-zero element to have a
+ * addition (+) and multiplication (*). Rings generalize {@link Field fields} by not requiring every non-zero-element to have a
  * multiplicative inverse, and multiplication may not be commutative.
  *
  * <h2>Formal Definition:</h2>
@@ -65,7 +65,7 @@ package org.flag4j.numbers;
  *   <li>{@link #mult(Semiring)}: Performs the multiplication operation, returning a new ring element.</li>
  *   <li>{@link #sub(Ring)}: Performs the subtraction operation, defined as addition with the additive inverse.</li>
  *   <li>{@link #addInv()}: Returns the additive inverse of this element.</li>
- *   <li>{@link #isZero()}: Checks if the element is the additive identity (zero element).</li>
+ *   <li>{@link #isZero()}: Checks if the element is the additive identity (zero-element).</li>
  *   <li>{@link #isOne()}: Checks if the element is the multiplicative identity (one element), if it exists.</li>
  *   <li>{@link #getZero()}: Returns the additive identity element of the ring.</li>
  *   <li>{@link #getOne()}: Returns the multiplicative identity element of the ring, if it exists.</li>

@@ -40,7 +40,7 @@ import org.flag4j.linalg.solvers.exact.triangular.RealForwardSolver;
  * where <span class="latex-inline">A</span>, <span class="latex-inline">B</span>, and <span class="latex-inline">X</span>
  * are matrices, and <span class="latex-inline">x</span> and <span class="latex-inline">b</span> are vectors.
  *
- * <p>If the system is not well determined, i.e. <span class="latex-inline">A</span> is not square or not full rank, then use a
+ * <p>If the system is not well determined, i.e., <span class="latex-inline">A</span> is not square or not full rank, then use a
  * {@link org.flag4j.linalg.solvers.lstsq.RealLstsqSolver least-squares solver}.
  *
  * <h2>Usage:</h2>

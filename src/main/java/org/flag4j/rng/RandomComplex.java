@@ -120,7 +120,7 @@ public class RandomComplex extends Random {
 
     /**
      * Generates a pseudorandom complex number with magnitude in {@code [min, max)} which is uniformly distributed in
-     * the annulus (i.e. washer) with minimum and maximum radii equal to {@code min} and {@code max} respectively.
+     * the annulus (i.e., washer) with minimum and maximum radii equal to {@code min} and {@code max} respectively.
      *
      * @param min Minimum value for random number. Must be non-negative.
      * @param max Maximum value for random number. Must be larger than or equal to min.
@@ -366,7 +366,7 @@ public class RandomComplex extends Random {
 
     /**
      * Generates a pseudorandom complex number with magnitude in {@code [min, max)} which is uniformly distributed in
-     * the annulus (i.e. washer) with minimum and maximum radii equal to {@code min} and {@code max} respectively.
+     * the annulus (i.e., washer) with minimum and maximum radii equal to {@code min} and {@code max} respectively.
      *
      * @param min Minimum value for random number. Must be non-negative.
      * @param max Maximum value for random number. Must be larger than or equal to min.

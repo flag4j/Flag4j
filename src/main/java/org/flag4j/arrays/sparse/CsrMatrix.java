@@ -56,7 +56,7 @@ import static org.flag4j.linalg.ops.sparse.SparseUtils.sortCsrMatrix;
 
 /**
  * <p>Instances of this class represent a real sparse matrix using the compressed sparse row (CSR) format.
- * This class is optimized for efficient storage and operations on matrices with a high proportion of zero elements.
+ * This class is optimized for efficient storage and operations on matrices with a high proportion of zero-elements.
  * The non-zero values of the matrix are stored in a compact form, reducing memory usage and improving performance for many matrix
  * operations.
  *
@@ -76,7 +76,7 @@ import static org.flag4j.linalg.ops.sparse.SparseUtils.sortCsrMatrix;
  *   value in {@code data}.</li>
  * </ul>
  *
- * <p>The total number of non-zero elements ({@link #nnz}) and the shape are fixed for a given instance, but the values
+ * <p>The total number of non-zero-elements ({@link #nnz}) and the shape are fixed for a given instance, but the values
  * in {@link #data} and their corresponding {@link #rowPointers} and {@link #colIndices} may be updated. Many operations
  * assume that the indices are sorted lexicographically by row, and then by column, but this is not strictly enforced.
  * All provided operations preserve the lexicographical row-major sorting of data and indices. If there is any doubt about the
@@ -84,7 +84,7 @@ import static org.flag4j.linalg.ops.sparse.SparseUtils.sortCsrMatrix;
  * for the same index (referred to as an uncoalesced tensor). To combine all duplicated entries use {@link #coalesce()} or
  * {@link #coalesce(BinaryOperator)}.
  *
- * <p>CSR matrices are optimized for efficient storage and operations on matrices with a high proportion of zero elements.
+ * <p>CSR matrices are optimized for efficient storage and operations on matrices with a high proportion of zero-elements.
  * CSR matrices are ideal for row-wise operations and matrix-vector multiplications. In general, CSR matrices are not efficient at
  * handling many incremental updates. In this case {@link CooMatrix COO matrices} are usually preferred.
  *
@@ -309,18 +309,18 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     @Override
     public CooTensor tensorTr(int axis1, int axis2) {
@@ -471,7 +471,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -880,7 +880,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
 
     /**
-     * Swaps specified rows in the matrix. This is done in place.
+     * Swaps specified rows in the matrix. This is done in-place.
      *
      * @param rowIndex1 Index of the first row to swap.
      * @param rowIndex2 Index of the second row to swap.
@@ -897,7 +897,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
 
     /**
-     * Swaps specified columns in the matrix. This is done in place.
+     * Swaps specified columns in the matrix. This is done in-place.
      *
      * @param colIndex1 Index of the first column to swap.
      * @param colIndex2 Index of the second column to swap.
@@ -1263,7 +1263,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
     /**
      * Gets a specified row of this matrix between {@code colStart} (inclusive) and {@code colEnd} (exclusive).
      *
-     * @param rowIdx Index of the row of this matrix to get.
+     * @param rowIdx Index of the row in this matrix to get.
      * @param colStart Starting column of the row (inclusive).
      * @param colEnd Ending column of the row (exclusive).
      *
@@ -1313,7 +1313,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
     /**
      * Gets a specified column of this matrix between {@code rowStart} (inclusive) and {@code rowEnd} (exclusive).
      *
-     * @param colIdx Index of the column of this matrix to get.
+     * @param colIdx Index of the column in this matrix to get.
      * @param rowStart Starting row of the column (inclusive).
      * @param rowEnd Ending row of the column (exclusive).
      *
@@ -1401,7 +1401,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IndexOutOfBoundsException If the values vector has a different length than the number of rows of this matrix.
+     * @throws IndexOutOfBoundsException If the values vector has a different length than the number of rows in this matrix.
      */
     public CsrMatrix setCol(CooVector values, int colIndex) {
         // Convert to COO first for more efficient modification.
@@ -1417,7 +1417,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IndexOutOfBoundsException If the values vector has a different length than the number of rows of this matrix.
+     * @throws IndexOutOfBoundsException If the values vector has a different length than the number of rows in this matrix.
      */
     public CsrMatrix setRow(CooVector values, int rowIndex) {
         // Convert to COO first for more efficient modification.
@@ -1510,8 +1510,8 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * Computes the matrix multiplication between two matrices.
      *
      * @param B Second matrix in the matrix multiplication.
-     * @return The result of matrix multiplying this matrix with matrix B.
-     * @throws IllegalArgumentException If the number of columns in this matrix do not equal the number of rows in matrix B.
+     * @return The result of matrix multiplying this matrix with matrix {@code b}.
+     * @throws IllegalArgumentException If the number of columns in this matrix do not equal the number of rows in matrix {@code b}.
      */
     public CMatrix mult(CMatrix B) {
         return (CMatrix) RealFieldDenseCsrMatMult.standard(this, B);
@@ -1534,7 +1534,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -1679,7 +1679,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
     /**
      * Coalesces this sparse CSR matrix. An uncoalesced matrix is a sparse matrix with multiple data for a single index. This
      * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
-     * than summing is desired, use {@link #coalesce(BinaryOperator)}.
+     * than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse CSR matrix which is equivalent to this CSR matrix.
      * @see #coalesce(BinaryOperator)
      */

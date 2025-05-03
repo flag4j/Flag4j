@@ -38,7 +38,7 @@ import static org.flag4j.concurrency.Configurations.DEFAULT_PARALLELISM;
  * <h2>Usage:</h2>
  * <ul>
  *   <li>This class provides a shared, fixed-size thread pool to perform parallel operations.</li>
- *   <li>The size of this thread pool (i.e. the "parallelism level") can be set via
+ *   <li>The size of this thread pool (i.e., the "parallelism level") can be set via
  *       {@link #setParallelismLevel(int)} and queried via {@link #getParallelismLevel()}.</li>
  *   <li>The pool uses daemon threads to avoid blocking JVM shutdown.</li>
  * </ul>

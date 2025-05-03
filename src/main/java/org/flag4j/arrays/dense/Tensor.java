@@ -62,7 +62,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
     /**
      * Creates a zero tensor with the specified dimensions.
      *
-     * @param dims The dimension of each axis of the tensor. The returned tensor will have shape equivalent to {@code new Shape(dims)}.
+     * @param dims The dimension of each axis in the tensor. The returned tensor will have shape equivalent to {@code new Shape(dims)}.
      */
     public Tensor(int... dims) {
         this(new Shape(dims));
@@ -81,7 +81,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
 
 
     /**
-     * Creates a tensor from an nD array. The tensors shape will be inferred from.
+     * Creates a tensor from an nD array. The tensor's shape will be inferred from.
      * @param nDArray Array to construct tensor from. Must be a rectangular array.
      * @throws IllegalArgumentException If {@code nDArray} is not an array or not rectangular.
      */
@@ -115,7 +115,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
 
 
     /**
-     * Flattens tensor to single dimension while preserving order of data.
+     * Flattens tensor to a single dimension while preserving the order of data.
      *
      * @return The flattened tensor.
      *
@@ -191,12 +191,12 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
 
 
     /**
-     * Constructs a tensor of the same type as this tensor with the given the shape and data.
+     * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
      * @param data Entries of the tensor to construct.
      *
-     * @return A tensor of the same type as this tensor with the given the shape and data.
+     * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
     public Tensor makeLikeTensor(Shape shape, double[] data) {
@@ -205,8 +205,8 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
 
 
     /**
-     * Converts this tensor to an equivalent vector. If this vector is not rank-1 it will first be flattened then converted to a
-     * vector.
+     * Converts this tensor to an equivalent vector. If this vector is not rank-1, it will first be flattened,
+     * then converted to a vector.
      * @return A vector with data equivalent to this vector.
      */
     public Vector toVector() {
@@ -215,8 +215,8 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
 
 
     /**
-     * Converts this tensor to an equivalent matrix. If this matrix is not rank-2 it will first be flattened to a row vector then
-     * converted to a matrix.
+     * Converts this tensor to an equivalent matrix. If this matrix is not rank-2, it will first be flattened
+     * to a row vector, then converted to a matrix.
      * @return A matrix with data equivalent to this tensor.
      */
     public Matrix toMatrix() {
@@ -401,7 +401,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * Converts this tensor to an equivalent sparse COO tensor.
      * @param estimatedSparsity Estimated sparsity of the tensor. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern, it is better to underestimate the sparsity.
      * @return A sparse COO tensor that is equivalent to this dense tensor.
      * @see #toCoo(double)
      */
@@ -429,7 +429,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
 
 
     /**
-     * Converts this tensor to an equivalent complex valued tensor.
+     * Converts this tensor to an equivalent complex-valued tensor.
      * @return A complex tensor whose real components are the same as the data of
      * this tensor and the imaginary components are zero.
      */

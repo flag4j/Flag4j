@@ -24,8 +24,8 @@
 
 package org.flag4j.arrays.backend.field_arrays;
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.backend.ring_arrays.TensorOverRing;
+import org.flag4j.numbers.Field;
 
 /**
  * This interface specifies methods which any tensor whose data are elements of a field should implement.
@@ -177,26 +177,26 @@ public interface TensorOverField<T extends TensorOverField<T, U, V, W>,
     /**
      * Checks if this tensor only contains finite values.
      * @return {@code true} if this tensor only contains finite values; {@code false} otherwise.
-     * @see #isInfinite()
-     * @see #isNaN()
+     * @see #containsInf()
+     * @see #containsNaN()
      */
-    boolean isFinite();
+    boolean isAllFinite();
 
 
     /**
      * Checks if this tensor contains at least one infinite value.
      * @return {@code true} if this tensor contains at least one infinite value; {@code false} otherwise.
-     * @see #isFinite()
-     * @see #isNaN()
+     * @see #isAllFinite()
+     * @see #containsNaN()
      */
-    boolean isInfinite();
+    boolean containsInf();
 
 
     /**
      * Checks if this tensor contains at least one NaN value.
      * @return {@code true} if this tensor contains at least one NaN value; {@code false} otherwise.
-     * @see #isFinite()
-     * @see #isInfinite()
+     * @see #isAllFinite()
+     * @see #containsInf()
      */
-    boolean isNaN();
+    boolean containsNaN();
 }

@@ -225,14 +225,14 @@ public final class RealDenseOps {
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
      * @param shape Shape of the tensor to compute the trace of.
      * @param src Entries of the tensor to compute the trace of.
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      * @param destShape The resulting shape of the tensor trace.
      * @param dest Array to store the result of the generalized tensor trace of. Must satisfy
      * {@code dest.length == destShape.totalEntriesIntValueExact()}.
@@ -241,7 +241,7 @@ public final class RealDenseOps {
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      * @throws IllegalArgumentException If {@code dest.length == destShape.totalEntriesIntValueExact()}.
      */
     public static void tensorTr(Shape shape, double[] src,
@@ -273,7 +273,7 @@ public final class RealDenseOps {
                 }
             }
 
-            // Sum over diagonal elements of the 2D sub-array.
+            // Sum over diagonal elements of the 2D subarray.
             double sum = src[baseOffset];
             int offset = baseOffset + diagonalStride;
             for(int diag=1; diag<traceLength; diag++) {
@@ -289,7 +289,7 @@ public final class RealDenseOps {
     /**
      * <p>Swaps two rows, over a specified range of columns, within a matrix. Specifically, all elements in the matrix within rows
      * {@code rowIdx1}
-     * and {@code rowIdx2} and between columns {@code start} (inclusive) and {@code stop} (exclusive). This operation is done in place.
+     * and {@code rowIdx2} and between columns {@code start} (inclusive) and {@code stop} (exclusive). This operation is done in-place.
      * <p>No bounds checking is done within this method to ensure that the indices provided are valid.
      *
      * @param shape Shape of the matrix.
@@ -318,7 +318,7 @@ public final class RealDenseOps {
     /**
      * <p>Swaps two columns, over a specified range of rows, within a matrix. Specifically, all elements in the matrix within columns
      * {@code colIdx1} and {@code colIdx2} and between rows {@code start} (inclusive) and {@code stop} (exclusive). This operation
-     * is done in place.
+     * is done in-place.
      * <p>No bounds checking is done within this method to ensure that the indices provided are valid.
      *
      * @param shape Shape of the matrix.

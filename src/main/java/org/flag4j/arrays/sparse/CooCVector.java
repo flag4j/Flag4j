@@ -39,19 +39,21 @@ import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * <p>A complex sparse vector stored in coordinate list (COO) format. The {@link #data} of this COO vector are
- * {@link Complex128}'s.
+ * {@link Complex128}s.
  *
  * <p>The {@link #data non-zero data} and {@link #indices non-zero indices} of a COO vector are mutable but the {@link #shape}
  * and total number of non-zero data is fixed.
  *
  * <p>Sparse vectors allow for the efficient storage of and ops on vectors that contain many zero values.
  *
- * <p>COO vectors are optimized for hyper-sparse vectors (i.e. vectors which contain almost all zeros relative to the size of the
+ * <p>COO vectors are optimized for hyper-sparse vectors (i.e., vectors which contain almost all zeros relative to the size of the
  * vector).
  *
  * <p>A sparse COO vector is stored as:
@@ -148,6 +150,24 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
     public CooCVector(CooCVector b) {
         super(b.shape, b.data.clone(), b.indices.clone());
         setZeroElement(Complex128.ZERO);
+    }
+
+
+    /**
+     * Constructs a sparse COO vector from index value pairs.
+     * @param shape The shape of this COO vector. Must be rank 1.
+     * @param indexDataMap A map containing the index value pairs of this vector.
+     */
+    public CooCVector(Shape shape, HashMap<Integer, Complex128> indexDataMap) {
+        super(shape, new Complex128[indexDataMap.size()], new int[indexDataMap.size()]);
+
+        int loc = 0;
+        for(Map.Entry<Integer, Complex128> kv : indexDataMap.entrySet()) {
+            data[loc] = kv.getValue();
+            indices[loc++] = kv.getKey();
+        }
+
+        SparseValidation.validateCoo(this.size, this.nnz, this.indices);
     }
 
 
@@ -266,7 +286,7 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
      * @param rowIndices Row indices of the matrix.
      * @param colIndices Column indices of the matrix.
      *
-     * @return A COO matrix of similar type as this vector with the specified shape, non-zero data, and non-zero row/col indices.
+     * @return A COO matrix of a similar type as this vector with the specified shape, non-zero data, and non-zero row/col indices.
      */
     @Override
     public CooCMatrix makeLikeMatrix(Shape shape, Complex128[] entries, int[] rowIndices, int[] colIndices) {
@@ -336,8 +356,8 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
 
 
     /**
-     * Checks if any entry within this matrix has non-zero imaginary component.
-     * @return {@code true} if any entry of this matrix has a non-zero imaginary component.
+     * Checks if any entry within this matrix has a non-zero imaginary part.
+     * @return {@code true} if any entry of this matrix has a non-zero imaginary part.
      */
     public boolean isComplex() {
         return Complex128Ops.isComplex(data);
@@ -346,7 +366,7 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
 
     /**
      * Rounds all data within this vector to the specified precision.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A new vector containing the data of this vector rounded to the specified precision.
      */
     public CooCVector round(int precision) {
@@ -355,8 +375,8 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
 
 
     /**
-     * Sets all elements of this vector to zero if they are within {@code tol} of zero. This is <em>not</em> done in place.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * Sets all elements of this vector to zero if they are within {@code tol} of zero. This is <em>not</em> done in-place.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A copy of this vector with all data within {@code tol} of zero set to zero.
      */
     public CooCVector roundToZero(double tolerance) {
@@ -491,7 +511,7 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
                 result.append(String.format("%-" + width + "s", value));
             }
 
-            // Get last entry now
+            // Get the last entry now
             value = StringUtils.ValueOfRound(data[size-1], precision);
             width = padding + value.length();
             value = centering ? StringUtils.center(value, width) : value;

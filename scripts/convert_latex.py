@@ -65,7 +65,8 @@ html2latex = {
     r"<b>(.*?)</b>": r"\\mathbf{\g<1>}", r"<strong>(.*?)</strong>": r"\\mathbf{\g<1>}",
 
     # Common sets.
-    r"ℝ": r"\\mathbb{R}", r"ℚ": r"\\mathbb{Q}", r"ℂ": r"\\mathbb{C}", r"ℤ": r"\\mathbb{Z}", r"ℕ": r"\\mathbb{N}",
+    r"ℝ": r"\\mathbb{R}", r"&#8477": r"\\mathbb{R}", r"ℚ": r"\\mathbb{Q}", r"ℂ": r"\\mathbb{C}",
+    r"ℤ": r"\\mathbb{Z}", r"ℕ": r"\\mathbb{N}",
 
     # Operators
     r"&lt;": r"<", r"&gt;": r">", r"&le;": r"\\leq ", r"&ge;": r"\\geq ", r"&ne;": r"\\neq ", r"&plusmn;": r"\\pm ",

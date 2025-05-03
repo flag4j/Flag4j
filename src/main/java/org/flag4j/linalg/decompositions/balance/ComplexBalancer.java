@@ -242,14 +242,14 @@ public class ComplexBalancer extends Balancer<CMatrix> {
 
 
     /**
-     * Computes the <span class="latex-inline">&ell;<sup>2</sup></span> norm of a vector with {@code n} elements from {@link #balancedMatrix}'s 1D data array
+     * Computes the <span class="latex-inline">&ell;<sup>2</sup></span> norm of a vector with {@code n} elements from {@link #balancedMatrix}s 1D data array
      * starting at index {@code start} and spaced by {@code stride}.
      *
-     * @param start Starting index within {@link #balancedMatrix}'s 1D data array to compute norm of.
+     * @param start Starting index within {@link #balancedMatrix}s 1D data array to compute norm of.
      * @param n The number of elements in the vector to compute norm of.
-     * @param stride The spacing between each element within {@link #balancedMatrix}'s 1D data array to norm of.
+     * @param stride The spacing between each element within {@link #balancedMatrix}s 1D data array to norm of.
      *
-     * @return The norm of the vector containing the specified elements from {@link #balancedMatrix}'s 1D data array.
+     * @return The norm of the vector containing the specified elements from {@link #balancedMatrix}s 1D data array.
      */
     @Override
     protected double vectorNorm(int start, int n, int stride) {
@@ -258,15 +258,15 @@ public class ComplexBalancer extends Balancer<CMatrix> {
 
 
     /**
-     * Computes the maximum absolute value of a vector with {@code n} elements from {@link #balancedMatrix}'s 1D data array
+     * Computes the maximum absolute value of a vector with {@code n} elements from {@link #balancedMatrix}s 1D data array
      * starting at index {@code start} and spaced by {@code stride}.
      *
-     * @param start Starting index within {@link #balancedMatrix}'s 1D data array to compute maximum absolute value of.
+     * @param start Starting index within {@link #balancedMatrix}s 1D data array to compute maximum absolute value of.
      * @param n The number of elements in the vector to compute maximum absolute value of.
-     * @param stride The spacing between each element within {@link #balancedMatrix}'s 1D data array to compute maximum absolute
+     * @param stride The spacing between each element within {@link #balancedMatrix}s 1D data array to compute maximum absolute
      * value of.
      *
-     * @return The maximum absolute value of the vector containing the specified elements from {@link #balancedMatrix}'s 1D data
+     * @return The maximum absolute value of the vector containing the specified elements from {@link #balancedMatrix}s 1D data
      * array.
      */
     @Override
@@ -276,12 +276,12 @@ public class ComplexBalancer extends Balancer<CMatrix> {
 
 
     /**
-     * Scales a vector with {@code n} elements from {@link #balancedMatrix}'s 1D data array
+     * Scales a vector with {@code n} elements from {@link #balancedMatrix}s 1D data array
      * starting at index {@code start} and spaced by {@code stride}. This operation must be done in-place.
      *
-     * @param start Starting index within {@link #balancedMatrix}'s 1D data array begin scaling.
+     * @param start Starting index within {@link #balancedMatrix}s 1D data array begin scaling.
      * @param n The number of elements to scale.
-     * @param stride The spacing between each element within {@link #balancedMatrix}'s 1D data array to scale.
+     * @param stride The spacing between each element within {@link #balancedMatrix}s 1D data array to scale.
      */
     @Override
     protected void vectorScale(double factor, int start, int n, int stride) {

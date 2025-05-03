@@ -341,17 +341,19 @@ public final class SparseUtils {
      */
     public static <T> void copyRanges(
             T[] srcEntries, int[] srcRowIndices, int[] srcColIndices,
-            T[] destEntries, int[] destRowIndices, int[] destColIndices, int[] startEnd) {
+            T[] destEntries, int[] destRowIndices, int[] destColIndices, IntPair startEnd) {
+        int start = startEnd.first();
+        int end = startEnd.second();
 
-        if(startEnd[0] > 0) {
-            System.arraycopy(srcEntries, 0, destEntries, 0, startEnd[0]);
-            System.arraycopy(srcEntries, startEnd[1], destEntries, startEnd[0], destEntries.length - startEnd[0]);
+        if(start > 0) {
+            System.arraycopy(srcEntries, 0, destEntries, 0, start);
+            System.arraycopy(srcEntries, end, destEntries, start, destEntries.length - start);
 
-            System.arraycopy(srcRowIndices, 0, destRowIndices, 0, startEnd[0]);
-            System.arraycopy(srcRowIndices, startEnd[1], destRowIndices, startEnd[0], destEntries.length - startEnd[0]);
+            System.arraycopy(srcRowIndices, 0, destRowIndices, 0, start);
+            System.arraycopy(srcRowIndices, end, destRowIndices, start, destEntries.length - start);
 
-            System.arraycopy(srcColIndices, 0, destColIndices, 0, startEnd[0]);
-            System.arraycopy(srcColIndices, startEnd[1], destColIndices, startEnd[0], destEntries.length - startEnd[0]);
+            System.arraycopy(srcColIndices, 0, destColIndices, 0, start);
+            System.arraycopy(srcColIndices, end, destColIndices, start, destEntries.length - start);
         } else {
             System.arraycopy(srcEntries, 0, destEntries, 0, destEntries.length);
             System.arraycopy(srcRowIndices, 0, destRowIndices, 0, destRowIndices.length);

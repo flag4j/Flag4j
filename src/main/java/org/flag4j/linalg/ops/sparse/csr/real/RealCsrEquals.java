@@ -49,14 +49,14 @@ public final class RealCsrEquals {
      * @param relTol Relative tolerance.
      * @param absTol Absolute tolerance.
      * @return True if the {@code src1} matrix is the same shape as the {@code src2} matrix and all data
-     * are 'close', i.e. elements {@code a} and {@code b} at the same positions in the two matrices respectively
+     * are "close", i.e., elements {@code a} and {@code b} at the same positions in the two matrices respectively
      * satisfy {@code |a-b| <= (absTol + relTol*|b|)}. Otherwise, returns false.
      */
     public static boolean allClose(CsrMatrix src1, CsrMatrix src2, double relTol, double absTol) {
         boolean close = src1.shape.equals(src2.shape);
 
         if(close) {
-            // Remove values which are 'close' to zero.
+            // Remove values which are "close" to zero.
             List<Double> src1Entries = new ArrayList<>(src1.data.length);
             List<Integer> src1ColIndices = new ArrayList<>(src1Entries.size());
             int[] src1RowPointers = new int[src1.rowPointers.length];

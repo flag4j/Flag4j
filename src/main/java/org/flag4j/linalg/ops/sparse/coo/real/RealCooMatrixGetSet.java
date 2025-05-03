@@ -24,6 +24,7 @@
 
 package org.flag4j.linalg.ops.sparse.coo.real;
 
+import org.flag4j.arrays.IntPair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.arrays.sparse.CooMatrix;
@@ -78,7 +79,7 @@ public final class RealCooMatrixGetSet {
         int[] destColIndices;
 
         if(idx < 0) {
-            // No non-zero element with these indices exists. Insert new value.
+            // No non-zero-element with these indices exists. Insert new value.
             destEntries = new double[src.data.length + 1];
             System.arraycopy(src.data, 0, destEntries, 0, -idx-1);
             destEntries[-idx-1] = value;
@@ -149,9 +150,9 @@ public final class RealCooMatrixGetSet {
         ValidateParameters.validateArrayIndices(src.numRows, rowIdx);
         ValidateParameters.ensureAllEqual(src.numCols, row.length);
 
-        int[] startEnd = SparseElementSearch.matrixFindRowStartEnd(src.rowIndices, rowIdx);
-        int start = startEnd[0];
-        int end = startEnd[1];
+        IntPair startEnd = SparseElementSearch.matrixFindRowStartEnd(src.rowIndices, rowIdx);
+        int start = startEnd.first();
+        int end = startEnd.second();
 
         double[] destEntries;
         int[] destRowIndices ;

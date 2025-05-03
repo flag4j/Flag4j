@@ -110,7 +110,7 @@ public abstract class SVD<T extends MatrixMixin<T, ?, ?, ?>> extends Decompositi
     /**
      * Creates a decomposer to compute the Schur decomposition.
      * @param computeUV A flag which indicates if the unitary matrices <span class="latex-inline">U</span> and <span class="latex-inline">V</span> should be computed
-     * (i.e. the singular vectors).
+     * (i.e., the singular vectors).
      * <ul>
      *     <li>If {@code true}, the <span class="latex-inline">U</span> and <span class="latex-inline">V</span> matrices will be computed.</li>
      *     <li>If {@code false}, the <span class="latex-inline">U</span> and <span class="latex-inline">V</span> matrices  will <em>not</em> be computed. If it is not
@@ -132,7 +132,7 @@ public abstract class SVD<T extends MatrixMixin<T, ?, ?, ?>> extends Decompositi
     /**
      * Creates a decomposer to compute the Schur decomposition.
      * @param computeUV A flag which indicates if the unitary matrices <span class="latex-inline">U</span> and <span class="latex-inline">V</span> should be computed
-     * (i.e. the singular vectors).
+     * (i.e., the singular vectors).
      * <ul>
      *     <li>If {@code true}, the <span class="latex-inline">U</span> and <span class="latex-inline">V</span> matrices will be computed.</li>
      *     <li>If {@code false}, the <span class="latex-inline">U</span> and <span class="latex-inline">V</span> matrices  will <em>not</em> be computed. If it is not
@@ -321,7 +321,7 @@ public abstract class SVD<T extends MatrixMixin<T, ?, ?, ?>> extends Decompositi
      * Extracts the singular vectors, normalizes them and sets the columns of <span class="latex-inline">U</span>
      * and <span class="latex-inline">V</span> to be the left/right singular vectors.
      * @param singularVecs Computed left and right singular vectors.
-     * @param j Index of the column of <span class="latex-inline">U</span> and <span class="latex-inline">V</span> to set.
+     * @param j Index of the column in <span class="latex-inline">U</span> and <span class="latex-inline">V</span> to set.
      */
     protected abstract void extractNormalizedCols(T singularVecs, int j);
 }

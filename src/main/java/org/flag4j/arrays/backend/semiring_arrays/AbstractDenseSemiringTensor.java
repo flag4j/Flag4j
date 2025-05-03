@@ -54,7 +54,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
         implements SemiringTensorMixin<T, T, V> {
 
     /**
-     * The zero element for the semiring that this tensor's elements belong to.
+     * The zero-element for the semiring that this tensor's elements belong to.
      */
     protected V zeroElement;
 
@@ -86,8 +86,8 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
 
 
     /**
-     * Sets the zero element for the field of this tensor.
-     * @param zeroElement The zero element of this tensor.
+     * Sets the zero-element for this tenor's field.
+     * @param zeroElement The zero-element of this tensor.
      * @throws IllegalArgumentException If {@code zeroElement} is not an additive identity for the field.
      *
      * @see #getZeroElement()
@@ -101,8 +101,8 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
 
 
     /**
-     * Gets the zero element for the field of this tensor.
-     * @return The zero element for the field of this tensor. If it could not be determined during construction of this object
+     * Gets the zero-element for this tenor's field.
+     * @return The zero-element for this tenor's field. If it could not be determined during construction of this object
      * and has not been set explicitly by {@link #setZeroElement(Semiring)} then {@code null} will be returned.
      *
      * @see #setZeroElement(Semiring)
@@ -235,7 +235,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -248,6 +248,21 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
         V[] prod = makeEmptyDataArray(data.length);
         DenseSemiringElemMult.dispatch(data, shape, b.data, b.shape, prod);
         return makeLikeTensor(shape, prod);
+    }
+
+
+    /**
+     * Computes the element-wise multiplication of two tensors and stores the result in this tensor.
+     *
+     * @param b Second tensor in the element-wise product.
+     *
+     * @throws IllegalArgumentException If this tensor and {@code b} do not have the same shape.
+     */
+    public void elemMultEq(T b) {
+        ValidateParameters.ensureEqualShape(shape, b.shape);
+
+        for(int i=0, size=data.length; i<size; i++)
+            data[i] = data[i].mult(b.data[i]);
     }
 
 
@@ -278,18 +293,18 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     @Override
     public T tensorTr(int axis1, int axis2) {
@@ -303,7 +318,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
     /**
      * Finds the minimum value in this tensor. If this tensor is complex, then this method finds the smallest value in magnitude.
      *
-     * @return The minimum value (smallest in magnitude for a complex valued tensor) in this tensor.
+     * @return The minimum value (smallest in magnitude for a complex-valued tensor) in this tensor.
      */
     public V min() {
         return CompareSemiring.min(data);
@@ -313,7 +328,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
     /**
      * Finds the maximum value in this tensor. If this tensor is complex, then this method finds the largest value in magnitude.
      *
-     * @return The maximum value (largest in magnitude for a complex valued tensor) in this tensor.
+     * @return The maximum value (largest in magnitude for a complex-valued tensor) in this tensor.
      */
     public V max() {
         return CompareSemiring.max(data);
@@ -348,7 +363,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -411,7 +426,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
      * Converts this tensor to an equivalent sparse COO tensor.
      * @param estimatedSparsity Estimated sparsity of the tensor. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      * @return A sparse COO tensor that is equivalent to this dense tensor.
      * @see #toCoo()
      */

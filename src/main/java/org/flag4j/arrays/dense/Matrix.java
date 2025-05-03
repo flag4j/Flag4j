@@ -69,8 +69,10 @@ import java.util.List;
 
 
 /**
- * <p>Instances of this class represents a complex dense matrix backed by a {@code double[]} array. The {@code Matrix} class
- * provides functionality for real dense matrix operations, supporting mutable data with a fixed shape. This class extends
+ * <p>Instances of this class represent a complex dense matrix backed by a {@code double[]} array.
+ * The {@code Matrix} class
+ * provides functionality for real dense matrix operations, supporting mutable data with a fixed shape.
+ * This class extends
  * {@link AbstractDenseDoubleTensor} and offers additional methods optimized for complex
  * arithmetic and matrix computations.
  *
@@ -269,7 +271,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
 
 
     /**
-     * Creates a real dense matrix which is a copy of a specified matrix.
+     * Creates a real dense matrix, which is a copy of a specified matrix.
      * @param A The matrix defining the data for this matrix.
      */
     public Matrix(Matrix A) {
@@ -280,7 +282,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
 
 
     /**
-     * Creates a real dense matrix with specified shape filled with zeros.
+     * Creates a real dense matrix with the specified shape filled with zeros.
      * @param shape Shape of matrix.
      * @throws IllegalArgumentException If the {@code shape} is not of rank 2.
      */
@@ -293,7 +295,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
 
 
     /**
-     * Creates a real dense matrix with specified shape filled with a specific value.
+     * Creates a real dense matrix with the specified shape filled with a specific value.
      * @param shape Shape of matrix.
      * @param value Value to fill matrix with.
      * @throws IllegalArgumentException If the {@code shape} is not of rank 2.
@@ -352,12 +354,12 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
 
 
     /**
-     * Constructs a tensor of the same type as this tensor with the given the shape and data.
+     * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
      * @param data Entries of the tensor to construct.
      *
-     * @return A tensor of the same type as this tensor with the given the shape and data.
+     * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
     public Matrix makeLikeTensor(Shape shape, double[] data) {
@@ -414,7 +416,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * Constructs an identity matrix of the specified size.
      *
      * @param size Size of the identity matrix.
-     * @return An identity matrix of specified size.
+     * @return An identity matrix of the specified size.
      * @throws IllegalArgumentException If the specified size is less than 1.
      * @see #I(Shape)
      * @see #I(int, int)
@@ -430,7 +432,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @param numRows Number of rows in the identity-like matrix.
      * @param numCols Number of columns in the identity-like matrix.
-     * @return An identity matrix of specified shape.
+     * @return An identity matrix of the specified shape.
      * @throws IllegalArgumentException If the specified number of rows or columns is less than 1.
      * @see #I(int)
      * @see #I(Shape)
@@ -452,7 +454,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * principle diagonal.
      *
      * @param shape Shape of the identity-like matrix.
-     * @return An identity matrix of specified size.
+     * @return An identity matrix of the specified size.
      * @throws IllegalArgumentException If the specified shape is not rank 2.
      * @see #I(int)
      * @see #I(int, int)
@@ -534,7 +536,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     public boolean isTriU() {
         if(!isSquare()) return false;
 
-        // Ensure lower half is zeros.
+        // Ensure the lower half is zeros.
         for(int i=1; i<numRows; i++) {
             int rowOffset = i*numCols;
 
@@ -567,7 +569,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
                 if(data[rowOffset + j] != 0) return false; // No need to continue.
         }
 
-        return true; // If we reach this point the matrix is lower triangular.
+        return true; // If we reach this point, the matrix is lower triangular.
     }
 
 
@@ -608,7 +610,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
 
 
     /**
-     * <p>Computes the rank of this matrix (i.e. the number of linearly independent rows/columns in this matrix).
+     * <p>Computes the rank of this matrix (i.e., the number of linearly independent rows/columns in this matrix).
      *
      * <p>This is computed as the number of singular values greater than {@code tol} where:
      * <pre>{@code double tol = 2.0*Math.max(rows, cols)*Flag4jConstants.EPS_F64*Math.min(this.numRows, this.numCols);}</pre>
@@ -630,9 +632,10 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @param b Second matrix in the matrix multiplication.
      *
-     * @return The result of matrix multiplying this matrix with matrix B.
+     * @return The result of matrix multiplying this matrix with matrix {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the number of rows in matrix B.
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal
+     * the number of rows in matrix {@code b}.
      */
     @Override
     public Matrix mult(Matrix b) {
@@ -755,7 +758,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
 
 
     /**
-     * Swaps specified rows in the matrix. This is done in place.
+     * Swaps specified rows in the matrix. This is done in-place.
      *
      * @param rowIndex1 Index of the first row to swap.
      * @param rowIndex2 Index of the second row to swap.
@@ -784,7 +787,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
 
 
     /**
-     * Swaps specified columns in the matrix. This is done in place.
+     * Swaps specified columns in the matrix. This is done in-place.
      *
      * @param colIndex1 Index of the first column to swap.
      * @param colIndex2 Index of the second column to swap.
@@ -956,7 +959,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * @return A copy of this matrix with the given slice set to the specified values.
      *
      * @throws IndexOutOfBoundsException If rowStart or colStart are not within the matrix.
-     * @throws IllegalArgumentException  If the values slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException  If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                   fit completely within this matrix.
      */
     @Override
@@ -987,7 +990,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * @return A reference to this matrix.
      *
      * @throws IllegalArgumentException If {@code rowStart} or {@code colStart} are not within the matrix.
-     * @throws IllegalArgumentException If the {@code values} slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                  fit completely within this matrix.
      */
     public Matrix setSlice(Matrix values, int rowStart, int colStart) {
@@ -1016,7 +1019,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * @return A reference to this matrix.
      *
      * @throws IllegalArgumentException If {@code rowStart} or {@code colStart} are not within the matrix.
-     * @throws IllegalArgumentException If the {@code values} slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                  fit completely within this matrix.
      */
     public Matrix setSlice(double[][] values, int rowStart, int colStart) {
@@ -1048,7 +1051,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * @return A reference to this matrix.
      *
      * @throws IllegalArgumentException If {@code rowStart} or {@code colStart} are not within the matrix.
-     * @throws IllegalArgumentException If the {@code values} slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                  fit completely within this matrix.
      */
     public Matrix setSlice(Double[][] values, int rowStart, int colStart) {
@@ -1118,7 +1121,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IllegalArgumentException If the values array has a different shape then this matrix.
+     * @throws IllegalArgumentException If the {@code values} array has a different shape then this matrix.
      */
     public Matrix setValues(Double[][] values) {
         ValidateParameters.ensureEqualShape(shape, new Shape(values.length, values[0].length));
@@ -1199,7 +1202,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IllegalArgumentException If the {@code values} vector has a different length than the number of rows of this matrix.
+     * @throws IllegalArgumentException If the {@code values} vector has a different length than the number of rows in this matrix.
      */
     @Override
     public Matrix setCol(Vector values, int colIndex) {
@@ -1215,7 +1218,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IllegalArgumentException If the {@code values} array has a different length than the number of rows of this matrix.
+     * @throws IllegalArgumentException If the {@code values} array has a different length than the number of rows in this matrix.
      */
     public Matrix setCol(Double[] values, int colIndex) {
         ValidateParameters.ensureArrayLengthsEq(values.length, this.numRows);
@@ -1238,7 +1241,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IllegalArgumentException If the {@code values} array has a different length than the number of rows of this matrix.
+     * @throws IllegalArgumentException If the {@code values} array has a different length than the number of rows in this matrix.
      */
     public Matrix setCol(double[] values, int colIndex) {
         ValidateParameters.ensureArrayLengthsEq(values.length, this.numRows);
@@ -1261,7 +1264,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IllegalArgumentException If the {@code values} vector has a different length than the number of rows of this matrix.
+     * @throws IllegalArgumentException If the {@code values} vector has a different length than the number of rows in this matrix.
      */
     @Override
     public Matrix setRow(Vector values, int rowIndex) {
@@ -1277,7 +1280,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IllegalArgumentException If the {@code values} array has a different length than the number of rows of this matrix.
+     * @throws IllegalArgumentException If the {@code values} array has a different length than the number of rows in this matrix.
      */
     public Matrix setRow(double[] values, int rowIndex) {
         ValidateParameters.ensureArrayLengthsEq(values.length, this.numCols);
@@ -1297,7 +1300,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IllegalArgumentException If the {@code values} array has a different length than the number of rows of this matrix.
+     * @throws IllegalArgumentException If the {@code values} array has a different length than the number of rows in this matrix.
      */
     public Matrix setRow(Double[] values, int rowIndex) {
         ValidateParameters.ensureArrayLengthsEq(values.length, this.numCols);
@@ -1313,7 +1316,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * Computes the element-wise square root of a tensor.
      *
      * @return The result of applying an element-wise square root to this tensor. Note, this method will compute
-     * the principle square root i.e. the square root with positive real part.
+     * the principle square root, i.e., the square root with a positive real part.
      */
     public CMatrix sqrtComplex() {
         return new CMatrix(shape, Complex128Ops.sqrt(data));
@@ -1324,7 +1327,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * Extracts the upper-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for upper-triangular portion to extract:
+     * @param diagOffset Diagonal offset for an upper-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -1360,7 +1363,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * Extracts the lower-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for lower-triangular portion to extract:
+     * @param diagOffset Diagonal offset for a lower-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -1399,7 +1402,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return The result of matrix multiplying this matrix with vector {@code b}.
      *
-     * @throws IllegalArgumentException If the number of columns in this matrix do not equal the
+     * @throws IllegalArgumentException If the number of columns in this matrix does not equal the
      *                                  number of data in the vector {@code b}.
      */
     @Override
@@ -1411,7 +1414,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     /**
      * <p>Converts this matrix to an equivalent vector.
      *
-     * <p>If this matrix is not shaped as a row/column vector, it will first be flattened then converted to a vector.
+     * <p>If this matrix is not shaped as a row/column vector, it will first be flattened, then converted to a vector.
      *
      * @return A vector equivalent to this matrix.
      */
@@ -1433,7 +1436,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     /**
      * Gets a specified row of this matrix between {@code colStart} (inclusive) and {@code colEnd} (exclusive).
      *
-     * @param rowIdx Index of the row of this matrix to get.
+     * @param rowIdx Index of the row in this matrix to get.
      * @param colStart Starting column of the row (inclusive).
      * @param colEnd Ending column of the row (exclusive).
      *
@@ -1459,14 +1462,14 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     /**
      * Gets a specified column of this matrix between {@code rowStart} (inclusive) and {@code rowEnd} (exclusive).
      *
-     * @param colIdx Index of the column of this matrix to get.
+     * @param colIdx Index of the column in this matrix to get.
      * @param rowStart Starting row of the column (inclusive).
      * @param rowEnd Ending row of the column (exclusive).
      *
      * @return The column at index {@code colIdx} of this matrix between the {@code rowStart} and {@code rowEnd}
      * indices.
      *
-     * @throws IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the  shape of this matrix.
+     * @throws IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the shape of this matrix.
      * @throws IllegalArgumentException If {@code rowEnd} is less than {@code rowStart}.
      */
     @Override
@@ -1567,7 +1570,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -1638,7 +1641,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
 
 
     /**
-     * Converts this dense matrix to sparse CSR matrix.
+     * Converts this dense matrix to a sparse CSR matrix.
      * @return A sparse CSR matrix equivalent to this dense matrix.
      * @see #toCoo()
      */
@@ -1902,7 +1905,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return The element-wise quotient of this tensor and {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b}'s shape are not equal.
+     * @throws TensorShapeException If this tensor and {@code b}s shapes are not equal.
      */
     public CMatrix div(CMatrix b) {
         Complex128[] dest = new Complex128[data.length];
@@ -2048,8 +2051,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * <p>Some common special cases are:
      * <ul>
      *     <li>{@code p=2}, {@code q=1}: The sum of Euclidean norms of the column vectors of the matrix.</li>
-     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector of singular values of
-     *     the matrix.</li>
+     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm.
+     *     Equivalent to the Euclidean norm of the vector containing the singular values of the matrix.</li>
      * </ul>
      *
      * <p>The <span class="latex-inline">L<sub>p,q</sub></span> norm is computed as if by:

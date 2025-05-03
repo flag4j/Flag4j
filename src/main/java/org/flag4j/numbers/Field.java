@@ -29,7 +29,7 @@ package org.flag4j.numbers;
  *
  * <p>A <b>field</b> is an algebraic structure consisting of a set <b>F</b> equipped with two binary operations:
  * addition (+) and multiplication (*). Fields generalize the familiar arithmetic of rational numbers, real numbers,
- * and complex numbers. In a field, both addition and multiplication are commutative, and every non-zero element has
+ * and complex numbers. In a field, both addition and multiplication are commutative, and every non-zero-element has
  * a multiplicative inverse, allowing for division operations.
  *
  * <h2>Formal Definition:</h2>
@@ -81,7 +81,7 @@ package org.flag4j.numbers;
  *   <li>{@link #div(Field)}: Performs the division operation, defined using the multiplicative inverse.</li>
  *   <li>{@link #addInv()}: Returns the additive inverse of this element.</li>
  *   <li>{@link #multInv()}: Returns the multiplicative inverse of this element.</li>
- *   <li>{@link #isZero()}: Checks if the element is the additive identity (zero element).</li>
+ *   <li>{@link #isZero()}: Checks if the element is the additive identity (zero-element).</li>
  *   <li>{@link #isOne()}: Checks if the element is the multiplicative identity (one element).</li>
  *   <li>{@link #getZero()}: Returns the additive identity element of the field.</li>
  *   <li>{@link #getOne()}: Returns the multiplicative identity element of the field.</li>
@@ -196,21 +196,21 @@ public interface Field<T extends Field<T>> extends Ring<T> {
 
     /**
      * Checks if this field element is finite in magnitude.
-     * @return True if this field element is finite in magnitude. False otherwise (i.e. infinite, NaN etc.).
+     * @return True if this field element is finite in magnitude. False otherwise (i.e., infinite, NaN etc.).
      */
     boolean isFinite();
 
 
     /**
      * Checks if this field element is infinite in magnitude.
-     * @return True if this field element is infinite in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is infinite in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     boolean isInfinite();
 
 
     /**
      * Checks if this field element is NaN in magnitude.
-     * @return True if this field element is NaN in magnitude. False otherwise (i.e. finite, NaN, etc.).
+     * @return True if this field element is NaN in magnitude. False otherwise (i.e., finite, NaN, etc.).
      */
     boolean isNaN();
 }

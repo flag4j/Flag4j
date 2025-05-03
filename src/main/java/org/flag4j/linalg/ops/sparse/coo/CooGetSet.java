@@ -24,6 +24,7 @@
 
 package org.flag4j.linalg.ops.sparse.coo;
 
+import org.flag4j.arrays.IntPair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
 import org.flag4j.arrays.SparseVectorData;
@@ -580,7 +581,7 @@ public final class CooGetSet {
      * @param entries Non-zero data of the COO matrix.
      * @param rowIndices Non-zero row indices of the COO matrix.
      * @param colIndices Non-zero column indices of the COO matrix.
-     * @param rowIdx Index of the row of this matrix to get.
+     * @param rowIdx Index of the row in this matrix to get.
      * @param colStart Starting column of the row (inclusive).
      * @param colEnd Ending column of the row (exclusive).
      *
@@ -597,14 +598,17 @@ public final class CooGetSet {
         ValidateParameters.ensureInRange(start, 0, shape.get(1), "start");
         ValidateParameters.ensureInRange(end, start, shape.get(1), "end");
 
-        int[] rowStartEnd = SparseElementSearch.matrixFindRowStartEnd(rowIndices, rowIdx);
-        if (rowStartEnd[0] == rowStartEnd[1])
+        IntPair rowStartEnd = SparseElementSearch.matrixFindRowStartEnd(rowIndices, rowIdx);
+        int rowStart = rowStartEnd.first();
+        int rowEnd = rowStartEnd.second();
+
+        if (rowStart == rowEnd)
             return new SparseVectorData<>(new Shape(end-start), new ArrayList<>(), new ArrayList<>());
 
-        int colStart = Arrays.binarySearch(colIndices, rowStartEnd[0], rowStartEnd[1], start);
+        int colStart = Arrays.binarySearch(colIndices, rowStart, rowEnd, start);
         if (colStart < 0) colStart = -colStart - 1;
 
-        int colEnd = Arrays.binarySearch(colIndices, rowStartEnd[0], rowStartEnd[1], end);
+        int colEnd = Arrays.binarySearch(colIndices, rowStart, rowEnd, end);
         if (colEnd < 0) colEnd = -colEnd - 1;
 
         if (colStart >= colEnd)
@@ -630,7 +634,7 @@ public final class CooGetSet {
      * @param entries Non-zero data of the COO matrix.
      * @param rowIndices Non-zero row indices of the COO matrix.
      * @param colIndices Non-zero column indices of the COO matrix.
-     * @param colIdx Index of the column of this matrix to get.
+     * @param colIdx Index of the column in this matrix to get.
      * @param colStart Starting column of the row (inclusive).
      * @param colEnd Ending column of the row (exclusive).
      *

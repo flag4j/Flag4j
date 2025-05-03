@@ -98,7 +98,7 @@ public class ComplexForwardSolver extends ForwardSolver<CMatrix, CVector, Comple
      * at and below the principle diagonal will be accessed.
      * @param b Constant vector <span class="latex-inline">b</span>.
      * @return The result of solving the linear system <span class="latex-inline">Lx = b</span> where <span class="latex-inline">L</span> is a lower triangular.
-     * @throws SingularMatrixException If {@code L} is singular (i.e. has at least one zero on the principle diagonal).
+     * @throws SingularMatrixException If {@code L} is singular (i.e., has at least one zero on the principle diagonal).
      */
     @Override
     public CVector solve(CMatrix L, CVector b) {
@@ -113,7 +113,7 @@ public class ComplexForwardSolver extends ForwardSolver<CMatrix, CVector, Comple
      * at and below the principle diagonal will be accessed.
      * @param b Constant matrix <span class="latex-inline">B</span>.
      * @return The result of solving the linear system <span class="latex-inline">LX = B</span> where <span class="latex-inline">L</span> is a lower triangular.
-     * @throws SingularMatrixException If {@code L} is singular (i.e. has at least one zero on the principle diagonal).
+     * @throws SingularMatrixException If {@code L} is singular (i.e., has at least one zero on the principle diagonal).
      */
     @Override
     public CMatrix solve(CMatrix L, CMatrix B) {
@@ -142,7 +142,7 @@ public class ComplexForwardSolver extends ForwardSolver<CMatrix, CVector, Comple
      *          as if it were and only data in the lower triangular portion will be accessed.
      * @return The result of solving the linear system <span class="latex-inline">LX = B</span> where <span class="latex-inline">L</span> is a lower triangular matrix.
      * @throws SingularMatrixException If the matrix lower triangular {@code L} is singular
-     * (i.e. has at least one zero on the principle diagonal).
+     * (i.e., has at least one zero on the principle diagonal).
      */
     public CMatrix solveIdentity(CMatrix L) {
         return isUnit ? solveUnitLowerIdentity(L) : solveLowerIdentity(L);
@@ -222,7 +222,7 @@ public class ComplexForwardSolver extends ForwardSolver<CMatrix, CVector, Comple
      * @param L Unit lower triangular matrix (Note, this is not checked).
      *          If {@code L} is not lower triangular, it will be treated as if it were. No error will be thrown.
      * @return The solution of X for the linear system <span class="latex-inline">LX = I</span>.
-     * @throws SingularMatrixException If the lower triangular matrix {@code L} is singular (i.e. has a zero on the
+     * @throws SingularMatrixException If the lower triangular matrix {@code L} is singular (i.e., has a zero on the
      * principle diagonal).
      */
     private CMatrix solveLowerIdentity(CMatrix L) {
@@ -268,7 +268,7 @@ public class ComplexForwardSolver extends ForwardSolver<CMatrix, CVector, Comple
      * @param L Unit lower triangular matrix.
      * @param b Vector of constants in the linear system.
      * @return The solution of x for the linear system <span class="latex-inline">Lx = b</span>.
-     * @throws SingularMatrixException If the lower triangular matrix {@code L} is singular (i.e. has a zero on the
+     * @throws SingularMatrixException If the lower triangular matrix {@code L} is singular (i.e., has a zero on the
      * principle diagonal).
      */
     private CVector solveLower(CMatrix L, CVector b) {
@@ -342,7 +342,7 @@ public class ComplexForwardSolver extends ForwardSolver<CMatrix, CVector, Comple
      * @param L Unit lower triangular matrix.
      * @param B Matrix of constants in the linear system.
      * @return The solution of X for the linear system <span class="latex-inline">LX = B</span>.
-     * @throws SingularMatrixException If the lower triangular matrix {@code L} is singular (i.e. has a zero on the
+     * @throws SingularMatrixException If the lower triangular matrix {@code L} is singular (i.e., has a zero on the
      * principle diagonal).
      */
     private CMatrix solveLower(CMatrix L, CMatrix B) {
@@ -390,7 +390,7 @@ public class ComplexForwardSolver extends ForwardSolver<CMatrix, CVector, Comple
      * constant matrix <span class="latex-inline">P</span> is a permutation matrix.
      * @param L Lower triangular coefficient matrix <span class="latex-inline">L</span>.
      * @return The solution of <span class="latex-inline">X</span> to the linear system <span class="latex-inline">LX = P</span>.
-     * @throws SingularMatrixException If {@code L} is singular (i.e. has a zero on the principle diagonal).
+     * @throws SingularMatrixException If {@code L} is singular (i.e., has a zero on the principle diagonal).
      */
     private CMatrix solvePerm(CMatrix L, PermutationMatrix P) {
         checkParams(L, P.size);

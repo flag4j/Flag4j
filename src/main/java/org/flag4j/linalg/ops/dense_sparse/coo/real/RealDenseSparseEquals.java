@@ -72,7 +72,7 @@ public class RealDenseSparseEquals {
 
             if(equal) {
                 // Now, if this vector is equal to the sparse vector, there should only be zeros left in the entriesStack
-                equal = RealProperties.isZeros(src1Copy);
+                equal = RealProperties.isAllZeros(src1Copy);
             }
 
         } else {
@@ -115,7 +115,7 @@ public class RealDenseSparseEquals {
 
             if(equal) {
                 // Now, if this matrix is equal to the sparse matrix, there should only be zeros left in the entriesStack
-                equal = RealProperties.isZeros(entriesCopy);
+                equal = RealProperties.isAllZeros(entriesCopy);
             }
 
         } else {
@@ -154,7 +154,7 @@ public class RealDenseSparseEquals {
 
             if(equal) {
                 // Now, if this matrix is equal to the sparse matrix, there should only be zeros left in the entriesStack
-                equal = RealProperties.isZeros(entriesCopy);
+                equal = RealProperties.isAllZeros(entriesCopy);
             }
 
         } else {

@@ -41,7 +41,7 @@ import org.flag4j.util.exceptions.TensorShapeException;
  *
  * <p>Sparse vectors allow for the efficient storage of and ops on large vectors that contain many zero values.
  *
- * <p>COO vectors are optimized for large hyper-sparse vectors (i.e. vectors which contain almost all zeros relative to the size of the
+ * <p>COO vectors are optimized for large hyper-sparse vectors (i.e., vectors which contain almost all zeros relative to the size of the
  * vector).
  *
  * <p>A sparse COO vector is stored as:
@@ -140,7 +140,7 @@ public abstract class AbstractCooRingVector<
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()

@@ -24,9 +24,9 @@
 
 package org.flag4j.linalg.ops.sparse.coo.semiring_ops;
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseTensorData;
+import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
@@ -157,21 +157,21 @@ public final class CooSemiringTensorOps {
     /**
      * <p>Computes the generalized trace of a tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of the {@code src} tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D subarrays of the {@code src} tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to the {@code src} tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
      * @param shape1 Shape of the tensor.
      * @param src1Entries Non-zero data of the tensor.
      * @param src1Indices Non-zero indices of the tensor.
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of the {@code src} tensor along {@code axis1} and {@code axis2}.
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than the {@code src} tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code src.shape.get(axis1) != src.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     public static <T extends Semiring<T>> SparseTensorData<T> tensorTr(
             Shape shape, T[] entries, int[][] indices,

@@ -33,7 +33,7 @@ import java.util.Map;
 
 /**
  * This class contains low level implementations for methods to evaluate certain properties of a real sparse matrix.
- * (i.e. if the matrix is symmetric).
+ * (i.e., if the matrix is symmetric).
  */
 public final class RealSparseMatrixProperties {
 
@@ -100,7 +100,7 @@ public final class RealSparseMatrixProperties {
      * @param rowIndices Non-zero row indices of the COO matrix.
      * @param colIndices Non-zero column indices of the COO matrix.
      * @return {@code true} if the specified COO matrix is symmetric
-     * (i.e. equal to its transpose); {@code false} otherwise.
+     * (i.e., equal to its transpose); {@code false} otherwise.
      */
     public static boolean isSymmetric(Shape shape, double[] data, int[] rowIndices, int[] colIndices) {
         if(shape.get(0) != shape.get(1)) return false; // Early return for non-square matrix.
@@ -135,7 +135,7 @@ public final class RealSparseMatrixProperties {
      * @param rowIndices Non-zero row indices of the COO matrix.
      * @param colIndices Non-zero column indices of the COO matrix.
      * @return {@code true} if the specified COO matrix is symmetric
-     * (i.e. equal to its transpose); {@code false} otherwise.
+     * (i.e., equal to its transpose); {@code false} otherwise.
      */
     public static boolean isAntiSymmetric(Shape shape, double[] data, int[] rowIndices, int[] colIndices) {
         if(shape.get(0) != shape.get(1)) return false; // Early return for non-square matrix.

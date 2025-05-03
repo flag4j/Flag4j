@@ -24,7 +24,6 @@
 
 package org.flag4j.arrays.backend.ring_arrays;
 
-import org.flag4j.numbers.Ring;
 import org.flag4j.arrays.backend.semiring_arrays.SemiringTensorMixin;
 import org.flag4j.linalg.VectorNorms;
 import org.flag4j.linalg.ops.common.ring_ops.CompareRing;
@@ -33,6 +32,7 @@ import org.flag4j.linalg.ops.common.semiring_ops.AggregateSemiring;
 import org.flag4j.linalg.ops.common.semiring_ops.CompareSemiring;
 import org.flag4j.linalg.ops.common.semiring_ops.SemiringOps;
 import org.flag4j.linalg.ops.common.semiring_ops.SemiringProperties;
+import org.flag4j.numbers.Ring;
 
 /**
  * <p>This interface provides default functionality for all tensors whose data are elements of a {@link Ring}. This includes both
@@ -103,7 +103,7 @@ public interface RingTensorMixin<T extends RingTensorMixin<T, U, V>,
     /**
      * Finds the minimum value in this tensor. If this tensor is complex, then this method finds the smallest value in magnitude.
      *
-     * @return The minimum value (smallest in magnitude for a complex valued tensor) in this tensor.
+     * @return The minimum value (smallest in magnitude for a complex-valued tensor) in this tensor.
      */
     default V min() {
         return CompareSemiring.min(getData());
@@ -113,7 +113,7 @@ public interface RingTensorMixin<T extends RingTensorMixin<T, U, V>,
     /**
      * Finds the maximum value in this tensor. If this tensor is complex, then this method finds the largest value in magnitude.
      *
-     * @return The maximum value (largest in magnitude for a complex valued tensor) in this tensor.
+     * @return The maximum value (largest in magnitude for a complex-valued tensor) in this tensor.
      */
     default V max() {
         return CompareSemiring.max(getData());
@@ -251,7 +251,7 @@ public interface RingTensorMixin<T extends RingTensorMixin<T, U, V>,
      * @return {@code true} if this tensor only contains zeros; {@code false} otherwise.
      */
     @Override
-    default boolean isZeros() {
+    default boolean isAllZeros() {
         return SemiringProperties.isZeros(getData());
     }
 
@@ -261,7 +261,7 @@ public interface RingTensorMixin<T extends RingTensorMixin<T, U, V>,
      * @return {@code true} if this tensor only contains ones; {@code false} otherwise.
      */
     @Override
-    default boolean isOnes() {
+    default boolean isAllOnes() {
         return SemiringProperties.isOnes(getData());
     }
 

@@ -284,9 +284,9 @@ public final class Rotation {
      * <span class="latex-inline">&plusmn;90&deg;</span>. To avoid gimbal lock, consider using rotation representations that do not
      * rely on sequential rotations.
      *
-     * @param yaw Radians to rotate about the vertical (yaw) axis (i.e. the <span class="latex-inline">z</span>-axis).
-     * @param pitch Radians to rotate about the lateral (pitch) axis (i.e. the <span class="latex-inline">y</span>-axis).
-     * @param roll Radians to rotate about the longitudinal (roll) axis (i.e. the <span class="latex-inline">x</span>-axis).
+     * @param yaw Radians to rotate about the vertical (yaw) axis (i.e., the <span class="latex-inline">z</span>-axis).
+     * @param pitch Radians to rotate about the lateral (pitch) axis (i.e., the <span class="latex-inline">y</span>-axis).
+     * @param roll Radians to rotate about the longitudinal (roll) axis (i.e., the <span class="latex-inline">x</span>-axis).
      * @return a rotation matrix representing a rotation with yaw, pitch, and roll angles <span class="latex-inline">&alpha;</span>,
      * <span class="latex-inline">&beta;</span>, and <span class="latex-inline">&gamma;</span> respectively.
      */

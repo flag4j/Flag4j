@@ -304,7 +304,7 @@ public final class FieldOps {
      * @param src Elements of the tensor.
      * @return {@code true} if any entry of {@code src} is NaN; {@code false} otherwise.
      */
-    public static <V extends Field<V>> boolean isNaN(V[] src) {
+    public static <V extends Field<V>> boolean isAllNaN(V[] src) {
         for(int i=0, size=src.length; i<size; i++)
             if (src[i].isNaN()) return true;
         return false;

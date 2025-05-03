@@ -95,7 +95,7 @@ public class RealBackSolver extends BackSolver<Matrix, Vector, double[]> {
      *          this solver instance was created and {@code U} is not actually upper triangular, it will be treated as if it were.
      * @param b Vector of constants in the linear system.
      * @return The solution to x in the linear system <span class="latex-inline">Ux = b</span>.
-     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e. has a zero on the principle diagonal).
+     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e., has a zero on the principle diagonal).
      */
     @Override
     public Vector solve(Matrix U, Vector b) {
@@ -137,7 +137,7 @@ public class RealBackSolver extends BackSolver<Matrix, Vector, double[]> {
      *      this solver instance was created and {@code U} is not actually upper triangular, it will be treated as if it were.
      * @param B Matrix of constants in the linear system.
      * @return The solution to X in the linear system <span class="latex-inline">UX = B</span>.
-     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e. has a zero on the principle diagonal).
+     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e., has a zero on the principle diagonal).
      */
     @Override
     public Matrix solve(Matrix U, Matrix B) {
@@ -193,7 +193,7 @@ public class RealBackSolver extends BackSolver<Matrix, Vector, double[]> {
      * @param U Upper triangular coefficient matrix in the linear system. If {@code enforceTriU} was set to {@code false} when
      *      this solver instance was created and {@code U} is not actually upper triangular, it will be treated as if it were.
      * @return The solution to X in the linear system <span class="latex-inline">UX = B</span>.
-     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e. has a zero on the principle diagonal).
+     * @throws SingularMatrixException If the matrix {@code U} is singular (i.e., has a zero on the principle diagonal).
      */
     public Matrix solveIdentity(Matrix U) {
         checkParams(U, U.shape);

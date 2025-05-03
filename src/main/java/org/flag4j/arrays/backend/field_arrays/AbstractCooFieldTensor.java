@@ -44,7 +44,7 @@ import org.flag4j.util.ArrayUtils;
  *
  * <p>Sparse tensors allow for the efficient storage of and ops on tensors that contain many zero values.
  *
- * <p>COO tensors are optimized for hyper-sparse tensors (i.e. tensors which contain almost all zeros relative to the size of the
+ * <p>COO tensors are optimized for hyper-sparse tensors (i.e., tensors which contain almost all zeros relative to the size of the
  * tensor).
  *
  * <p>A sparse COO tensor is stored as:
@@ -53,7 +53,7 @@ import org.flag4j.util.ArrayUtils;
  *     <li>The non-zero {@link #data} of the tensor. All other data in the tensor are
  *     assumed to be zero. Zero value can also explicitly be stored in {@link #data}.</li>
  *     <li><p>The {@link #indices} of the non-zero value in the sparse tensor. Many ops assume indices to be sorted in a
- *     row-major format (i.e. last index increased fastest) but often this is not explicitly verified.
+ *     row-major format (i.e., last index increased fastest) but often this is not explicitly verified.
  *
  *     <p>The {@link #indices} array has shape {@code (nnz, rank)} where {@link #nnz} is the number of non-zero data in this
  *     sparse tensor and {@code rank} is the {@link #getRank() tensor rank} of the tensor. This means {@code indices[i]} is the nD
@@ -115,7 +115,7 @@ public abstract class AbstractCooFieldTensor<T extends AbstractCooFieldTensor<T,
      * @param axis1 First axis to exchange and conjugate.
      * @param axis2 Second axis to exchange and conjugate.
      *
-     * @return The conjugate transpose of this tensor according to the specified axes.
+     * @return The conjugate transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #H()
@@ -188,11 +188,11 @@ public abstract class AbstractCooFieldTensor<T extends AbstractCooFieldTensor<T,
      *
      * @return {@code true} if this tensor only contains finite values; {@code false} otherwise.
      *
-     * @see #isInfinite()
-     * @see #isNaN()
+     * @see #containsInf()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isFinite() {
+    public boolean isAllFinite() {
         return FieldOps.isFinite(data);
     }
 
@@ -202,11 +202,11 @@ public abstract class AbstractCooFieldTensor<T extends AbstractCooFieldTensor<T,
      *
      * @return {@code true} if this tensor contains at least one infinite value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isNaN()
+     * @see #isAllFinite()
+     * @see #containsNaN()
      */
     @Override
-    public boolean isInfinite() {
+    public boolean containsInf() {
         return FieldOps.isInfinite(data);
     }
 
@@ -216,11 +216,11 @@ public abstract class AbstractCooFieldTensor<T extends AbstractCooFieldTensor<T,
      *
      * @return {@code true} if this tensor contains at least one NaN value; {@code false} otherwise.
      *
-     * @see #isFinite()
-     * @see #isInfinite()
+     * @see #isAllFinite()
+     * @see #containsInf()
      */
     @Override
-    public boolean isNaN() {
+    public boolean containsNaN() {
         return FieldOps.isInfinite(data);
     }
 }

@@ -25,8 +25,8 @@
 package org.flag4j.linalg.ops.common.real;
 
 /**
- * This class provides low level methods for checking tensor properties. These methods can be applied to
- * either sparse or dense real tensors.
+ * This class provides low-level methods for evaluating properties of real tensors. These methods can be applied to
+ * the data of either a sparse or dense tensor.
  */
 public final class RealProperties {
 
@@ -40,7 +40,7 @@ public final class RealProperties {
      * @param entries Entries of the tensor in question.
      * @return {@code true} if the tensor contains only positive values; {@code false} otherwise.
      */
-    public static boolean isPos(double[] entries) {
+    public static boolean isAllPos(double[] entries) {
         boolean result = true;
 
         for(double value : entries) {
@@ -59,7 +59,7 @@ public final class RealProperties {
      * @param entries Entries of the tensor in question.
      * @return {@code true} if the tensor contains only negative values; {@code false} otherwise.
      */
-    public static boolean isNeg(double[] entries) {
+    public static boolean isAllNeg(double[] entries) {
         boolean result = true;
 
         for(double value : entries) {
@@ -77,7 +77,7 @@ public final class RealProperties {
      * @param src Array to check if it only contains zeros.
      * @return True if the {@code src} array contains only zeros.
      */
-    public static boolean isZeros(double[] src) {
+    public static boolean isAllZeros(double[] src) {
         boolean allZeros = true;
 
         for(double value : src) {
@@ -92,10 +92,10 @@ public final class RealProperties {
 
 
     /**
-     * Checks if all data of two arrays are 'close'.
+     * Checks if all data of two arrays are "close".
      * @param src1 First array in comparison.
      * @param src2 Second array in comparison.
-     * @return True if both arrays have the same length and all data are 'close' element-wise, i.e.
+     * @return True if both arrays have the same length and all data are "close" element-wise, i.e.
      * elements {@code a} and {@code b} at the same positions in the two arrays respectively and satisfy
      * {@code |a-b| <= (1E-08 + 1E-05*|b|)}. Otherwise, returns false.
      * @see #allClose(double[], double[], double, double)
@@ -106,10 +106,10 @@ public final class RealProperties {
 
 
     /**
-     * Checks if all data of two arrays are 'close'.
+     * Checks if all data of two arrays are "close".
      * @param src1 First array in comparison.
      * @param src2 Second array in comparison.
-     * @return True if both arrays have the same length and all data are 'close' element-wise, i.e.
+     * @return True if both arrays have the same length and all data are "close" element-wise, i.e.
      * elements {@code a} and {@code b} at the same positions in the two arrays respectively and satisfy
      * {@code |a-b| <= (absTol + relTol*|b|)}. Otherwise, returns false.
      * @see #allClose(double[], double[])
@@ -133,11 +133,42 @@ public final class RealProperties {
 
 
     /**
+     * Checks if two values are "close".
+     * @param v1 First value in comparison.
+     * @param v2 Second value in comparison.
+     * @return True if the following is satisfied: {@code |v1 - v2| <= (1e-08+ 1e-05*|v2|)}. Otherwise, returns false.
+     * @see #isClose(double, double)
+     * @see #allClose(double[], double[], double, double)
+     * @see #allClose(double[], double[])
+     */
+    public static boolean isClose(double v1, double v2) {
+        return isClose(v1, v2, 1e-05, 1e-08);
+    }
+
+
+    /**
+     * Checks if two values are "close".
+     * @param v1 First value in comparison.
+     * @param v2 Second value in comparison.
+     * @param relTol The relative tolerance to determine if values are close.
+     * @param absTol The absolute tolerance to determine if values are close.
+     * @return True if the following is satisfied: {@code |v1 - v2| <= (absTol + relTol*|v2|)}. Otherwise, returns false.
+     * @see #isClose(double, double)
+     * @see #allClose(double[], double[], double, double)
+     * @see #allClose(double[], double[])
+     */
+    public static boolean isClose(double v1, double v2, double relTol, double absTol) {
+        double tol = absTol + relTol*Math.abs(v2);
+        return Math.abs(v1 - v2) <= tol;
+    }
+
+
+    /**
      * Checks if this tensor only contains ones.
      * @param src Elements of the tensor.
      * @return {@code true} if this tensor only contains ones; {@code false} otherwise.
      */
-    public static boolean isOnes(double[] src) {
+    public static boolean isAllOnes(double[] src) {
         boolean allZeros = true;
 
         for(double value : src) {
@@ -156,7 +187,7 @@ public final class RealProperties {
      * @param src Entries of the tensor.
      * @return {@code true} is any entry of {@code src} is {@link Double#NaN}; {@code false} otherwise.
      */
-    public static boolean isNaN(double[] src) {
+    public static boolean isAllNaN(double[] src) {
         for(double value : src)
             if(Double.isNaN(value)) return true;
 
@@ -170,7 +201,7 @@ public final class RealProperties {
      * @return {@code false} is any entry of {@code src} is not {@link Double#isFinite(double) finite}. Otherwise, returns {@code
      * true}.
      */
-    public static boolean isFinite(double[] src) {
+    public static boolean isAllFinite(double[] src) {
         for(double value : src)
             if(!Double.isFinite(value)) return false;
 
@@ -183,7 +214,7 @@ public final class RealProperties {
      * @param src Entries of the tensor.
      * @return {@code true} is any entry of {@code src} is {@link Double#isInfinite(double) infinite}; {@code false} otherwise.
      */
-    public static boolean isInfinite(double[] src) {
+    public static boolean containsInf(double[] src) {
         for(double value : src)
             if(Double.isInfinite(value)) return true;
 

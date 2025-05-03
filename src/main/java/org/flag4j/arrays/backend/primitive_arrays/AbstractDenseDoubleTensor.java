@@ -99,7 +99,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -192,7 +192,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -208,7 +208,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape and stores the result in this tensor.
+     * Computes the element-wise multiplication of two tensors with the same shape and stores the result in this tensor.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -245,18 +245,18 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     @Override
     public Tensor tensorTr(int axis1, int axis2) {
@@ -371,7 +371,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
 
     /**
      * Rounds all data within this matrix to the specified precision.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A new matrix containing the data of this matrix rounded to the specified precision.
      */
     public T round(int precision) {
@@ -380,8 +380,8 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
 
 
     /**
-     * Sets all elements of this matrix to zero if they are within {@code tol} of zero. This is <em>not</em> done in place.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * Sets all elements of this matrix to zero if they are within {@code tol} of zero. This is <em>not</em> done in-place.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A copy of this matrix with all data within {@code tol} of zero set to zero.
      */
     public T roundToZero(double tolerance) {
@@ -390,10 +390,10 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
 
 
     /**
-     * Checks if all data of this matrix are 'close' as defined below. Custom tolerances may be specified using
+     * Checks if all data of this matrix are "close" as defined below. Custom tolerances may be specified using
      * {@link #allClose(AbstractDoubleTensor, double, double)}.
      * @param b Second tensor in the comparison.
-     * @return True if both tensors have the same shape and all data are 'close' element-wise, i.e.
+     * @return True if both tensors have the same shape and all data are "close" element-wise, i.e.
      * elements {@code x} and {@code y} at the same positions in the two tensors respectively and satisfy
      * {@code |x-y| <= (1E-08 + 1E-05*|y|)}. Otherwise, returns false.
      * @see #allClose(AbstractDoubleTensor, double, double)
@@ -404,9 +404,9 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
 
 
     /**
-     * Checks if all data of this matrix are 'close' as defined below.
+     * Checks if all data of this matrix are "close" as defined below.
      * @param b Second tensor in the comparison.
-     * @return True if both tensors have the same length and all data are 'close' element-wise, i.e.
+     * @return True if both tensors have the same length and all data are "close" element-wise, i.e.
      * elements {@code x} and {@code y} at the same positions in the two tensors respectively and satisfy
      * {@code |x-y| <= (absTol + relTol*|y|)}. Otherwise, returns false.
      * @see #allClose(AbstractDoubleTensor)

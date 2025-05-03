@@ -81,7 +81,7 @@ import java.util.Arrays;
  * // Performing matrix transpose.
  * CMatrix transpose = matrix.T();
  *
- * // Performing matrix conjugate transpose (i.e. Hermitian transpose).
+ * // Performing matrix conjugate transpose (i.e., Hermitian transpose).
  * CMatrix conjugateTranspose = matrix.H();
  *
  * // Checking if the matrix is unitary.
@@ -378,7 +378,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      * <p>Some common special cases are:
      * <ul>
      *     <li>{@code p=2}, {@code q=1}: The sum of Euclidean norms of the column vectors of the matrix.</li>
-     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector of singular values of
+     *     <li>{@code p=2}, {@code q=2}: The Frobenius norm. Equivalent to the Euclidean norm of the vector containing the singular values of
      *     the matrix.</li>
      * </ul>
      *
@@ -483,7 +483,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      *
      * @return A sparse COO matrix that is equivalent to this dense matrix.
      *
@@ -513,7 +513,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * over-estimate the sparsity. If speed is the concern it is better to under-estimate the sparsity.
+     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
      *
      * @return A sparse CSR matrix that is equivalent to this dense matrix.
      *
@@ -562,7 +562,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      * all be {@code null}.
      * @param rows The number of rows in the matrix to construct.
      * @param cols The number of columns in the matrix to construct.
-     * @return An empty matrix (i.e. filled with {@code null} values) with the specified shape.
+     * @return An empty matrix (i.e., filled with {@code null} values) with the specified shape.
      */
     public static CMatrix getEmpty(int rows, int cols) {
         return new CMatrix(rows, cols, new Complex128[rows*cols]);
@@ -659,7 +659,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -675,7 +675,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -691,7 +691,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -749,7 +749,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      * Constructs an identity matrix of the specified size.
      *
      * @param size Size of the identity matrix.
-     * @return An identity matrix of specified size.
+     * @return An identity matrix of the specified size.
      * @throws IllegalArgumentException If the specified size is less than 1.
      * @see #I(Shape)
      * @see #I(int, int)
@@ -765,7 +765,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @param numRows Number of rows in the identity-like matrix.
      * @param numCols Number of columns in the identity-like matrix.
-     * @return An identity matrix of specified shape.
+     * @return An identity matrix of the specified shape.
      * @throws IllegalArgumentException If the specified number of rows or columns is less than 1.
      * @see #I(int)
      * @see #I(Shape)
@@ -788,7 +788,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      * principle diagonal.
      *
      * @param shape Shape of the identity-like matrix.
-     * @return An identity matrix of specified size.
+     * @return An identity matrix of the specified size.
      * @throws IllegalArgumentException If the specified shape is not rank 2.
      * @see #I(int)
      * @see #I(int, int)
@@ -839,7 +839,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      * @param n Number of times to multiply this matrix with itself. Must be non-negative.
      * @return If {@code n=0}, then the identity
      *
-     * @throws IllegalArgumentException If this matrix is not square (i.e. {@code !this.isSquare()}).
+     * @throws IllegalArgumentException If this matrix is not square (i.e., {@code !this.isSquare()}).
      */
     public CMatrix pow(int n) {
         ValidateParameters.ensureSquare(shape);
@@ -1051,7 +1051,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
     /**
      * Rounds all data within this matrix to the specified precision. The real and imaginary components will be rounded
      * independently.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A new matrix containing the data of this matrix rounded to the specified precision.
      */
     public CMatrix round(int precision) {
@@ -1060,8 +1060,8 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
 
 
     /**
-     * Sets all elements of this matrix to zero if they are within {@code tol} of zero. This is <em>not</em> done in place.
-     * @param precision The precision to round to (i.e. the number of decimal places to round to). Must be non-negative.
+     * Sets all elements of this matrix to zero if they are within {@code tol} of zero. This is <em>not</em> done in-place.
+     * @param precision The precision to round to (i.e., the number of decimal places to round to). Must be non-negative.
      * @return A copy of this matrix with all data within {@code tol} of zero set to zero.
      */
     public CMatrix roundToZero(double tolerance) {

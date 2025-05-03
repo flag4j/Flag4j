@@ -24,7 +24,6 @@
 
 package org.flag4j.linalg;
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.linalg.decompositions.chol.Cholesky;
@@ -41,6 +40,7 @@ import org.flag4j.linalg.solvers.exact.triangular.ComplexBackSolver;
 import org.flag4j.linalg.solvers.exact.triangular.ComplexForwardSolver;
 import org.flag4j.linalg.solvers.exact.triangular.RealBackSolver;
 import org.flag4j.linalg.solvers.exact.triangular.RealForwardSolver;
+import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.SingularMatrixException;
 
@@ -66,7 +66,7 @@ public final class Invert {
      * @param src Matrix to compute inverse of.
      * @return The inverse of this matrix.
      * @throws IllegalArgumentException If the {@code src} matrix is not square.
-     * @throws SingularMatrixException If the {@code src} matrix is singular (i.e. not invertible).
+     * @throws SingularMatrixException If the {@code src} matrix is singular (i.e., not invertible).
      */
     public static Matrix inv(Matrix src) {
         return new RealExactSolver().solveIdentity(src);
@@ -82,7 +82,7 @@ public final class Invert {
      * @param src Matrix to compute inverse of.
      * @return The inverse of this matrix.
      * @throws IllegalArgumentException If the {@code src} matrix is not square.
-     * @throws SingularMatrixException If the {@code src} matrix is singular (i.e. not invertible).
+     * @throws SingularMatrixException If the {@code src} matrix is singular (i.e., not invertible).
      */
     public static CMatrix inv(CMatrix src) {
         return new ComplexExactSolver().solveIdentity(src);
@@ -94,7 +94,7 @@ public final class Invert {
      * upper triangular.
      * @param src Upper triangular matrix to compute the inverse of.
      * @return The inverse of the upper triangular matrix.
-     * @throws SingularMatrixException If the matrix is singular (i.e. has at least one zero along the diagonal).
+     * @throws SingularMatrixException If the matrix is singular (i.e., has at least one zero along the diagonal).
      * @throws IllegalArgumentException If the matrix is not square.
      */
     public static Matrix invTriU(Matrix src) {
@@ -107,7 +107,7 @@ public final class Invert {
      * lower triangular.
      * @param src Lower triangular matrix to compute the inverse of.
      * @return The inverse of the lower triangular matrix.
-     * @throws SingularMatrixException If the matrix is singular (i.e. has at least one zero along the diagonal).
+     * @throws SingularMatrixException If the matrix is singular (i.e., has at least one zero along the diagonal).
      * @throws IllegalArgumentException If the matrix is not square.
      */
     public static Matrix invTriL(Matrix src) {
@@ -120,7 +120,7 @@ public final class Invert {
      * diagonal.
      * @param src Diagonal matrix to compute the inverse of.
      * @return The inverse of the diagonal matrix.
-     * @throws SingularMatrixException If the matrix is singular (i.e. has at least one zero along the diagonal).
+     * @throws SingularMatrixException If the matrix is singular (i.e., has at least one zero along the diagonal).
      * @throws IllegalArgumentException If the matrix is not square.
      */
     public static Matrix invDiag(Matrix src) {
@@ -150,7 +150,7 @@ public final class Invert {
      * upper triangular.
      * @param src Upper triangular matrix to compute the inverse of.
      * @return The inverse of the upper triangular matrix.
-     * @throws SingularMatrixException If the matrix is singular (i.e. has at least one zero along the diagonal).
+     * @throws SingularMatrixException If the matrix is singular (i.e., has at least one zero along the diagonal).
      * @throws IllegalArgumentException If the matrix is not square.
      */
     public static CMatrix invTriU(CMatrix src) {
@@ -163,7 +163,7 @@ public final class Invert {
      * lower triangular and will treat it as such even if it is not triangular.
      * @param src Lower triangular matrix to compute the inverse of.
      * @return The inverse of the lower triangular matrix.
-     * @throws SingularMatrixException If the matrix is singular (i.e. has at least one zero along the diagonal).
+     * @throws SingularMatrixException If the matrix is singular (i.e., has at least one zero along the diagonal).
      * @throws IllegalArgumentException If the matrix is not square.
      */
     public static CMatrix invTriL(CMatrix src) {
@@ -176,7 +176,7 @@ public final class Invert {
      * diagonal.
      * @param src Diagonal matrix to compute the inverse of.
      * @return The inverse of the diagonal matrix.
-     * @throws SingularMatrixException If the matrix is singular (i.e. has at least one zero along the diagonal).
+     * @throws SingularMatrixException If the matrix is singular (i.e., has at least one zero along the diagonal).
      * @throws IllegalArgumentException If the matrix is not square.
      */
     public static CMatrix invDiag(CMatrix src) {

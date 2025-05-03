@@ -350,13 +350,13 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Constructs a sparse COO matrix of the same type as this tensor with the given the shape and data and indices copied from
+     * Constructs a sparse COO matrix of the same type as this tensor with the given shape and data and indices copied from
      * this matrix.
      *
      * @param shape Shape of the matrix to construct.
      * @param data Entries of the matrix to construct.
      *
-     * @return A matrix of the same type as this matrix with the given the shape and data.
+     * @return A matrix of the same type as this matrix with the given shape and data.
      */
     @Override
     public CooMatrix makeLikeTensor(Shape shape, double[] data) {
@@ -370,7 +370,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -682,7 +682,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -701,19 +701,19 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * <p>Note: for a matrix, the {@link #tr()} method is preferred.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}. This will be a tensor of rank
      * {@code this.getRank() - 2} with the same shape as this tensor but with {@code axis1} and {@code axis2} removed.
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
     @Override
     public CooMatrix tensorTr(int axis1, int axis2) {
@@ -761,7 +761,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
     /**
      * Computes the element-wise reciprocals of non-zero values of this tensor.
      *
-     * @return A tensor containing the reciprocals of the non-zero values of this tensor.
+     * @return A tensor containing the reciprocals of the non-zero values in this tensor.
      */
     @Override
     public CooMatrix recip() {
@@ -770,7 +770,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Adds a scalar value to each non-zero element of this tensor.
+     * Adds a scalar value to each non-zero-element of this tensor.
      *
      * @param b Value to add to each non-zero entry of this tensor.
      *
@@ -783,7 +783,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Adds a scalar value to each non-zero element of this tensor.
+     * Adds a scalar value to each non-zero-element of this tensor.
      *
      * @param b Value to add to each non-zero entry of this tensor.
      *
@@ -797,7 +797,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Subtracts a scalar value from each non-zero element of this tensor.
+     * Subtracts a scalar value from each non-zero-element of this tensor.
      *
      * @param b Value to subtract from each non-zero entry of this tensor.
      *
@@ -825,7 +825,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Subtracts a scalar value from each non-zero element of this tensor.
+     * Subtracts a scalar value from each non-zero-element of this tensor.
      *
      * @param b Value to subtract from each non-zero entry of this tensor.
      *
@@ -1154,7 +1154,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Swaps specified rows in the matrix. This is done in place.
+     * Swaps specified rows in the matrix. This is done in-place.
      *
      * @param rowIndex1 Index of the first row to swap.
      * @param rowIndex2 Index of the second row to swap.
@@ -1170,7 +1170,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Swaps specified columns in the matrix. This is done in place.
+     * Swaps specified columns in the matrix. This is done in-place.
      *
      * @param colIndex1 Index of the first column to swap.
      * @param colIndex2 Index of the second column to swap.
@@ -1482,7 +1482,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
     /**
      * Gets a specified row of this matrix between {@code colStart} (inclusive) and {@code colEnd} (exclusive).
      *
-     * @param rowIdx Index of the row of this matrix to get.
+     * @param rowIdx Index of the row in this matrix to get.
      * @param colStart Starting column of the row (inclusive).
      * @param colEnd Ending column of the row (exclusive).
      *
@@ -1515,7 +1515,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
     /**
      * Gets a specified column of this matrix between {@code rowStart} (inclusive) and {@code rowEnd} (exclusive).
      *
-     * @param colIdx Index of the column of this matrix to get.
+     * @param colIdx Index of the column in this matrix to get.
      * @param rowStart Starting row of the column (inclusive).
      * @param rowEnd Ending row of the column (exclusive).
      *
@@ -1625,7 +1625,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return A copy of this matrix with the specified column set to {@code values}.
      *
-     * @throws IllegalArgumentException If the values vector has a different length than the number of rows of this matrix.
+     * @throws IllegalArgumentException If the values vector has a different length than the number of rows in this matrix.
      * @throws IndexOutOfBoundsException If {@code colIndex < 0 || colIndex >= this.numCols}.
      */
     public CooMatrix setCol(CooVector values, int colIndex) {
@@ -1641,7 +1641,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return A copy of this matrix with the specified row set to {@code values}.
      *
-     * @throws IllegalArgumentException If the values vector has a different length than the number of rows of this matrix.
+     * @throws IllegalArgumentException If the values vector has a different length than the number of rows in this matrix.
      * @throws
      */
     @Override
@@ -1656,7 +1656,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      * @param row Array containing values to replace specified row in this matrix.
      * @param rowIdx Index of the row to set.
      *
-     * @return If this matrix is dense, the row set operation is done in place and a reference to this matrix is returned.
+     * @return If this matrix is dense, the row set operation is done in-place and a reference to this matrix is returned.
      * If this matrix is sparse a copy will be created with the new row and returned.
      */
     public CooMatrix setRow(double[] row, int rowIdx) {
@@ -1706,7 +1706,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
     /**
      * Coalesces this sparse COO matrix. An uncoalesced matrix is a sparse matrix with multiple data for a single index. This
      * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
-     * than summing is desired, use {@link #coalesce(BinaryOperator)}.
+     * than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse COO matrix which is equivalent to this COO matrix.
      * @see #coalesce(BinaryOperator)
      */

@@ -37,12 +37,15 @@ import org.flag4j.linalg.ops.sparse.coo.CooDataSorter;
 import org.flag4j.linalg.ops.sparse.coo.CooGetSet;
 import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringVectorOps;
 import org.flag4j.numbers.Semiring;
+import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 
 
@@ -55,7 +58,7 @@ import java.util.function.BinaryOperator;
  *
  * <p>Sparse vectors allow for the efficient storage of and ops on large vectors that contain many zero values.
  *
- * <p>COO vectors are optimized for large hyper-sparse vectors (i.e. vectors which contain almost all zeros relative to the size of the
+ * <p>COO vectors are optimized for large hyper-sparse vectors (i.e., vectors which contain almost all zeros relative to the size of the
  * vector).
  *
  * <p>A sparse COO vector is stored as:
@@ -87,11 +90,11 @@ public abstract class AbstractCooSemiringVector<
         implements SemiringTensorMixin<T, U, Y>, VectorMixin<T, V, W, Y> {
 
     /**
-     * The zero element for the semiring that this tensor's elements belong to.
+     * The zero-element of the semiring that this tensor's elements belong to.
      */
     private Y zeroElement;
     /**
-     * Indices of the non-zero values of this sparse COO vector.
+     * Indices of the non-zero values in this sparse COO vector.
      */
     public final int[] indices;
     /**
@@ -124,7 +127,7 @@ public abstract class AbstractCooSemiringVector<
         this.indices = indices;
         this.nnz = data.length;
 
-        // Attempt to set the zero element for the semiring.
+        // Attempt to set the zero-element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
     }
 
@@ -144,7 +147,7 @@ public abstract class AbstractCooSemiringVector<
         this.indices = indices;
         this.nnz = data.length;
 
-        // Attempt to set the zero element for the semiring.
+        // Attempt to set the zero-element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
     }
 
@@ -204,14 +207,14 @@ public abstract class AbstractCooSemiringVector<
      * @param entries Non-zero data of the matrix.
      * @param rowIndices Row indices of the matrix.
      * @param colIndices Column indices of the matrix.
-     * @return A COO matrix of similar type as this vector with the specified shape, non-zero data, and non-zero row/col indices.
+     * @return A COO matrix of a similar type as this vector with the specified shape, non-zero data, and non-zero row/col indices.
      */
     public abstract V makeLikeMatrix(Shape shape, Y[] entries, int[] rowIndices, int[] colIndices);
 
 
     /**
      * Gets the sparsity of this vector as a decimal percentage.
-     * That is, the percentage of data in this vector that are zero.
+     * That is, the percentage of data elements in this vector that are zero.
      * @return The sparsity of this vector as a decimal percentage.
      * @see #getDensity()
      */
@@ -244,13 +247,33 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * Gets the element of this tensor at the specified indices.
+     * Gets multiple items from this vector.
      *
-     * @param target Indices of the element to get.
+     * @param indices The indices of each item to get from this vector.
      *
-     * @return The element of this tensor at the specified indices.
+     * @return A vector containing the entries of this vector at the specified {@code indices}.
      *
-     * @throws IndexOutOfBoundsException If any {target} are not within this tensor.
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @see #get(int)
+     * @see #getSlice(int, int)
+     */
+    @Override
+    public U getItems(int... indices) {
+        Y[] itemData = makeEmptyDataArray(indices.length);
+
+        for(int i=0; i<indices.length; i++)
+            itemData[i] = get(indices[i]);
+
+        return makeLikeDenseTensor(new Shape(indices.length), itemData);
+    }
+
+
+    /**
+     * Gets the element of this vector at the specified index.
+     * @param idx Index of the element to get within this vector.
+     * @return The element of this vector at index {@code idx}.
+     * @throws IndexOutOfBoundsException If {@code idx} is not within the bounds of this vector.
+     * @see #getSlice(int, int)
      */
     @Override
     public Y get(int... target) {
@@ -260,12 +283,141 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
+     * Gets a slice of this vector over the specified range of indices.
+     *
+     * @param startIdx Staring index of slice (inclusive).
+     * @param endIdx Ending index of slice (exclusive).
+     *
+     * @return A vector of length {@code endIdx - startIdx} whose entries are the elements of this vector
+     * over the specified range of indices [{@code startIdx}, {@code endIdx}).
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} or {@code endIdx - 1} are not within the bounds of this vector.
+     * @throws IllegalArgumentException  If {@code startIdx >= endIdx}.
+     * @see #get(int)
+     */
+    @Override
+    public T getSlice(int startIdx, int endIdx) {
+        if (startIdx > endIdx) {
+            throw new IllegalArgumentException("startIdx must be less than endIdx but got startIdx="
+                    + startIdx + " and endIdx=" + endIdx + ".");
+        }
+        ValidateParameters.validateTensorIndex(shape, startIdx);
+        ValidateParameters.validateTensorIndex(shape, endIdx-1);
+
+        int startLoc = Arrays.binarySearch(indices, startIdx);
+        if(startLoc < 0) startLoc = -startLoc - 1;
+
+        int endLoc = Arrays.binarySearch(indices, endIdx);
+        if(endLoc < 0) endLoc = -endLoc - 1;
+
+        return makeLikeTensor(new Shape(endIdx-startIdx),
+                Arrays.copyOfRange(data, startLoc, endLoc),
+                Arrays.copyOfRange(indices, startLoc, endLoc));
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of another vector.
+     *
+     * @param values A vector containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this tensor will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and this copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values} does not fit within this vector when its first entry is placed
+     *                                   at {@code startIdx}.
+     */
+    @Override
+    public T setSlice(T values, int startIdx) {
+        return setSlice(values.data, startIdx);
+    }
+
+
+    /**
+     * Sets a slice of this vector to the entries of an array.
+     *
+     * @param values Array containing the values to set.
+     * @param startIdx The starting index of the slice to set. The size of the slice will be {@code values.length}.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this tensor will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and this copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this vector,
+     * or if {@code values} does not fit within this vector when its first entry is placed at {@code startIdx}.
+     */
+    @Override
+    public T setSlice(Y[] values, int startIdx) {
+        int startLoc = Arrays.binarySearch(indices, startIdx);
+        int endLoc = Arrays.binarySearch(indices, startIdx + values.length);
+
+        if(startLoc < 0) startLoc = -startLoc - 1;
+        if(endLoc < 0) endLoc = -endLoc - 1;
+
+        int inVectorSliceSize = endLoc - startLoc;
+
+        Y[] newValues = makeEmptyDataArray(values.length + nnz - inVectorSliceSize);
+        int[] newIndices = new int[newValues.length];
+        int[] valueIndices = ArrayBuilder.intRange(startIdx, startIdx + values.length);
+
+        System.arraycopy(data, 0, newValues, 0, startLoc);
+        System.arraycopy(data, endLoc, newValues, startLoc, nnz - endLoc);
+        System.arraycopy(values, 0, newValues, startLoc + nnz - endLoc, values.length);
+
+        System.arraycopy(indices, 0, newIndices, 0, startLoc);
+        System.arraycopy(indices, endLoc, newIndices, startLoc, nnz - endLoc);
+        System.arraycopy(valueIndices, 0, newIndices, startLoc + nnz - endLoc, values.length);
+
+        return makeLikeTensor(shape, newValues, newIndices);
+    }
+
+
+    /**
+     * Sets multiple items of this vector.
+     *
+     * @param values New values it set the specified items to.
+     * @param indices The indices indicating where each value in {@code values} should be set within this vector.
+     *
+     * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
+     * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
+     *
+     * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @throws IllegalArgumentException  If {@code values.length != indices.length}.
+     */
+    @Override
+    public T setItems(Y[] values, int[] indices) {
+        ValidateParameters.ensureArrayLengthsEq(values.length, indices.length);
+
+        // Create a map with the vector's indices and values
+        HashMap<Integer, Y> valueMap = new HashMap<>(nnz);
+        for(int i=0; i<nnz; i++)
+            valueMap.put(indices[i], values[i]);
+
+        // Add or overwrite the vector's values.
+        for(int i=0, size=values.length; i<size; i++)
+            valueMap.put(indices[i], values[i]);
+
+        Y[] newData = makeEmptyDataArray(valueMap.size());
+        int[] newIndices = new int[valueMap.size()];
+
+        int loc = 0;
+        for(Map.Entry<Integer, Y> entry : valueMap.entrySet()) {
+            newData[loc] = entry.getValue();
+            newIndices[loc++] = entry.getKey();
+        }
+
+        return makeLikeTensor(shape, newData, newIndices);
+    }
+
+
+    /**
      * Computes the transpose of a tensor by exchanging {@code axis1} and {@code axis2}.
      *
      * @param axis1 First axis to exchange.
      * @param axis2 Second axis to exchange.
      *
-     * @return The transpose of this tensor according to the specified axes.
+     * @return The transpose of this tensor along the specified axes.
      *
      * @throws IndexOutOfBoundsException If either {@code axis1} or {@code axis2} are out of bounds for the rank of this tensor.
      * @see #T()
@@ -337,7 +489,7 @@ public abstract class AbstractCooSemiringVector<
             destEntries[idx] = value;
             destIndices[idx] = target[0];
         } else {
-            // Target not found, insert new value and index.
+            // Target isn't found, insert a new value and index.
             destEntries = makeEmptyDataArray(nnz + 1);
             destIndices = new int[nnz + 1];
             int insertionPoint = - (idx + 1);
@@ -349,7 +501,7 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * Flattens tensor to single dimension while preserving order of data.
+     * Flattens tensor to a single dimension while preserving the order of data.
      *
      * @return The flattened tensor.
      *
@@ -454,7 +606,7 @@ public abstract class AbstractCooSemiringVector<
      * total number of data in this vector is greater than the maximum integer. In this case, the true size of this vector can
      * still be found by calling {@code shape.totalEntries()} on this vector.
      *
-     * @return The length, i.e. the number of data, in this vector.
+     * @return The length, i.e., the number of data, in this vector.
      * @throws ArithmeticException If the total number of data in this vector is greater than the maximum integer.
      */
     @Override
@@ -466,7 +618,7 @@ public abstract class AbstractCooSemiringVector<
     /**
      * Repeats a vector {@code n} times along a certain axis to create a matrix.
      *
-     * @param n Number of times to repeat vector.
+     * @param n Number of times to repeat this vector.
      * @param axis Axis along which to repeat vector:
      * <ul>
      *     <li>If {@code axis=0}, then the vector will be treated as a row vector and stacked vertically {@code n} times.</li>
@@ -486,19 +638,13 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * <p>
-     * Stacks two vectors along specified axis.
-     * 
+     * <p>Stacks two vectors along the specified axis.
      *
-     * <p>
-     * Stacking two vectors of length {@code n} along axis 0 stacks the vectors
+     * <p>Stacking two vectors of length {@code n} along axis 0 stacks the vectors
      * as if they were row vectors resulting in a {@code 2&times;n} matrix.
-     * 
      *
-     * <p>
-     * Stacking two vectors of length {@code n} along axis 1 stacks the vectors
+     * <p>Stacking two vectors of length {@code n} along axis 1 stacks the vectors
      * as if they were column vectors resulting in a {@code n&times;2} matrix.
-     * 
      *
      * @param b Vector to stack with this vector.
      * @param axis Axis along which to stack vectors. If {@code axis=0}, then vectors are stacked as if they are row
@@ -508,7 +654,7 @@ public abstract class AbstractCooSemiringVector<
      *
      * @throws IllegalArgumentException If the number of data in this vector is different from the number of
      *                                  data in the vector {@code b}.
-     * @throws IllegalArgumentException If axis is not either 0 or 1.
+     * @throws IllegalArgumentException If {@code axis} is not either 0 or 1.
      */
     @Override
     public V stack(T b, int axis) {
@@ -588,7 +734,7 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * Computes the element-wise multiplication of two tensors of the same shape.
+     * Computes the element-wise multiplication of two tensors with the same shape.
      *
      * @param b Second tensor in the element-wise product.
      *
@@ -615,7 +761,7 @@ public abstract class AbstractCooSemiringVector<
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -638,18 +784,18 @@ public abstract class AbstractCooSemiringVector<
     /**
      * <p>Computes the generalized trace of this tensor along the specified axes.
      *
-     * <p>The generalized tensor trace is the sum along the diagonal values of the 2D sub-arrays of this tensor specified by
+     * <p>The generalized tensor trace is the sum along the diagonal values in the 2D subarrays of this tensor specified by
      * {@code axis1} and {@code axis2}. The shape of the resulting tensor is equal to this tensor with the
      * {@code axis1} and {@code axis2} removed.
      *
-     * @param axis1 First axis for 2D sub-array.
-     * @param axis2 Second axis for 2D sub-array.
+     * @param axis1 First axis for 2D subarray.
+     * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than, this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e. the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal, or the tensor does not have the same length along the two axes.)
      */
     @Override
     public T tensorTr(int axis1, int axis2) {
@@ -659,8 +805,9 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * Gets the zero element for the field of this vector.
-     * @return The zero element for the field of this vector. If it could not be determined during construction of this object
+     * Gets the zero-element of this vector's field.
+     * @return The zero-element for the field of this vector.
+     * If it could not be determined during construction of this object
      * and has not been set explicitly by {@link #setZeroElement(Semiring)} then {@code null} will be returned.
      */
     public Y getZeroElement() {
@@ -669,8 +816,8 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * Sets the zero element for the field of this tensor.
-     * @param zeroElement The zero element of this tensor.
+     * Sets the zero-element for this tenor's field.
+     * @param zeroElement The zero-element of this tensor.
      * @throws IllegalArgumentException If {@code zeroElement} is not an additive identity for the semiring.
      */
     public void setZeroElement(Y zeroElement) {
@@ -751,8 +898,8 @@ public abstract class AbstractCooSemiringVector<
 
     /**
      * Coalesces this sparse COO vector. An uncoalesced vector is a sparse vector with multiple data for a single index. This
-     * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
-     * than summing is desired, use {@link #coalesce(BinaryOperator)}.
+     * method will ensure that each index only has one non-zero value by summing up duplicated data.
+     * If another form of aggregation other than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse COO vector which is equivalent to this COO vector.
      * @see #coalesce(BinaryOperator)
      */
