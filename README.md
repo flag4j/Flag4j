@@ -4,9 +4,11 @@
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=jacobdwatters_Flag4j&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=jacobdwatters_Flag4j)
 
 # Flag4j - Fast Linear Algebra for Java
-Flag4j is a fast and easy to use linear algebra library for Java and provides operations and linear algebra routines for real/complex sparse/dense tensors, matrices, and vectors.
+Flag4j is a fast and easy-to-use linear algebra library for Java
+and provides operations and linear algebra routines for real/complex sparse/dense tensors,
+matrices, and vectors.
 
-## State of Project as of 7-DEC-2024
+## State of the Project as of 7-DEC-2024
 Flag4j is currently in the final steps of development before an initial beta release. 
 Nearly all features have been fully implemented or beta implementations.
 
@@ -17,7 +19,7 @@ Nearly all features have been fully implemented or beta implementations.
     - Currently only supports a subset including real/complex/integer dense general matrices 
     and real/complex/integer coordinate general matrices
   - Added support for reading/writing from/to csv files for real and complex matrices (i.e. `Matrix` and `CMatrix`).
-- Improved API: There have been significant changes to the API specifically with the inheritance hierarchy of arrays (tensors, 
+- Improved API: There have been significant changes to the API, specifically with the inheritance hierarchy of arrays (tensors, 
   matrices, vectors). This was in part to serve the creation of general field/ring/semiring tensors.
 - New Algebraic Structures and Generic Tensors:
   - Added `Field`, `Ring`, and `Semiring` interfaces representing the mathematical objects.
@@ -25,7 +27,7 @@ Nearly all features have been fully implemented or beta implementations.
     - Several reference implementations of the interfaces are provided, e.g. `Bool`, `RealInt16`, `Complex128`.
   - Added generic `FieldMatrix<T extends Field<T>>` for creating matrices for a generic field. This allows users
   to easily create a matrix for a custom field which implements the `Field` interface. Support for generic 
-  ring and semiring matrices are planed.
+  ring and semiring matrices are planned.
 ___
 
 ## Features and Functionality
@@ -78,10 +80,10 @@ ___
 - Singular Value Decomposition (real/complex)
 
 ### Linear Solvers
-- Exact solution for well determined matrix systems
+- Exact solution for well-determined matrix systems
   - General systems
   - Triangular systems
-- Exact solution for well determined tensor or matrix equations
+- Exact solution for well-determined tensor or matrix equations
 - Least Squares solution
 
 ### Linear and Homography Transformations
