@@ -199,6 +199,18 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
     }
 
 
+    /**
+     * Constructs a complex vector from an array of {@code String}s. Each {@code String} must be
+     * parsable as a complex number.
+     * @param data The entries of this vector.
+     * @throws org.flag4j.util.exceptions.Flag4jParsingException If any of the {@code String}s in {@code data} cannot be
+     * parsed as a complex number.
+     */
+    public CVector(String... data) {
+        this(new Shape(data.length), ArrayConversions.toComplex128(data, null));
+    }
+
+
     @Override
     public Complex128[] makeEmptyDataArray(int length) {
         return new Complex128[length];

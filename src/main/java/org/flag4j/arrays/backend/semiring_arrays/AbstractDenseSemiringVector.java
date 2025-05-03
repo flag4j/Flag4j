@@ -379,7 +379,7 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
      * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
      *
      * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
-     * @throws IllegalArgumentException  If {@code values.length != indices.length}.
+     * @throws IllegalArgumentException  If {@code values.length() != indices.length}.
      */
     public T setItems(T values, int[] indices) {
         return setItems(values.data, indices);

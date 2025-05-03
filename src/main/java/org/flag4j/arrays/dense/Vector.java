@@ -596,6 +596,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
      * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
      * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @throws IllegalArgumentException If {@code values.length() != indices.length}.
      * @see #setSlice(Vector, int)
      * @see #setSlice(Double[], int)
      * @see #setSlice(double[], int)
@@ -623,6 +624,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
      * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
      * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @throws IllegalArgumentException If {@code values.length() != indices.length}.
      * @see #setSlice(Vector, int)
      * @see #setSlice(Double[], int)
      * @see #setSlice(double[], int)
@@ -649,6 +651,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * @return If this vector is dense, the operation will be done in-place and a reference to this vector will be returned.
      * If this vector is sparse, the operation will be done out-of-place in a copy of this vector, and that copy will be returned.
      * @throws IndexOutOfBoundsException If any index in {@code indices} is not within the bounds of this vector.
+     * @throws IllegalArgumentException If {@code values.length() != indices.length}.
      * @see #setSlice(Vector, int)
      * @see #setSlice(Double[], int)
      * @see #setSlice(double[], int)
