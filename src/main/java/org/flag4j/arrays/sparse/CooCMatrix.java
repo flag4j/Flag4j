@@ -25,7 +25,7 @@
 package org.flag4j.arrays.sparse;
 
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.field_arrays.AbstractCooFieldMatrix;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
 import org.flag4j.arrays.dense.CMatrix;
@@ -46,6 +46,7 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.StringUtils;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
 import java.util.ArrayList;
@@ -322,14 +323,14 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CooCMatrix makeLikeTensor(Shape shape, Complex128[] entries) {
-        return new CooCMatrix(shape, entries, rowIndices.clone(), colIndices.clone());
+    public CooCMatrix makeLikeNDArray(Shape shape, Complex128[] data) {
+        return new CooCMatrix(shape, data, rowIndices.clone(), colIndices.clone());
     }
 
 
@@ -349,7 +350,7 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
      *                                  are out of bounds for the corresponding tensor.
      */
     @Override
-    public AbstractTensor<?, Complex128[], Complex128> tensorDot(CooCMatrix src2, int[] aAxes, int[] bAxes) {
+    public AbstractNDArray<?, Complex128[], Complex128> tensorDot(CooCMatrix src2, int[] aAxes, int[] bAxes) {
         return toTensor().tensorDot(src2.toTensor(), aAxes, bAxes);
     }
 
@@ -552,7 +553,7 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
      * Computes the element-wise multiplication between this tensor and a real COO matrix.
      * @param b Second matrix in the element-wise product.
      * @return The element-wise product of this tensor with {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !this.shape.equals(b.shape)}.
+     * @throws ArrayShapeException If {@code !this.shape.equals(b.shape)}.
      */
     public CooCMatrix elemMult(CooMatrix b) {
         return RealComplexSparseMatOps.elemMult(this, b);
@@ -573,7 +574,7 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
      * Computes the element-wise multiplication between two matrices of the same shape.
      * @param b Second tensor in the element-wise product.
      * @return The element-wise product between this matrix and {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !this.shape.equals(b.shape)}
+     * @throws ArrayShapeException If {@code !this.shape.equals(b.shape)}
      */
     public CooCMatrix elemMult(CMatrix b) {
         Complex128[] dest = new Complex128[nnz];

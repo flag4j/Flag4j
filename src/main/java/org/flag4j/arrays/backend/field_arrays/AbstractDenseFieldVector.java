@@ -37,7 +37,7 @@ import org.flag4j.linalg.ops.dense.field_ops.DenseFieldElemDiv;
 import org.flag4j.linalg.ops.dense.field_ops.DenseFieldVectorOps;
 import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 
 /**
@@ -143,31 +143,17 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
     public T normalize() {
         V[] dest = makeEmptyDataArray(size);
         FieldOps.div(data, mag(), dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 
     /**
-     * Computes the magnitude of this vector.
-     *
-     * @return The magnitude of this vector.
+     * Computes the norm of this vector. This is the same as {@link #mag()}.
+     * @return The norm (specifically &ell;<sup>2</sup>) of this vector.
+     * @see #mag()
+     * @see #magSquared()
      */
     @Override
-    public V mag() {
-        V mag = getZeroElement();
-
-        for(int i=0; i<size; i++)
-            mag = mag.add(data[i].mult( data[i]));
-
-        return mag.sqrt();
-    }
-
-
-    /**
-     * Computes the Euclidean norm of this vector.
-     *
-     * @return The Euclidean norm of this vector.
-     */
     public double norm() {
         return VectorNorms.norm(data);
     }
@@ -196,7 +182,7 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
     public T div(T b) {
         V[] dest = makeEmptyDataArray(data.length);
         DenseFieldElemDiv.dispatch(data, shape, b.data, b.shape, dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 
@@ -205,7 +191,7 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
      *
      * @param b The denominator tensor in the element-wise quotient.
      *
-     * @throws TensorShapeException If this tensor and {@code b}s shapes are not equal.
+     * @throws ArrayShapeException If this tensor and {@code b}s shapes are not equal.
      */
     public void divEq(T b) {
         ValidateParameters.ensureEqualShape(shape, b.shape);
@@ -224,7 +210,7 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
     public T sqrt() {
         V[] dest = makeEmptyDataArray(data.length);
         FieldOps.sqrt(data, dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 
@@ -335,7 +321,7 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
      * @see #allClose(AbstractDenseFieldVector, double, double) 
      */
     public boolean allClose(T b) {
-        return sameShape(b) && RingProperties.allClose(data, b.data);
+        return hasSameShape(b) && RingProperties.allClose(data, b.data);
     }
 
 
@@ -348,6 +334,6 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
      * @see #allClose(AbstractDenseFieldVector)
      */
     public boolean allClose(T b, double relTol, double absTol) {
-        return sameShape(b) && RingProperties.allClose(data, b.data, relTol, absTol);
+        return hasSameShape(b) && RingProperties.allClose(data, b.data, relTol, absTol);
     }
 }

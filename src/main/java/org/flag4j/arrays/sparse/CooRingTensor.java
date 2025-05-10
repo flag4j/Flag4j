@@ -235,14 +235,14 @@ public class CooRingTensor<T extends Ring<T>> extends AbstractCooRingTensor<CooR
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CooRingTensor<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new CooRingTensor<>(shape, entries, ArrayUtils.deepCopy2D(indices, null));
+    public CooRingTensor<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new CooRingTensor<>(shape, data, ArrayUtils.deepCopy2D(indices, null));
     }
 
     /**

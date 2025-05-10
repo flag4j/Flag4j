@@ -25,10 +25,10 @@
 package org.flag4j.linalg.ops.dense.semiring_ops;
 
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.concurrency.Configurations;
 import org.flag4j.concurrency.ThreadManager;
+import org.flag4j.numbers.Semiring;
 
 import java.util.Arrays;
 
@@ -54,9 +54,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void standard(T[] src1, Shape shape1,
                                                         T[] src2, Shape shape2,
                                                         T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -96,9 +96,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void reordered(T[] src1, Shape shape1,
                                                          T[] src2, Shape shape2,
                                                          T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -135,9 +135,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void blocked(T[] src1, Shape shape1,
                                                        T[] src2, Shape shape2,
                                                        T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
+        int cols1 = shape1.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -191,9 +191,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void blockedReordered(T[] src1, Shape shape1,
                                                                 T[] src2, Shape shape2,
                                                                 T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
+        int cols1 = shape1.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -247,9 +247,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void concurrentStandard(T[] src1, Shape shape1,
                                                                   T[] src2, Shape shape2,
                                                                   T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -288,9 +288,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void concurrentReordered(T[] src1, Shape shape1,
                                                                    T[] src2, Shape shape2,
                                                                    T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -326,9 +326,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void concurrentBlocked(T[] src1, Shape shape1,
                                                                  T[] src2, Shape shape2,
                                                                  T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
         int blockSize = Configurations.getBlockSize();
@@ -382,9 +382,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void concurrentBlockedReordered(T[] src1, Shape shape1,
                                                                           T[] src2, Shape shape2,
                                                                           T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
         int blockSize = Configurations.getBlockSize();
@@ -435,9 +435,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void standardVector(T[] src1, Shape shape1,
                                                               T[] src2, Shape shape2,
                                                               T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, src1[0].getZero());
         int src1Index, src2Index;
@@ -466,9 +466,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void blockedVector(T[] src1, Shape shape1,
                                                              T[] src2, Shape shape2,
                                                              T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, src1[0].getZero());
         int blockSize = Configurations.getBlockSize();
@@ -510,9 +510,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void concurrentStandardVector(T[] src1, Shape shape1,
                                                                         T[] src2, Shape shape2,
                                                                         T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -543,9 +543,9 @@ public final class DenseSemiringMatMult {
     public static <T extends Semiring<T>> void concurrentBlockedVector(T[] src1, Shape shape1,
                                                                        T[] src2, Shape shape2,
                                                                        T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, src1[0].getZero());
         int blockSize = Configurations.getBlockSize();

@@ -262,8 +262,8 @@ public final class MatrixMultiplyDispatcher {
     public static AlgorithmName chooseAlgorithmRealComplex(Shape shape1, Shape shape2) {
         AlgorithmName algorithm;
 
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
 
         // TODO: Extract constants to final variables.
         if(getRatio(shape1) >= SQUARENESS_RATIO) {
@@ -326,7 +326,7 @@ public final class MatrixMultiplyDispatcher {
      * @return The algorithm to use in the matrix multiplication.
      */
     public static AlgorithmName chooseAlgorithmRealComplexVector(Shape shape) {
-        int rows = shape.get(0);
+        int rows = shape.getSize(0);
 
         if(rows<=600) return AlgorithmName.STANDARD_VECTOR;
         else return AlgorithmName.CONCURRENT_BLOCKED_VECTOR;
@@ -340,8 +340,8 @@ public final class MatrixMultiplyDispatcher {
      * @return The squareness ratio for the specified shape.
      */
     private static double getRatio(Shape shape) {
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
 
         double ratio = Math.abs(numRows-numCols) / Math.max(numRows, numCols);
         return 1 - ratio;

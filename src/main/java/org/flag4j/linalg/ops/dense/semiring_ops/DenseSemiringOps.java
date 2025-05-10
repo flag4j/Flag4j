@@ -114,13 +114,13 @@ public final class DenseSemiringOps {
         ValidateParameters.ensureArrayLengthsEq(destShape.totalEntriesIntValueExact(), dest.length);
         ValidateParameters.ensureNotEquals(axis1, axis2);
         ValidateParameters.validateArrayIndices(shape.getRank(), axis1, axis2);
-        ValidateParameters.ensureAllEqual(shape.get(axis1), shape.get(axis2));
+        ValidateParameters.ensureAllEqual(shape.getSize(axis1), shape.getSize(axis2));
 
         int[] strides = shape.getStrides();
         int rank = strides.length;
 
         // Calculate the offset increment for the diagonal.
-        int traceLength = shape.get(axis1);
+        int traceLength = shape.getSize(axis1);
         int diagonalStride = strides[axis1] + strides[axis2];
 
         int[] destIndices = new int[rank - 2];
@@ -165,7 +165,7 @@ public final class DenseSemiringOps {
 
         // Compute shape for resulting tensor.
         for(int i=0; i<rank; i++)
-            if(i != axis1 && i != axis2) newDims[idx++] = shape.get(i);
+            if(i != axis1 && i != axis2) newDims[idx++] = shape.getSize(i);
 
         return new Shape(newDims);
     }

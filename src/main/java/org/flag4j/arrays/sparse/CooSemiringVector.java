@@ -289,14 +289,14 @@ public class CooSemiringVector<T extends Semiring<T>> extends AbstractCooSemirin
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CooSemiringVector<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new CooSemiringVector<>(shape, entries, indices.clone());
+    public CooSemiringVector<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new CooSemiringVector<>(shape, data, indices.clone());
     }
 
 

@@ -26,7 +26,7 @@ package org.flag4j.io;
 
 import org.flag4j.arrays.Pair;
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.Matrix;
@@ -53,7 +53,7 @@ public final class TensorReader {
 
 
     /**
-     * <p>Reads a serialized {@link AbstractTensor} from a specified file using a {@link ObjectInputStream}.
+     * <p>Reads a serialized {@link AbstractNDArray} from a specified file using a {@link ObjectInputStream}.
      * <p>The object returned from this tensor will likely need to be cast to the desired type:
      * <pre>{@code
      *      Matrix matrix;
@@ -69,13 +69,13 @@ public final class TensorReader {
      * @throws IOException If an I/O exception occurs while reading the object.
      * @throws ClassNotFoundException Class of a serialized object cannot be found.
      */
-    public static AbstractTensor<?, ?, ?> read(String filePath) throws IOException, ClassNotFoundException {
+    public static AbstractNDArray<?, ?, ?> read(String filePath) throws IOException, ClassNotFoundException {
         Object object = null;
         File file = new File(filePath);
 
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
             object = in.readObject();
-            return (AbstractTensor<?, ?, ?>) object;
+            return (AbstractNDArray<?, ?, ?>) object;
         } catch(ClassCastException e) {
             throw new IOException("Attempted to load a non-Flag4j tensor object: " + object.getClass().getName(), e);
         }

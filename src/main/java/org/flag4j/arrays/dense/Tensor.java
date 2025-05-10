@@ -41,7 +41,7 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -199,7 +199,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
-    public Tensor makeLikeTensor(Shape shape, double[] data) {
+    public Tensor makeLikeNDArray(Shape shape, double[] data) {
         return new Tensor(shape, data);
     }
 
@@ -230,7 +230,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * @param shape New shape for the matrix. Must be rank-2 and have the same number of total entries as {@code this.shape}.
      * @return A matrix with the specified shape and data equivalent to this tensor.
      * @throws IllegalArgumentException If {@code shape} does not have the same total number of entries {@code this.shape}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code shape.getRank() != 2}.
+     * @throws ArrayShapeException If {@code shape.getRank() != 2}.
      */
     public Matrix toMatrix(Shape shape) {
         // Matrix constructor checks the rank of the shape and
@@ -271,7 +271,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public Tensor add(CooTensor b) {
         return RealDenseCooTensorOps.add(this, b);
@@ -285,7 +285,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor add(CTensor b) {
         Complex128[] dest = new Complex128[data.length];
@@ -301,7 +301,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor add(CooCTensor b) {
         Complex128[] dest = new Complex128[data.length];
@@ -327,7 +327,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      *
      * @param b Second tensor in the element-wise difference.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor sub(CooCTensor b) {
         return RealComplexDenseCooOps.sub(this, b);
@@ -341,7 +341,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public Tensor sub(CooTensor b) {
         return RealDenseCooTensorOps.sub(this, b);
@@ -355,7 +355,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor sub(CTensor b) {
         Complex128[] dest = new Complex128[data.length];
@@ -412,8 +412,8 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
         List<int[]> cooIndices = new ArrayList<>(estimatedSize);
         final Double ZERO = Double.valueOf(0d);
 
-        final int rows = shape.get(0);
-        final int cols = shape.get(1);
+        final int rows = shape.getSize(0);
+        final int cols = shape.getSize(1);
 
         for(int i = 0, size = data.length; i<size; i++) {
             Double val = data[i];

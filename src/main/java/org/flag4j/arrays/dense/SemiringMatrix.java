@@ -259,14 +259,14 @@ public class SemiringMatrix<T extends Semiring<T>> extends AbstractDenseSemiring
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public SemiringMatrix<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new SemiringMatrix<>(shape, entries);
+    public SemiringMatrix<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new SemiringMatrix<>(shape, data);
     }
 
 
@@ -343,8 +343,8 @@ public class SemiringMatrix<T extends Semiring<T>> extends AbstractDenseSemiring
         Arrays.fill(identityValues, (Field) fieldValue.getZero());
         Field one = (Field) fieldValue.getOne();
 
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
 
         for(int i=0, stop=Math.min(rows, cols); i<stop; i++)
             identityValues[i*cols + i] = one;

@@ -24,9 +24,9 @@
 
 package org.flag4j.linalg.ops.sparse.csr.semiring_ops;
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractCsrSemiringMatrix;
+import org.flag4j.numbers.Semiring;
 
 /**
  * Utility class containing methods useful for determining certain properties of a
@@ -48,8 +48,8 @@ public final class SemiringCsrProperties {
      * @return {@code true} if the CSR matrix is upper-triangular; {@code false} otherwise.
      */
     public static <T extends Semiring<T>> boolean isTriU(Shape shape, T[] entries, int[] rowPointers, int[] colIndices) {
-        final int numRows = shape.get(0);
-        final int numCols = shape.get(1);
+        final int numRows = shape.getSize(0);
+        final int numCols = shape.getSize(1);
 
         if(numRows != numCols) return false; // Early return for non-square matrix.
 
@@ -73,8 +73,8 @@ public final class SemiringCsrProperties {
      * @return {@code true} if the CSR matrix is lower-triangular; {@code false} otherwise.
      */
     public static <T extends Semiring<T>> boolean isTriL(Shape shape, T[] entries, int[] rowPointers, int[] colIndices) {
-        final int numRows = shape.get(0);
-        final int numCols = shape.get(1);
+        final int numRows = shape.getSize(0);
+        final int numCols = shape.getSize(1);
 
         if(numRows != numCols) return false; // Early return for non-square matrix.
 
@@ -95,8 +95,8 @@ public final class SemiringCsrProperties {
      * @return True if the {@code src} matrix is the identity matrix. False otherwise.
      */
     public static <T extends Semiring<T>> boolean isIdentity(Shape shape, T[] entries, int[] rowPointers, int[] colIndices) {
-        final int numRows = shape.get(0);
-        final int numCols = shape.get(1);
+        final int numRows = shape.getSize(0);
+        final int numCols = shape.getSize(1);
 
         // Check for early return for non-square matrix or if there are not enough non-zeros to cover principle diagonal.
         if(numRows != numCols || colIndices.length < numCols)

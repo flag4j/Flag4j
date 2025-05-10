@@ -250,13 +250,13 @@ public final class RealDenseOps {
         ValidateParameters.ensureArrayLengthsEq(destShape.totalEntriesIntValueExact(), dest.length);
         ValidateParameters.ensureNotEquals(axis1, axis2);
         ValidateParameters.validateArrayIndices(shape.getRank(), axis1, axis2);
-        ValidateParameters.ensureAllEqual(shape.get(axis1), shape.get(axis2));
+        ValidateParameters.ensureAllEqual(shape.getSize(axis1), shape.getSize(axis2));
 
         int[] strides = shape.getStrides();
         int rank = strides.length;
 
         // Calculate the offset increment for the diagonal.
-        int traceLength = shape.get(axis1);
+        int traceLength = shape.getSize(axis1);
         int diagonalStride = strides[axis1] + strides[axis2];
 
         int[] destIndices = new int[rank - 2];
@@ -302,7 +302,7 @@ public final class RealDenseOps {
     public static void swapRowsUnsafe(Shape shape,  double[] data, int rowIdx1, int rowIdx2, int start, int stop) {
         if(rowIdx1 == rowIdx2) return;
 
-        final int cols = shape.get(1);
+        final int cols = shape.getSize(1);
         final int rowOffset1 = rowIdx1*cols;
         final int rowOffset2 = rowIdx2*cols;
         double temp;
@@ -331,7 +331,7 @@ public final class RealDenseOps {
     public static void swapColsUnsafe(Shape shape,  double[] data, int colIdx1, int colIdx2, int start, int stop) {
         if(colIdx1 == colIdx2) return;
         
-        final int cols = shape.get(1);
+        final int cols = shape.getSize(1);
         int rowOffset = start*cols;
         double temp;
 

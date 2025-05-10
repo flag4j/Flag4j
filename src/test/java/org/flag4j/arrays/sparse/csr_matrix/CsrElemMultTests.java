@@ -2,7 +2,7 @@ package org.flag4j.arrays.sparse.csr_matrix;
 
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.sparse.CsrMatrix;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -89,7 +89,7 @@ class CsrElemMultTests {
 
         CsrMatrix finalA = a;
         CsrMatrix finalB = b;
-        assertThrows(TensorShapeException.class, ()-> finalA.elemMult(finalB));
+        assertThrows(ArrayShapeException.class, ()-> finalA.elemMult(finalB));
 
         aShape = new Shape(15156, 95314);
         a = new CsrMatrix(aShape);
@@ -98,6 +98,6 @@ class CsrElemMultTests {
 
         CsrMatrix finalA1 = a;
         CsrMatrix finalB1 = b;
-        assertThrows(TensorShapeException.class, ()-> finalA1.elemMult(finalB1));
+        assertThrows(ArrayShapeException.class, ()-> finalA1.elemMult(finalB1));
     }
 }

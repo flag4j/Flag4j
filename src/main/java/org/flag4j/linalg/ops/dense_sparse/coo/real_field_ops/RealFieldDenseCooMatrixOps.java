@@ -25,16 +25,17 @@
 package org.flag4j.linalg.ops.dense_sparse.coo.real_field_ops;
 
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.backend.field_arrays.AbstractCooFieldMatrix;
 import org.flag4j.arrays.backend.field_arrays.AbstractDenseFieldMatrix;
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.arrays.sparse.CooMatrix;
 import org.flag4j.linalg.ops.common.field_ops.FieldOps;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 /**
- * This class contains low level implementations of ops between real/field and dense/sparse matrices.
+ * This class contains low-level implementations of ops between real/field and dense/sparse matrices.
  */
 public final class RealFieldDenseCooMatrixOps {
 
@@ -97,7 +98,7 @@ public final class RealFieldDenseCooMatrixOps {
 
         T[] destData = src2.makeEmptyDataArray(src2.data.length);
         FieldOps.scalMult(src2.data, -1, destData);
-        AbstractDenseFieldMatrix<?, ?, T> dest = src2.makeLikeTensor(src2.shape, destData);
+        AbstractDenseFieldMatrix<?, ?, T> dest = src2.makeLikeNDArray(src2.shape, destData);
 
         for(int i=0; i<src1.nnz; i++) {
             int idx = src1.rowIndices[i]*src2.numCols + src1.colIndices[i];
@@ -169,7 +170,7 @@ public final class RealFieldDenseCooMatrixOps {
      * @param destEntries Array to store non-zero values resulting from the element-wise product. Assumed to have length
      * {@code src2.nnz}.
      * @return The result of element-wise multiplication.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If the matrices do not have the same shape.
+     * @throws ArrayShapeException If the matrices do not have the same shape.
      */
     public static <T extends Field<T>> void elemMult(
             AbstractDenseFieldMatrix<?, ?, T> src1, CooMatrix src2,

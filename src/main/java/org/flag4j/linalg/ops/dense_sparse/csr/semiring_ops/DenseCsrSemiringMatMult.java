@@ -24,12 +24,12 @@
 
 package org.flag4j.linalg.ops.dense_sparse.csr.semiring_ops;
 
-import org.flag4j.numbers.Complex128;
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractCsrSemiringMatrix;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractDenseSemiringMatrix;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractDenseSemiringVector;
+import org.flag4j.numbers.Complex128;
+import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
 
 import java.util.Arrays;
@@ -83,7 +83,7 @@ public final class DenseCsrSemiringMatMult {
             }
         }
 
-        return src2.makeLikeTensor(new Shape(src1.numRows, src2.numCols), destEntries);
+        return src2.makeLikeNDArray(new Shape(src1.numRows, src2.numCols), destEntries);
     }
 
 
@@ -125,7 +125,7 @@ public final class DenseCsrSemiringMatMult {
             }
         }
 
-        return src1.makeLikeTensor(new Shape(rows1, cols2), destEntries);
+        return src1.makeLikeNDArray(new Shape(rows1, cols2), destEntries);
     }
 
 

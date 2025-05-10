@@ -24,20 +24,23 @@
 
 package org.flag4j.linalg;
 
-import org.flag4j.numbers.Ring;
 import org.flag4j.linalg.ops.common.real.RealProperties;
 import org.flag4j.linalg.ops.common.ring_ops.CompareRing;
+import org.flag4j.numbers.Ring;
 
 
 /**
- * A utility class for computing vector norms, including various types of <span class="latex-inline">&ell;<sup>p</sup></span> norms,
+ * A utility class for computing vector norms, including various types of
+ * <span class="latex-inline">&ell;<sup>p</sup></span> norms,
  * with support for both dense and sparse vectors. This class provides methods to compute norms
  * for vectors with real entries as well as vectors with entries that belong to a {@link Ring}.
  *
- * <p>The methods in this class utilize scaling internally when computing the <span class="latex-inline">&ell;<sup>p</sup></span> norm to protect against
+ * <p>The methods in this class use scaling internally when computing the
+ * <span class="latex-inline">&ell;<sup>p</sup></span> norm to protect against
  * overflow and underflow for very large or very small values of {@code p} (in absolute value).
  *
- * <p><strong>Note:</strong> When {@code p < 1}, the results of the <span class="latex-inline">&ell;<sup>p</sup></span> norm methods are not
+ * <p><strong>Note:</strong> When {@code p < 1}, the results of the
+ * <span class="latex-inline">&ell;<sup>p</sup></span> norm methods are not
  * technically true mathematical norms but may still be useful for numerical tasks. However, {@code p = 0}
  * will result in {@link Double#NaN}.
  *
@@ -57,28 +60,115 @@ public final class VectorNorms {
 
     /**
      * <p>Computes the Euclidean (<span class="latex-inline">&ell;<sup>2</sup></span>) norm of a real dense or sparse vector.
-     * <p>Zeros do not contribute to this norm so this function may be called on the entries of a dense vector or the non-zero entries
+     * <p>Zeros do not contribute to this norm, so this function may be called on the entries of a dense vector or the non-zero entries
      * of a sparse vector.
      *
-     * @param src Entries of the vector (or non-zero data if vector is sparse) to compute norm of.
-     * @return Euclidean (<span class="latex-inline">&ell;<sup>2</sup></span>) norm
+     * @param src Entries of the vector (or non-zero data if the vector is sparse) to compute norm of.
+     * @return Euclidean (<span class="latex-inline">&ell;<sup>2</sup></span>) norm.
      */
     public static double norm(double... src) {
+        // Some quick returns.
+        if (src.length == 0) return 0;
+        else if (src.length == 1) return Math.abs(src[0]);
+        else if (src.length == 2) {
+            double s0 = src[0];
+            double s1 = src[1];
+            return Math.sqrt(s0*s0 + s1*s1);
+        } else if (src.length == 3) {
+            double s0 = src[0];
+            double s1 = src[1];
+            double s2 = src[2];
+            return Math.sqrt(s0*s0 + s1*s1 + s2*s2);
+        }
+
         return scaledL2Norm(src);
+    }
+
+
+    /**
+     * <p>Computes the squared Euclidean (<span class="latex-inline">&ell;<sup>2</sup></span>) norm of a real dense or sparse
+     * vector.
+     * <p>Zeros do not contribute to this norm, so this function may be called on the entries of a dense vector or the non-zero entries
+     * of a sparse vector.
+     *
+     * @param src Entries of the vector (or non-zero data if the vector is sparse) to compute norm of.
+     * @return The squared Euclidean (<span class="latex-inline">&ell;<sup>2</sup></span>) norm.
+     */
+    public static double normSquared(double... src) {
+        // Some quick returns.
+        if (src.length == 0) return 0;
+        else if (src.length == 1) return src[0];
+        else if (src.length == 2) {
+            double s0 = src[0];
+            double s1 = src[1];
+            return s0*s0 + s1*s1;
+        }
+        else if (src.length == 2) {
+            double s0 = src[0];
+            double s1 = src[1];
+            double s2 = src[2];
+            return s0*s0 + s1*s1 + s2*s2;
+        }
+
+        return scaledL2NormSquared(src);
     }
 
 
     /**
      * <p>Computes the Euclidean (<span class="latex-inline">&ell;<sup>2</sup></span>) norm of a dense or sparse vector whose entries are members of a
      * {@link Ring}.
-     * <p>Zeros do not contribute to this norm so this function may be called on the entries of a dense vector or the non-zero entries
+     * <p>Zeros do not contribute to this norm, so this function may be called on the entries of a dense vector or the non-zero entries
      * of a sparse vector.
      *
-     * @param src Entries of the vector (or non-zero data if vector is sparse) to compute norm of.
+     * @param src Entries of the vector (or non-zero data if the vector is sparse) to compute norm of.
      * @return Euclidean (<span class="latex-inline">&ell;<sup>2</sup></span>) norm
      */
     public static <T extends Ring<T>> double norm(T... src) {
+        // Some quick returns.
+        if (src.length == 0) return 0;
+        else if (src.length == 1) return src[0].abs();
+        else if (src.length == 2) {
+            double s0 = src[0].abs();
+            double s1 = src[1].abs();
+            return Math.sqrt(s0*s0 + s1*s1);
+        }
+        else if (src.length == 3) {
+            double s0 = src[0].abs();
+            double s1 = src[1].abs();
+            double s2 = src[2].abs();
+            return Math.sqrt(s0*s0 + s1*s1 + s2*s2);
+        }
+
         return scaledL2Norm(src);
+    }
+
+
+    /**
+     * <p>Computes the squared Euclidean (<span class="latex-inline">&ell;<sup>2</sup></span>) norm of a real dense or sparse
+     * vector.
+     * <p>Zeros do not contribute to this norm, so this function may be called on the entries of a dense vector or the non-zero entries
+     * of a sparse vector.
+     *
+     * @param src Entries of the vector (or non-zero data if the vector is sparse) to compute norm of.
+     * @return The squared Euclidean (<span class="latex-inline">&ell;<sup>2</sup></span>) norm.
+     */
+    public static <T extends Ring<T>> double normSquared(T... src) {
+        // Some quick returns.
+        if (src.length == 0) return 0;
+        else if (src.length == 1) return src[0].abs();
+        else if (src.length == 2) {
+            double s0 = src[0].abs();
+            double s1 = src[1].abs();
+            return s0*s0 + s1*s1;
+        }
+        else if (src.length == 2) {
+            double s0 = src[0].abs();
+            double s1 = src[1].abs();
+            double s2 = src[2].abs();
+            return s0*s0 + s1*s1 + s2*s2;
+        }
+
+        return scaledL2NormSquared(src);
     }
 
 
@@ -90,10 +180,10 @@ public final class VectorNorms {
      *     <li>{@code p=2}: The Euclidean or <span class="latex-inline">&ell;<sup>2</sup></span> norm.</li>
      * </ul>
      *
-     * <p>Zeros do not contribute to this norm so this function may be called on the entries of a dense vector or the non-zero entries
+     * <p>Zeros do not contribute to this norm, so this function may be called on the entries of a dense vector or the non-zero entries
      * of a sparse vector.
      *
-     * @param src Entries of the vector (or non-zero data if vector is sparse).
+     * @param src Entries of the vector (or non-zero data if the vector is sparse).
      * @param p The {@code p} value in the p-norm. When {@code p < 1}, the result of this method is not technically a
      * true mathematical norm. However, it may be useful for various numerical tasks.
      * <ul>
@@ -115,7 +205,13 @@ public final class VectorNorms {
      * @return The p-norm of the vector.
      */
     public static double norm(double[] src, double p) {
+        if(p == 0.0) {
+            throw new IllegalArgumentException("p must be non-zero.");
+        }
+
+        // Some quick returns.
         if (src.length == 0) return 0;
+        else if (src.length == 1) return Math.abs(src[0]);
 
         if(p == Double.POSITIVE_INFINITY) {
             return RealProperties.maxAbs(src); // Maximum norm.
@@ -130,7 +226,7 @@ public final class VectorNorms {
         } else if(p == 2) {
             return scaledL2Norm(src);
         } else {
-            return scaledLpNorm(src, p);
+            return (p > 0.0) ? scaledLpNorm(src, p) : scaledLpPseudoNorm(src, p);
         }
     }
 
@@ -144,10 +240,10 @@ public final class VectorNorms {
      *     <li>{@code p=2}: The Euclidean or <span class="latex-inline">&ell;<sup>2</sup></span> norm.</li>
      * </ul>
      *
-     * <p>Zeros do not contribute to this norm so this function may be called on the entries of a dense vector or the non-zero entries
+     * <p>Zeros do not contribute to this norm, so this function may be called on the entries of a dense vector or the non-zero entries
      * of a sparse vector.
      *
-     * @param src Entries of the vector (or non-zero data if vector is sparse).
+     * @param src Entries of the vector (or non-zero data if the vector is sparse).
      * @param p The {@code p} value in the p-norm. When {@code p < 1}, the result of this method is not technically a
      * true mathematical norm. However, it may be useful for various numerical tasks.
      * <ul>
@@ -169,23 +265,57 @@ public final class VectorNorms {
      * @return The p-norm of the vector.
      */
     public static <T extends Ring<T>> double norm(T[] src, double p) {
+        if(p == 0.0) {
+            throw new IllegalArgumentException("p must be non-zero.");
+        }
+
         if (src.length == 0) return 0;
+        else if (src.length == 1) return src[0].abs();
 
         if(p == Double.POSITIVE_INFINITY) {
             return CompareRing.maxAbs(src); // Maximum norm.
         } else if(p == Double.NEGATIVE_INFINITY) {
             return CompareRing.minAbs(src); // Minimum "norm".
         } else if(p == 1) {
-            double norm = 0;
+            double norm = 0.0;
             for(T v : src)
                 norm += v.abs();
 
             return norm;
-        } else if(p == 2) {
+        } else if(p == 2.0) {
             return scaledL2Norm(src);
         } else {
-            return scaledLpNorm(src, p);
+            return (p > 0.0) ? scaledLpNorm(src, p) : scaledLpPseudoNorm(src, p);
         }
+    }
+
+
+    // TODO: docs
+    private static double scaledLpPseudoNorm(double[] src, double p) {
+        if (p == 0.0 || Double.isNaN(p))
+            throw new IllegalArgumentException("p must be non‑zero and finite");
+
+        double q = -p;
+        double scaleRec = 0.0;
+        double sspRec  = 1.0;
+
+        for(double v : src) {
+            if(v == 0.0)
+                return Double.POSITIVE_INFINITY;
+
+            double y = 1.0 / v;
+
+            if(y > scaleRec) {
+                double t = scaleRec/y;
+                sspRec = 1.0 + sspRec*Math.pow(t, q);
+                scaleRec = y;
+            } else {
+                double t = y/scaleRec;
+                sspRec += Math.pow(t, q);
+            }
+        }
+
+        return 1.0 / (scaleRec*Math.pow(sspRec, 1.0/q));
     }
 
 
@@ -194,26 +324,61 @@ public final class VectorNorms {
      * This method uses scaling to protect against numerical instability such as overflow or underflow
      * when computing the <span class="latex-inline">&ell;<sup>p</sup></span> norm for large or small values of {@code p}.
      *
-     * @param src The input vector (or non-zero values if vector is sparse) whose <span class="latex-inline">&ell;<sup>p</sup></span> norm is to be computed.
+     * @param src The input vector (or non-zero values if the vector is sparse)
+     * whose <span class="latex-inline">&ell;<sup>p</sup></span> norm is to be computed.
      * @param p The value of {@code p} for the <span class="latex-inline">&ell;<sup>p</sup></span> norm.
+     * Here {@code p} must be positive.
      * @return The scaled <span class="latex-inline">&ell;<sup>p</sup></span> norm of the input vector.
      */
     private static double scaledLpNorm(double[] src, double p) {
-        // Find the maximum absolute value in the vector.
-        double maxAbs = RealProperties.maxAbs(src);
+        double scale = 0.0;  // running scale
+        double ssp = 1.0;  // running scaled sum
 
-        if (maxAbs == 0.0) return 0.0; // Quick return for zero vector.
+        for (double v : src) {
+            if (v == 0.0) continue;
+            double ax = Math.abs(v);
 
-        double maxInv = 1.0 / maxAbs;
-
-        // Compute the p-norm using scaled values.
-        double sum = 0;
-        for (double v : src)
-            sum += Math.pow(Math.abs(v) * maxInv, p);
-
-        // Ensure result is properly scaled back up.
-        return maxAbs * Math.pow(sum, 1.0 / p);
+            if (scale < ax) {
+                double t = scale / ax;      // 0 < t < 1
+                ssp = 1.0 + ssp*Math.pow(t, p);
+                scale = ax;
+            } else {
+                double t = ax / scale;      // 0 <= t <= 1
+                ssp += Math.pow(t, p);
+            }
+        }
+        return (scale == 0.0) ? 0.0 : scale*Math.pow(ssp, 1.0 / p);
     }
+
+
+    // TODO: Docs.
+    private static <T extends Ring<T>> double scaledLpPseudoNorm(T[] src, double p) {
+        if (p == 0.0 || Double.isNaN(p))
+            throw new IllegalArgumentException("p must be non‑zero and finite");
+
+        double q = -p;
+        double scaleRec = 0.0;
+        double sspRec  = 1.0;
+
+        for(T v : src) {
+            if(v.isZero())
+                return Double.POSITIVE_INFINITY;
+
+            double y = 1.0/v.abs();
+
+            if(y > scaleRec) {
+                double t = scaleRec/y;
+                sspRec = 1.0 + sspRec*Math.pow(t, q);
+                scaleRec = y;
+            } else {
+                double t = y/scaleRec;
+                sspRec += Math.pow(t, q);
+            }
+        }
+
+        return 1.0 / (scaleRec*Math.pow(sspRec, 1.0/q));
+    }
+
 
 
     /**
@@ -225,22 +390,86 @@ public final class VectorNorms {
      * @return The scaled <span class="latex-inline">&ell;<sup>2</sup></span> norm of the input vector.
      */
     private static double scaledL2Norm(double[] src) {
-        // Find the maximum absolute value in the vector.
-        double maxAbs = RealProperties.maxAbs(src);
+        double scale = 0.0;  // running scale
+        double ssq = 1.0;  // running scaled sum of squares
 
-        if (maxAbs == 0.0) return 0.0; // Quick return for zero vector.
+        for (double v : src) {
+            if (v == 0.0) continue;
+            double ax = Math.abs(v);
 
-        double maxInv = 1.0 / maxAbs;
-
-        // Compute norm as a = |max(src)|, ||src|| = a*||src * (1/a)|| to help protect against overflow.
-        double sum = 0;
-        for(double v : src) {
-            double vScaled = v*maxInv;
-            sum += vScaled*vScaled;
+            if (scale < ax) {
+                double t = scale / ax;   // t < 1
+                ssq = 1.0 + ssq*t*t;
+                scale = ax;
+            } else {
+                double t = ax / scale;   // t <= 1
+                ssq += t*t;
+            }
         }
 
-        // Ensure result is properly scaled back up.
-        return Math.sqrt(sum)*maxAbs;
+        return (scale == 0.0) ? 0.0 : scale*Math.sqrt(ssq);
+    }
+
+
+    /**
+     * Computes the scaled <span class="latex-inline">&ell;<sup>2</sup></span> norm (Euclidean norm) of a vector.
+     * This method uses scaling to protect against numerical instability such as overflow or underflow
+     * when computing the <span class="latex-inline">&ell;<sup>2</sup></span> norm for vectors with very large or very small values.
+     *
+     * @param src The input vector (or non-zero entries if the vector is sparse)
+     * whose <span class="latex-inline">&ell;<sup>2</sup></span> norm is to be computed.
+     * @return The scaled <span class="latex-inline">&ell;<sup>2</sup></span> norm of the input vector.
+     */
+    private static double scaledL2NormSquared(double[] src) {
+        double scale = 0.0;   // running scale
+        double ssq   = 1.0;  // running scaled sum of squares
+
+        for (double v : src) {
+            if (v == 0.0) continue;
+            double ax = Math.abs(v);
+
+            if (scale < ax) {
+                double t = scale / ax;   // 0 < t < 1
+                ssq = 1.0 + ssq*t*t;
+                scale = ax;
+            } else {
+                double t = ax / scale;   // 0 <= t <= 1
+                ssq += t*t;
+            }
+        }
+
+        return (scale == 0.0) ? 0.0 : scale*scale*ssq;
+    }
+
+
+    /**
+     * Computes the scaled <span class="latex-inline">&ell;<sup>2</sup></span> norm (Euclidean norm) of a vector.
+     * This method uses scaling to protect against numerical instability such as overflow or underflow
+     * when computing the <span class="latex-inline">&ell;<sup>2</sup></span> norm for vectors with very large or very small values.
+     *
+     * @param src The input vector (or non-zero entries if the vector is sparse)
+     * whose <span class="latex-inline">&ell;<sup>2</sup></span> norm is to be computed.
+     * @return The scaled <span class="latex-inline">&ell;<sup>2</sup></span> norm of the input vector.
+     */
+    private static <T extends Ring<T>> double scaledL2NormSquared(T[] src) {
+        double scale = 0.0;   // running scale
+        double ssq   = 1.0;  // running scaled sum of squares
+
+        for (T v : src) {
+            if (v.isZero()) continue;
+            double ax = v.abs();
+
+            if (scale < ax) {
+                double t = scale / ax;   // 0 < t < 1
+                ssq = 1.0 + ssq*t*t;
+                scale = ax;
+            } else {
+                double t = ax / scale;   // 0 <= t <= 1
+                ssq += t*t;
+            }
+        }
+
+        return (scale == 0.0) ? 0.0 : scale*scale*ssq;
     }
 
 
@@ -249,25 +478,30 @@ public final class VectorNorms {
      * This method uses scaling to protect against numerical instability such as overflow or underflow
      * when computing the <span class="latex-inline">&ell;<sup>p</sup></span> norm for large or small values of {@code p}.
      *
-     * @param src The input vector (or non-zero values if vector is sparse) whose <span class="latex-inline">&ell;<sup>p</sup></span> norm is to be computed.
+     * @param src The input vector (or non-zero values if the vector is sparse)
+     * whose <span class="latex-inline">&ell;<sup>p</sup></span> norm is to be computed.
      * @param p The value of {@code p} for the <span class="latex-inline">&ell;<sup>p</sup></span> norm.
      * @return The scaled <span class="latex-inline">&ell;<sup>p</sup></span> norm of the input vector.
      */
     private static <T extends Ring<T>> double scaledLpNorm(T[] src, double p) {
-        // Find the maximum absolute value in the vector.
-        double maxAbs = CompareRing.maxAbs(src);
+        double scale = 0.0;  // running scale
+        double ssp = 1.0;  // running scaled sum
 
-        if (maxAbs == 0.0) return 0.0; // Quick return for zero vector.
+        for (T v : src) {
+            if (v.isZero()) continue;
+            double ax = v.abs();
 
-        double maxInv = 1.0 / maxAbs;
+            if (scale < ax) {
+                double t = scale / ax;      // 0 < t < 1
+                ssp = 1.0 + ssp * Math.pow(t, p);
+                scale = ax;
+            } else {
+                double t = ax / scale;      // 0 <= t <= 1
+                ssp += Math.pow(t, p);
+            }
+        }
 
-        // Compute the p-norm using scaled values.
-        double sum = 0;
-        for (T v : src)
-            sum += Math.pow(v.abs() * maxInv, p);
-
-        // Ensure result is properly scaled back up.
-        return maxAbs * Math.pow(sum, 1.0 / p);
+        return (scale == 0.0) ? 0.0 : scale*Math.pow(ssp, 1.0 / p);
     }
 
 
@@ -280,22 +514,24 @@ public final class VectorNorms {
      * @return The scaled <span class="latex-inline">&ell;<sup>2</sup></span> norm of the input vector.
      */
     private static <T extends Ring<T>> double scaledL2Norm(T[] src) {
-        // Find the maximum absolute value in the vector.
-        double maxAbs = CompareRing.maxAbs(src);
+        double scale = 0.0;  // running scale
+        double ssq = 1.0;  // running scaled sum of squares
 
-        if (maxAbs == 0.0) return 0.0; // Quick return for zero vector.
+        for (T v : src) {
+            if (v.isZero()) continue;
+            double ax = v.abs();
 
-        double maxInv = 1.0 / maxAbs;
-
-        // Compute norm as a = |max(src)|, ||src|| = a*||src * (1/a)|| to help protect against overflow.
-        double sum = 0;
-        for(T v : src) {
-            double vScaled = v.mag() * maxInv;
-            sum += vScaled*vScaled;
+            if (scale < ax) {
+                double t = scale / ax;   // t < 1
+                ssq = 1.0 + ssq*t*t;
+                scale = ax;
+            } else {
+                double t = ax / scale;   // t <= 1
+                ssq += t*t;
+            }
         }
 
-        // Ensure result is properly scaled back up.
-        return Math.sqrt(sum)*maxAbs;
+        return (scale == 0.0) ? 0.0 : scale*Math.sqrt(ssq);
     }
 
 
@@ -325,23 +561,29 @@ public final class VectorNorms {
      * @throws IndexOutOfBoundsException If {@code start + (n-1)*stride} exceeds {@code src.length - 1}.
      */
     public static double norm(double[] src, final int start, final int n, final int stride) {
-        // Find the maximum absolute value in the vector.
-        double maxAbs = RealProperties.maxAbs(src, start, n, stride);
+        if (src.length == 0) return 0;
+        else if (src.length == 1) return Math.abs(src[0]);
 
-        if (maxAbs == 0.0) return 0.0; // Quick return for zero vector.
-
-        double maxInv = 1.0 / maxAbs;
         final int end = start + n*stride;
+        double scale = 0.0;   // running scale
+        double ssq   = 1.0;  // running scaled sum of squares
 
-        // Compute norm as a = |max(src)|, ||src|| = a*||src * (1/a)|| to help protect against overflow.
-        double sum = 0;
-        for(int i=start; i<end; i+=stride) {
-            double vScaled = src[i]*maxInv;
-            sum += vScaled*vScaled;
+        for (int i=start; i<end; i+=stride) {
+            double v = src[i];
+            if (v == 0.0) continue;
+            double ax = Math.abs(v);
+
+            if (scale < ax) {
+                double t = scale / ax;   // t < 1
+                ssq = 1.0 + ssq*t*t;
+                scale = ax;
+            } else {
+                double t = ax / scale;   // t <= 1
+                ssq += t*t;
+            }
         }
 
-        // Ensure result is properly scaled back up.
-        return Math.sqrt(sum)*maxAbs;
+        return (scale == 0.0) ? 0.0 : scale * Math.sqrt(ssq);
     }
 
 
@@ -371,22 +613,28 @@ public final class VectorNorms {
      * @throws IndexOutOfBoundsException If {@code start + (n-1)*stride} exceeds {@code src.length - 1}.
      */
     public static <T extends Ring<T>> double norm(T[] src, final int start, final int n, final int stride) {
-        // Find the maximum absolute value in the vector.
-        double maxAbs = CompareRing.maxAbs(src, start, n, stride);
+        if (src.length == 0) return 0;
+        else if (src.length == 1) return src[0].abs();
 
-        if (maxAbs == 0.0) return 0.0; // Quick return for zero vector.
-
-        double maxInv = 1.0 / maxAbs;
         final int end = start + n*stride;
+        double scale = 0.0;   // running scale
+        double ssq   = 1.0;  // running scaled sum of squares
 
-        // Compute norm as a = |max(src)|, ||src|| = a*||src * (1/a)|| to help protect against overflow.
-        double sum = 0;
-        for(int i=start; i<end; i+=stride) {
-            double vScaled = src[i].mag() * maxInv;
-            sum += vScaled*vScaled;
+        for (int i=start; i<end; i+=stride) {
+            T v = src[i];
+            if (v.isZero()) continue;
+            double ax = v.abs();
+
+            if (scale < ax) {
+                double t = scale / ax;   // 0 < t < 1
+                ssq = 1.0 + ssq*t*t;
+                scale = ax;
+            } else {
+                double t = ax / scale;   // 0 <= t <= 1
+                ssq += t*t;
+            }
         }
 
-        // Ensure result is properly scaled back up.
-        return Math.sqrt(sum)*maxAbs;
+        return (scale == 0.0) ? 0.0 : scale * Math.sqrt(ssq);
     }
 }

@@ -185,13 +185,13 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
      * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
-    public FieldMatrix<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new FieldMatrix<T>(shape, entries);
+    public FieldMatrix<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new FieldMatrix<T>(shape, data);
     }
 
 
@@ -370,8 +370,8 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
         Arrays.fill(identityValues, (Field) fieldValue.getZero());
         Field one = (Field) fieldValue.getOne();
 
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
 
         for(int i=0, stop=Math.min(rows, cols); i<stop; i++)
             identityValues[i*cols + i] = one;

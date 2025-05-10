@@ -28,9 +28,10 @@ import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseVectorData;
 import org.flag4j.arrays.backend.VectorMixin;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractCooSemiringVector;
+import org.flag4j.linalg.VectorNorms;
 import org.flag4j.linalg.ops.sparse.coo.ring_ops.CooRingVectorOps;
 import org.flag4j.numbers.Ring;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 /**
  * <p>A sparse vector stored in coordinate list (COO) format. The {@link #data} of this COO vector are
@@ -61,7 +62,7 @@ import org.flag4j.util.exceptions.TensorShapeException;
  * @param <U> Type of equivalent dense vector.
  * @param <V> Type of matrix equivalent to {@code T}.
  * @param <W> Type of dense matrix equivalent to {@code U}.
- * @param <Y> Type of the arrays element in this vector.
+ * @param <Y> Type of the array elements in this vector.
  */
 public abstract class AbstractCooRingVector<
         T extends AbstractCooRingVector<T, U, V, W, Y>,
@@ -76,10 +77,9 @@ public abstract class AbstractCooRingVector<
     /**
      * Creates a COO vector with the specified data and shape.
      *
-     * @param shape Shape of the vector.
-     * @param entries The non-zero entries of the vector.
-     * @param indices The
-     * If this tensor is sparse, this specifies only the non-zero data of the tensor.
+     * @param shape The full shape of the vector.
+     * @param entries The non-zero entries of the COO vector.
+     * @param indices The non-zero indices of the COO vector.
      */
     protected AbstractCooRingVector(Shape shape, Y[] entries, int[] indices) {
         super(shape, entries, indices);
@@ -118,13 +118,40 @@ public abstract class AbstractCooRingVector<
 
 
     /**
+     * Computes the norm of this vector. This is the same as {@link #mag()}.
+     *
+     * @return The norm (specifically &ell;<sup>2</sup>) of this vector.
+     *
+     * @see #mag()
+     * @see #magSquared()
+     */
+    @Override
+    public double norm() {
+        return VectorNorms.norm(data) ;
+    }
+
+
+    /**
+     * Computes the squared magnitude of this vector.
+     *
+     * @return The squared magnitude of this vector.
+     *
+     * @see #mag()
+     */
+    @Override
+    public double magSquared() {
+        return VectorNorms.normSquared(data);
+    }
+
+
+    /**
      * Computes the element-wise difference between two tensors of the same shape.
      *
      * @param b Second tensor in the element-wise difference.
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T sub(T b) {
@@ -162,7 +189,7 @@ public abstract class AbstractCooRingVector<
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */

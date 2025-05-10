@@ -253,14 +253,14 @@ public class CooFieldTensor<T extends Field<T>>
      * the shape and data.
      *
      * @param shape Shape of the sparse tensor to construct.
-     * @param entries Entries of the spares tensor to construct.
+     * @param data Entries of the spares tensor to construct.
      *
      * @return A sparse tensor of the same type as this tensor with the same indices as this sparse tensor and with the provided
      * the shape and data.
      */
     @Override
-    public CooFieldTensor<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new CooFieldTensor(shape, entries, ArrayUtils.deepCopy2D(indices, null));
+    public CooFieldTensor<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new CooFieldTensor(shape, data, ArrayUtils.deepCopy2D(indices, null));
     }
 
 

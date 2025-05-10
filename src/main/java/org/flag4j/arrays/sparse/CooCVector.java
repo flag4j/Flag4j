@@ -300,14 +300,14 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CooCVector makeLikeTensor(Shape shape, Complex128[] entries) {
-        return new CooCVector(shape, entries, indices.clone());
+    public CooCVector makeLikeNDArray(Shape shape, Complex128[] data) {
+        return new CooCVector(shape, data, indices.clone());
     }
 
 
@@ -412,7 +412,7 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
      */
     @Override
     public CooCVector normalize() {
-        return div(magAsDouble());
+        return div(mag());
     }
 
 
@@ -422,22 +422,11 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
      * @return The magnitude of this vector.
      */
     @Override
-    public Complex128 mag() {
-        return new Complex128(magAsDouble());
-    }
-
-
-    /**
-     * Computes the magnitude of this vector as a double value.
-     * @return The magnitude of this vector as a double value.
-     */
-    public double magAsDouble() {
+    public double mag() {
         double mag = 0;
 
-        for(int i = 0, size=nnz; i < size; i++) {
-            Complex128 v = data[i];
+        for(Complex128 v : data)
             mag += (v.re*v.re + v.im*v.im);
-        }
 
         return Math.sqrt(mag);
     }

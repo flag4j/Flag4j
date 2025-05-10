@@ -26,7 +26,7 @@ package org.flag4j.linalg.ops.dispatch;
 
 import org.flag4j.arrays.Pair;
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 
 import java.util.function.BiFunction;
 
@@ -38,7 +38,7 @@ import java.util.function.BiFunction;
  * @param <R> Type of tensor resulting from the tensor operation on types {@link T} and {@link U}.
  */
 public abstract class BiTensorOpDispatcher<
-        T extends AbstractTensor<T, ?, ?>, U extends AbstractTensor<U, ?, ?>, R extends AbstractTensor<R, ?, ?>> {
+        T extends AbstractNDArray<T, ?, ?>, U extends AbstractNDArray<U, ?, ?>, R extends AbstractNDArray<R, ?, ?>> {
     /**
      * Default cache size for dispatchers.
      */

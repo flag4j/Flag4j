@@ -30,7 +30,7 @@ import org.flag4j.linalg.ops.TransposeDispatcher;
 import org.flag4j.linalg.ops.common.ring_ops.CompareRing;
 import org.flag4j.linalg.ops.dense.ring_ops.DenseRingTensorOps;
 import org.flag4j.numbers.Ring;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 /**
  * <p>The base class for all dense {@link Ring} tensors.
@@ -64,13 +64,13 @@ public abstract class AbstractDenseRingTensor<T extends AbstractDenseRingTensor<
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T sub(T b) {
         V[] diff = makeEmptyDataArray(data.length);
         DenseRingTensorOps.sub(shape, data, b.shape, b.data, diff);
-        return makeLikeTensor(shape, diff);
+        return makeLikeNDArray(shape, diff);
     }
 
 
@@ -79,7 +79,7 @@ public abstract class AbstractDenseRingTensor<T extends AbstractDenseRingTensor<
      *
      * @param b Second tensor in the element-wise difference.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public void subEq(T b) {
         DenseRingTensorOps.sub(shape, data, b.shape, b.data, data);
@@ -102,7 +102,7 @@ public abstract class AbstractDenseRingTensor<T extends AbstractDenseRingTensor<
     public T H(int axis1, int axis2) {
         V[] dest = makeEmptyDataArray(data.length);
         TransposeDispatcher.dispatchTensorHermitian(shape, data, axis1, axis2, dest);
-        return makeLikeTensor(shape.swapAxes(axis1, axis2), dest);
+        return makeLikeNDArray(shape.swapAxes(axis1, axis2), dest);
     }
 
 
@@ -116,7 +116,7 @@ public abstract class AbstractDenseRingTensor<T extends AbstractDenseRingTensor<
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */
@@ -124,7 +124,7 @@ public abstract class AbstractDenseRingTensor<T extends AbstractDenseRingTensor<
     public T H(int... axes) {
         V[] dest = makeEmptyDataArray(data.length);
         TransposeDispatcher.dispatchTensorHermitian(shape, data, axes, dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 

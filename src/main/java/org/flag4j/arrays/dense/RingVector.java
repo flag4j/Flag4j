@@ -24,20 +24,21 @@
 
 package org.flag4j.arrays.dense;
 
-import org.flag4j.numbers.Ring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.ring_arrays.AbstractDenseRingVector;
 import org.flag4j.arrays.sparse.CooRingVector;
 import org.flag4j.io.PrettyPrint;
 import org.flag4j.io.PrintOptions;
 import org.flag4j.linalg.ops.common.ring_ops.RingOps;
+import org.flag4j.numbers.Ring;
 
 import java.util.Arrays;
 
 
 /**
- * <p>Instances of this class represents a dense vector backed by a {@link Ring} array. The {@code RingVector} class
- * provides functionality for matrix operations whose elements are members of a ring, supporting mutable data with a fixed shape.
+ * <p>Instances of this class represent a dense vector backed by a {@link Ring} array.
+ * The {@code RingVector} class provides functionality for matrix operations whose elements are members of a ring, supporting
+ * mutable data with a fixed shape.
  *
  * <p>A {@code RingVector} is essentially equivalent to a rank-1 tensor but includes extended functionality
  * and may offer improved performance for certain operations compared to general rank-n tensors.
@@ -115,24 +116,24 @@ public class RingVector<T extends Ring<T>> extends AbstractDenseRingVector<RingV
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public RingVector<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new RingVector<>(shape, entries);
+    public RingVector<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new RingVector<>(shape, data);
     }
 
 
     /**
-     * Constructs a matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * Constructs a matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      *
      * @param shape Shape of the matrix to construct.
      * @param entries Entries of the matrix to construct.
      *
-     * @return A matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * @return A matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      */
     @Override
     protected RingMatrix<T> makeLikeMatrix(Shape shape, T[] entries) {
@@ -141,7 +142,7 @@ public class RingVector<T extends Ring<T>> extends AbstractDenseRingVector<RingV
 
 
     /**
-     * Constructs a sparse COO tensor which is of a similar type as this dense tensor.
+     * Constructs a sparse COO tensor, which is of a similar type as this dense tensor.
      *
      * @param shape Shape of the COO tensor.
      * @param data Non-zero data of the COO tensor.
@@ -152,6 +153,25 @@ public class RingVector<T extends Ring<T>> extends AbstractDenseRingVector<RingV
     @Override
     protected CooRingVector<T> makeLikeCooTensor(Shape shape, T[] data, int[][] indices) {
         return new CooRingVector<>(shape, data, indices[0]);
+    }
+
+
+    /**
+     * Converts this vector to an equivalent tensor.
+     * @return A tensor equivalent to this vector.
+     */
+    public RingTensor<T> toTensor() {
+        return new RingTensor(shape, data.clone());
+    }
+
+
+    /**
+     * Converts this vector to an equivalent tensor.
+     * @param shape The desired shape of the resulting tensor.
+     * @return A tensor with the specified {@code shape} containing the entries of this vector.
+     */
+    public RingTensor<T> toTensor(Shape shape) {
+        return new RingTensor(shape, data.clone());
     }
 
 

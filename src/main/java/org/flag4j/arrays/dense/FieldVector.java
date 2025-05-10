@@ -37,8 +37,9 @@ import org.flag4j.util.exceptions.LinearAlgebraException;
 import java.util.Arrays;
 
 /**
- * <p>Instances of this class represents a dense vector backed by a {@link Field} array. The {@code FieldVector} class
- * provides functionality for matrix operations whose elements are members of a field, supporting mutable data with a fixed shape.
+ * <p>Instances of this class represent a dense vector backed by a {@link Field} array.
+ * The {@code FieldVector} class provides functionality for matrix operations whose elements are members of a field, supporting
+ * mutable data with a fixed shape.
  *
  * <p>A {@code FieldVector} is essentially equivalent to a rank-1 tensor but includes extended functionality
  * and may offer improved performance for certain operations compared to general rank n tensors.
@@ -123,12 +124,12 @@ public class FieldVector<T extends Field<T>> extends AbstractDenseFieldVector<Fi
 
 
     /**
-     * Constructs a matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * Constructs a matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      *
      * @param shape Shape of the matrix to construct.
      * @param entries Entries of the matrix to construct.
      *
-     * @return A matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * @return A matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      */
     @Override
     public FieldMatrix<T> makeLikeMatrix(Shape shape, T[] entries) {
@@ -140,20 +141,20 @@ public class FieldVector<T extends Field<T>> extends AbstractDenseFieldVector<Fi
      * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
-    public FieldVector<T> makeLikeTensor(Shape shape, T[] entries) {
-        ValidateParameters.ensureAllEqual(shape.totalEntriesIntValueExact(), entries.length);
+    public FieldVector<T> makeLikeNDArray(Shape shape, T[] data) {
+        ValidateParameters.ensureAllEqual(shape.totalEntriesIntValueExact(), data.length);
         ValidateParameters.ensureRank(shape, 1);
-        return new FieldVector<T>(entries);
+        return new FieldVector<T>(data);
     }
 
 
     /**
-     * Constructs a sparse COO tensor which is of a similar type as this dense tensor.
+     * Constructs a sparse COO tensor, which is of a similar type as this dense tensor.
      *
      * @param shape Shape of the COO tensor.
      * @param entries Non-zero data of the COO tensor.
@@ -164,6 +165,25 @@ public class FieldVector<T extends Field<T>> extends AbstractDenseFieldVector<Fi
     @Override
     protected CooFieldVector<T> makeLikeCooTensor(Shape shape, T[] entries, int[][] indices) {
         return new CooFieldVector<>(shape.totalEntriesIntValueExact(), entries, indices[0]);
+    }
+
+
+    /**
+     * Converts this vector to an equivalent tensor.
+     * @return A tensor equivalent to this vector.
+     */
+    public FieldTensor<T> toTensor() {
+        return new FieldTensor(shape, data.clone());
+    }
+
+
+    /**
+     * Converts this vector to an equivalent tensor.
+     * @param shape The desired shape of the resulting tensor.
+     * @return A tensor with the specified {@code shape} containing the entries of this vector.
+     */
+    public FieldTensor<T> toTensor(Shape shape) {
+        return new FieldTensor(shape, data.clone());
     }
 
 

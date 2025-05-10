@@ -189,14 +189,14 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CooCTensor makeLikeTensor(Shape shape, Complex128[] entries) {
-        return new CooCTensor(shape, entries, ArrayUtils.deepCopy2D(indices, null));
+    public CooCTensor makeLikeNDArray(Shape shape, Complex128[] data) {
+        return new CooCTensor(shape, data, ArrayUtils.deepCopy2D(indices, null));
     }
 
 

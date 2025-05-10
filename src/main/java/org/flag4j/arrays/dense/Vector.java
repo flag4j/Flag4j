@@ -45,8 +45,8 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.StringUtils;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +79,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
     public Vector(Shape shape, double[] entries) {
         super(shape, entries);
         ValidateParameters.ensureRank(shape, 1);
-        size = shape.get(0);
+        size = shape.getSize(0);
     }
 
 
@@ -109,9 +109,9 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * @throws IllegalArgumentException If the shape is not rank 1.
      */
     public Vector(Shape shape) {
-        super(shape, new double[shape.get(0)]);
+        super(shape, new double[shape.getSize(0)]);
         ValidateParameters.ensureRank(shape, 1);
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
     }
 
 
@@ -122,10 +122,10 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * @throws IllegalArgumentException If the shape is not rank 1.
      */
     public Vector(Shape shape, double fillValue) {
-        super(shape, new double[shape.get(0)]);
+        super(shape, new double[shape.getSize(0)]);
         ValidateParameters.ensureRank(shape, 1);
         Arrays.fill(super.data, fillValue);
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
     }
 
 
@@ -144,7 +144,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      */
     public Vector(int... entries) {
         super(new Shape(entries.length), new double[entries.length]);
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
 
         for(int i=0; i<entries.length; i++)
             super.data[i] = entries[i];
@@ -164,13 +164,13 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * Constructs a tensor of the same type as this tensor with the given shape and data.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
-    public Vector makeLikeTensor(Shape shape, double[] entries) {
-        return new Vector(shape, entries);
+    public Vector makeLikeNDArray(Shape shape, double[] data) {
+        return new Vector(shape, data);
     }
 
 
@@ -328,11 +328,22 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      */
     @Override
     public Matrix toMatrix(boolean columVector) {
-        if(columVector) {
-            return new Matrix(this.data.length, 1, this.data.clone()); // Convert to column vector.
-        } else {
-            return new Matrix(1, this.data.length, this.data.clone()); // Convert to row vector.
-        }
+        Shape matShape = (columVector) ? new Shape(size, 1) : new Shape(1, size);
+        return new Matrix(matShape, data.clone());
+    }
+
+
+    /**
+     * <p>Converts this vector to a matrix with a specified shape.
+     * <p>Note, the following must be satisfied: {@code shape.totalEntriesIntValueExact() == this.size}.
+     *
+     * @param shape Shape of the matrix. Must be rank 2.
+     *
+     * @return A matrix with the specified number of rows and columns containing the entries of this vector.
+     */
+    @Override
+    public Matrix toMatrix(Shape shape) {
+        return new Matrix(shape, data.clone());
     }
 
 
@@ -358,10 +369,10 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * Computes the inner product between two vectors.
      *
      * @param b Second vector in the inner product.
-     *
      * @return The inner product between this vector and the vector {@code b}.
-     *
      * @throws IllegalArgumentException If this vector and vector {@code b} do not have the same number of data.
+     * @see #dot(Vector) 
+     * @see #innerSelf()
      */
     @Override
     public Double inner(Vector b) {
@@ -386,10 +397,12 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
-     * Computes the Euclidean norm of this vector.
-     *
-     * @return The Euclidean norm of this vector.
+     * Computes the norm of this vector. This is the same as {@link #mag()}.
+     * @return The norm (specifically &ell;<sup>2</sup>) of this vector.
+     * @see #mag()
+     * @see #magSquared()
      */
+    @Override
     public double norm() {
         return VectorNorms.norm(data);
     }
@@ -444,13 +457,13 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
 
 
     /**
-     * Computes the magnitude of this vector.
+     * Computes the squared magnitude of this vector.
      *
-     * @return The magnitude of this vector.
+     * @return The squared magnitude of this vector.
      */
     @Override
-    public Double mag() {
-        return VectorNorms.norm(data);
+    public double magSquared() {
+        return VectorNorms.normSquared(data);
     }
 
 
@@ -783,7 +796,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -846,7 +859,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      *
      * @param b Second tensor in the element-wise sum.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public void addEq(Vector b) {
@@ -862,7 +875,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      *
      * @param b Second tensor in the element-wise difference.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public void subEq(Vector b) {
@@ -878,7 +891,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      *
      * @param b The denominator tensor in the element-wise quotient.
      *
-     * @throws TensorShapeException If this tensor and {@code b}s shapes are not equal.
+     * @throws ArrayShapeException If this tensor and {@code b}s shapes are not equal.
      */
     @Override
     public void divEq(Vector b) {
@@ -896,7 +909,7 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      *
      * @return The element-wise quotient of this tensor and {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b}s shapes are not equal.
+     * @throws ArrayShapeException If this tensor and {@code b}s shapes are not equal.
      */
     @Override
     public Vector div(Vector b) {
@@ -1103,6 +1116,16 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      * @return A tensor equivalent to this vector.
      */
     public Tensor toTensor() {
+        return new Tensor(shape, data.clone());
+    }
+
+
+    /**
+     * Converts this vector to an equivalent tensor.
+     * @param shape The desired shape of the resulting tensor.
+     * @return A tensor with the specified {@code shape} containing the entries of this vector.
+     */
+    public Tensor toTensor(Shape shape) {
         return new Tensor(shape, data.clone());
     }
 

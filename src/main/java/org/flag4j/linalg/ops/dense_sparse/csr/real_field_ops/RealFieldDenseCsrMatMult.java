@@ -25,8 +25,6 @@
 package org.flag4j.linalg.ops.dense_sparse.csr.real_field_ops;
 
 
-import org.flag4j.numbers.Complex128;
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.field_arrays.AbstractCsrFieldMatrix;
 import org.flag4j.arrays.backend.field_arrays.AbstractDenseFieldMatrix;
@@ -34,7 +32,10 @@ import org.flag4j.arrays.backend.field_arrays.AbstractDenseFieldVector;
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.arrays.dense.Vector;
 import org.flag4j.arrays.sparse.CsrMatrix;
+import org.flag4j.numbers.Complex128;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.util.Arrays;
 
@@ -56,7 +57,7 @@ public final class RealFieldDenseCsrMatMult {
      * @param src1 First matrix in the matrix multiplication.
      * @param src2 Second matrix in the matrix multiplication.
      * @return The result of the matrix multiplication between {@code src1} and {@code src2}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code src1} does not have the same number of columns as {@code src2} has
+     * @throws ArrayShapeException If {@code src1} does not have the same number of columns as {@code src2} has
      * rows.
      */
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> standard(
@@ -87,7 +88,7 @@ public final class RealFieldDenseCsrMatMult {
             }
         }
 
-        return src2.makeLikeTensor(new Shape(src1.numRows, src2.numCols), destEntries);
+        return src2.makeLikeNDArray(new Shape(src1.numRows, src2.numCols), destEntries);
     }
 
 
@@ -129,7 +130,7 @@ public final class RealFieldDenseCsrMatMult {
             }
         }
 
-        return src2.makeLikeTensor(new Shape(src1.numRows, src2.numRows), destEntries);
+        return src2.makeLikeNDArray(new Shape(src1.numRows, src2.numRows), destEntries);
     }
 
 
@@ -140,7 +141,7 @@ public final class RealFieldDenseCsrMatMult {
      * @param src1 First matrix in the matrix multiplication (dense matrix).
      * @param src2 Second matrix in the matrix multiplication (sparse CSR matrix).
      * @return The result of the matrix multiplication between {@code src1} and {@code src2}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code src1} does not have the same number of columns as {@code src2} has
+     * @throws ArrayShapeException If {@code src1} does not have the same number of columns as {@code src2} has
      * rows.
      */
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> standard(
@@ -183,7 +184,7 @@ public final class RealFieldDenseCsrMatMult {
      * @param src1 First matrix in the matrix multiplication (dense matrix).
      * @param src2 Second matrix in the matrix multiplication (sparse CSR matrix).
      * @return The result of the matrix multiplication between {@code src1} and {@code src2}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code src1} does not have the same number of columns as {@code src2} has
+     * @throws ArrayShapeException If {@code src1} does not have the same number of columns as {@code src2} has
      * rows.
      */
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> standard(
@@ -214,7 +215,7 @@ public final class RealFieldDenseCsrMatMult {
             }
         }
 
-        return src1.makeLikeTensor(new Shape(rows1, cols2), destEntries);
+        return src1.makeLikeNDArray(new Shape(rows1, cols2), destEntries);
     }
 
 
@@ -255,7 +256,7 @@ public final class RealFieldDenseCsrMatMult {
      * @param src1 First matrix in the matrix multiplication.
      * @param src2 Second matrix in the matrix multiplication.
      * @return The result of the matrix multiplication between {@code src1} and {@code src2}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code src1} does not have the same number of columns as
+     * @throws ArrayShapeException If {@code src1} does not have the same number of columns as
      * {@code src2} has rows.
      */
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> standard(

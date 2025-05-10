@@ -33,12 +33,12 @@ import org.flag4j.util.ValidateParameters;
  * <p>The {@code MatrixMixin} interface defines methods that any matrix implementation must support.
  * This interface is designed to ensure a consistent API for various matrix operations, regardless of the underlying matrix
  * type (dense or sparse). It includes methods for accessing matrix properties, performing mathematical operations,
- * and manipulating matrix elements and substructures.
+ * and manipulating matrix elements and slices.
  *
- * <p>This interface is intended to be used as a mixin for a class which also extends {@link AbstractTensor}.
+ * <p>This interface is intended to be used as a mixin for a class which also extends {@link AbstractNDArray}.
  *
  * @param <T> The type of the implementing matrix class.
- * @param <U> The type of a dense matrix that is analogous to {@code T}.
+ * @param <U> The type of the dense matrix that is analogous to {@code T}.
  * If {@code T} represents a dense matrix, then {@code T} and {@code U} should be the same type.
  * @param <V> The type of vector analogous to {@code T}.
  * @param <W> The type of an individual matrix element, which may be a primitive type, wrapper class, or a custom object.
@@ -118,7 +118,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Checks if a matrix can be represented as a vector. That is, if a matrix has only one row or one column.
+     * Checks if this matrix can be represented as a vector. That is, if this matrix has only one row or one column.
      *
      * @return True if this matrix can be represented as either a row or column vector.
      */
@@ -128,11 +128,11 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Checks what type of vector this matrix is. i.e., not a vector, a 1x1 matrix, a row vector, or a column vector.
+     * Checks what type of vector this matrix is. I.e., not a vector, a 1x1 matrix, a row vector, or a column vector.
      *
      * @return An int corresponding to the type of vector this matrix represents:
      * <ul>
-     *     <li>If this matrix can not be represented as a vector, then returns -1.</li>
+     *     <li>If this matrix cannot be represented as a vector, then returns -1.</li>
      *     <li>If this matrix is a 1x1 matrix, then returns 0.</li>
      *     <li>If this matrix is a row vector, then returns 1.</li>
      *     <li>If this matrix is a column vector, then returns 2.</li>
@@ -209,8 +209,8 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
      *
      * @param b Vector in the matrix-vector multiplication.
      * @return The result of multiplying this matrix with {@code b}.
-     * @throws org.flag4j.util.exceptions.LinearAlgebraException If the number of columns in this matrix do not equal the size of
-     * {@code b}.
+     * @throws org.flag4j.util.exceptions.LinearAlgebraException If the number of columns in this matrix does not equal
+     * the size of {@code b}.
      */
     VectorMixin<?, ?, ?, W> mult(V b);
 
@@ -220,7 +220,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
      *
      * @param b Second matrix in the matrix multiplication.
      * @return The result of matrix multiplying this matrix with matrix {@code b}.
-     * @throws org.flag4j.util.exceptions.LinearAlgebraException If the number of columns in this matrix do not equal the number
+     * @throws org.flag4j.util.exceptions.LinearAlgebraException If the number of columns in this matrix does not equal the number
      * of rows in matrix {@code b}.
      */
     U mult(T b);
@@ -285,7 +285,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Stacks matrices along specified axis. <br>
+     * Stacks matrices along the specified axis. <br>
      * Also see {@link #stack(T)} and {@link #augment(T)}.
      *
      * @param b Matrix to stack to this matrix.
@@ -297,7 +297,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
      *
      * @return The result of stacking this matrix and {@code b} along the specified axis.
      * @throws IllegalArgumentException If this matrix and matrix {@code b} have a different length along the corresponding axis.
-     * @throws IllegalArgumentException If axis is not either 0 or 1.
+     * @throws IllegalArgumentException If the axis is not either 0 or 1.
      * @see #augment(T)
      * @see #stack(T)
      */
@@ -365,7 +365,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Gets a range of a row of this matrix.
+     * Gets a range of rows in this matrix.
      * @param rowIdx The index of the row to get.
      * @param start The staring column of the row range to get (inclusive).
      * @param stop The ending column of the row range to get (exclusive).
@@ -388,7 +388,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Gets a range of a column of this matrix.
+     * Gets a range of columns in this matrix.
      * @param colIdx The index of the column to get.
      * @param start The staring row of the column range to get (inclusive).
      * @param stop The ending row of the column range to get (exclusive).
@@ -426,20 +426,20 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
     /**
      * Sets a specified row of this matrix to a vector.
-     * @param row Vector to replace specified row in this matrix.
+     * @param row Vector to replace the specified row in this matrix.
      * @param rowIdx Index of the row to set.
      * @return If this matrix is dense, the row set operation is done in-place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new row and returned.
+     * If this matrix is sparse, a copy will be created with the new row and returned.
      */
     T setRow(V row, int rowIdx);
 
 
     /**
      * Sets a specified column of this matrix to a vector.
-     * @param col Vector to replace specified column in this matrix.
+     * @param col Vector to replace the specified column in this matrix.
      * @param colIdx Index of the column to set.
      * @return If this matrix is dense, the column set operation is done in-place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new column and returned.
+     * If this matrix is sparse, a copy will be created with the new column and returned.
      */
     T setCol(V col, int colIdx);
 
@@ -488,7 +488,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
      * @param colStart Starting column index for the slice (inclusive).
      * @return A copy of this matrix with the given slice set to the specified values.
      * @throws IndexOutOfBoundsException If rowStart or colStart are not within the matrix.
-     * @throws IllegalArgumentException  If the values slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException  If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                   fit completely within this matrix.
      */
     T setSliceCopy(T values, int rowStart, int colStart);
@@ -522,7 +522,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
     /**
      * Extracts the upper-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
-     * @param diagOffset Diagonal offset for upper-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the upper-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -537,7 +537,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
     /**
      * Extracts the upper-triangular portion of this matrix. All other data in the resulting matrix will be zero.
-     * @return The upper-triangular portion of this matrix. with all other data in the resulting matrix will be zero.
+     * @return The upper-triangular portion of this matrix. With all other data in the resulting matrix will be zero.
      */
     default T getTriU() {
         return getTriU(0);
@@ -547,7 +547,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
     /**
      * Extracts the lower-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
-     * @param diagOffset Diagonal offset for lower-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the lower-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -562,7 +562,7 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
     /**
      * Extracts the lower-triangular portion of this matrix. All other data in the resulting matrix will be zero.
-     * @return The lower-triangular portion of this matrix. with all other data in the resulting matrix will be zero.
+     * @return The lower-triangular portion of this matrix. With all other data in the resulting matrix will be zero.
      */
     default T getTriL() {
         return getTriL(0);
@@ -591,9 +591,9 @@ public interface MatrixMixin<T extends MatrixMixin<T, U, V, W>,
 
 
     /**
-     * Converts this matrix to an equivalent vector. If this matrix is not a row or column vector it will first be flattened then
-     * converted to a vector.
-     * @return A vector which
+     * Converts this matrix to an equivalent vector.
+     * @return A vector containing the entries of this matrix.
+     * If this matrix is not a row or column vector, it will first be flattened, then converted to a vector.
      */
     V toVector();
 

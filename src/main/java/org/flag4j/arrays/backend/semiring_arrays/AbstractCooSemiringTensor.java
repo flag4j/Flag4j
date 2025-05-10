@@ -26,7 +26,7 @@ package org.flag4j.arrays.backend.semiring_arrays;
 
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseTensorData;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.sparse.SparseValidation;
 import org.flag4j.linalg.ops.common.semiring_ops.CompareSemiring;
 import org.flag4j.linalg.ops.sparse.SparseElementSearch;
@@ -36,7 +36,7 @@ import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringTensorOps;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -75,7 +75,7 @@ import java.util.function.BinaryOperator;
  */
 public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTensor<T, U, V>,
         U extends AbstractDenseSemiringTensor<U, V>, V extends Semiring<V>>
-        extends AbstractTensor<T, V[], V>
+        extends AbstractNDArray<T, V[], V>
         implements SemiringTensorMixin<T, T, V> {
 
     /**
@@ -231,7 +231,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T add(T b) {
@@ -359,7 +359,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -379,7 +379,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      */
     @Override
     public T copy() {
-        return makeLikeTensor(shape, data.clone());
+        return makeLikeNDArray(shape, data.clone());
     }
 
 
@@ -530,7 +530,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {

@@ -78,14 +78,14 @@ public final class RealCooTensorDot {
 
         n2 = 1;
         for(int axis : src1Axes) {
-            n2 *= src1.shape.get(axis);
+            n2 *= src1.shape.getSize(axis);
         }
 
         n1 = 1;
         int[] src1Dims = new int[notin.length];
         pos = 0;
         for(int axis : notin) {
-            int a = src1.shape.get(axis);
+            int a = src1.shape.getSize(axis);
             n1 *= a;
             src1Dims[pos++] = a;
         }
@@ -99,14 +99,14 @@ public final class RealCooTensorDot {
 
         n2 = 1;
         for(int axis : src2Axes) {
-            n2 *= src2.shape.get(axis);
+            n2 *= src2.shape.getSize(axis);
         }
 
         n1 = 1;
         pos = 0;
         int[] src2Dims = new int[notin.length];
         for(int axis : notin) {
-            int a = src2.shape.get(axis);
+            int a = src2.shape.getSize(axis);
             n1 *= a;
             src2Dims[pos++] = a;
         }

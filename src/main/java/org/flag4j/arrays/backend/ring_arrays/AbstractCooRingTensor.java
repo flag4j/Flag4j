@@ -29,7 +29,7 @@ import org.flag4j.arrays.SparseTensorData;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractCooSemiringTensor;
 import org.flag4j.linalg.ops.sparse.coo.ring_ops.CooRingTensorOps;
 import org.flag4j.numbers.Ring;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 /**
  * <p>Base class for all sparse {@link Ring} tensors stored in coordinate list (COO) format. The data of this COO tensor are
@@ -100,7 +100,7 @@ public abstract class AbstractCooRingTensor<T extends AbstractCooRingTensor<T, U
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T sub(T b) {
@@ -143,7 +143,7 @@ public abstract class AbstractCooRingTensor<T extends AbstractCooRingTensor<T, U
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */

@@ -312,8 +312,8 @@ public final class PrettyPrint {
         if (data.length == 0) {
             result.append("[]"); // No data in this matrix.
         } else {
-            int numRows = shape.get(0);
-            int numCols = shape.get(1);
+            int numRows = shape.getSize(0);
+            int numCols = shape.getSize(1);
 
             int maxRows = PrintOptions.getMaxRows();
             int maxCols = PrintOptions.getMaxColumns();
@@ -394,8 +394,8 @@ public final class PrettyPrint {
         if (data.length == 0) {
             result.append("[]"); // No data in this matrix.
         } else {
-            int numRows = shape.get(0);
-            int numCols = shape.get(1);
+            int numRows = shape.getSize(0);
+            int numCols = shape.getSize(1);
 
             int maxRows = PrintOptions.getMaxRows();
             int maxCols = PrintOptions.getMaxColumns();
@@ -477,7 +477,7 @@ public final class PrettyPrint {
 
         // Start the row with appropriate bracket.
         sb.append(rowIndex > 0 ? " [" : "[");
-        int rowOffset = rowIndex*shape.get(1);
+        int rowOffset = rowIndex*shape.getSize(1);
         int padding = PrintOptions.getPadding();
         int precision = PrintOptions.getPrecision();
         boolean useCentering = PrintOptions.useCentering();
@@ -521,7 +521,7 @@ public final class PrettyPrint {
 
         // Start the row with appropriate bracket.
         sb.append(rowIndex > 0 ? " [" : "[");
-        int rowOffset = rowIndex*shape.get(1);
+        int rowOffset = rowIndex*shape.getSize(1);
         int padding = PrintOptions.getPadding();
         int precision = PrintOptions.getPrecision();
         boolean useCentering = PrintOptions.useCentering();

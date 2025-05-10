@@ -41,7 +41,7 @@ import org.flag4j.linalg.ops.sparse.coo.real_complex.RealComplexCooTensorOps;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -216,7 +216,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      * the shape and data.
      */
     @Override
-    public CooTensor makeLikeTensor(Shape shape, double[] data) {
+    public CooTensor makeLikeNDArray(Shape shape, double[] data) {
         return new CooTensor(shape, data, ArrayUtils.deepCopy2D(indices, null));
     }
 
@@ -432,7 +432,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public CooTensor reshape(Shape newShape) {
@@ -664,7 +664,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
         // Validate parameters.
         ValidateParameters.ensureNotEquals(axis1, axis2);
         ValidateParameters.validateArrayIndices(getRank(), axis1, axis2);
-        ValidateParameters.ensureAllEqual(shape.get(axis1), shape.get(axis2));
+        ValidateParameters.ensureAllEqual(shape.getSize(axis1), shape.getSize(axis2));
 
         int rank = getRank();
         int[] dims = shape.getDims();
@@ -794,7 +794,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -841,7 +841,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
         for(int i = 0, size = data.length; i<size; i++)
             recip[i] = 1.0/data[i];
 
-        return makeLikeTensor(shape, recip);
+        return makeLikeNDArray(shape, recip);
     }
 
 

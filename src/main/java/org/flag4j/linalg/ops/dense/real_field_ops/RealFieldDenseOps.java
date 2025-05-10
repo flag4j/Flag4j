@@ -25,9 +25,10 @@
 package org.flag4j.linalg.ops.dense.real_field_ops;
 
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.Shape;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 /**
  * This class provides low level methods for computing ops with at least one real tensor
@@ -50,7 +51,7 @@ public final class RealFieldDenseOps {
      * @param shape2 Shape of second tensor.
      * @param src2 Entries of second tensor.
      *
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !shape1.equals(shape2)}.
+     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}.
      */
     public static <T extends Field<T>> void add(
             Shape shape1, T[] src1, Shape shape2, double[] src2, T[] dest) {
@@ -71,7 +72,7 @@ public final class RealFieldDenseOps {
      * @param dest Array to store the resulting element-wise difference in. Must be at lease as large as {@code src1}.
      * May be the same array as {@code src1}.
      *
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !shape1.equals(shape2)}.
+     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}.
      * @throws ArrayIndexOutOfBoundsException                  If {@code src1.length != src2.length}
      */
     public static <T extends Field<T>> void sub(
@@ -93,7 +94,7 @@ public final class RealFieldDenseOps {
      * @param dest Array to store the resulting element-wise difference in. Must be at lease as large as {@code src1}.
      * May be the same array as {@code src1}.
      *
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !shape1.equals(shape2)}.
+     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}.
      */
     public static <T extends Field<T>> void sub(
             Shape shape1, double[] src1, Shape shape2, T[] src2, T[] dest) {
@@ -195,7 +196,7 @@ public final class RealFieldDenseOps {
      * @param src2 Entries of the second tensor in the element-wise product.
      * @param dest Array to store the result of the element-wise product in. Must be at least as large as {@code src1}.
      * May be the same arrays as {@code src1}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !shape1.equals(shape1)}.
+     * @throws ArrayShapeException If {@code !shape1.equals(shape1)}.
      */
     public static <T extends Field<T>> void elemMult(
             Shape shape1, T[] src1, Shape shape2, double[] src2, T[] dest) {
@@ -213,7 +214,7 @@ public final class RealFieldDenseOps {
      * @param shape2 Shape of the second tensor in the element-wise quotient.
      * @param src2 Entries of the second tensor in the element-wise quotient.
      * @param dest Array to store the result of the element-wise quotient in.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !shape1.equals(shape1)}.
+     * @throws ArrayShapeException If {@code !shape1.equals(shape1)}.
      */
     public static <T extends Field<T>> void elemDiv(
             Shape shape1, T[] src1, Shape shape2, double[] src2, T[] dest) {
@@ -231,7 +232,7 @@ public final class RealFieldDenseOps {
      * @param shape2 Shape of the second tensor in the element-wise quotient.
      * @param src2 Entries of the second tensor in the element-wise quotient.
      * @param dest Array to store the result of the element-wise quotient in.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !shape1.equals(shape1)}.
+     * @throws ArrayShapeException If {@code !shape1.equals(shape1)}.
      */
     public static <T extends Field<T>> void elemDiv(
             Shape shape1, double[] src1, Shape shape2, T[] src2, T[] dest) {

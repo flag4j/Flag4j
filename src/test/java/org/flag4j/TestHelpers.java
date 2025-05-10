@@ -1,6 +1,6 @@
 package org.flag4j;
 
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.backend.VectorMixin;
 import org.flag4j.arrays.dense.CMatrix;
@@ -117,7 +117,7 @@ public final class TestHelpers {
      * @param a First tensor to compare.
      * @param b Second tensor to compare.
      */
-    public static <T extends AbstractTensor<?,?,?>> List<int[]> findDiff(T a, T b) {
+    public static <T extends AbstractNDArray<?,?,?>> List<int[]> findDiff(T a, T b) {
         if(!a.shape.equals(b.shape)) {
             System.out.printf("Not the same shape: %s and %s\n", a.shape, b.shape);
         }

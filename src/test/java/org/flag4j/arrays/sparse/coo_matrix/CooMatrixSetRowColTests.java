@@ -161,7 +161,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(5);
         bEntries = new double[]{0.42925, 0.95116};
         bIndices = new int[]{2, 3};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         expShape = new Shape(5, 3);
         expEntries = new double[]{0.69683, 0.42925, 0.95116, 0.01005};
@@ -181,7 +181,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(11);
         bEntries = new double[]{0.42701, 0.22431, 0.48719, 0.79679};
         bIndices = new int[]{5, 6, 7, 10};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         expShape = new Shape(11, 23);
         expEntries = new double[]{0.09879, 0.44944, 0.42701, 0.22431, 0.48719, 0.51234, 0.10826, 0.79679};
@@ -201,7 +201,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(5);
         bEntries = new double[]{0.92473, 0.36888};
         bIndices = new int[]{1, 4};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         expShape = new Shape(5, 1000);
         expEntries = new double[]{0.548, 0.12782, 0.71044, 0.03123, 0.92473, 0.73197, 0.23329, 0.76449, 0.62306, 0.77283, 0.36888};
@@ -221,7 +221,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(3);
         bEntries = new double[]{0.93917};
         bIndices = new int[]{2};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         CooMatrix final0a = a;
         CooVector final0b = b;
@@ -237,7 +237,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(5);
         bEntries = new double[]{0.41526, 0.41046};
         bIndices = new int[]{0, 2};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         CooMatrix final1a = a;
         CooVector final1b = b;
@@ -253,7 +253,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(2);
         bEntries = new double[]{0.55374};
         bIndices = new int[]{1};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         CooMatrix final2a = a;
         CooVector final2b = b;
@@ -269,7 +269,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(3);
         bEntries = new double[]{0.838};
         bIndices = new int[]{0};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         CooMatrix final3a = a;
         CooVector final3b = b;
@@ -306,7 +306,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(5);
         bEntries = new double[]{0.42925, 0.95116};
         bIndices = new int[]{2, 3};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         expShape = new Shape(3, 5);
         expEntries = new double[]{0.69683, 0.42925, 0.95116, 0.01005};
@@ -326,7 +326,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(11);
         bEntries = new double[]{0.42701, 0.22431, 0.48719, 0.79679};
         bIndices = new int[]{5, 6, 7, 10};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         expShape = new Shape(23, 11);
         expEntries = new double[]{0.09879, 0.44944, 0.42701, 0.22431, 0.48719, 0.51234, 0.10826, 0.79679};
@@ -346,7 +346,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(5);
         bEntries = new double[]{0.92473, 0.36888};
         bIndices = new int[]{1, 4};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         expShape = new Shape(1000, 5);
         expEntries = new double[]{0.548, 0.12782, 0.71044, 0.03123, 0.92473, 0.73197, 0.23329, 0.76449, 0.62306, 0.77283, 0.36888};
@@ -366,7 +366,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(3);
         bEntries = new double[]{0.93917};
         bIndices = new int[]{2};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         CooMatrix final0a = a;
         CooVector final0b = b;
@@ -382,7 +382,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(5);
         bEntries = new double[]{0.41526, 0.41046};
         bIndices = new int[]{0, 2};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         CooMatrix final1a = a;
         CooVector final1b = b;
@@ -398,7 +398,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(2);
         bEntries = new double[]{0.55374};
         bIndices = new int[]{1};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         CooMatrix final2a = a;
         CooVector final2b = b;
@@ -414,7 +414,7 @@ class CooMatrixSetRowColTests {
         bShape = new Shape(3);
         bEntries = new double[]{0.838};
         bIndices = new int[]{0};
-        b = new CooVector(bShape.get(0), bEntries, bIndices);
+        b = new CooVector(bShape.getSize(0), bEntries, bIndices);
 
         CooMatrix final3a = a;
         CooVector final3b = b;

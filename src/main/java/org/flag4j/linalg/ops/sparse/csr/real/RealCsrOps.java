@@ -31,6 +31,7 @@ import org.flag4j.arrays.sparse.CsrMatrix;
 import org.flag4j.linalg.ops.sparse.SparseUtils;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public final class RealCsrOps {
      * @param src1 First CSR matrix in the element-wise product.
      * @param src2 Second CSR matrix in the element-wise product.
      * @return The element-wise product of {@code src1} and {@code src2}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !src1.shape.equals(src2.shape)}
+     * @throws ArrayShapeException If {@code !src1.shape.equals(src2.shape)}
      */
     public static CsrMatrix elemMult(CsrMatrix src1, CsrMatrix src2) {
         ValidateParameters.ensureEqualShape(src1.shape, src2.shape);

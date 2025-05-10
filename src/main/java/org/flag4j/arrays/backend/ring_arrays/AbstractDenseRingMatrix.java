@@ -32,7 +32,7 @@ import org.flag4j.linalg.MatrixNorms;
 import org.flag4j.linalg.ops.common.ring_ops.RingProperties;
 import org.flag4j.linalg.ops.dense.ring_ops.DenseRingTensorOps;
 import org.flag4j.numbers.Ring;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 /**
  * The base class for all dense matrices whose elements are members of a {@link Ring}.
@@ -69,7 +69,7 @@ public abstract class AbstractDenseRingMatrix<T extends AbstractDenseRingMatrix<
     public T sub(T b) {
         V[] dest = makeEmptyDataArray(data.length);
         DenseRingTensorOps.sub(shape, data, b.shape, b.data, dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 
@@ -78,7 +78,7 @@ public abstract class AbstractDenseRingMatrix<T extends AbstractDenseRingMatrix<
      *
      * @param b Second matrix in the element-wise difference.
      *
-     * @throws TensorShapeException If this matrix and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this matrix and {@code b} do not have the same shape.
      */
     public void subEq(T b) {
         DenseRingTensorOps.sub(shape, data, b.shape, b.data, data);
@@ -113,7 +113,7 @@ public abstract class AbstractDenseRingMatrix<T extends AbstractDenseRingMatrix<
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */

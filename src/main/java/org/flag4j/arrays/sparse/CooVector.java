@@ -47,6 +47,7 @@ import org.flag4j.linalg.ops.sparse.coo.real.RealSparseEquals;
 import org.flag4j.linalg.ops.sparse.coo.real_complex.RealComplexSparseVectorOps;
 import org.flag4j.numbers.Complex128;
 import org.flag4j.util.*;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
 import java.util.*;
@@ -115,7 +116,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
     public CooVector(Shape shape, double[] data, int[] indices) {
         super(shape, data);
         ValidateParameters.ensureRank(shape, 1);
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
         this.indices = indices;
         this.nnz = data.length;
         SparseValidation.validateCoo(this.size, this.nnz, this.indices);
@@ -132,7 +133,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
     public CooVector(Shape shape, List<Double> data, List<Integer> indices) {
         super(shape, ArrayConversions.fromDoubleList(data));
         ValidateParameters.ensureRank(shape, 1);
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
         this.indices = ArrayConversions.fromIntegerList(indices);
         this.nnz = this.data.length;
         SparseValidation.validateCoo(this.size, this.nnz, this.indices);
@@ -221,7 +222,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      */
     public CooVector(Shape shape, HashMap<Integer, Double> indexDataMap) {
         super(shape, new double[indexDataMap.size()]);
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
         this.nnz = data.length;
         indices = new int[nnz];
 
@@ -245,7 +246,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
     private CooVector(Shape shape, double[] data, int[] indices, Object dummy) {
         // This constructor is hidden and called by unsafeMake to emphasize that creating a COO vector in this manner is unsafe.
         super(shape, data);
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
         this.indices = indices;
         this.nnz = data.length;
     }
@@ -316,7 +317,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
-    public CooVector makeLikeTensor(Shape shape, double[] data) {
+    public CooVector makeLikeNDArray(Shape shape, double[] data) {
         return new CooVector(shape, data, indices.clone());
     }
 
@@ -394,7 +395,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -455,6 +456,20 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
+     * <p>Computes the inner product between this vector and itself.
+     * <p>This method <em>may</em> be slightly more efficient than calling {@link #inner(VectorMixin) this.inner(this)}.
+     *
+     * @return The inner product between this vector and itself.
+     *
+     * @see #inner(VectorMixin)
+     */
+    @Override
+    public double innerSelf() {
+        return VectorNorms.normSquared(data);
+    }
+
+
+    /**
      * <p>Computes the dot product between two vectors.
      *
      * <p>Note: this method is distinct from {@link #inner(CooVector)}. The inner product is equivalent to the dot product
@@ -474,10 +489,12 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * Computes the Euclidean norm of this vector.
-     *
-     * @return The Euclidean norm of this vector.
+     * Computes the norm of this vector. This is the same as {@link #mag()}.
+     * @return The norm (specifically &ell;<sup>2</sup>) of this vector.
+     * @see #mag()
+     * @see #magSquared()
      */
+    @Override
     public double norm() {
         return VectorNorms.norm(data);
     }
@@ -509,13 +526,15 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * Computes the magnitude of this vector.
+     * Computes the squared magnitude of this vector.
      *
-     * @return The magnitude of this vector.
+     * @return The squared magnitude of this vector.
+     *
+     * @see #mag()
      */
     @Override
-    public Double mag() {
-        return VectorNorms.norm(data);
+    public double magSquared() {
+        return VectorNorms.normSquared(data);
     }
 
 
@@ -969,7 +988,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code newShape} does not have the same number of total entries as
+     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as
      * {@link #shape this.shape}.
      */
     @Override
@@ -1208,7 +1227,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */
@@ -1461,6 +1480,35 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
+     * <p>Converts this vector to a matrix with a specified shape.
+     * <p>Note, the following must be satisfied: {@code rows*cols == this.size}.
+     *
+     * @param rows The number of rows in the matrix.
+     * @param cols The number of columns in the matrix.
+     *
+     * @return A matrix with the specified number of rows and columns containing the entries of this vector.
+     */
+    @Override
+    public CooMatrix toMatrix(int rows, int cols) {
+        return toMatrix(new Shape(rows, cols));
+    }
+
+
+    /**
+     * <p>Converts this vector to a matrix with a specified shape.
+     * <p>Note, the following must be satisfied: {@code shape.totalEntriesIntValueExact() == this.size}.
+     *
+     * @param shape Shape of the matrix. Must be rank 2.
+     *
+     * @return A matrix with the specified number of rows and columns containing the entries of this vector.
+     */
+    @Override
+    public CooMatrix toMatrix(Shape shape) {
+        return toMatrix().reshape(shape);
+    }
+
+
+    /**
      * Converts this vector to an equivalent sparse vector.
      * @return A complex COO vector equivalent to this vector.
      */
@@ -1473,7 +1521,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
      * Computes the element-wise multiplication between this vector and a real dense vector.
      * @param b The real dense vector in the element-wise product.
      * @return The element-wise product of this vector and {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If the two vectors have different sizes.
+     * @throws ArrayShapeException If the two vectors have different sizes.
      */
     public CooVector elemMult(Vector b) {
         return RealDenseSparseVectorOps.elemMult(b, this);

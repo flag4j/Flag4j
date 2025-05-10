@@ -32,6 +32,7 @@ import org.flag4j.linalg.decompositions.Decomposition;
 import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.Flag4jConstants;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 
 /**
@@ -332,7 +333,7 @@ public abstract class Balancer<T extends MatrixMixin<T, ?, ?, ?>> extends Decomp
      * @param src Matrix to balance. Must be square. If {@link #inPlace == true} then {@code src} will be modified.
      * Otherwise, {@code src} will <i>not</i> be modified.
      * @return A reference to this balancer object.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code src} is not a square matrix.
+     * @throws ArrayShapeException If {@code src} is not a square matrix.
      */
     @Override
     public Balancer<T> decompose(T src) {

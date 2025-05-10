@@ -32,7 +32,7 @@ import org.flag4j.arrays.backend.semiring_arrays.AbstractCsrSemiringMatrix;
 import org.flag4j.linalg.ops.sparse.csr.CsrOps;
 import org.flag4j.linalg.ops.sparse.csr.ring_ops.CsrRingProperties;
 import org.flag4j.numbers.Ring;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 
 /**
@@ -113,7 +113,7 @@ public abstract class AbstractCsrRingMatrix<T extends AbstractCsrRingMatrix<T, U
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T sub(T b) {
@@ -176,7 +176,7 @@ public abstract class AbstractCsrRingMatrix<T extends AbstractCsrRingMatrix<T, U
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */

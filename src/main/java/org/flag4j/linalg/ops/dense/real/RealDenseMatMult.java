@@ -48,9 +48,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] standard(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
         int src1Index, src2Index, destIndex, src1IndexStart, destIndexStart, end;
@@ -89,9 +89,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] reordered(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
 
@@ -131,9 +131,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] blocked(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
+        int cols1 = shape1.getSize(1);
 
         double[] dest = new double[rows1 * cols2];
         int blockSize = Configurations.getBlockSize();
@@ -186,9 +186,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] blockedReordered(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
+        int cols1 = shape1.getSize(1);
 
         double[] dest = new double[rows1*cols2];
         int blockSize = Configurations.getBlockSize();
@@ -241,9 +241,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] concurrentStandard(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
 
@@ -282,9 +282,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] concurrentReordered(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
 
@@ -320,9 +320,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] concurrentBlocked(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
         int blockSize = Configurations.getBlockSize();
@@ -372,9 +372,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] concurrentBlockedReordered(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
         int blockSize = Configurations.getBlockSize();
@@ -424,9 +424,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] standardVector(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         double[] dest = new double[rows1];
         int src1Index, src2Index;
@@ -456,9 +456,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] blockedVector(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         double[] dest = new double[rows1];
         int blockSize = Configurations.getBlockSize();
@@ -501,9 +501,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] concurrentStandardVector(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         double[] dest = new double[rows1];
 
@@ -535,9 +535,9 @@ public final class RealDenseMatMult {
      * @return The result of matrix multiplying the two matrices.
      */
     public static double[] concurrentBlockedVector(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         double[] dest = new double[rows1];
         int blockSize = Configurations.getBlockSize();

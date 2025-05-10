@@ -28,7 +28,7 @@ import org.flag4j.arrays.Shape;
 import org.flag4j.numbers.Semiring;
 
 /**
- * This class contains low level implementations for methods to evaluate certain properties of a sparse COO
+ * This class contains low-level implementations for methods to evaluate certain properties of a sparse COO
  * {@link Semiring} matrix. For example, if the matrix is symmetric.
  */
 public final class CooSemiringMatrixProperties {
@@ -49,7 +49,7 @@ public final class CooSemiringMatrixProperties {
     public static <T extends Semiring<T>> boolean isIdentity(
             Shape shape, T[] entries, int[] rowIndices, int[] colIndices) {
         // Ensure the matrix is square and there are at least the same number of non-zero data as data on the diagonal.
-        if(shape.get(0) != shape.get(1) || entries.length<shape.get(0)) return false;
+        if(shape.getSize(0) != shape.getSize(1) || entries.length<shape.getSize(0)) return false;
 
         for(int i=0, size=entries.length; i<size; i++) {
             // Ensure value is 1 and on the diagonal.

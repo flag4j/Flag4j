@@ -670,8 +670,8 @@ public final class MatrixNorms {
 
         double norm = 0;
         double colSum;
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
 
         for(int j=0; j<cols; j++) {
             colSum=0;
@@ -698,8 +698,8 @@ public final class MatrixNorms {
 
         double norm = 0;
         double colSum;
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
 
         for(int j=0; j<cols; j++) {
             colSum=0;
@@ -722,8 +722,8 @@ public final class MatrixNorms {
      * @return The row-based matrix norm.
      */
     private static double rowBasedNorm(Shape shape, double[] src, Function<double[], Double> aggregator) {
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
         double[] rowSums = new double[rows];
 
         for(int i=0; i<rows; i++) {
@@ -746,8 +746,8 @@ public final class MatrixNorms {
      * @return The row-based matrix norm.
      */
     private static <T extends Ring<T>> double rowBasedNorm(Shape shape, T[] src, Function<double[], Double> aggregator) {
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
         double[] rowSums = new double[rows];
 
         for(int i=0; i<rows; i++) {
@@ -798,8 +798,8 @@ public final class MatrixNorms {
      * @return The column-based matrix norm.
      */
     private static double colBasedNorm(Shape shape, double[] src, Function<double[], Double> aggregator) {
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
         double[] colSums = new double[cols];
 
         for(int i=0; i<rows; i++) {
@@ -822,8 +822,8 @@ public final class MatrixNorms {
      * @return The column-based matrix norm.
      */
     private static <T extends Ring<T>> double colBasedNorm(Shape shape, T[] src, Function<double[], Double> aggregator) {
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
         double[] colSums = new double[cols];
 
         for(int i=0; i<rows; i++) {

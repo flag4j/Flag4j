@@ -119,7 +119,7 @@ class CooMatrixGetTests {
         expShape = new Shape(3);
         expEntries = new double[]{0.28555};
         expIndices = new int[]{2};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getDiag());
 
@@ -133,7 +133,7 @@ class CooMatrixGetTests {
         expShape = new Shape(11);
         expEntries = new double[]{0.73443};
         expIndices = new int[]{1};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getDiag());
 
@@ -147,7 +147,7 @@ class CooMatrixGetTests {
         expShape = new Shape(3);
         expEntries = new double[]{0.73896, 0.94136};
         expIndices = new int[]{0, 1};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getDiag());
 
@@ -161,7 +161,7 @@ class CooMatrixGetTests {
         expShape = new Shape(3);
         expEntries = new double[]{};
         expIndices = new int[]{};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getDiag());
 
@@ -175,7 +175,7 @@ class CooMatrixGetTests {
         expShape = new Shape(3);
         expEntries = new double[]{0.19569};
         expIndices = new int[]{0};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getDiag());
 
@@ -189,7 +189,7 @@ class CooMatrixGetTests {
         expShape = new Shape(3);
         expEntries = new double[]{0.86003, 0.06677};
         expIndices = new int[]{1, 2};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getDiag());
     }

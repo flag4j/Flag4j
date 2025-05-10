@@ -24,12 +24,12 @@
 
 package org.flag4j.linalg.ops.sparse.coo.real_complex;
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.sparse.CooCMatrix;
 import org.flag4j.arrays.sparse.CooCVector;
 import org.flag4j.arrays.sparse.CooMatrix;
 import org.flag4j.arrays.sparse.CooVector;
+import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.ValidateParameters;
 
@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class has low level implementations for ops between a real sparse matrix and a complex sparse matrix.
+ * This class has low-level implementations for ops between a real sparse matrix and a complex sparse matrix.
  */
 public final class RealComplexSparseMatOps {
 

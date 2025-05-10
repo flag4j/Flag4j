@@ -24,10 +24,10 @@
 
 package org.flag4j.linalg.ops.dense.real_field_ops;
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.Shape;
 import org.flag4j.concurrency.Configurations;
 import org.flag4j.concurrency.ThreadManager;
+import org.flag4j.numbers.Field;
 
 import java.util.Arrays;
 
@@ -56,9 +56,9 @@ public final class RealFieldDenseMatMultTranspose {
      * {@code shape1.get(0)*shape1.get(0)}.
      */
     public static <T extends Field<T>> void multTranspose(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
         
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null);
 
@@ -95,9 +95,9 @@ public final class RealFieldDenseMatMultTranspose {
      * {@code shape1.get(0)*shape1.get(0)}.
      */
     public static <T extends Field<T>> void multTransposeBlocked(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null);
 
@@ -151,9 +151,9 @@ public final class RealFieldDenseMatMultTranspose {
      * {@code shape1.get(0)*shape1.get(0)}.
      */
     public static <T extends Field<T>> void multTransposeConcurrent(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null);
 
@@ -191,9 +191,9 @@ public final class RealFieldDenseMatMultTranspose {
      */
     public static <T extends Field<T>> void multTransposeBlockedConcurrent(
             T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null);
 
@@ -245,9 +245,9 @@ public final class RealFieldDenseMatMultTranspose {
      * {@code shape1.get(0)*shape1.get(0)}.
      */
     public static <T extends Field<T>> void multTranspose(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src2[0].getZero() : null);
 
@@ -284,9 +284,9 @@ public final class RealFieldDenseMatMultTranspose {
      * {@code shape1.get(0)*shape1.get(0)}.
      */
     public static <T extends Field<T>> void multTransposeBlocked(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src2[0].getZero() : null);
 
@@ -340,9 +340,9 @@ public final class RealFieldDenseMatMultTranspose {
      * {@code shape1.get(0)*shape1.get(0)}.
      */
     public static <T extends Field<T>> void multTransposeConcurrent(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src2[0].getZero() : null);
 
@@ -380,9 +380,9 @@ public final class RealFieldDenseMatMultTranspose {
      */
     public static <T extends Field<T>> void multTransposeBlockedConcurrent(
             double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src2[0].getZero() : null);
         final int blockSize = Configurations.getBlockSize();

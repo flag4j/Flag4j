@@ -38,7 +38,7 @@ import java.util.List;
 
 
 /**
- * This class contains low level implementations of ops on a real sparse tensor and a complex sparse tensor.
+ * This class contains low-level implementations of ops on a real sparse tensor and a complex sparse tensor.
  */
 public final class RealComplexSparseVectorOps {
 

@@ -26,9 +26,10 @@ package org.flag4j.arrays.backend.semiring_arrays;
 
 
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayBuilder;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 
 /**
@@ -75,7 +76,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
-    T makeLikeTensor(Shape shape, V entries);
+    T makeLikeNDArray(Shape shape, V entries);
 
 
     /**
@@ -116,7 +117,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * Computes the element-wise sum between two tensors of the same shape.
      * @param b Second tensor in the element-wise sum.
      * @return The sum of this tensor with {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     T add(T b);
 
@@ -161,7 +162,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * and {@code bAxis}.
      * @throws IllegalArgumentException If either axis is out of bounds of the corresponding tensor.
      */
-    default AbstractTensor<?, V, W> tensorDot(T src2, int axes){
+    default AbstractNDArray<?, V, W> tensorDot(T src2, int axes){
         int rank2 = src2.getRank();
         int[] src1Axes = ArrayBuilder.intRange(0, axes);
         int[] src2Axes = ArrayBuilder.intRange(rank2-axes, rank2);
@@ -181,7 +182,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * and {@code bAxis}.
      * @throws IllegalArgumentException If either axis is out of bounds of the corresponding tensor.
      */
-    default AbstractTensor<?, V, W> tensorDot(T src2, int aAxis, int bAxis) {
+    default AbstractNDArray<?, V, W> tensorDot(T src2, int aAxis, int bAxis) {
         return tensorDot(src2, new int[]{aAxis}, new int[]{bAxis});
     }
 
@@ -198,7 +199,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      * are out of bounds for the corresponding tensor.
      */
-    AbstractTensor<?, V, W> tensorDot(T src2, int[] aAxes, int[] bAxes);
+    AbstractNDArray<?, V, W> tensorDot(T src2, int[] aAxes, int[] bAxes);
 
 
     /**
@@ -210,7 +211,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * @throws IllegalArgumentException If this tensors shape along the last axis does not match {@code src2} shape
      * along the second-to-last axis.
      */
-    default AbstractTensor<?, V, W> tensorDot(T src2) {
+    default AbstractNDArray<?, V, W> tensorDot(T src2) {
         return tensorDot(src2, getRank()-1, getRank()-2);
     }
 
@@ -269,8 +270,26 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
 
 
     /**
+     * Computes the sum of all values in this tensor along the specified {@code axes}.
+     * @param axes Axes along which to compute the sum. All axes must be in the range {@code [0, this.rank() - 1]}.
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     */
+    T sum(int... axes);
+
+
+    /**
      * Computes the product of all values in this tensor.
      * @return The product of all values in this tensor.
      */
     W prod();
+
+
+    /**
+     * Computes the product of all values in this tensor along the specified {@code axes}.
+     * @param axes Axes along which to compute the product. All axes must be in the range {@code [0, this.rank() - 1]}.
+     * @return A tensor with the same shape as this tensor but with the specified axes removed. \
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     */
+    W prod(int axis);
 }

@@ -63,8 +63,8 @@ public final class CooSemiringMatMult {
             T[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
             T[] src2, int[] rowIndices2, int[] colIndices2, Shape shape2,
             T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -112,8 +112,8 @@ public final class CooSemiringMatMult {
             T[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
             T[] src2, int[] rowIndices2, int[] colIndices2, Shape shape2,
             T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         final T ZERO = src1[0].getZero();
         Arrays.fill(dest, ZERO);
@@ -163,7 +163,7 @@ public final class CooSemiringMatMult {
             T[] src2, int[] indices, T[] dest) {
 
         final T ZERO = src1[0].getZero();
-        int rows1 = shape1.get(0);
+        int rows1 = shape1.getSize(0);
         Arrays.fill(dest, ZERO);
 
         // r1, c1, r2, and store the indices for non-zero values in src1 and src2.
@@ -205,7 +205,7 @@ public final class CooSemiringMatMult {
     public static <T extends Semiring<T>> void concurrentStandardVector(
             T[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
             T[] src2, int[] indices, T[] dest) {
-        int rows1 = shape1.get(0);
+        int rows1 = shape1.getSize(0);
         Arrays.fill(dest, src1[0].getZero());
 
         ThreadManager.concurrentOperation(src1.length, (startIdx, endIdx) -> {

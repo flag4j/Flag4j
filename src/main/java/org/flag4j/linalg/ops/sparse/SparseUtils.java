@@ -790,11 +790,11 @@ public final class SparseUtils {
             throw new IllegalArgumentException("colStart must be greater than colEnd but got: colStart="
                     + colStart + " and colEnd=" + colEnd + ".");
         }
-        if(rowStart < 0 || rowEnd > shape.get(0)) {
+        if(rowStart < 0 || rowEnd > shape.getSize(0)) {
             throw new IllegalArgumentException("Invalid range specified for row indices: [" + rowStart + ", " + rowEnd + ").\n" +
                     "Out of bounds for matrix with shape: " + shape);
         }
-        if(colStart < 0 || colEnd > shape.get(1)) {
+        if(colStart < 0 || colEnd > shape.getSize(1)) {
             throw new IllegalArgumentException("Invalid range specified for column indices: [" + colStart + ", " + colEnd + ").\n" +
                     "Out of bounds for matrix with shape: " + shape);
         }
@@ -819,7 +819,7 @@ public final class SparseUtils {
         if (shape.getRank() != 2) {
             throw new IllegalArgumentException("Invalid CSR definition: shape must be of rank 2 but got: " + shape);
         }
-        if (rowPointers.length != shape.get(0) + 1) {
+        if (rowPointers.length != shape.getSize(0) + 1) {
             throw new IllegalArgumentException("Invalid CSR definition: the number of row pointers must be " +
                     "equal to the number of rows plus 1 but got row pointer length " +
                     rowPointers.length + " for shape " + shape + ".");

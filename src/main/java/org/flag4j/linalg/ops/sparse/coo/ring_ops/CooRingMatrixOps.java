@@ -162,7 +162,7 @@ public final class CooRingMatrixOps {
      * @param <T> The ring to which the data values of the COO matrix belong.
      */
     public static <T extends Ring<T>> boolean isHermitian(Shape shape, T[] data, int[] rowIndices, int[] colIndices) {
-        if(shape.get(0) != shape.get(1)) return false; // Early return for non-square matrix.
+        if(shape.getSize(0) != shape.getSize(1)) return false; // Early return for non-square matrix.
 
         Map<Pair<Integer, Integer>, T> dataMap = new HashMap<Pair<Integer, Integer>, T>();
 

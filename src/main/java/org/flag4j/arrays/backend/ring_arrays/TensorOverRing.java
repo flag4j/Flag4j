@@ -27,6 +27,7 @@ package org.flag4j.arrays.backend.ring_arrays;
 
 import org.flag4j.arrays.backend.semiring_arrays.TensorOverSemiring;
 import org.flag4j.numbers.Ring;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 
 /**
@@ -83,7 +84,7 @@ public interface TensorOverRing<T extends TensorOverRing<T, U, V, W>,
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws org.flag4j.util.exceptions.TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     T sub(T b);
 
@@ -135,7 +136,7 @@ public interface TensorOverRing<T extends TensorOverRing<T, U, V, W>,
      *             {@code N} which is a permutation of {@code {0, 1, 2, ..., N-1}}.
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */

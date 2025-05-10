@@ -170,8 +170,8 @@ public class Cm128DeMatVecMultDispatcher extends BiTensorOpDispatcher<CMatrix, C
      */
     @Override
     protected BiFunction<CMatrix, CVector, CVector> getFunc(Shape aShape, Shape bShape, int data1Length, int data2Length) {
-        int m = aShape.get(0);
-        int n = aShape.get(1);
+        int m = aShape.getSize(0);
+        int n = aShape.getSize(1);
         double aspectRatio = (double) Math.max(m, n) / Math.min(m, n);
 
         if(aspectRatio <= 4*ASPECT_THRESH) {

@@ -165,8 +165,8 @@ public final class CsrRingProperties {
      * @return {@code true} if the CSR matrix is Hermitian (i.e., equal to its conjugate transpose); {@code false} otherwise.
      */
     public static <T extends Ring<T>> boolean isHermitian(Shape shape, T[] values, int[] rowPointers, int[] colIndices) {
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
 
         if(numRows != numCols) return false; // Early return for non-square matrix.
 

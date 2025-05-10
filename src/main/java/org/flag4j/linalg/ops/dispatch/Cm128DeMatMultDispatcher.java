@@ -181,9 +181,9 @@ public final class Cm128DeMatMultDispatcher extends BiTensorOpDispatcher<CMatrix
      */
     @Override
     protected BiFunction<CMatrix, CMatrix, CMatrix> getFunc(Shape aShape, Shape bShape, int data1Length, int data2Length) {
-        int m = aShape.get(0);
-        int n = aShape.get(1);
-        int k = bShape.get(1);
+        int m = aShape.getSize(0);
+        int n = aShape.getSize(1);
+        int k = bShape.getSize(1);
 
         if(k == 1) {
             // Then we have a matrix-vector product.

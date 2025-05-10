@@ -128,7 +128,7 @@ public final class RealFieldDenseCooOps {
             destEntries[idx] = destEntries[idx].add(src2.data[i]);
         }
 
-        return src1.makeLikeTensor(src2.shape, destEntries);
+        return src1.makeLikeNDArray(src2.shape, destEntries);
     }
 
 
@@ -147,7 +147,7 @@ public final class RealFieldDenseCooOps {
             destEntries[idx] = destEntries[idx].sub(src2.data[i]);
         }
 
-        return src1.makeLikeTensor(src1.shape, destEntries);
+        return src1.makeLikeNDArray(src1.shape, destEntries);
     }
 
 

@@ -159,7 +159,7 @@ public class CsrCMatrix extends AbstractCsrFieldMatrix<CsrCMatrix, CMatrix, CooC
      * @param shape Shape of the zero matrix.
      */
     public CsrCMatrix(Shape shape) {
-        super(shape, new Complex128[0], new int[shape.get(0) + 1], new int[0]);
+        super(shape, new Complex128[0], new int[shape.getSize(0) + 1], new int[0]);
         setZeroElement(Complex128.ZERO);
     }
 
@@ -387,14 +387,14 @@ public class CsrCMatrix extends AbstractCsrFieldMatrix<CsrCMatrix, CMatrix, CooC
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CsrCMatrix makeLikeTensor(Shape shape, Complex128[] entries) {
-        return new CsrCMatrix(shape, entries, rowPointers.clone(), colIndices.clone());
+    public CsrCMatrix makeLikeNDArray(Shape shape, Complex128[] data) {
+        return new CsrCMatrix(shape, data, rowPointers.clone(), colIndices.clone());
     }
 
 
@@ -492,7 +492,7 @@ public class CsrCMatrix extends AbstractCsrFieldMatrix<CsrCMatrix, CMatrix, CooC
 
 
     /**
-     * Gets a range of a row of this matrix.
+     * Gets a range of rows in this matrix.
      *
      * @param rowIdx The index of the row to get.
      * @param start The staring column of the row range to get (inclusive).
@@ -510,7 +510,7 @@ public class CsrCMatrix extends AbstractCsrFieldMatrix<CsrCMatrix, CMatrix, CooC
 
 
     /**
-     * Gets a range of a column of this matrix.
+     * Gets a range of columns in this matrix.
      *
      * @param colIdx The index of the column to get.
      * @param start The staring row of the column range to get (inclusive).

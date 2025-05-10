@@ -49,8 +49,8 @@ import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.StringUtils;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,8 +136,8 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
         this.rowIndices = rowIndices;
         this.colIndices = colIndices;
         nnz = data.length;
-        numRows = shape.get(0);
-        numCols = shape.get(1);
+        numRows = shape.getSize(0);
+        numCols = shape.getSize(1);
         SparseValidation.validateCoo(shape, this.nnz, this.rowIndices, this.colIndices);
     }
 
@@ -175,8 +175,8 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
         this.rowIndices = ArrayConversions.fromIntegerList(rowIndices);
         this.colIndices = ArrayConversions.fromIntegerList(colIndices);
         nnz = super.data.length;
-        numRows = shape.get(0);
-        numCols = shape.get(1);
+        numRows = shape.getSize(0);
+        numCols = shape.getSize(1);
         SparseValidation.validateCoo(shape, this.nnz, this.rowIndices, this.colIndices);
     }
 
@@ -216,8 +216,8 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
     public CooMatrix(Shape shape) {
         super(shape, new double[0]);
         ValidateParameters.ensureRank(shape, 2);
-        numRows = shape.get(0);
-        numCols = shape.get(1);
+        numRows = shape.getSize(0);
+        numCols = shape.getSize(1);
         nnz = 0;
         rowIndices = new int[0];
         colIndices = new int[0];
@@ -255,8 +255,8 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
         this.rowIndices = rowIndices;
         this.colIndices = colIndices;
         nnz = data.length;
-        numRows = shape.get(0);
-        numCols = shape.get(1);
+        numRows = shape.getSize(0);
+        numCols = shape.getSize(1);
         SparseValidation.validateCoo(shape, this.nnz, this.rowIndices, this.colIndices);
     }
 
@@ -289,8 +289,8 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
         this.rowIndices = rowIndices;
         this.colIndices = colIndices;
         this.nnz = data.length;
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -359,7 +359,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      * @return A matrix of the same type as this matrix with the given shape and data.
      */
     @Override
-    public CooMatrix makeLikeTensor(Shape shape, double[] data) {
+    public CooMatrix makeLikeNDArray(Shape shape, double[] data) {
         return new CooMatrix(shape, data, rowIndices.clone(), colIndices.clone());
     }
 
@@ -394,7 +394,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -562,13 +562,13 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public CooMatrix reshape(Shape newShape) {
         ValidateParameters.ensureTotalEntriesEqual(shape, newShape);
-        int oldColCount = shape.get(1);
-        int newColCount = newShape.get(1);
+        int oldColCount = shape.getSize(1);
+        int newColCount = newShape.getSize(1);
 
         // Initialize new COO structures with the same size as the original.
         int[] newRowIndices = new int[rowIndices.length];
@@ -1296,7 +1296,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      * @return A copy of this matrix with the given slice set to the specified values.
      *
      * @throws IndexOutOfBoundsException If rowStart or colStart are not within the matrix.
-     * @throws IllegalArgumentException  If the values slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException  If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                   fit completely within this matrix.
      */
     @Override
@@ -1345,7 +1345,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      * Extracts the upper-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for upper-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the upper-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -1383,7 +1383,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      * Extracts the lower-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for lower-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the lower-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>

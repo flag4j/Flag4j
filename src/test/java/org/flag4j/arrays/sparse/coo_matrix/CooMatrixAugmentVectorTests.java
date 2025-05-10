@@ -39,7 +39,7 @@ class CooMatrixAugmentVectorTests {
         bShape = new Shape(3);
         bEntries = new double[]{0.74357};
         bindices = new int[]{2};
-        b = new CooVector(bShape.get(0), bEntries, bindices);
+        b = new CooVector(bShape.getSize(0), bEntries, bindices);
 
         expShape = new Shape(3, 6);
         expEntries = new double[]{0.33367, 0.26667, 0.24386, 0.05929, 0.90991, 0.74357};
@@ -59,7 +59,7 @@ class CooMatrixAugmentVectorTests {
         bShape = new Shape(2);
         bEntries = new double[]{0.18184};
         bindices = new int[]{0};
-        b = new CooVector(bShape.get(0), bEntries, bindices);
+        b = new CooVector(bShape.getSize(0), bEntries, bindices);
 
         expShape = new Shape(2, 2);
         expEntries = new double[]{0.48537, 0.18184};
@@ -79,7 +79,7 @@ class CooMatrixAugmentVectorTests {
         bShape = new Shape(3);
         bEntries = new double[]{0.10397};
         bindices = new int[]{2};
-        b = new CooVector(bShape.get(0), bEntries, bindices);
+        b = new CooVector(bShape.getSize(0), bEntries, bindices);
 
         CooMatrix finala = a;
         CooVector finalb = b;

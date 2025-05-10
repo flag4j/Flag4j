@@ -310,14 +310,14 @@ public class CooRingMatrix<T extends Ring<T>> extends AbstractCooRingMatrix<
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CooRingMatrix<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new CooRingMatrix<>(shape, entries, rowIndices.clone(), colIndices.clone());
+    public CooRingMatrix<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new CooRingMatrix<>(shape, data, rowIndices.clone(), colIndices.clone());
     }
 
 

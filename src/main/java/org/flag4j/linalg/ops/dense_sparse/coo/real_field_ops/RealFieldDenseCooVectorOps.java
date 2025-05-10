@@ -25,13 +25,14 @@
 package org.flag4j.linalg.ops.dense_sparse.coo.real_field_ops;
 
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.backend.field_arrays.AbstractCooFieldVector;
 import org.flag4j.arrays.backend.field_arrays.AbstractDenseFieldVector;
 import org.flag4j.arrays.dense.Vector;
 import org.flag4j.arrays.sparse.CooVector;
 import org.flag4j.linalg.ops.common.field_ops.FieldOps;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.util.Arrays;
 
@@ -234,7 +235,7 @@ public final class RealFieldDenseCooVectorOps {
 
         T[] destData = src2.makeEmptyDataArray(src2.data.length);
         FieldOps.scalMult(src2.data, -1, destData);
-        AbstractDenseFieldVector<?, ?, T> dest = src2.makeLikeTensor(src2.shape, destData);
+        AbstractDenseFieldVector<?, ?, T> dest = src2.makeLikeNDArray(src2.shape, destData);
 
         for(int i=0; i<src1.nnz; i++) {
             int idx = src1.indices[i];
@@ -269,7 +270,7 @@ public final class RealFieldDenseCooVectorOps {
      * @param src1 Dense {@link Field} vector in element-wise product.
      * @param src2 Real COO vector in element-wise product.
      * @return The non-zero data of the element-wise product of {@code src1} and {@code src2}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !src1.shape.equals(src2.shape)}
+     * @throws ArrayShapeException If {@code !src1.shape.equals(src2.shape)}
      */
     public static <T extends Field<T>> T[] elemMult(
             AbstractDenseFieldVector<?, ?, T> src1, CooVector src2) {

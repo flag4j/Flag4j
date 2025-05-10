@@ -51,9 +51,9 @@ public final class RealDenseMatMultTranspose {
      * @return The result of multiplying the first matrix with the transpose of the second matrix.
      */
     public static double[] multTranspose(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*rows2]; // Since second matrix is transposed, its columns will become rows.
         int src1Index, src2Index, destIndex, src1IndexStart, destIndexStart, end;
@@ -91,9 +91,9 @@ public final class RealDenseMatMultTranspose {
      * @return The result of multiplying the first matrix with the transpose of the second matrix.
      */
     public static double[] multTransposeBlocked(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1 * rows2];
         int blockSize = Configurations.getBlockSize();
@@ -147,9 +147,9 @@ public final class RealDenseMatMultTranspose {
      * @return The result of multiplying the first matrix with the transpose of the second matrix.
      */
     public static double[] multTransposeConcurrent(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*rows2]; // Since second matrix is transposed, its columns will become rows.
 
@@ -188,9 +188,9 @@ public final class RealDenseMatMultTranspose {
      * @return The result of multiplying the first matrix with the transpose of the second matrix.
      */
     public static double[] multTransposeBlockedConcurrent(double[] src1, Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*rows2];
         int blockSize = Configurations.getBlockSize();

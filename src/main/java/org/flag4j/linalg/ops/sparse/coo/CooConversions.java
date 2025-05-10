@@ -67,7 +67,7 @@ public final class CooConversions {
      */
     public static <T> void toCsr(Shape shape, T[] entries, int[] rowIndices, int[] colIndices,
                                  T[] destEntries, int[] destRowPointers, int[] destColIndices) {
-        final int numRows = shape.get(0);
+        final int numRows = shape.getSize(0);
 
         // Copy the non-zero data and column indices. Count number of data per row.
         for(int i=0, size=entries.length; i<size; i++)

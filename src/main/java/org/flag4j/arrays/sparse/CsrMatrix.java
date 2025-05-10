@@ -44,8 +44,8 @@ import org.flag4j.linalg.ops.sparse.csr.real_complex.RealComplexCsrMatMult;
 import org.flag4j.numbers.Complex128;
 import org.flag4j.util.StringUtils;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,7 +168,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * values in row {@code i}.
      * @param colIndices Column indices for each non-zero value in this sparse CSR matrix. Must satisfy
      * {@code data.length == colData.length}.
-     * @throws TensorShapeException If {@code shape.getRank() != 2}.
+     * @throws ArrayShapeException If {@code shape.getRank() != 2}.
      */
     public CsrMatrix(Shape shape, double[] data, int[] rowPointers, int[] colIndices) {
         super(shape, data);
@@ -177,8 +177,8 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
         this.rowPointers = rowPointers;
         this.colIndices = colIndices;
         this.nnz = data.length;
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -201,8 +201,8 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
         this.rowPointers = rowPointers;
         this.colIndices = colIndices;
         this.nnz = data.length;
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -225,7 +225,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
     /**
      * Constructs zero matrix with the specified {@code shape}.
      * @param shape Shape of the zero matrix to construct. Must be rank 2.
-     * @throws TensorShapeException If {@code shape.getRank() != 2}.
+     * @throws ArrayShapeException If {@code shape.getRank() != 2}.
      */
     public CsrMatrix(Shape shape) {
         super(shape, new double[0]);
@@ -234,8 +234,8 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
         this.rowPointers = new int[0];
         this.colIndices = new int[0];
         this.nnz = 0;
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -253,8 +253,8 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
         this.rowPointers = new int[0];
         this.colIndices = new int[0];
         this.nnz = 0;
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -423,7 +423,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public CsrMatrix reshape(Shape newShape) {
@@ -454,14 +454,14 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * row pointers and column indices as this matrix.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A CSR matrix of the same type as this matrix with the given the {@code shape} and {@code data} and the same
      * row pointers and column indices as this matrix.
      */
     @Override
-    public CsrMatrix makeLikeTensor(Shape shape, double[] entries) {
-        return new CsrMatrix(shape, entries, rowPointers, colIndices);
+    public CsrMatrix makeLikeNDArray(Shape shape, double[] data) {
+        return new CsrMatrix(shape, data, rowPointers, colIndices);
     }
 
 
@@ -496,7 +496,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -1023,7 +1023,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * @return A copy of this matrix with the given slice set to the specified values.
      *
      * @throws IndexOutOfBoundsException If rowStart or colStart are not within the matrix.
-     * @throws IllegalArgumentException  If the values slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException  If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                   fit completely within this matrix.
      */
     @Override
@@ -1112,7 +1112,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * Extracts the upper-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for upper-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the upper-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -1134,7 +1134,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * Extracts the lower-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for lower-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the lower-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>

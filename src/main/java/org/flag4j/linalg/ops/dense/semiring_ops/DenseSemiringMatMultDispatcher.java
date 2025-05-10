@@ -120,7 +120,7 @@ public final class DenseSemiringMatMultDispatcher {
     public static <T extends Semiring<T>> void dispatchVector(T[] src1, Shape shape1,
                                                               T[] src2, Shape shape2,
                                                               T[] dest) {
-        Shape bMatShape = new Shape(shape2.get(0), 1); // Shape of column vector.
+        Shape bMatShape = new Shape(shape2.getSize(0), 1); // Shape of column vector.
         ValidateParameters.ensureMatMultShapes(shape1, bMatShape);
 
         AlgorithmNames algorithm = selectAlgorithmVector(shape1);
@@ -173,7 +173,7 @@ public final class DenseSemiringMatMultDispatcher {
     public static <T extends Semiring<T>> void dispatchTranspose(T[] src1, Shape shape1,
                                                                  T[] src2, Shape shape2,
                                                                  T[] dest) {
-        ValidateParameters.ensureArrayLengthsEq(shape1.get(1), shape2.get(1));
+        ValidateParameters.ensureArrayLengthsEq(shape1.getSize(1), shape2.getSize(1));
 
         DenseSemiringMatMultDispatcher dispatcher = getInstance();
         AlgorithmNames name = selectAlgorithmTranspose(shape1);
@@ -191,8 +191,8 @@ public final class DenseSemiringMatMultDispatcher {
     static AlgorithmNames selectAlgorithm(Shape shape1, Shape shape2) {
         AlgorithmNames name;
 
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
 
         // Determine the matrix shape.
         int matrixShape;
@@ -254,7 +254,7 @@ public final class DenseSemiringMatMultDispatcher {
      */
     static AlgorithmNames selectAlgorithmTranspose(Shape shape) {
         AlgorithmNames name;
-        int rows = shape.get(0);
+        int rows = shape.getSize(0);
 
         // TODO: This only verified to work well if both matrices are square.
         if(rows < 40) {
@@ -277,7 +277,7 @@ public final class DenseSemiringMatMultDispatcher {
      * @return The algorithm to use in the matrix multiplication.
      */
     public static AlgorithmNames selectAlgorithmVector(Shape shape) {
-        if(shape.get(0) <=600) return AlgorithmNames.STANDARD_VECTOR;
+        if(shape.getSize(0) <=600) return AlgorithmNames.STANDARD_VECTOR;
         else return AlgorithmNames.CONCURRENT_BLOCKED_VECTOR;
     }
 
@@ -289,8 +289,8 @@ public final class DenseSemiringMatMultDispatcher {
      * @return The squareness ratio for the specified shape.
      */
     private static double getRatio(Shape shape) {
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
 
         double ratio = Math.abs(numRows-numCols);
         return 1-ratio/Math.max(numRows, numCols);

@@ -277,14 +277,14 @@ public class CooFieldVector<T extends Field<T>> extends AbstractCooFieldVector<C
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CooFieldVector<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new CooFieldVector<T>(shape, entries, indices.clone());
+    public CooFieldVector<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new CooFieldVector<T>(shape, data, indices.clone());
     }
 
 

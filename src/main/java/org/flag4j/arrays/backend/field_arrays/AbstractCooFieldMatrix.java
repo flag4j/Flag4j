@@ -190,7 +190,7 @@ public abstract class AbstractCooFieldMatrix<T extends AbstractCooFieldMatrix<T,
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */
@@ -239,7 +239,7 @@ public abstract class AbstractCooFieldMatrix<T extends AbstractCooFieldMatrix<T,
     public T sqrt() {
         W[] dest = makeEmptyDataArray(data.length);
         FieldOps.sqrt(data, dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 

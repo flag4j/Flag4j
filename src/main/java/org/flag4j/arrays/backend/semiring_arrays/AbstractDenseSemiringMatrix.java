@@ -71,8 +71,8 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     protected AbstractDenseSemiringMatrix(Shape shape, V[] entries) {
         super(shape, entries);
         ValidateParameters.ensureRank(shape, 2);
-        numRows = shape.get(0);
-        numCols = shape.get(1);
+        numRows = shape.getSize(0);
+        numCols = shape.getSize(1);
     }
 
 
@@ -129,7 +129,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     public T T() {
         V[] dest = makeEmptyDataArray(data.length);
         TransposeDispatcher.dispatch(data, shape, dest);
-        return makeLikeTensor(shape.swapAxes(0, 1), dest);
+        return makeLikeNDArray(shape.swapAxes(0, 1), dest);
     }
 
 
@@ -312,7 +312,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     public T mult(T b) {
         V[]  dest = makeEmptyDataArray(numRows*b.numCols);
         DenseSemiringMatMultDispatcher.dispatch(data, shape, b.data, b.shape, dest);
-        return makeLikeTensor(new Shape(numRows, b.numCols), dest);
+        return makeLikeNDArray(new Shape(numRows, b.numCols), dest);
     }
 
 
@@ -330,7 +330,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     public T multTranspose(T b) {
         V[]  dest = makeEmptyDataArray(numRows*b.numRows);
         DenseSemiringMatMultDispatcher.dispatchTranspose(data, shape, b.data, b.shape, dest);
-        return makeLikeTensor(new Shape(numRows, b.numRows), dest);
+        return makeLikeNDArray(new Shape(numRows, b.numRows), dest);
     }
 
 
@@ -354,7 +354,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
         System.arraycopy(this.data, 0, stackedEntries, 0, this.data.length);
         System.arraycopy(b.data, 0, stackedEntries, this.data.length, b.data.length);
 
-        return makeLikeTensor(stackedShape, stackedEntries);
+        return makeLikeNDArray(stackedShape, stackedEntries);
     }
 
 
@@ -387,7 +387,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
                 augEntries[augOffset + j] = b.data[bOffset + j];
         }
 
-        return makeLikeTensor(augShape, augEntries);
+        return makeLikeNDArray(augShape, augEntries);
     }
 
 
@@ -409,7 +409,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
             augmented[i*(numCols+1) + numCols] = b.data[i];
         }
 
-        return makeLikeTensor(new Shape(numRows, numCols+1), augmented);
+        return makeLikeNDArray(new Shape(numRows, numCols+1), augmented);
     }
 
 
@@ -514,7 +514,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
             }
         }
 
-        return makeLikeTensor(new Shape(numRows-1, numCols), copyEntries);
+        return makeLikeNDArray(new Shape(numRows-1, numCols), copyEntries);
     }
 
 
@@ -538,7 +538,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
             }
         }
 
-        return makeLikeTensor(new Shape(numRows-rowIndices.length, numCols), copyEntries);
+        return makeLikeNDArray(new Shape(numRows-rowIndices.length, numCols), copyEntries);
     }
 
 
@@ -568,7 +568,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
             }
         }
 
-        return makeLikeTensor(new Shape(numRows, numCols-1), copyEntries);
+        return makeLikeNDArray(new Shape(numRows, numCols-1), copyEntries);
     }
 
 
@@ -598,7 +598,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
             }
         }
 
-        return makeLikeTensor(new Shape(numRows, numCols-colIndices.length), copyEntries);
+        return makeLikeNDArray(new Shape(numRows, numCols-colIndices.length), copyEntries);
     }
 
 
@@ -683,7 +683,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
                 slice[destPos++] = data[srcPos++];
         }
 
-        return makeLikeTensor(new Shape(sliceRows, sliceCols), slice);
+        return makeLikeNDArray(new Shape(sliceRows, sliceCols), slice);
     }
 
 
@@ -747,7 +747,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
         ValidateParameters.ensureInRange(diagOffset, -numRows+1, numCols-1, "diagOffset");
         V[]  copyEntries = makeEmptyDataArray(data.length);
         Arrays.fill(copyEntries, (data.length > 0) ? data[0].getZero() : null);
-        T result = makeLikeTensor(shape, copyEntries);
+        T result = makeLikeNDArray(shape, copyEntries);
 
         // Extract the upper triangular portion
         for(int i=0; i<numRows; i++) {
@@ -784,7 +784,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
         ValidateParameters.ensureInRange(diagOffset, -numRows+1, numCols-1, "diagOffset");
         V[]  copyEntries = makeEmptyDataArray(data.length);
         Arrays.fill(copyEntries, (data.length > 0) ? data[0].getZero() : null);
-        T result = makeLikeTensor(shape, copyEntries);
+        T result = makeLikeNDArray(shape, copyEntries);
 
         // Extract the lower triangular portion
         for(int i=0; i<numRows; i++) {
@@ -1005,8 +1005,8 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     public T flatten(int axis) {
         ValidateParameters.ensureValidAxes(shape, axis);
         return (axis == 0)
-                ? makeLikeTensor(new Shape(1, data.length), data.clone())
-                : makeLikeTensor(new Shape(data.length, 1), data.clone());
+                ? makeLikeNDArray(new Shape(1, data.length), data.clone())
+                : makeLikeNDArray(new Shape(data.length, 1), data.clone());
     }
 
 

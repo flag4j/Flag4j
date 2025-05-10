@@ -150,7 +150,7 @@ class NormTests {
         a = new Matrix(aShape, aData);
 
         p = 4.51;
-        exp = 2.1303977251997614;
+        exp = 2.130397725199762;
         assertEquals(exp, MatrixNorms.entryWiseNorm(a, p));
 
         // ---------------- sub-case 6 ----------------

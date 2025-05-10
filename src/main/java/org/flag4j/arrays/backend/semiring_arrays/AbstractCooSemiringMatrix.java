@@ -29,7 +29,7 @@ import org.flag4j.arrays.IntPair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
 import org.flag4j.arrays.SparseVectorData;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.sparse.SparseValidation;
 import org.flag4j.linalg.ops.common.semiring_ops.CompareSemiring;
@@ -41,8 +41,8 @@ import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringMatrixOps;
 import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringMatrixProperties;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +88,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         U extends AbstractDenseSemiringMatrix<U, ?, W>,
         V extends AbstractCooSemiringVector<V, ?, T, U, W>,
         W extends Semiring<W>>
-        extends AbstractTensor<T, W[], W>
+        extends AbstractNDArray<T, W[], W>
         implements SemiringTensorMixin<T, U, W>, MatrixMixin<T, U, V, W> {
 
     /**
@@ -136,8 +136,8 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         this.rowIndices = rowIndices;
         this.colIndices = colIndices;
         nnz = data.length;
-        numRows = shape.get(0);
-        numCols = shape.get(1);
+        numRows = shape.getSize(0);
+        numCols = shape.getSize(1);
 
         // Attempt to set the zero-element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
@@ -160,8 +160,8 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         this.rowIndices = rowIndices;
         this.colIndices = colIndices;
         nnz = data.length;
-        numRows = shape.get(0);
-        numCols = shape.get(1);
+        numRows = shape.getSize(0);
+        numCols = shape.getSize(1);
 
         // Attempt to set the zero-element for the semiring.
         this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
@@ -449,13 +449,13 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
         ValidateParameters.ensureTotalEntriesEqual(shape, newShape);
-        int oldColCount = shape.get(1);
-        int newColCount = newShape.get(1);
+        int oldColCount = shape.getSize(1);
+        int newColCount = newShape.getSize(1);
 
         // Initialize new COO structures with the same size as the original.
         int[] newRowIndices = new int[rowIndices.length];
@@ -518,7 +518,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -1148,7 +1148,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      */
     @Override
     public T copy() {
-        return makeLikeTensor(shape, data.clone());
+        return makeLikeNDArray(shape, data.clone());
     }
 
 
@@ -1218,7 +1218,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T add(T b) {

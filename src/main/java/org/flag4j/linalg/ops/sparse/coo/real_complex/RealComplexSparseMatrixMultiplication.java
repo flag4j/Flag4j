@@ -24,10 +24,10 @@
 
 package org.flag4j.linalg.ops.sparse.coo.real_complex;
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.Shape;
 import org.flag4j.concurrency.ThreadManager;
 import org.flag4j.linalg.ops.sparse.SparseUtils;
+import org.flag4j.numbers.Complex128;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,8 +62,8 @@ public final class RealComplexSparseMatrixMultiplication {
      */
     public static Complex128[] standard(Complex128[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
                                         double[] src2, int[] rowIndices2, int[] colIndices2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Complex128[] dest = new Complex128[rows1*cols2];
         Arrays.fill(dest, Complex128.ZERO);
@@ -107,8 +107,8 @@ public final class RealComplexSparseMatrixMultiplication {
      */
     public static Complex128[] concurrentStandard(Complex128[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
                                                   double[] src2, int[] rowIndices2, int[] colIndices2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Complex128[] dest = new Complex128[rows1*cols2];
         Arrays.fill(dest, Complex128.ZERO);
@@ -159,8 +159,8 @@ public final class RealComplexSparseMatrixMultiplication {
     public static Complex128[] standardVector(Complex128[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
                                               double[] src2, int[] indices, Shape shape2) {
 
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Complex128[] dest = new Complex128[rows1*cols2];
         Arrays.fill(dest, Complex128.ZERO);
@@ -204,8 +204,8 @@ public final class RealComplexSparseMatrixMultiplication {
     public static Complex128[] concurrentStandardVector(Complex128[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
                                                         double[] src2, int[] indices, Shape shape2) {
 
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Complex128[] dest = new Complex128[rows1*cols2];
         Arrays.fill(dest, Complex128.ZERO);
@@ -250,8 +250,8 @@ public final class RealComplexSparseMatrixMultiplication {
      */
     public static Complex128[] standard(double[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
                                         Complex128[] src2, int[] rowIndices2, int[] colIndices2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Complex128[] dest = new Complex128[rows1*cols2];
         Arrays.fill(dest, Complex128.ZERO);
@@ -295,8 +295,8 @@ public final class RealComplexSparseMatrixMultiplication {
      */
     public static Complex128[] concurrentStandard(double[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
                                                   Complex128[] src2, int[] rowIndices2, int[] colIndices2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Complex128[] dest = new Complex128[rows1*cols2];
         Arrays.fill(dest, Complex128.ZERO);
@@ -347,7 +347,7 @@ public final class RealComplexSparseMatrixMultiplication {
     public static Complex128[] standardVector(double[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
                                               Complex128[] src2, int[] indices, Shape shape2) {
 
-        int rows1 = shape1.get(0);
+        int rows1 = shape1.getSize(0);
 
         Complex128[] dest = new Complex128[rows1];
         Arrays.fill(dest, Complex128.ZERO);
@@ -391,7 +391,7 @@ public final class RealComplexSparseMatrixMultiplication {
     public static Complex128[] concurrentStandardVector(double[] src1, int[] rowIndices1, int[] colIndices1, Shape shape1,
                                                         Complex128[] src2, int[] indices, Shape shape2) {
 
-        int rows1 = shape1.get(0);
+        int rows1 = shape1.getSize(0);
 
         Complex128[] dest = new Complex128[rows1];
         Arrays.fill(dest, Complex128.ZERO);

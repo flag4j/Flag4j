@@ -125,24 +125,24 @@ public class SemiringVector<T extends Semiring<T>> extends AbstractDenseSemiring
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public SemiringVector<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new SemiringVector<>(shape, entries);
+    public SemiringVector<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new SemiringVector<>(shape, data);
     }
 
 
     /**
-     * Constructs a matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * Constructs a matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      *
      * @param shape Shape of the matrix to construct.
      * @param entries Entries of the matrix to construct.
      *
-     * @return A matrix of similar type to this vector with the specified {@code shape} and {@code data}.
+     * @return A matrix of a similar type to this vector with the specified {@code shape} and {@code data}.
      */
     @Override
     protected SemiringMatrix<T> makeLikeMatrix(Shape shape, T[] entries) {
@@ -162,6 +162,25 @@ public class SemiringVector<T extends Semiring<T>> extends AbstractDenseSemiring
     @Override
     protected CooSemiringVector<T> makeLikeCooTensor(Shape shape, T[] data, int[][] indices) {
         return new CooSemiringVector<>(shape, data, indices[0]);
+    }
+
+
+    /**
+     * Converts this vector to an equivalent tensor.
+     * @return A tensor equivalent to this vector.
+     */
+    public SemiringTensor<T> toTensor() {
+        return new SemiringTensor(shape, data.clone());
+    }
+
+
+    /**
+     * Converts this vector to an equivalent tensor.
+     * @param shape The desired shape of the resulting tensor.
+     * @return A tensor with the specified {@code shape} containing the entries of this vector.
+     */
+    public SemiringTensor<T> toTensor(Shape shape) {
+        return new SemiringTensor(shape, data.clone());
     }
 
 

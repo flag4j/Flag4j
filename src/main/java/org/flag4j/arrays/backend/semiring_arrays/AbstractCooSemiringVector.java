@@ -27,7 +27,7 @@ package org.flag4j.arrays.backend.semiring_arrays;
 
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseVectorData;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.VectorMixin;
 import org.flag4j.arrays.sparse.SparseValidation;
 import org.flag4j.linalg.ops.common.semiring_ops.AggregateSemiring;
@@ -39,8 +39,8 @@ import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringVectorOps;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -86,7 +86,7 @@ public abstract class AbstractCooSemiringVector<
         V extends AbstractCooSemiringMatrix<V, W, T, Y>,
         W extends AbstractDenseSemiringMatrix<W, U, Y>,
         Y extends Semiring<Y>>
-        extends AbstractTensor<T, Y[], Y>
+        extends AbstractNDArray<T, Y[], Y>
         implements SemiringTensorMixin<T, U, Y>, VectorMixin<T, V, W, Y> {
 
     /**
@@ -121,7 +121,7 @@ public abstract class AbstractCooSemiringVector<
     protected AbstractCooSemiringVector(Shape shape, Y[] data, int[] indices) {
         super(shape, data);
         ValidateParameters.ensureRank(shape, 1);
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
         SparseValidation.validateCoo(size, data.length, indices);
 
         this.indices = indices;
@@ -143,7 +143,7 @@ public abstract class AbstractCooSemiringVector<
     protected AbstractCooSemiringVector(Shape shape, Y[] data, int[] indices, Object dummy) {
         super(shape, data);
 
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
         this.indices = indices;
         this.nnz = data.length;
 
@@ -439,7 +439,7 @@ public abstract class AbstractCooSemiringVector<
      *
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -459,7 +459,7 @@ public abstract class AbstractCooSemiringVector<
      */
     @Override
     public T copy() {
-        return makeLikeTensor(shape, data);
+        return makeLikeNDArray(shape, data);
     }
 
 
@@ -535,7 +535,7 @@ public abstract class AbstractCooSemiringVector<
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
@@ -558,7 +558,7 @@ public abstract class AbstractCooSemiringVector<
         Y[] destEntries = makeEmptyDataArray(this.data.length + b.data.length);
         int[] destIndices = new int[this.indices.length + b.indices.length];
         CooConcat.join(data, indices, size, b.data, b.indices, destEntries, destIndices);
-        return makeLikeTensor(new Shape(shape.get(0) + b.shape.get(0)), destEntries, destIndices);
+        return makeLikeTensor(new Shape(shape.getSize(0) + b.shape.getSize(0)), destEntries, destIndices);
     }
 
 
@@ -717,13 +717,27 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
+     * <p>Converts this vector to a matrix with a specified shape.
+     * <p>Note, the following must be satisfied: {@code shape.totalEntriesIntValueExact() == this.size}.
+     *
+     * @param shape Shape of the matrix. Must be rank 2.
+     *
+     * @return A matrix with the specified number of rows and columns containing the entries of this vector.
+     */
+    @Override
+    public V toMatrix(Shape shape) {
+        return toMatrix().reshape(shape);
+    }
+
+
+    /**
      * Computes the element-wise sum between two tensors of the same shape.
      *
      * @param b Second tensor in the element-wise sum.
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T add(T b) {
@@ -848,7 +862,7 @@ public abstract class AbstractCooSemiringVector<
      * Converts this vector to an equivalent rank 1 tensor.
      * @return A tensor which is equivalent to this vector.
      */
-    public abstract AbstractTensor<?, Y[], Y> toTensor();
+    public abstract AbstractNDArray<?, Y[], Y> toTensor();
 
 
     /**
@@ -856,7 +870,7 @@ public abstract class AbstractCooSemiringVector<
      * @param newShape New shape for the tensor. Can be any rank but must have the same number of total entries as {@link #shape this.shape}.
      * @return A tensor equivalent to this vector which has been reshaped to {@code newShape}
      */
-    public abstract AbstractTensor<?,  Y[], Y> toTensor(Shape newShape);
+    public abstract AbstractNDArray<?,  Y[], Y> toTensor(Shape newShape);
 
 
     /**
@@ -871,13 +885,32 @@ public abstract class AbstractCooSemiringVector<
 
 
     /**
-     * Computes the magnitude of this vector.
-     *
-     * @return The magnitude of this vector.
+     * Computes the norm of this vector. This is the same as {@link #mag()}.
+     * @return The norm (specifically &ell;<sup>2</sup>) of this vector.
+     * @see #mag()
+     * @see #magSquared()
      */
     @Override
-    public Y mag() {
-        return AggregateSemiring.sum(data);
+    public double norm() {
+        // TODO: This doesn't really make sense for a generic semiring.
+        //  We should consider ways to adapt the vector interface.
+        return AggregateSemiring.sum(data).doubleValue();
+    }
+
+
+    /**
+     * Computes the squared magnitude of this vector.
+     *
+     * @return The squared magnitude of this vector.
+     *
+     * @see #mag()
+     */
+    @Override
+    public double magSquared() {
+        // TODO: This doesn't really make sense for a generic semiring.
+        //  We should consider ways to adapt the vector interface.
+        double mag = mag();
+        return mag*mag;
     }
 
 

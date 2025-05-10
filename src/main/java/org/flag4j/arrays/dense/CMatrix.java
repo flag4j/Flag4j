@@ -44,14 +44,14 @@ import org.flag4j.linalg.ops.dispatch.Cm128DeMatMultDispatcher;
 import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.util.Arrays;
 
 /**
- * <p>Instances of this class represents a complex dense matrix backed by a {@link Complex128} array. The {@code CMatrix} class
- * provides functionality for complex matrix operations, supporting mutable data with a fixed shape.
+ * <p>Instances of this class represent a complex dense matrix backed by a {@link Complex128} array.
+ * The {@code CMatrix} class provides functionality for complex matrix operations, supporting mutable data with a fixed shape.
  * This class extends {@link AbstractDenseFieldMatrix} and offers additional methods optimized for complex
  * arithmetic and matrix computations.
  *
@@ -302,7 +302,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
 
     /**
      * Constructs a copy of the specified matrix.
-     * @param mat Matrix to create copy of.
+     * @param mat Matrix to create a copy of.
      */
     public CMatrix(CMatrix mat) {
         super(mat.shape, mat.data.clone());
@@ -419,7 +419,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
 
 
     /**
-     * Constructs a sparse COO matrix which is of a similar type as this dense matrix.
+     * Constructs a sparse COO matrix, which is of a similar type as this dense matrix.
      *
      * @param shape Shape of the COO matrix.
      * @param entries Non-zero data of the COO matrix.
@@ -546,14 +546,14 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CMatrix makeLikeTensor(Shape shape, Complex128[] entries) {
-        return new CMatrix(shape, entries);
+    public CMatrix makeLikeNDArray(Shape shape, Complex128[] data) {
+        return new CMatrix(shape, data);
     }
 
 
@@ -576,7 +576,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix add(CooCMatrix b) {
         return (CMatrix) DenseCooFieldMatrixOps.add(this, b);
@@ -590,7 +590,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix add(Matrix b) {
         Complex128[] dest = new Complex128[data.length];
@@ -606,7 +606,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix add(CooMatrix b) {
         return (CMatrix) RealFieldDenseCooMatrixOps.add(this, b);
@@ -620,7 +620,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix sub(CooCMatrix b) {
         return (CMatrix) DenseCooFieldMatrixOps.sub(this, b);
@@ -634,7 +634,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix sub(Matrix b) {
         Complex128[] dest = new Complex128[data.length];
@@ -651,7 +651,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix sub(CooMatrix b) {
         return (CMatrix) RealFieldDenseCooMatrixOps.sub(this, b);
@@ -795,7 +795,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      */
     public static CMatrix I(Shape shape) {
         ValidateParameters.ensureRank(shape, 2);
-        return I(shape.get(0), shape.get(1));
+        return I(shape.getSize(0), shape.getSize(1));
     }
 
 
@@ -877,7 +877,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      */
     public CMatrix mult(Matrix b) {
         Complex128[] dest = MatrixMultiplyDispatcher.dispatch(this, b);
-        return makeLikeTensor(new Shape(numRows, b.numCols), dest);
+        return makeLikeNDArray(new Shape(numRows, b.numCols), dest);
     }
 
 

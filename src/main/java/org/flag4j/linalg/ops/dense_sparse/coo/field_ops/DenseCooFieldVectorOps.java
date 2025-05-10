@@ -203,7 +203,7 @@ public final class DenseCooFieldVectorOps {
 
         T[] destData = src2.makeEmptyDataArray(src2.data.length);
         FieldOps.scalMult(src2.data, -1, destData);
-        AbstractDenseFieldVector<?, ?, T> dest = src2.makeLikeTensor(src2.shape, destData);
+        AbstractDenseFieldVector<?, ?, T> dest = src2.makeLikeNDArray(src2.shape, destData);
 
         for(int i=0, size=src1.nnz; i<size; i++) {
             int idx = src1.indices[i];

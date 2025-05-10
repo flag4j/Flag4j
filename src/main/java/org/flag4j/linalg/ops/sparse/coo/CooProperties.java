@@ -57,7 +57,7 @@ public final class CooProperties {
      * (i.e., equal to its transpose); {@code false} otherwise.
      */
     public static <T> boolean isSymmetric(Shape shape, T[] data, int[] rowIndices, int[] colIndices, T zeroValue) {
-        if(shape.get(0) != shape.get(1)) return false; // Early return for non-square matrix.
+        if(shape.getSize(0) != shape.getSize(1)) return false; // Early return for non-square matrix.
 
         Map<Pair<Integer, Integer>, T> dataMap = new HashMap<Pair<Integer, Integer>, T>();
 

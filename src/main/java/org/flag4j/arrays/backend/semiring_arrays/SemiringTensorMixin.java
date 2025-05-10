@@ -67,7 +67,7 @@ public interface SemiringTensorMixin<T extends SemiringTensorMixin<T, U, V>,
         V[] data = getData();
         V[] dest = makeEmptyDataArray(data.length);
         SemiringOps.add(data, b, dest);
-        return makeLikeTensor(getShape(), dest);
+        return makeLikeNDArray(getShape(), dest);
     }
 
     /**
@@ -93,7 +93,7 @@ public interface SemiringTensorMixin<T extends SemiringTensorMixin<T, U, V>,
         V[] data = getData();
         V[] dest = makeEmptyDataArray(data.length);
         SemiringOps.scalMult(data, b, dest);
-        return makeLikeTensor(getShape(), dest);
+        return makeLikeNDArray(getShape(), dest);
     }
 
     /**

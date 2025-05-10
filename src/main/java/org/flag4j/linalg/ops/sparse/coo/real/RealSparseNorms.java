@@ -31,7 +31,7 @@ import org.flag4j.util.ValidateParameters;
 import java.util.HashMap;
 
 /**
- * This class contains low level implementations of norms for tensors, matrices and vector.
+ * This class contains low-level implementations of norms for tensors, matrices and vector.
  */
 public final class RealSparseNorms {
 

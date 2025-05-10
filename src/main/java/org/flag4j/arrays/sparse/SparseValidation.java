@@ -80,8 +80,8 @@ public final class SparseValidation {
             }
         }
 
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
 
         if(nnz != rowIndices.length || nnz != colIndices.length) {
             throw new IllegalArgumentException("The number of non-zero entries must match the number of row and" +
@@ -131,7 +131,7 @@ public final class SparseValidation {
 
             for(int j=0; j<rank; j++) {
                 int idxDim = idx[j];
-                if(idxDim < 0 || idxDim >= shape.get(j) ) {
+                if(idxDim < 0 || idxDim >= shape.getSize(j) ) {
                     throw new IllegalArgumentException("Invalid nD index " + Arrays.toString(idx)
                             + " encountered for COO tensor of " + "shape " + shape);
                 }
@@ -161,8 +161,8 @@ public final class SparseValidation {
             }
         }
 
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
 
         if(rowPointers.length != numRows + 1) {
             throw new IllegalArgumentException("Expecting rowPointers to have length (numRows + 1)=" + (numRows+1) +

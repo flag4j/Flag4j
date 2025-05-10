@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class contains low level implementations for ops on a real sparse COO vector.
+ * This class contains low-level implementations for ops on a real sparse COO vector.
  */
 public final class RealCooVectorOps {
 

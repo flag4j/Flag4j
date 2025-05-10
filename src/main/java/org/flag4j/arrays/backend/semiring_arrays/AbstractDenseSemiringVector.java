@@ -233,13 +233,22 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
      */
     @Override
     public U toMatrix(boolean columVector) {
-        if(columVector) {
-            // Convert to column vector.
-            return makeLikeMatrix(new Shape(this.data.length, 1), this.data.clone());
-        } else {
-            // Convert to row vector.
-            return makeLikeMatrix(new Shape(1, this.data.length), this.data.clone());
-        }
+        Shape matShape = (columVector) ? new Shape(size, 1) : new Shape(1, size);
+        return makeLikeMatrix(matShape, data.clone());
+    }
+
+
+    /**
+     * <p>Converts this vector to a matrix with a specified shape.
+     * <p>Note, the following must be satisfied: {@code shape.totalEntriesIntValueExact() == this.size}.
+     *
+     * @param shape Shape of the matrix. Must be rank 2.
+     *
+     * @return A matrix with the specified number of rows and columns containing the entries of this vector.
+     */
+    @Override
+    public U toMatrix(Shape shape) {
+        return makeLikeMatrix(shape, data.clone());
     }
 
 
@@ -255,13 +264,28 @@ public abstract class AbstractDenseSemiringVector<T extends AbstractDenseSemirin
 
 
     /**
-     * Computes the magnitude of this vector.
-     *
-     * @return The magnitude of this vector.
+     * Computes the norm of this vector. This is the same as {@link #mag()}.
+     * @return The norm (specifically &ell;<sup>2</sup>) of this vector.
+     * @see #mag()
+     * @see #magSquared()
      */
     @Override
-    public V mag() {
-        return AggregateSemiring.sum(data);
+    public double norm() {
+        return AggregateSemiring.sum(data).doubleValue();
+    }
+
+
+    /**
+     * Computes the squared magnitude of this vector.
+     *
+     * @return The squared magnitude of this vector.
+     *
+     * @see #mag()
+     */
+    @Override
+    public double magSquared() {
+        double mag = mag();
+        return mag*mag;
     }
 
 

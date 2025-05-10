@@ -25,7 +25,7 @@
 package org.flag4j.arrays.dense;
 
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleTensor;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
@@ -60,8 +60,8 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -139,8 +139,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
         super(shape, entries);
         ValidateParameters.ensureRank(shape, 2);
 
-        numRows = shape.get(0);
-        numCols = shape.get(1);
+        numRows = shape.getSize(0);
+        numCols = shape.getSize(1);
     }
 
 
@@ -151,8 +151,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      */
     public Matrix(int size) {
         super(new Shape(size, size), new double[size*size]);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -165,8 +165,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     public Matrix(int size, double value) {
         super(new Shape(size, size), new double[size*size]);
         Arrays.fill(super.data, value);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -178,8 +178,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      */
     public Matrix(int rows, int cols) {
         super(new Shape(rows, cols), new double[rows*cols]);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -193,8 +193,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     public Matrix(int rows, int cols, double value) {
         super(new Shape(rows, cols), new double[rows*cols]);
         Arrays.fill(super.data, value);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -205,8 +205,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     public Matrix(Double[][] data) {
         super(new Shape(data.length, data[0].length),
                 new double[data.length*data[0].length]);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
 
         int index = 0;
         for(Double[] row : data) {
@@ -223,8 +223,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     public Matrix(Integer[][] data) {
         super(new Shape(data.length, data[0].length),
                 new double[data.length*data[0].length]);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
 
         int index = 0;
         for(Integer[] row : data) {
@@ -241,8 +241,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     public Matrix(double[][] data) {
         super(new Shape(data.length, data[0].length),
                 new double[data.length*data[0].length]);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
 
         int index = 0;
         for(double[] row : data) {
@@ -258,8 +258,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      */
     public Matrix(int[][] data) {
         super(new Shape(data.length, data[0].length), new double[data.length*data[0].length]);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
 
         // Copy the int array
         int index=0;
@@ -276,8 +276,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      */
     public Matrix(Matrix A) {
         super(A.shape, A.data.clone());
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -289,8 +289,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
     public Matrix(Shape shape) {
         super(shape, new double[shape.totalEntriesIntValueExact()]);
         ValidateParameters.ensureRank(shape, 2);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -304,8 +304,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
         super(shape, new double[shape.totalEntries().intValue()]);
         Arrays.fill(super.data, value);
         ValidateParameters.ensureRank(shape, 2);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -317,8 +317,8 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      */
     public Matrix(int numRows, int numCols, double... data) {
         super(new Shape(numRows, numCols), data);
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
     }
 
 
@@ -362,7 +362,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * @return A tensor of the same type as this tensor with the given shape and data.
      */
     @Override
-    public Matrix makeLikeTensor(Shape shape, double[] data) {
+    public Matrix makeLikeNDArray(Shape shape, double[] data) {
         return new Matrix(shape, data);
     }
 
@@ -461,7 +461,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      */
     public static Matrix I(Shape shape) {
         ValidateParameters.ensureRank(shape, 2);
-        return I(shape.get(0), shape.get(1));
+        return I(shape.getSize(0), shape.getSize(1));
     }
 
 
@@ -616,7 +616,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * <pre>{@code double tol = 2.0*Math.max(rows, cols)*Flag4jConstants.EPS_F64*Math.min(this.numRows, this.numCols);}</pre>
      *
      *
-     * <p>Note the "matrix rank" is <b>NOT</b> related to the "{@link AbstractTensor#getRank() tensor rank}" which
+     * <p>Note the "matrix rank" is <b>NOT</b> related to the "{@link AbstractNDArray#getRank() tensor rank}" which
      * is number of indices
      * needed to uniquely specify an entry in the tensor.
      *
@@ -1595,7 +1595,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -1791,7 +1791,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * Computes the matrix multiplication between this matrix and a complex dense matrix.
      * @param b The complex dense matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code this.numCols != b.numRows}.
+     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
      */
     public CMatrix mult(CMatrix b) {
         Complex128[] entries = MatrixMultiplyDispatcher.dispatch(this, b);
@@ -1804,7 +1804,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * Computes the matrix multiplication between this matrix and a real sparse CSR matrix.
      * @param b The real sparse matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code this.numCols != b.numRows}.
+     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
      */
     public Matrix mult(CsrMatrix b) {
         return RealCsrDenseMatMult.standard(this, b);
@@ -1815,7 +1815,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * Computes the matrix multiplication between this matrix and a complex sparse CSR matrix.
      * @param b The complex sparse matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code this.numCols != b.numRows}.
+     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
      */
     public CMatrix mult(CsrCMatrix b) {
         return (CMatrix) RealFieldDenseCsrMatMult.standard(this, b);
@@ -1826,7 +1826,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * Computes the matrix multiplication between this matrix and a real sparse COO matrix.
      * @param b The real sparse matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code this.numCols != b.numRows}.
+     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
      * @implNote This method computes the matrix product as {@code this.mult(b.toCsr());}.
      */
     public Matrix mult(CooMatrix b) {
@@ -1838,7 +1838,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      * Computes the matrix multiplication between this matrix and a complex sparse COO matrix.
      * @param b The complex sparse matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code this.numCols != b.numRows}.
+     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
      * @implNote This method computes the matrix product as {@code this.mult(b.toCsr());}.
      */
     public CMatrix mult(CooCMatrix b) {
@@ -1905,7 +1905,7 @@ public class Matrix extends AbstractDenseDoubleTensor<Matrix>
      *
      * @return The element-wise quotient of this tensor and {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b}s shapes are not equal.
+     * @throws ArrayShapeException If this tensor and {@code b}s shapes are not equal.
      */
     public CMatrix div(CMatrix b) {
         Complex128[] dest = new Complex128[data.length];

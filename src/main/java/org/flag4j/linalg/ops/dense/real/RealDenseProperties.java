@@ -46,12 +46,12 @@ public final class RealDenseProperties {
      */
     public static boolean isSymmetric(double[] src, Shape shape) {
         // Quick return if possible.
-        if(shape.get(0)!=shape.get(1)) return false;
+        if(shape.getSize(0)!=shape.getSize(1)) return false;
 
         int count1, count2, stop;
 
-        for(int i=0; i<shape.get(0); i++) {
-            count1 = i*shape.get(1);
+        for(int i = 0; i<shape.getSize(0); i++) {
+            count1 = i*shape.getSize(1);
             count2 = i;
             stop = count1 + i;
 
@@ -60,7 +60,7 @@ public final class RealDenseProperties {
                     return false;
                 }
 
-                count2+=shape.get(1);
+                count2+=shape.getSize(1);
             }
         }
 
@@ -75,7 +75,7 @@ public final class RealDenseProperties {
      * @return True if this matrix is anti-symmetric
      */
     public static boolean isAntiSymmetric(double[] src, Shape shape) {
-        if(shape.get(0)!=shape.get(1)) {
+        if(shape.getSize(0)!=shape.getSize(1)) {
             return false;
         }
 
@@ -83,8 +83,8 @@ public final class RealDenseProperties {
         int count2;
         int stop;
 
-        for(int i=0; i<shape.get(0); i++) {
-            count1 = i*shape.get(1);
+        for(int i = 0; i<shape.getSize(0); i++) {
+            count1 = i*shape.getSize(1);
             count2 = i;
             stop = count1 + i;
 
@@ -93,7 +93,7 @@ public final class RealDenseProperties {
                     return false;
                 }
 
-                count2+=shape.get(1);
+                count2+=shape.getSize(1);
             }
         }
 

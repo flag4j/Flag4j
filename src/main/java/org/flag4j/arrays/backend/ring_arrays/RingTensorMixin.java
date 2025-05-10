@@ -70,7 +70,7 @@ public interface RingTensorMixin<T extends RingTensorMixin<T, U, V>,
         V[] data = getData();
         V[] diff = makeEmptyDataArray(data.length);
         RingOps.sub(data, b, diff);
-        return makeLikeTensor(getShape(), diff);
+        return makeLikeNDArray(getShape(), diff);
     }
 
 
@@ -96,7 +96,7 @@ public interface RingTensorMixin<T extends RingTensorMixin<T, U, V>,
         V[] data = getData();
         V[] conj = makeEmptyDataArray(data.length);
         RingOps.conj(data, conj);
-        return makeLikeTensor(getShape(), conj);
+        return makeLikeNDArray(getShape(), conj);
     }
 
 
@@ -201,7 +201,7 @@ public interface RingTensorMixin<T extends RingTensorMixin<T, U, V>,
         V[] data = getData();
         V[] sum = makeEmptyDataArray(data.length);
         SemiringOps.add(data, b, sum);
-        return makeLikeTensor(getShape(), sum);
+        return makeLikeNDArray(getShape(), sum);
     }
 
 
@@ -229,7 +229,7 @@ public interface RingTensorMixin<T extends RingTensorMixin<T, U, V>,
         V[] data = getData();
         V[] prod = makeEmptyDataArray(data.length);
         SemiringOps.scalMult(getData(), b, prod);
-        return makeLikeTensor(getShape(), prod);
+        return makeLikeNDArray(getShape(), prod);
     }
 
 

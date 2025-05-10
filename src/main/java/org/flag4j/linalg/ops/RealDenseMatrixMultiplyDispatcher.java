@@ -164,8 +164,8 @@ public final class RealDenseMatrixMultiplyDispatcher {
     static AlgorithmNames selectAlgorithm(Shape shape1, Shape shape2) {
         AlgorithmNames name;
 
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
 
         // Determine the matrix shape.
         int matrixShape;
@@ -227,7 +227,7 @@ public final class RealDenseMatrixMultiplyDispatcher {
      */
     static AlgorithmNames selectAlgorithmTranspose(Shape shape) {
         AlgorithmNames name;
-        int rows = shape.get(0);
+        int rows = shape.getSize(0);
 
         // TODO: This currently only works well if both matrices are square.
 
@@ -252,8 +252,8 @@ public final class RealDenseMatrixMultiplyDispatcher {
      * @return The squareness ratio for the specified shape.
      */
     private static double getRatio(Shape shape) {
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
 
         double ratio = Math.abs(numRows-numCols);
         return 1-ratio/Math.max(numRows, numCols);

@@ -411,7 +411,7 @@ public final class Givens {
         Complex128[] src1 = G.data;
         Complex128[] src2 = src.data;
 
-        int cols2 = src.shape.get(1);
+        int cols2 = src.shape.getSize(1);
         int destCols = (cols2 - (i-1));
         if(workArray==null)
             workArray = new Complex128[2*destCols];

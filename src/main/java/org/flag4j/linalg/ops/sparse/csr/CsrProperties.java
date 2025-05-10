@@ -53,8 +53,8 @@ public final class CsrProperties {
      * @return {@code true} if the CSR matrix is symmetric; {@code false} otherwise.
      */
     public static <T> boolean isSymmetric(Shape shape, T[] values, int[] rowPointers, int[] colIndices, T zeroValue) {
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
 
         if(numRows != numCols) return false; // Early return for non-square matrix.
 

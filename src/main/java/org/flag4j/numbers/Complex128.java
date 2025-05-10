@@ -905,7 +905,7 @@ public class Complex128 implements Field<Complex128> {
      * @param decimals Number of decimals to round to.
      * @return The number {@code } rounded to the specified
      * 		number of decimals.
-     * @throws IllegalArgumentException If decimals is less than zero.
+     * @throws IllegalArgumentException If {@code decimals} is less than zero.
      * @throws NumberFormatException If n is {@link Double#NaN}, {@link Double#POSITIVE_INFINITY} or
      * {@link Double#NEGATIVE_INFINITY}
      * @see #round(Complex128)
@@ -932,9 +932,9 @@ public class Complex128 implements Field<Complex128> {
 
 
     /**
-     * Rounds a complex numbers to zero if its magnitude within the specified tolerance from zero.
+     * Rounds a complex number to zero if its magnitude within the specified tolerance from zero.
      * @param n Number to round.
-     * @param tol Max distances in complex plane for which number should be rounded to zero.
+     * @param tol Max distances in a complex plane for which the number should be rounded to zero.
      * @return The
      */
     public static Complex128 roundToZero(Complex128 n, double tol) {
@@ -947,7 +947,7 @@ public class Complex128 implements Field<Complex128> {
      * @param n Number to round.
      * @param tol Tolerance of how close to zero is
      * 		considered "near".
-     * @return Returns {@code true} if magnitude of number is less than or equal to
+     * @return Returns {@code true} if the magnitude of this number is less than or equal to
      * 		{@code tol}; {@code false} otherwise.
      * @throws IllegalArgumentException If tol is less than 0.
      */

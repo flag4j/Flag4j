@@ -27,7 +27,7 @@ package org.flag4j.io;
 import org.flag4j.arrays.Pair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.arrays.sparse.CooCMatrix;
@@ -96,7 +96,7 @@ public class MatrixMarketReader {
     /**
      * Storage for data from Matrix Market file.
      */
-    private AbstractTensor<?, ?, ?> mat;
+    private AbstractNDArray<?, ?, ?> mat;
     /**
      * Buffered reader for reading Matrix Market file.
      */
@@ -139,7 +139,7 @@ public class MatrixMarketReader {
     /**
      * <p>Loads Matrix Market data from the file specified on instantiation of this {@code MatrixMarketReader}.
      *
-     * <p>Note, the value returned by this method is of type {@link AbstractTensor}. It is recommended to cast object to the desired
+     * <p>Note, the value returned by this method is of type {@link AbstractNDArray}. It is recommended to cast object to the desired
      * matrix or vector type. For instance:
      * <pre>{@code
      *      MatrixMarketReader parser = new MatrixMarketReader("some_file.mtx");
@@ -157,7 +157,7 @@ public class MatrixMarketReader {
      * @throws IOException If an I/O error occurs.
      * @throws Flag4jParsingException If the Matrix Market Format file cannot be parsed.
      */
-    public synchronized AbstractTensor<?, ?, ?> read(String fileName) throws IOException {
+    public synchronized AbstractNDArray<?, ?, ?> read(String fileName) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             this.reader = reader;
             currLine = reader.readLine();
@@ -273,7 +273,7 @@ public class MatrixMarketReader {
     private void loadSymmDenseRealMatrix() throws IOException {
         Pair<Shape, List<Double>> matData = loadDenseSymmMatrix(Double::parseDouble);
         Shape shape = matData.first();
-        int size = shape.get(0);
+        int size = shape.getSize(0);
 
         // Get upper triangular data.
         double[] lowerData = ArrayConversions.fromDoubleList(matData.second());
@@ -316,7 +316,7 @@ public class MatrixMarketReader {
 
         Pair<Shape, List<Complex128>> matData = loadDenseSymmMatrix(parseFunction);
         Shape shape = matData.first();
-        int size = shape.get(0);
+        int size = shape.getSize(0);
 
         // Get upper triangular data.
         Complex128[] lowerData = matData.second().toArray(new Complex128[0]);
@@ -471,8 +471,8 @@ public class MatrixMarketReader {
      */
     private <T> Pair<Shape, List<T>> loadDenseMatrix(Function<String, T> parseFunction) throws IOException {
         Shape shape = new Shape(parseDimensions(2));
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
         int lineLength = 2*rows;
 
         final int size = rows*cols;
@@ -582,8 +582,8 @@ public class MatrixMarketReader {
      */
     private <T> Pair<Shape, List<T>> loadDenseSymmMatrix(Function<String, T> parseFunction) throws IOException {
         Shape shape = new Shape(parseDimensions(2));
-        int rows = shape.get(0);
-        int cols = shape.get(1);
+        int rows = shape.getSize(0);
+        int cols = shape.getSize(1);
         int lineLength = 2*rows;
 
         if (rows != cols) {

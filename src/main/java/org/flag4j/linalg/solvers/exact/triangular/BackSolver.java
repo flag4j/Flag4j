@@ -111,7 +111,7 @@ public abstract class BackSolver<T extends MatrixMixin<T, ?, U, ?>, U extends Ve
     protected void checkParams(T coeff, Shape constantShape) {
         ValidateParameters.ensureSquare(coeff.getShape());
 
-        if(coeff.numRows() != constantShape.get(0)) {
+        if(coeff.numRows() != constantShape.getSize(0)) {
             throw new IllegalArgumentException("Expecting coefficient matrix rows to match " +
                     "constant vector/matrix entries/rows " +
                     "\nbut got shapes: " + coeff.getShape() + ", " + constantShape + ".");

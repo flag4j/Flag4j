@@ -24,10 +24,10 @@
 
 package org.flag4j.linalg.ops.dense_sparse.coo.field_ops;
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.Shape;
 import org.flag4j.concurrency.Configurations;
 import org.flag4j.concurrency.ThreadManager;
+import org.flag4j.numbers.Field;
 
 import java.util.Arrays;
 
@@ -59,9 +59,9 @@ public final class DenseCooFieldMatMult {
             T[] src1, Shape shape1, T[] src2,
             int[] rowIndices, int[] colIndices, Shape shape2,
             T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros.
 
@@ -96,8 +96,8 @@ public final class DenseCooFieldMatMult {
             T[] src1, int[] rowIndices, int[] colIndices, Shape shape1,
             T[] src2, Shape shape2,
             T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros.
 
@@ -126,9 +126,9 @@ public final class DenseCooFieldMatMult {
             T[] src1, Shape shape1,
             T[] src2, int[] rowIndices, int[] colIndices, Shape shape2,
             T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros.
 
@@ -167,8 +167,8 @@ public final class DenseCooFieldMatMult {
             T[] src1, int[] rowIndices, int[] colIndices, Shape shape1,
             T[] src2, Shape shape2,
             T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros.
 
@@ -207,8 +207,8 @@ public final class DenseCooFieldMatMult {
             T[] src1, Shape shape1,
             T[] src2, int[] indices,
             T[] dest) {
-        int denseRows = shape1.get(0);
-        int denseCols = shape1.get(1);
+        int denseRows = shape1.getSize(0);
+        int denseCols = shape1.getSize(1);
         int nonZeros = src2.length;
 
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros.
@@ -240,7 +240,7 @@ public final class DenseCooFieldMatMult {
             T[] src1, int[] rowIndices, int[] colIndices, Shape shape1,
             T[] src2, Shape shape2,
             T[] dest) {
-        int rows1 = shape1.get(0);
+        int rows1 = shape1.getSize(0);
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros.
 
         for(int i=0, size=src1.length; i<size; i++) {
@@ -265,8 +265,8 @@ public final class DenseCooFieldMatMult {
             T[] src1, Shape shape1,
             T[] src2, int[] indices,
             T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
         int rows2 = src2.length;
         int bsize = Configurations.getBlockSize(); // Get the block size to use.
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros.
@@ -302,8 +302,8 @@ public final class DenseCooFieldMatMult {
             T[] src1, Shape shape1,
             T[] src2, int[] indices,
             T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
         int rows2 = src2.length;
 
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros.
@@ -338,7 +338,7 @@ public final class DenseCooFieldMatMult {
             T[] src1, int[] rowIndices, int[] colIndices, Shape shape1,
             T[] src2, Shape shape2,
             T[] dest) {
-        int rows1 = shape1.get(0);
+        int rows1 = shape1.getSize(0);
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros.
 
         ThreadManager.concurrentOperation(src1.length, (startIdx, endIdx) -> {
@@ -369,8 +369,8 @@ public final class DenseCooFieldMatMult {
             T[] src1, Shape shape1,
             T[] src2, int[] indices,
             T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
         int rows2 = src2.length;
         final int bsize = Configurations.getBlockSize(); // Get the block size to use.
         Arrays.fill(dest, (src1.length > 0) ? src1[0].getZero() : null); // Initialize to zeros..

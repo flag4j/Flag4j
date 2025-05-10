@@ -294,7 +294,7 @@ public class CsrSemiringMatrix<T extends Semiring<T>> extends AbstractCsrSemirin
      * {@code data}.
      */
     @Override
-    public CsrSemiringMatrix<T> makeLikeTensor(Shape shape, T[] data) {
+    public CsrSemiringMatrix<T> makeLikeNDArray(Shape shape, T[] data) {
         return new CsrSemiringMatrix<>(shape, data, rowPointers.clone(), colIndices.clone());
     }
 
@@ -341,7 +341,7 @@ public class CsrSemiringMatrix<T extends Semiring<T>> extends AbstractCsrSemirin
 
 
     /**
-     * Gets a range of a row of this matrix.
+     * Gets a range of rows in this matrix.
      *
      * @param rowIdx The index of the row to get.
      * @param colStart The staring column of the row range to get (inclusive).
@@ -376,7 +376,7 @@ public class CsrSemiringMatrix<T extends Semiring<T>> extends AbstractCsrSemirin
 
 
     /**
-     * Gets a range of a column of this matrix.
+     * Gets a range of columns in this matrix.
      *
      * @param colIdx The index of the column to get.
      * @param rowStart The staring row of the column range to get (inclusive).

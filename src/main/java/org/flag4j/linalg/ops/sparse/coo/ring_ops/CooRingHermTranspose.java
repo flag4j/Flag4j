@@ -96,7 +96,7 @@ public final class CooRingHermTranspose {
      * @throws IllegalArgumentException If {@code srcEntries}, {@code srcIndices}, {@code destEntries}, and {@code destIndices} do not
      * all have the same length.
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      */
     public static <T extends Ring<T>> void tensorHermTranspose(
             Shape shape, T[] srcEntries, int[][] srcIndices, int[] axes,

@@ -33,8 +33,8 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -119,7 +119,7 @@ public class PermutationMatrix implements Serializable {
     public PermutationMatrix(Shape shape) {
         ValidateParameters.ensureSquareMatrix(shape);
         this.shape = shape;
-        this.size = shape.get(0);
+        this.size = shape.getSize(0);
         permutation = ArrayBuilder.intRange(0, size);
     }
 
@@ -250,11 +250,11 @@ public class PermutationMatrix implements Serializable {
      * Computes the matrix-matrix multiplication between two permutation matrices.
      * @param b The matrix to multiply to this permutation matrix.
      * @return The matrix=matrix product of this permutation matrix with {@code b}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code this.size != b.size}.
+     * @throws ArrayShapeException If {@code this.size != b.size}.
      */
     public PermutationMatrix mult(PermutationMatrix b) {
         if(this.size != b.size) {
-            throw new TensorShapeException("Shapes not compatible with matrix multiplication: "
+            throw new ArrayShapeException("Shapes not compatible with matrix multiplication: "
                     + shape + " and " + b.shape + ".");
         }
 

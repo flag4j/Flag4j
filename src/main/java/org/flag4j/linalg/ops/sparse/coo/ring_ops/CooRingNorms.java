@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 
 /**
- * This utility class contains low level implementations of norms for sparse COO ring tensors, matrices and vectors.
+ * This utility class contains low-level implementations of norms for sparse COO ring tensors, matrices and vectors.
  */
 public final class CooRingNorms {
 

@@ -253,7 +253,7 @@ public class RandomSparseTensor {
 
         double[] data = new double[nnz];
         RandomArray.randomFill(data, new RealUniform(COMPLEX_RNG, min, max));
-        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(nnz, 0, shape.get(0), 0, shape.get(1));
+        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(nnz, 0, shape.getSize(0), 0, shape.getSize(1));
 
         return new CooMatrix(shape, data, indices[0], indices[1]);
     }
@@ -325,7 +325,7 @@ public class RandomSparseTensor {
 
         double[] data = new double[nnz];
         RandomArray.randomFill(data, new RealUniform(COMPLEX_RNG, min, max));
-        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(nnz, 0, shape.get(0), 0, shape.get(1));
+        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(nnz, 0, shape.getSize(0), 0, shape.getSize(1));
 
         return new CooMatrix(shape, data, indices[0], indices[1]).toCsr();
     }
@@ -351,7 +351,7 @@ public class RandomSparseTensor {
         // Generate half of the random data.
         double[] entries = new double[numEntries];
         RandomArray.randomFill(entries, new RealUniform(COMPLEX_RNG, min, max));
-        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(numEntries, 0, shape.get(0), 0, shape.get(1));
+        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(numEntries, 0, shape.getSize(0), 0, shape.getSize(1));
 
         // Mirror data across diagonal.
         entries = ArrayJoiner.join(entries, entries);
@@ -451,7 +451,7 @@ public class RandomSparseTensor {
 
         Complex128[] entries = new Complex128[nnz];
         RandomArray.randomFill(entries, new Complex128UniformDisk(COMPLEX_RNG, min, max));
-        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(nnz, 0, shape.get(0), 0, shape.get(1));
+        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(nnz, 0, shape.getSize(0), 0, shape.getSize(1));
 
         return CooCMatrix.unsafeMake(shape, entries, indices[0], indices[1]);
     }
@@ -478,7 +478,7 @@ public class RandomSparseTensor {
         // Generate half of the random data.
         Complex128[] entries = new Complex128[numEntries];
         RandomArray.randomFill(entries, new Complex128UniformDisk(COMPLEX_RNG, min, max));
-        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(numEntries, 0, shape.get(0), 0, shape.get(1));
+        int[][] indices = RAND_ARRAY.randomUniqueIndices2D(numEntries, 0, shape.getSize(0), 0, shape.getSize(1));
 
         // Mirror data across diagonal.
         entries = ArrayJoiner.join(entries, entries);

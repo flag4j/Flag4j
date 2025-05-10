@@ -28,6 +28,7 @@ import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseTensorData;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
 import java.util.*;
@@ -108,7 +109,7 @@ public final class CooSemiringTensorOps {
      * @param src2Entries Non-zero data of the second tensor.
      * @param src2Indices Non-zero indices of the second tensor.
      * @return The element-wise product of the two specified tensors.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !shape1.equals(shape2)}.
+     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}.
      */
     public static <V extends Semiring<V>> SparseTensorData<V> elemMult(
             Shape shape1, V[] src1Entries, int[][] src1Indices,
@@ -179,7 +180,7 @@ public final class CooSemiringTensorOps {
         // Validate parameters.
         ValidateParameters.ensureNotEquals(axis1, axis2);
         ValidateParameters.validateArrayIndices(shape.getRank(), axis1, axis2);
-        ValidateParameters.ensureAllEqual(shape.get(axis1), shape.get(axis2));
+        ValidateParameters.ensureAllEqual(shape.getSize(axis1), shape.getSize(axis2));
 
         int rank = shape.getRank();
         final int nnz = entries.length;

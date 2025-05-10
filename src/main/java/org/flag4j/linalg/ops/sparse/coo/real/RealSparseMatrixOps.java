@@ -35,7 +35,7 @@ import java.util.List;
 
 
 /**
- * This class has low level implementations for ops between two real sparse matrices.
+ * This class has low-level implementations for ops between two real sparse matrices.
  */
 public final class RealSparseMatrixOps {
 

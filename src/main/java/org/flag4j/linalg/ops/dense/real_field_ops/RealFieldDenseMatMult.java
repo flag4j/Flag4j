@@ -25,10 +25,10 @@
 package org.flag4j.linalg.ops.dense.real_field_ops;
 
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.Shape;
 import org.flag4j.concurrency.Configurations;
 import org.flag4j.concurrency.ThreadManager;
+import org.flag4j.numbers.Field;
 
 import java.util.Arrays;
 
@@ -56,9 +56,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void standard(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
 
@@ -97,9 +97,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void reordered(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
 
@@ -135,9 +135,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void blocked(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
+        int cols1 = shape1.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
 
@@ -190,9 +190,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void blockedReordered(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
+        int cols1 = shape1.getSize(1);
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
 
         final int blockSize = Configurations.getBlockSize();
@@ -244,9 +244,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void concurrentStandard(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
 
@@ -284,9 +284,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void concurrentReordered(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
 
@@ -321,9 +321,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void concurrentBlocked(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
         final int blockSize = Configurations.getBlockSize();
@@ -376,9 +376,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void concurrentBlockedReordered(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
         final int blockSize = Configurations.getBlockSize();
@@ -428,9 +428,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)]}.
      */
     public static <T extends Field<T>> void standardVector(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
         int src1Index, src2Index;
@@ -458,9 +458,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)]}.
      */
     public static <T extends Field<T>> void blockedVector(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
         final int blockSize = Configurations.getBlockSize();
@@ -502,9 +502,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)]}.
      */
     public static <T extends Field<T>> void concurrentStandardVector(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
 
@@ -534,9 +534,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)]}.
      */
     public static <T extends Field<T>> void concurrentBlockedVector(double[] src1, Shape shape1, T[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, (src2.length > 0) ? src2[0].getZero() : null);
         final int blockSize = Configurations.getBlockSize();
@@ -575,9 +575,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void standard(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
 
@@ -616,9 +616,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void reordered(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
 
@@ -654,9 +654,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void blocked(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
+        int cols1 = shape1.getSize(1);
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
 
         final int blockSize = Configurations.getBlockSize();
@@ -708,9 +708,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void blockedReordered(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
+        int cols1 = shape1.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
 
@@ -763,9 +763,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void concurrentStandard(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
 
@@ -803,9 +803,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void concurrentReordered(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
 
@@ -840,9 +840,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void concurrentBlocked(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
         final int blockSize = Configurations.getBlockSize();
@@ -895,9 +895,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)*shape2.get(1)}.
      */
     public static <T extends Field<T>> void concurrentBlockedReordered(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
         final int blockSize = Configurations.getBlockSize();
@@ -947,9 +947,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)]}.
      */
     public static <T extends Field<T>> void standardVector(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
         int src1Index, src2Index;
@@ -977,9 +977,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)]}.
      */
     public static <T extends Field<T>> void blockedVector(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
         final int blockSize = Configurations.getBlockSize();
@@ -1020,9 +1020,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)]}.
      */
     public static <T extends Field<T>> void concurrentStandardVector(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
 
@@ -1052,9 +1052,9 @@ public final class RealFieldDenseMatMult {
      * {@code shape1.get(0)]}.
      */
     public static <T extends Field<T>> void concurrentBlockedVector(T[] src1, Shape shape1, double[] src2, Shape shape2, T[] dest) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int rows2 = shape2.get(0);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int rows2 = shape2.getSize(0);
 
         Arrays.fill(dest, (src2.length > 0) ? src1[0].getZero() : null);
         final int blockSize = Configurations.getBlockSize();

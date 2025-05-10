@@ -63,8 +63,8 @@ public final class SemiringCsrMatMult {
         ValidateParameters.ensureMatMultShapes(shape1, shape2);
 
         zero = (zero == null && src1Entries.length > 0) ?  src1Entries[0].getZero() : zero;
-        int src1Rows = shape1.get(0);
-        int src2Cols = shape2.get(1);
+        int src1Rows = shape1.getSize(0);
+        int src2Cols = shape2.getSize(1);
         Arrays.fill(destEntries, zero);
 
         for(int i=0; i<src1Rows; i++) {
@@ -112,8 +112,8 @@ public final class SemiringCsrMatMult {
         // Ensure matrices have shapes conducive to matrix multiplication.
         ValidateParameters.ensureMatMultShapes(shape1, shape2);
 
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
         Shape destShape = new Shape(rows1, cols2);
 
         int[] resultRowPtr = new int[rows1 + 1];
@@ -176,8 +176,8 @@ public final class SemiringCsrMatMult {
             int size, T[] src2, int[] indices,
             T[] dest, T zero) {
         // Ensure the matrix and vector have shapes conducive to matrix-vector multiplication.
-        int rows1 = shape.get(0);
-        ValidateParameters.ensureAllEqual(shape.get(1), size);
+        int rows1 = shape.getSize(0);
+        ValidateParameters.ensureAllEqual(shape.getSize(1), size);
         ValidateParameters.ensureAllEqual(dest.length, size);
         zero = (zero == null && src1.length > 0) ? src1[0].getZero() : zero;
         Arrays.fill(dest, zero);

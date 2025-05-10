@@ -26,7 +26,7 @@ package org.flag4j.arrays.backend.semiring_arrays;
 
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.sparse.SparseValidation;
 import org.flag4j.linalg.ops.sparse.SparseUtils;
@@ -38,8 +38,8 @@ import org.flag4j.linalg.ops.sparse.csr.semiring_ops.SemiringCsrOps;
 import org.flag4j.linalg.ops.sparse.csr.semiring_ops.SemiringCsrProperties;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -83,7 +83,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         U extends AbstractDenseSemiringMatrix<U, ?, W>,
         V extends AbstractCooSemiringVector<V, ?, ?, U, W>,
         W extends Semiring<W>>
-        extends AbstractTensor<T, W[], W>
+        extends AbstractNDArray<T, W[], W>
         implements SemiringTensorMixin<T, U, W>, MatrixMixin<T, U, V, W> {
 
     /**
@@ -142,8 +142,8 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         this.rowPointers = rowPointers;
         this.colIndices = colIndices;
         this.nnz = entries.length;
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
 
         // Attempt to set the zero-element for the semiring.
         this.zeroElement = (entries.length > 0 && entries[0] != null) ? entries[0].getZero() : null;
@@ -168,8 +168,8 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         this.rowPointers = rowPointers;
         this.colIndices = colIndices;
         this.nnz = entries.length;
-        this.numRows = shape.get(0);
-        this.numCols = shape.get(1);
+        this.numRows = shape.getSize(0);
+        this.numCols = shape.getSize(1);
 
         // Attempt to set the zero-element for the semiring.
         this.zeroElement = (entries.length > 0 && entries[0] != null) ? entries[0].getZero() : null;
@@ -386,7 +386,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
@@ -420,7 +420,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T add(T b) {
@@ -508,7 +508,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
@@ -889,7 +889,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * @return A copy of this matrix with the given slice set to the specified values.
      *
      * @throws IndexOutOfBoundsException If rowStart or colStart are not within the matrix.
-     * @throws IllegalArgumentException  If the values slice, with upper left corner at the specified location, does not
+     * @throws IllegalArgumentException  If the {@code values} slice, with the upper-left corner at the specified location, does not
      *                                   fit completely within this matrix.
      */
     @Override
@@ -972,7 +972,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * Extracts the upper-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for upper-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the upper-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -994,7 +994,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * Extracts the lower-triangular portion of this matrix with a specified diagonal offset. All other data of the resulting
      * matrix will be zero.
      *
-     * @param diagOffset Diagonal offset for lower-triangular portion to extract:
+     * @param diagOffset Diagonal offset for the lower-triangular portion to extract:
      * <ul>
      *     <li>If zero, then all data at and above the principle diagonal of this matrix are extracted.</li>
      *     <li>If positive, then all data at and above the equivalent super-diagonal are extracted.</li>
@@ -1019,7 +1019,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      */
     @Override
     public T copy() {
-        return makeLikeTensor(shape, data.clone());
+        return makeLikeNDArray(shape, data.clone());
     }
 
 

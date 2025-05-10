@@ -107,8 +107,8 @@ public final class TransposeDispatcher {
     public static double[] dispatch(double[] src, Shape shape) {
 
         double[] dest;
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
         TransposeAlgorithms algorithm = chooseAlgorithm(shape);
 
         switch(algorithm) {
@@ -145,8 +145,8 @@ public final class TransposeDispatcher {
 
         TransposeAlgorithms algorithm = chooseAlgorithmComplex(shape); // TODO: Need an updated method for this. Or at least a name change.
         dest = getOrCreateArray(dest, () -> new Object[src.length]);
-        final int numRows = shape.get(0);
-        final int numCols = shape.get(1);
+        final int numRows = shape.getSize(0);
+        final int numCols = shape.getSize(1);
 
         switch(algorithm) {
             case STANDARD:
@@ -181,9 +181,9 @@ public final class TransposeDispatcher {
         TransposeAlgorithms algorithm = chooseAlgorithmHermitian(shape);
 
         if(algorithm == TransposeAlgorithms.BLOCKED)
-            DenseRingHermitianTranspose.blockedMatrixHerm(src, shape.get(0), shape.get(1), dest);
+            DenseRingHermitianTranspose.blockedMatrixHerm(src, shape.getSize(0), shape.getSize(1), dest);
         else
-            DenseRingHermitianTranspose.blockedMatrixConcurrentHerm(src, shape.get(0), shape.get(1), dest);
+            DenseRingHermitianTranspose.blockedMatrixConcurrentHerm(src, shape.getSize(0), shape.getSize(1), dest);
     }
 
 
@@ -206,14 +206,14 @@ public final class TransposeDispatcher {
         } else if(rank == 2) {
             dest = dispatch(src.data, src.shape); // Matrix transpose problem.
         } else {
-            TransposeAlgorithms algorithm = chooseAlgorithmTensor(src.shape.get(axis1), src.shape.get(axis2));
+            TransposeAlgorithms algorithm = chooseAlgorithmTensor(src.shape.getSize(axis1), src.shape.getSize(axis2));
 
             dest = algorithm == TransposeAlgorithms.STANDARD ?
                     RealDenseTranspose.standard(src.data, src.shape, axis1, axis2):
                     RealDenseTranspose.standardConcurrent(src.data, src.shape, axis1, axis2);
         }
 
-        return src.makeLikeTensor(src.shape.swapAxes(axis1, axis2), dest);
+        return src.makeLikeNDArray(src.shape.swapAxes(axis1, axis2), dest);
     }
 
 
@@ -252,7 +252,7 @@ public final class TransposeDispatcher {
         } else if(srcShape.getRank() == 2) {
             dispatch(src, srcShape, dest); // Delegate to matrix transpose.
         } else {
-            TransposeAlgorithms algorithm = chooseAlgorithmTensor(srcShape.get(axis1), srcShape.get(axis2));
+            TransposeAlgorithms algorithm = chooseAlgorithmTensor(srcShape.getSize(axis1), srcShape.getSize(axis2));
 
             if(algorithm == TransposeAlgorithms.STANDARD)
                 DenseTranspose.standard(src, srcShape, axis1, axis2, dest);
@@ -281,7 +281,7 @@ public final class TransposeDispatcher {
         else
             DenseTranspose.standardConcurrent(src.data, src.shape, axes, dest);
 
-        return src.makeLikeTensor(src.shape.permuteAxes(axes), (V[]) dest);
+        return src.makeLikeNDArray(src.shape.permuteAxes(axes), (V[]) dest);
     }
 
 
@@ -328,7 +328,7 @@ public final class TransposeDispatcher {
             Shape shape, V[] src,
             int axis1, int axis2,
             V[] dest) {
-        TransposeAlgorithms algorithm = chooseAlgorithmTensor(shape.get(axis1), shape.get(axis2));
+        TransposeAlgorithms algorithm = chooseAlgorithmTensor(shape.getSize(axis1), shape.getSize(axis2));
 
         if (algorithm == TransposeAlgorithms.STANDARD)
             DenseRingHermitianTranspose.standardHerm(src, shape, axis1, axis2, dest);

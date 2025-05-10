@@ -62,8 +62,8 @@ public final class DenseSemiringConversions {
         List<Integer> rowIndices = new ArrayList<>(estimatedSize);
         List<Integer> colIndices = new ArrayList<>(estimatedSize);
 
-        final int rows = shape.get(0);
-        final int cols = shape.get(1);
+        final int rows = shape.getSize(0);
+        final int cols = shape.getSize(1);
 
         for(int i=0; i<rows; i++) {
             int rowOffset = i*cols;

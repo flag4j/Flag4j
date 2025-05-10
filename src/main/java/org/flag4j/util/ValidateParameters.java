@@ -25,8 +25,8 @@
 package org.flag4j.util;
 
 import org.flag4j.arrays.Shape;
+import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
-import org.flag4j.util.exceptions.TensorShapeException;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -45,11 +45,11 @@ public final class ValidateParameters {
      * Checks if two {@link Shape} objects are equivalent.
      * @param shape1 First shape.
      * @param shape2 Second shape.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If shapes are not equivalent.
+     * @throws ArrayShapeException If shapes are not equivalent.
      */
     public static void ensureEqualShape(Shape shape1, Shape shape2) {
         if(!shape1.equals(shape2))
-            throw new TensorShapeException(ErrorMessages.equalShapeErrMsg(shape1, shape2));
+            throw new ArrayShapeException(ErrorMessages.equalShapeErrMsg(shape1, shape2));
     }
 
 
@@ -62,7 +62,7 @@ public final class ValidateParameters {
     public static void ensureMatMultShapes(Shape shape1, Shape shape2) {
         int r2 = shape2.getRank();
 
-        if (shape1.getRank() != 2 || (r2 != 2 && r2 != 1) || shape1.get(1) != shape2.get(0))
+        if (shape1.getRank() != 2 || (r2 != 2 && r2 != 1) || shape1.getSize(1) != shape2.getSize(0))
             throw new LinearAlgebraException(ErrorMessages.matMultShapeErrMsg(shape1, shape2));
     }
 
@@ -83,11 +83,11 @@ public final class ValidateParameters {
      * Checks that two shapes have the same total number of data.
      * @param shape1 First shape to compare.
      * @param shape2 Second shape to compare.
-     * @throws TensorShapeException If the two shapes do not have the same total number of data.
+     * @throws ArrayShapeException If the two shapes do not have the same total number of data.
      */
     public static void ensureTotalEntriesEqual(Shape shape1, Shape shape2) {
         if(!shape1.totalEntries().equals(shape2.totalEntries()))
-            throw new TensorShapeException(ErrorMessages.getShapeTotalEntriesErr(shape1, shape2));
+            throw new ArrayShapeException(ErrorMessages.getShapeTotalEntriesErr(shape1, shape2));
     }
 
 
@@ -318,7 +318,7 @@ public final class ValidateParameters {
      * @throws LinearAlgebraException If the shape is not of rank 2 with equal rows and columns.
      */
     public static void ensureSquareMatrix(Shape shape) {
-        if(shape.getRank()!=2 || shape.get(0)!=shape.get(1))
+        if(shape.getRank()!=2 || shape.getSize(0)!=shape.getSize(1))
             throw new LinearAlgebraException(ErrorMessages.getSquareShapeErr(shape));
     }
 
@@ -326,7 +326,7 @@ public final class ValidateParameters {
     /**
      * Checks if a shape represents a square tensor.
      * @param shape Shape to check.
-     * @throws TensorShapeException If all axes of the shape are not the same length.
+     * @throws ArrayShapeException If all axes of the shape are not the same length.
      */
     public static void ensureSquare(Shape shape) {
         ValidateParameters.ensureAllEqual(shape.getDims());
@@ -456,10 +456,10 @@ public final class ValidateParameters {
         }
 
         for(int i=0, size=index.length; i<size; i++) {
-            if(index[i] < 0 || index[i] >= shape.get(i)) {
+            if(index[i] < 0 || index[i] >= shape.getSize(i)) {
                 String errMsg = index[i]<0 ?
                         "dimension " + i + " is out of bounds for lower bound of 0" :
-                        "dimension " + i + " is out of bounds for upper bound of " + shape.get(i) + ".";
+                        "dimension " + i + " is out of bounds for upper bound of " + shape.getSize(i) + ".";
 
                 throw new IndexOutOfBoundsException(errMsg);
             }

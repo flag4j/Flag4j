@@ -59,7 +59,7 @@ public final class RealComplexDenseCooOps {
         ArrayUtils.deepCopy2D(src1.indices, destIndices);
 
         for(int i=0, size=destEntries.length; i<size; i++) {
-            int index = src2.shape.get1DIndex(src1.indices[i]); // Get index of non-zero entry.
+            int index = src2.shape.get1DIndex(src1.indices[i]); // Get the index of non-zero entry.
             destEntries[i] = new Complex128(src1.data[index]).div(src2.data[i]);
         }
 

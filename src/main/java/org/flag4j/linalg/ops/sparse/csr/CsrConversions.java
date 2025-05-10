@@ -60,8 +60,8 @@ public final class CsrConversions {
     public static <T> Shape flatten(Shape shape, T[] entries, int[] rowPointers, int[] colIndices,
                                    int axis, int[] destRowPointers, int[] destColIndices) {
         ValidateParameters.ensureValidAxes(shape, axis);
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
         int nnz = entries.length;
 
         Shape destShape;
@@ -118,9 +118,9 @@ public final class CsrConversions {
         ValidateParameters.ensureRank(shape, 2);
         Arrays.fill(dest, zero);
 
-        int numCols = shape.get(1);
+        int numCols = shape.getSize(1);
 
-        for(int i=0, numRows=shape.get(0); i<numRows; i++) {
+        for(int i = 0, numRows = shape.getSize(0); i<numRows; i++) {
             int rowOffset = i*numCols;
 
             for(int j=rowPointers[i], rowEnd=rowPointers[i+1]; j<rowEnd; j++)
@@ -141,7 +141,7 @@ public final class CsrConversions {
      */
     public static <T> void toCoo(Shape shape, T[] entries, int[] rowPointers, int[] colIndices,
                                  T[] destEntries, int[] destRowIndices, int[] destColIndices) {
-        final int numRows = shape.get(0);
+        final int numRows = shape.getSize(0);
 
         // Find and copy row indices of non-zero data in the CSR matrix.
         for(int i=0; i<numRows; i++) {

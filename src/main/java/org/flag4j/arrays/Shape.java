@@ -33,16 +33,16 @@ import java.util.Arrays;
 import java.util.StringJoiner;
 
 /**
- * Represents the shape of a multidimensional array (e.g. tensor, matrix, vector, etc.), specifying its dimensions and providing
- * utilities for shape-related ops.
+ * Represents the shape of an nD array (e.g., tensor, matrix, vector, etc.) specifying its dimensions and provides
+ * utilities for shape-related operations.
  *
- * <p>A shape is defined by an array of dimensions, where each dimension specifies the size of the tensor along a particular axis.
- * {@link #getStrides() Strides} can also be computed for the shape which specify the number of data to step in each dimension of
+ * <p>A shape is defined by an array of dimensions, where each dimension specifies the size of the nD array along a particular axis.
+ * {@link #getStrides() Strides} can also be computed for the shape that specifies the number of elements to step in each dimension of
  * the shape when traversing an array with the given shape. Strides will always be row-major contiguous and allow for efficient
  * array traversal and mapping of nD indices to 1D contiguous indices.
  *
- * <p>This class also supports converting between multidimensional and flat indices, computing the shapes rank (i.e., number of
- * dimensions), computing the total number of data of an array with the given shape, and manipulating dimensions through swaps or
+ * <p>This class also supports converting between multidimensional and flat indices, computing the shape's rank (i.e., number of
+ * dimensions), computing the total number of data in an nD array with the given shape and manipulating dimensions through swaps or
  * permutations.
  *
  * <p>The {@code Shape} class is immutable with respect to its dimensions, ensuring thread safety and consistency. Strides
@@ -52,23 +52,24 @@ import java.util.StringJoiner;
  *
  * <pre>{@code
  * Shape shape = new Shape();  // Creates a shape for a scalar value.
- * shape = new Shape(3, 4, 5);  // Creates a shape for a 3x4x5 tensor.
+ * shape = new Shape(3, 4, 5);  // Creates a shape for a 3x4x5 nD array.
  * int rank = shape.getRank();  // Gets the rank (number of dimensions).
  * int[] strides = shape.getStrides();  // Retrieves the strides for this shape.
  * int flatIndex = getFlatIndex(2, 1, 4);  // Converts multidimensional indices to a flat index.
  * int[] multiDimIndex = shape.getNdIndices(56);  // Flat index to nD index: {2, 3, 1}.
- * }
- * </pre>
+ * }</pre>
+ *
+ * @see org.flag4j.arrays.backend.AbstractNDArray
  */
 public class Shape implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The rank of a tensor with this shape.
+     * The rank of an nD array with this shape.
      */
     private final int rank;
     /**
-     * An array containing the size of each dimension of this shape.
+     * An array containing the size of each dimension in this shape.
      */
     private final int[] dims;
     /**
@@ -84,8 +85,8 @@ public class Shape implements Serializable {
      */
     private BigInteger totalEntries = null;
     /**
-     * Stores the total number of entries in this shape as exact integer if possible. This is only computed on demand by
-     * {@link #totalEntriesIntValueExact()}.
+     * Stores the total number of entries in this shape as an exact integer if possible.
+     * This is only computed on demand by {@link #totalEntriesIntValueExact()}.
      */
     private int totalEntriesIntExact = -1;
 
@@ -106,8 +107,8 @@ public class Shape implements Serializable {
 
 
     /**
-     * Gets the rank of a tensor with this shape.
-     * @return The rank for a tensor with this shape.
+     * Gets the rank of an nD array with this shape.
+     * @return The rank for an nD array with this shape.
      */
     public int getRank() {
         return dims.length;
@@ -115,8 +116,8 @@ public class Shape implements Serializable {
 
 
     /**
-     * Gets the shape of a tensor as an array of dimensions.
-     * @return Shape of a tensor as an integer array.
+     * Gets the shape of an nD array as an array of dimensions.
+     * @return Shape of an nD array as an integer array.
      */
     public int[] getDims() {
         return dims;
@@ -125,7 +126,7 @@ public class Shape implements Serializable {
 
     /**
      * Gets the strides of this shape as an array. Strides are the step sizes needed to move from one
-     * element to another along each axis in the tensor.
+     * element to another along each axis in the nD array.
      * @return The strides of this shape as an integer array.
      */
     public int[] getStrides() {
@@ -139,7 +140,7 @@ public class Shape implements Serializable {
      * @param i Dimension to get the size of.
      * @return The size of this shape object in the specified dimension.
      */
-    public int get(int i) {
+    public int getSize(int i) {
         return dims[i];
     }
 
@@ -149,7 +150,7 @@ public class Shape implements Serializable {
      *
      * @param startIdx The starting index for slicing (inclusive).
      * @return A new {@code Shape} object containing the dimensions from {@code startIdx} to the end dimension.
-     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of the rank of this shape.
+     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this shape's rank.
      */
     public Shape slice(int startIdx) {
         return slice(startIdx, dims.length);
@@ -171,8 +172,8 @@ public class Shape implements Serializable {
 
 
     /**
-     * Flattens this shape to a rank-1 shape with dimension equal to the product of all of this shape's dimensions.
-     * @return A rank-1 shape with dimension equal to the product of all of this shape's dimensions.
+     * Flattens this shape to a rank-1 shape with a dimension equal to the product of all dimensions in this shape.
+     * @return A rank-1 shape with a dimension equal to the product of all dimensions in this shape.
      * @throws ArithmeticException If the product of this shape's dimensions is too large to be stored in a 32-bit integer.
      */
     public Shape flatten() {
@@ -181,9 +182,9 @@ public class Shape implements Serializable {
 
 
     /**
-     * Constructs strides for each dimension of this shape as if for a newly constructed tensor.
+     * Constructs strides for each dimension of this shape as if for a newly constructed nD array.
      * Strides will be a monotonically decreasing sequence with the last stride being 1.
-     * @return The strides for all dimensions of a newly constructed tensor with this shape.
+     * @return The strides for all dimensions of a newly constructed nD array with this shape.
      */
     private synchronized void createNewStrides() {
         if(strides.length>0) {
@@ -196,7 +197,7 @@ public class Shape implements Serializable {
 
 
     /**
-     * If strides are have not already been computed for this shape, create them. Otherwise, do nothing.
+     * If strides have not already been computed for this shape, create them. Otherwise, do nothing.
      */
     private void makeStrides() {
         if(!hasStrides) {
@@ -207,16 +208,16 @@ public class Shape implements Serializable {
 
 
     /**
-     * Computes the index of the 1D data array for a dense tensor from nD indices for a tensor with this shape.
-     * @param nDIndex nD index within a tensor with this shape.
-     * @return The 1D index of the element at the specified nD index in the 1D data array of a dense tensor.
+     * Computes the index of the 1D data array for a dense nD array from nD indices for an nD array with this shape.
+     * @param nDIndex nD index within an nD array with this shape.
+     * @return The 1D index of the element at the specified nD index in the 1D data array of a dense nD array.
      * @throws IllegalArgumentException If the number of indices does not match the rank of this shape.
-     * @throws IndexOutOfBoundsException If any index does not fit within a tensor with this shape.
+     * @throws IndexOutOfBoundsException If any index does not fit within an nD array with this shape.
      * @see #unsafeGet1DIndex(int...)
      */
     public int get1DIndex(int... nDIndex) {
         if(nDIndex.length != dims.length)
-            throw new IllegalArgumentException("Indices rank " + nDIndex.length + " does not match tensor rank " + dims.length);
+            throw new IllegalArgumentException("Indices rank " + nDIndex.length + " does not match nD array rank " + dims.length);
 
         makeStrides(); // Computes strides if not previously computed.
 
@@ -225,7 +226,7 @@ public class Shape implements Serializable {
             int idx = nDIndex[i];
             if(idx < 0 || idx >= dims[i]) {
                 throw new IndexOutOfBoundsException("Index " + idx + " out of bounds for axis " + i +
-                        " of tensor with shape " + this);
+                        " of nD array with shape " + this);
             }
 
             index += idx*strides[i];
@@ -236,13 +237,13 @@ public class Shape implements Serializable {
 
 
     /**
-     * <p>Computes the index of the 1D data array for a dense tensor from nD indices for a tensor with this shape.
+     * <p>Computes the index of the 1D data array, for a dense nD array, from nD indices for an nD array with this shape.
      * <p>Warning: Unlike {@link #get1DIndex(int...)}, this method does not perform bounds checking on indices. This can lead
      * to exceptions being thrown or possibly no exception but incorrect results if {@code indices} are not valid indices.
-     * @param nDIndex Indices of tensor with this shape.
-     * @return The index of the element at the specified indices in the 1D data array of a dense tensor.
+     * @param nDIndex Indices of nD array with this shape.
+     * @return The index of the element at the specified indices in the 1D data array of a dense nD array.
      * @throws IllegalArgumentException If the number of indices does not match the rank of this shape.
-     * @throws IndexOutOfBoundsException If any index does not fit within a tensor with this shape.
+     * @throws IndexOutOfBoundsException If any index does not fit within an nD array with this shape.
      * @see #get1DIndex(int...)
      */
     public int unsafeGet1DIndex(int... nDIndex) {
@@ -257,8 +258,8 @@ public class Shape implements Serializable {
 
 
     /**
-     * Efficiently computes the nD tensor index based on a 1D index from the internal 1D data array.
-     * @param index Index of internal 1D data array.
+     * Efficiently computes the nD array index based on a 1D index from the internal 1D data array.
+     * @param index Index of the internal 1D data array.
      * @return The multidimensional indices corresponding to the 1D data array index. This will be an array of integers
      * with length equal to the {@link #getRank() rank} of this shape.
      * @see #getNdIndices(int...)
@@ -276,7 +277,7 @@ public class Shape implements Serializable {
 
 
     /**
-     * Efficiently computes the nD tensor indices from multiple 1D indices from the internal 1D data array.
+     * Efficiently computes the nD array indices from multiple 1D indices from the internal 1D data array.
      * @param indices Array of 1D indices.
      * @return The multidimensional indices corresponding to the 1D data array index. This will be an array of integers
      * with length equal to the {@link #getRank() rank} of this shape.
@@ -364,8 +365,8 @@ public class Shape implements Serializable {
 
 
     /**
-     * Gets the total number of data for a tensor with this shape.
-     * @return The total number of data for a tensor with this shape.
+     * Gets the total number of data for an nD array with this shape.
+     * @return The total number of data for an nD array with this shape.
      * @see #totalEntriesIntValueExact()
      * @see #totalEntriesLongValueExact()
      */
@@ -373,7 +374,7 @@ public class Shape implements Serializable {
         // Check if totalEntries has already been computed for this shape.
         if(totalEntries!=null) return totalEntries;
 
-        // Otherwise the total data needs to be computed.
+        // Otherwise, the total data needs to be computed.
         BigInteger product = BigInteger.ONE;
         for(int dim : dims)
             product = product.multiply(BigInteger.valueOf(dim));
@@ -384,18 +385,18 @@ public class Shape implements Serializable {
 
 
     /**
-     * <p>Gets the total number of data for a tensor with this shape.
-     * If the total number of data exceeds {@link Integer#MAX_VALUE}, an exception is thrown.
+     * <p>Gets the total number of elements for an nD array with this shape.
+     * If the total number of elements exceeds {@link Integer#MAX_VALUE}, an exception is thrown.
      *
      * <p>This method is likely to be more efficient than {@link #totalEntries()} if a primitive int value is desired.
      *
-     * @return The total number of data for a tensor with this shape.
+     * @return The total number of data for an nD array with this shape.
      * @throws ArithmeticException If the total number of data overflows a primitive int.
      * @see #totalEntries()
      * @see #totalEntriesLongValueExact()
      */
     public int totalEntriesIntValueExact() {
-        if(totalEntriesIntExact >= 0) return totalEntriesIntExact; // Value has already been computed.
+        if(totalEntriesIntExact >= 0) return totalEntriesIntExact; // The Value has already been computed.
         long product = 1;
         totalEntriesIntExact = 1;
 
@@ -414,16 +415,16 @@ public class Shape implements Serializable {
 
 
     /**
-     * <p>Gets the total number of data for a tensor with this shape as a {@code long}.
-     * If the total number of data exceeds {@link Long#MAX_VALUE}, an exception is thrown.
+     * <p>Gets the total number of elements for an nD array with this shape as a {@code long}.
+     * If the total number of elements exceeds {@link Long#MAX_VALUE}, an exception is thrown.
      *
-     * @return The total number of data for a tensor with this shape.
+     * @return The total number of elements for an nD array with this shape.
      * @throws ArithmeticException If the total number of data overflows a primitive int.
      * @see #totalEntriesIntValueExact()
      * @see #totalEntries()
      */
     public long totalEntriesLongValueExact() {
-        if(totalEntriesIntExact >= 0) return totalEntriesIntExact; // Value has already been computed as an integer.
+        if(totalEntriesIntExact >= 0) return totalEntriesIntExact; // The Value has already been computed as an integer.
 
         long product = 1;
         for (long value : dims) {
@@ -463,7 +464,7 @@ public class Shape implements Serializable {
                 return false;  // Integer overflow detected.
         }
 
-        // Update cached value since we already computed it.
+        // Update the cached value since we already computed it.
         totalEntriesIntExact = (int) product;  // This cast is safe since it will only execute if product <= Integer.MAX_VALUE.
 
         return true;

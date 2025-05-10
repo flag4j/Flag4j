@@ -31,7 +31,7 @@ import org.flag4j.util.ValidateParameters;
 
 
 /**
- * This class provides low level implementations for several vector operation.
+ * This class provides low-level implementations for several vector operations.
  */
 public final class RealDenseVectorOps {
 
@@ -64,8 +64,8 @@ public final class RealDenseVectorOps {
 
     /**
      * Computes the vector outer product between two real dense vectors.
-     * @param src1 Entries of first vector.
-     * @param src2 Entries of second vector.
+     * @param src1 Entries of the first vector.
+     * @param src2 Entries of the second vector.
      * @return The matrix resulting from the vector outer product.
      */
     public static double[] outerProduct(double[] src1, double[] src2) {
@@ -86,8 +86,8 @@ public final class RealDenseVectorOps {
 
     /**
      * Computes the vector outer product between two real dense vectors.
-     * @param src1 Entries of first vector.
-     * @param src2 Entries of second vector.
+     * @param src1 Entries of the first vector.
+     * @param src2 Entries of the second vector.
      * @return The matrix resulting from the vector outer product.
      */
     public static double[] outerProductConcurrent(double[] src1, double[] src2) {
@@ -109,8 +109,8 @@ public final class RealDenseVectorOps {
 
     /**
      * Dispatches an outer product problem to an appropriate implementation based on the size of the vectors involved.
-     * @param src1 First vector in outer product.
-     * @param src2 Second vector in outer product.
+     * @param src1 First vector in the outer product.
+     * @param src2 Second vector in the outer product.
      * @return The outer product of the two vectors {@code src1} and {@code src2}.
      */
     public static Matrix dispatchOuter(Vector src1, Vector src2) {

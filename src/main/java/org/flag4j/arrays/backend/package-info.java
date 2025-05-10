@@ -22,29 +22,7 @@
  * SOFTWARE.
  */
 
-package org.flag4j;
-
-import org.flag4j.arrays.dense.Tensor;
-import org.flag4j.arrays.dense.Vector;
-
-public class TempTesting {
-
-    public static void main(String[] args) {
-        Vector a = new Vector(new double[]{1, 2, 3});
-        Vector b = new Vector(new double[]{-1.1, 2.2, -3.3});
-
-//        CVector a = new CVector(new double[]{1, 2, 3});
-//        CVector b = new CVector(new double[]{-1.1, 2.2, -3.3});
-
-        Tensor t = new Tensor(4, 5, 3, 1);
-        t.T(0, 1);
-
-        double sum = a.sum();
-        double prod = a.prod();
-        double min = a.min();
-        double max = a.max();
-
-        int[] argMax = a.argmax();
-        int[] argMin = a.argmin();
-    }
-}
+/**
+ * Specifies the base nD array abstract class as well as the base matrix and vector interfaces
+ */
+package org.flag4j.arrays.backend;

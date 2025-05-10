@@ -25,10 +25,10 @@
 package org.flag4j.linalg.ops.dense.semiring_ops;
 
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.concurrency.Configurations;
 import org.flag4j.concurrency.ThreadManager;
+import org.flag4j.numbers.Semiring;
 
 import java.util.Arrays;
 
@@ -54,9 +54,9 @@ public final class DenseSemiringMatMultTranspose {
     public static <T extends Semiring<T>> void multTranspose(T[] src1, Shape shape1,
                                                              T[] src2, Shape shape2,
                                                              T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -94,9 +94,9 @@ public final class DenseSemiringMatMultTranspose {
     public static <T extends Semiring<T>> void multTransposeBlocked(T[] src1, Shape shape1,
                                                                     T[] src2, Shape shape2,
                                                                     T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         Arrays.fill(dest, src1[0].getZero());
 
@@ -151,9 +151,9 @@ public final class DenseSemiringMatMultTranspose {
     public static <T extends Semiring<T>> void multTransposeConcurrent(T[] src1, Shape shape1,
                                                                        T[] src2, Shape shape2,
                                                                        T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
         Arrays.fill(dest, src1[0].getZero());
 
         ThreadManager.concurrentOperation(rows1, (startIdx, endIdx) -> {
@@ -190,9 +190,9 @@ public final class DenseSemiringMatMultTranspose {
     public static <T extends Semiring<T>> void multTransposeBlockedConcurrent(T[] src1, Shape shape1,
                                                                               T[] src2, Shape shape2,
                                                                               T[] dest) {
-        int rows1 = shape1.get(0);
-        int rows2 = shape2.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int rows2 = shape2.getSize(0);
+        int cols2 = shape2.getSize(1);
         Arrays.fill(dest, src1[0].getZero());
         int blockSize = Configurations.getBlockSize();
 

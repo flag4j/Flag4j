@@ -101,13 +101,13 @@ public abstract class TensorDot<T> {
 
         n2 = 1;
         for(int axis : src1Axes)
-            n2 *= shape1.get(axis);
+            n2 *= shape1.getSize(axis);
 
         n1 = 1;
         src1Dims = new int[notin.length];
         pos = 0;
         for(int axis : notin) {
-            int a = shape1.get(axis);
+            int a = shape1.getSize(axis);
             n1 *= a;
             src1Dims[pos++] = a;
         }
@@ -121,13 +121,13 @@ public abstract class TensorDot<T> {
 
         n2 = 1;
         for(int axis : src2Axes)
-            n2 *= shape2.get(axis);
+            n2 *= shape2.getSize(axis);
 
         n1 = 1;
         pos = 0;
         src2Dims = new int[notin.length];
         for(int axis : notin) {
-            int a = shape2.get(axis);
+            int a = shape2.getSize(axis);
             n1 *= a;
             src2Dims[pos++] = a;
         }

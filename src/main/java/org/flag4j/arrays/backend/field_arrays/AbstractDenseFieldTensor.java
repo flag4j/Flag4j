@@ -70,7 +70,7 @@ public abstract class AbstractDenseFieldTensor<T extends AbstractDenseFieldTenso
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */
@@ -78,7 +78,7 @@ public abstract class AbstractDenseFieldTensor<T extends AbstractDenseFieldTenso
     public T H(int... axes) {
         V[] dest = makeEmptyDataArray(data.length);
         TransposeDispatcher.dispatchTensorHermitian(shape, data, axes, dest);
-        return makeLikeTensor(shape.permuteAxes(axes), dest);
+        return makeLikeNDArray(shape.permuteAxes(axes), dest);
     }
 
 
@@ -93,7 +93,7 @@ public abstract class AbstractDenseFieldTensor<T extends AbstractDenseFieldTenso
     public T div(T b) {
         V[] dest = makeEmptyDataArray(data.length);
         DenseFieldElemDiv.dispatch(data, shape, b.data, b.shape, dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 
@@ -106,7 +106,7 @@ public abstract class AbstractDenseFieldTensor<T extends AbstractDenseFieldTenso
     public T sqrt() {
         V[] dest = makeEmptyDataArray(data.length);
         FieldOps.sqrt(data, dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 
@@ -162,7 +162,7 @@ public abstract class AbstractDenseFieldTensor<T extends AbstractDenseFieldTenso
      * @see #allClose(AbstractDenseFieldTensor, double, double)
      */
     public boolean allClose(T b) {
-        return sameShape(b) && RingProperties.allClose(data, b.data);
+        return hasSameShape(b) && RingProperties.allClose(data, b.data);
     }
 
 
@@ -175,6 +175,6 @@ public abstract class AbstractDenseFieldTensor<T extends AbstractDenseFieldTenso
      * @see #allClose(AbstractDenseFieldTensor)
      */
     public boolean allClose(T b, double relTol, double absTol) {
-        return sameShape(b) && RingProperties.allClose(data, b.data, relTol, absTol);
+        return hasSameShape(b) && RingProperties.allClose(data, b.data, relTol, absTol);
     }
 }

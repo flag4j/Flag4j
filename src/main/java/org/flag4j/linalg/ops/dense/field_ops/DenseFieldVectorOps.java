@@ -24,14 +24,13 @@
 
 package org.flag4j.linalg.ops.dense.field_ops;
 
-import org.flag4j.numbers.Complex128;
-import org.flag4j.numbers.Field;
 import org.flag4j.concurrency.ThreadManager;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
 
 
 /**
- * This class provides low level implementations for vector ops with two dense
+ * This class provides low-level implementations for vector ops with two dense
  * {@link Field} vectors.
  */
 public final class DenseFieldVectorOps {
@@ -55,24 +54,6 @@ public final class DenseFieldVectorOps {
             innerProd = innerProd.add(src1[i].mult(src2[i].conj()));
 
         return innerProd;
-    }
-
-
-    /**
-     * Computes the inner product (dot product) of a vector with itself.
-     * @param vector The input complex vector.
-     * @return The inner product of the vector with itself as a double.
-     */
-    public static double innerSelfProduct(Complex128[] src1) {
-        double sum = 0.0;
-
-        for (Complex128 c : src1) {
-            double real = c.re;
-            double imag = c.im;
-            sum += real*real + imag*imag;
-        }
-
-        return sum;
     }
 
 

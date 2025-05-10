@@ -25,12 +25,12 @@
 package org.flag4j.linalg.ops.dense_sparse.csr.real_field_ops;
 
 
-import org.flag4j.numbers.Complex128;
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.backend.field_arrays.AbstractCsrFieldMatrix;
 import org.flag4j.arrays.backend.field_arrays.AbstractDenseFieldMatrix;
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.arrays.sparse.CsrMatrix;
+import org.flag4j.numbers.Complex128;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
 
@@ -81,7 +81,7 @@ public final class RealFieldDenseCsrOps {
             }
         }
 
-        return src2.makeLikeTensor(src2.shape, dest);
+        return src2.makeLikeNDArray(src2.shape, dest);
     }
 
 
@@ -110,7 +110,7 @@ public final class RealFieldDenseCsrOps {
             }
         }
 
-        return src1.makeLikeTensor(src2.shape, dest);
+        return src1.makeLikeNDArray(src2.shape, dest);
     }
 
 

@@ -94,7 +94,7 @@ public final class TensorInvert {
         // Convert to an equivalent matrix inverse problem and solve.
         Matrix matInverse = Invert.inv(new Matrix(prod, src.data.length-prod, src.data));
 
-        return src.makeLikeTensor(invShape, matInverse.data); // Reshape as tensor.
+        return src.makeLikeNDArray(invShape, matInverse.data); // Reshape as tensor.
     }
 
 

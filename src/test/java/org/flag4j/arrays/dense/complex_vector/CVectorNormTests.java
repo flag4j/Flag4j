@@ -1,7 +1,7 @@
 package org.flag4j.arrays.dense.complex_vector;
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.dense.CVector;
+import org.flag4j.numbers.Complex128;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

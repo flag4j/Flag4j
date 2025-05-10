@@ -98,7 +98,7 @@ public abstract class AbstractDenseFieldMatrix<T extends AbstractDenseFieldMatri
     public T H() {
         V[] dest = makeEmptyDataArray(data.length);
         TransposeDispatcher.dispatchHermitian(data, shape, dest);
-        return makeLikeTensor(shape.swapAxes(0, 1), dest);
+        return makeLikeNDArray(shape.swapAxes(0, 1), dest);
     }
 
 
@@ -113,7 +113,7 @@ public abstract class AbstractDenseFieldMatrix<T extends AbstractDenseFieldMatri
     public T div(T b) {
         V[] dest = makeEmptyDataArray(data.length);
         DenseFieldElemDiv.dispatch(data, shape, b.data, b.shape, dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 
@@ -126,7 +126,7 @@ public abstract class AbstractDenseFieldMatrix<T extends AbstractDenseFieldMatri
     public T sqrt() {
         V[] dest = makeEmptyDataArray(data.length);
         FieldOps.sqrt(data, dest);
-        return makeLikeTensor(shape, dest);
+        return makeLikeNDArray(shape, dest);
     }
 
 
@@ -182,7 +182,7 @@ public abstract class AbstractDenseFieldMatrix<T extends AbstractDenseFieldMatri
      * @see #allClose(AbstractDenseFieldMatrix, double, double) (AbstractDenseFieldTensor, double, double)
      */
     public boolean allClose(T b) {
-        return sameShape(b) && RingProperties.allClose(data, b.data);
+        return hasSameShape(b) && RingProperties.allClose(data, b.data);
     }
 
 
@@ -195,6 +195,6 @@ public abstract class AbstractDenseFieldMatrix<T extends AbstractDenseFieldMatri
      * @see #allClose(AbstractDenseFieldMatrix)
      */
     public boolean allClose(T b, double relTol, double absTol) {
-        return sameShape(b) && RingProperties.allClose(data, b.data, relTol, absTol);
+        return hasSameShape(b) && RingProperties.allClose(data, b.data, relTol, absTol);
     }
 }

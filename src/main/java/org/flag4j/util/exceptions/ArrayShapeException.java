@@ -27,14 +27,14 @@ package org.flag4j.util.exceptions;
 /**
  * An exception to be thrown when there is an error related to tensor shapes.
  */
-public class TensorShapeException extends LinearAlgebraException {
+public class ArrayShapeException extends LinearAlgebraException {
 
     /**
-     * Creates a {@link TensorShapeException} to be thrown for a linear algebra related error.
+     * Creates a {@link ArrayShapeException} to be thrown for a linear algebra related error.
      *
      * @param errMsg Error message for the exception.
      */
-    public TensorShapeException(String errMsg) {
+    public ArrayShapeException(String errMsg) {
         super(errMsg);
     }
 }

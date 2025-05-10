@@ -53,9 +53,9 @@ public class RealDenseSparseMatMult {
      */
     public static double[] standard(double[] src1, Shape shape1, double[] src2,
                                     int[] rowIndices, int[] colIndices, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
 
@@ -92,8 +92,8 @@ public class RealDenseSparseMatMult {
      */
     public static double[] standard(double[] src1, int[] rowIndices, int[] colIndices, Shape shape1,
                                     double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
 
@@ -126,9 +126,9 @@ public class RealDenseSparseMatMult {
      */
     public static double[] concurrentStandard(double[] src1, Shape shape1, double[] src2,
                                     int[] rowIndices, int[] colIndices, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
 
@@ -173,8 +173,8 @@ public class RealDenseSparseMatMult {
      */
     public static double[] concurrentStandard(double[] src1, int[] rowIndices, int[] colIndices, Shape shape1,
                                               double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
-        int cols2 = shape2.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols2 = shape2.getSize(1);
 
         double[] dest = new double[rows1*cols2];
 
@@ -215,8 +215,8 @@ public class RealDenseSparseMatMult {
      * @return Entries of the dense matrix resulting from the matrix vector multiplication.
      */
     public static double[] standardVector(double[] src1, Shape shape1, double[] src2, int[] indices) {
-        int denseRows = shape1.get(0);
-        int denseCols = shape1.get(1);
+        int denseRows = shape1.getSize(0);
+        int denseCols = shape1.getSize(1);
         int nonZeros = src2.length;
 
         double[] dest = new double[denseRows];
@@ -249,7 +249,7 @@ public class RealDenseSparseMatMult {
      */
     public static double[] standardVector(double[] src1, int[] rowIndices, int[] colIndices,
                                           Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
+        int rows1 = shape1.getSize(0);
         double[] dest = new double[rows1];
         int row, col;
 
@@ -273,8 +273,8 @@ public class RealDenseSparseMatMult {
      * @return Entries of the dense matrix resulting from the matrix vector multiplication.
      */
     public static double[] blockedVector(double[] src1, Shape shape1, double[] src2, int[] indices) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
         int rows2 = src2.length;
 
         int bsize = Configurations.getBlockSize(); // Get the block size to use.
@@ -313,8 +313,8 @@ public class RealDenseSparseMatMult {
      * @return Entries of the dense matrix resulting from the matrix vector multiplication.
      */
     public static double[] concurrentStandardVector(double[] src1, Shape shape1, double[] src2, int[] indices) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
         int rows2 = src2.length;
 
         double[] dest = new double[rows1];
@@ -349,7 +349,7 @@ public class RealDenseSparseMatMult {
      */
     public static double[] concurrentStandardVector(double[] src1, int[] rowIndices, int[] colIndices,
                                           Shape shape1, double[] src2, Shape shape2) {
-        int rows1 = shape1.get(0);
+        int rows1 = shape1.getSize(0);
         double[] dest = new double[rows1];
 
         ThreadManager.concurrentOperation(src1.length, (startIdx, endIdx) -> {
@@ -378,8 +378,8 @@ public class RealDenseSparseMatMult {
      * @return Entries of the dense matrix resulting from the matrix vector multiplication.
      */
     public static double[] concurrentBlockedVector(double[] src1, Shape shape1, double[] src2, int[] indices) {
-        int rows1 = shape1.get(0);
-        int cols1 = shape1.get(1);
+        int rows1 = shape1.getSize(0);
+        int cols1 = shape1.getSize(1);
         int rows2 = src2.length;
 
         final int bsize = Configurations.getBlockSize(); // Get the block size to use.

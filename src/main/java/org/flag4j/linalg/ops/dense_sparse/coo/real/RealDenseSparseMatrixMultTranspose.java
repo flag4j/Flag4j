@@ -51,9 +51,9 @@ public class RealDenseSparseMatrixMultTranspose {
      */
     public static double[] multTranspose(double[] dSrc, Shape dShape,
                                          double[] spSrc, int[] rowIndices, int[] colIndices, Shape spShape) {
-        int rows1 = dShape.get(0);
-        int rows2 = spShape.get(0);
-        int cols2 = spShape.get(1);
+        int rows1 = dShape.getSize(0);
+        int rows2 = spShape.getSize(0);
+        int cols2 = spShape.getSize(1);
 
         double[] dest = new double[rows1*rows2]; // Since second matrix is transposed, its columns will become rows.
 

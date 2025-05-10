@@ -35,7 +35,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(3);
         expEntries = new double[]{1.0};
         expIndices = new int[]{2};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getRow(2));
 
@@ -49,7 +49,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(11);
         expEntries = new double[]{};
         expIndices = new int[]{};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getRow(18));
 
@@ -63,7 +63,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(5);
         expEntries = new double[]{};
         expIndices = new int[]{};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getRow(0));
 
@@ -112,7 +112,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(2);
         expEntries = new double[]{};
         expIndices = new int[]{};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, RealCooMatrixGetSet.getRow(a, 2, 1, 3));
 
@@ -126,7 +126,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(7);
         expEntries = new double[]{};
         expIndices = new int[]{};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, RealCooMatrixGetSet.getRow(a, 18, 0, 7));
 
@@ -140,7 +140,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(3);
         expEntries = new double[]{};
         expIndices = new int[]{};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, RealCooMatrixGetSet.getRow(a, 0, 1, 4));
 
@@ -209,7 +209,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(3);
         expEntries = new double[]{};
         expIndices = new int[]{};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(2));
 
@@ -223,7 +223,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(11);
         expEntries = new double[]{};
         expIndices = new int[]{};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(18));
 
@@ -237,7 +237,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(5);
         expEntries = new double[]{};
         expIndices = new int[]{};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(0));
 
@@ -271,7 +271,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(5);
         expEntries = new double[]{0.62009};
         expIndices = new int[]{4};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(2));
 
@@ -285,7 +285,7 @@ class CooMatrixGetRowColTests {
         expShape = new Shape(5);
         expEntries = new double[]{0.29534, 0.75706};
         expIndices = new int[]{3, 4};
-        exp = new CooVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(2));
     }

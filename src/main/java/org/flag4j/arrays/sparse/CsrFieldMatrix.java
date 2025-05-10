@@ -26,7 +26,7 @@ package org.flag4j.arrays.sparse;
 
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.field_arrays.AbstractCsrFieldMatrix;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
 import org.flag4j.arrays.dense.FieldMatrix;
@@ -273,7 +273,7 @@ public class CsrFieldMatrix<T extends Field<T>> extends AbstractCsrFieldMatrix<C
      * {@code data}.
      */
     @Override
-    public CsrFieldMatrix<T> makeLikeTensor(Shape shape, T[] data) {
+    public CsrFieldMatrix<T> makeLikeNDArray(Shape shape, T[] data) {
         return new CsrFieldMatrix<>(shape, data, rowPointers.clone(), colIndices.clone());
     }
 
@@ -593,7 +593,7 @@ public class CsrFieldMatrix<T extends Field<T>> extends AbstractCsrFieldMatrix<C
      *                                  are out of bounds for the corresponding tensor.
      */
     @Override
-    public AbstractTensor<?, T[], T> tensorDot(CsrFieldMatrix<T> src2, int[] aAxes, int[] bAxes) {
+    public AbstractNDArray<?, T[], T> tensorDot(CsrFieldMatrix<T> src2, int[] aAxes, int[] bAxes) {
         return toTensor().tensorDot(src2.toTensor(), aAxes, bAxes);
     }
 

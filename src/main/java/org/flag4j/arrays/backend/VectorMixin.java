@@ -24,8 +24,17 @@
 
 package org.flag4j.arrays.backend;
 
+import org.flag4j.arrays.Shape;
+
 /**
- * This interface specifies methods which all vectors should implement.
+ * <p>The {@code VectorMixin} interface defines methods that any vector implementation must support.
+ * This interface is designed to ensure a consistent API for various vector operations, regardless of the underlying vector
+ * type (dense or sparse).
+ * It includes methods for accessing vector properties, performing mathematical operations,
+ * and manipulating vector elements and slices.
+ *
+ * <p>This interface is intended to be used as a mixin for a class which also extends {@link AbstractNDArray}.
+ *
  * @param <T> Type of this vector.
  * @param <U> Type of matrix which is similar to {@code T}.
  * @param <V> Type of dense matrix which is similar to {@code U}. If {@code T} is dense, then {@code U} and {@code T} should be the
@@ -55,8 +64,22 @@ public interface VectorMixin<T extends VectorMixin<T, U, V, W>,
      * @return The inner product between this vector and the vector {@code b}.
      * @throws IllegalArgumentException If this vector and vector {@code b} do not have the same number of data.
      * @see #dot(VectorMixin)
+     * @see #innerSelf()
      */
     W inner(T b);
+
+
+    /**
+     * <p>Computes the inner product between this vector and itself.
+     * <p>This method <em>may</em> be slightly more efficient than calling {@link #inner(VectorMixin) this.inner(this)}.
+     *
+     * @return The inner product between this vector and itself.
+     * @see #inner(VectorMixin)
+     */
+    default double innerSelf() {
+        return magSquared();
+    }
+
 
 
     /**
@@ -157,7 +180,7 @@ public interface VectorMixin<T extends VectorMixin<T, U, V, W>,
 
 
     /**
-     * Converts a vector to an equivalent matrix representing the vector as a column vector.
+     * Converts this vector to an equivalent matrix representing the vector as a column vector.
      *
      * @return A matrix equivalent to this vector as if it were a column vector.
      */
@@ -167,13 +190,37 @@ public interface VectorMixin<T extends VectorMixin<T, U, V, W>,
 
 
     /**
-     * Converts a vector to an equivalent matrix representing either a row or column vector.
+     * Converts this vector to an equivalent matrix representing either a row or column vector.
      * @param columVector Flag indicating whether to convert this vector to a matrix representing a row or column vector:
      *                    <p>If {@code true}, the vector will be converted to a matrix representing a column vector.
      *                    <p>If {@code false}, The vector will be converted to a matrix representing a row vector.
      * @return A matrix equivalent to this vector.
      */
     U toMatrix(boolean columVector);
+
+
+    /**
+     * <p>Converts this vector to a matrix with a specified shape.
+     * <p>Note, the following must be satisfied: {@code rows*cols == this.size}.
+     *
+     * @param rows The number of rows in the matrix.
+     * @param cols The number of columns in the matrix.
+     * @return A matrix with the specified number of rows and columns containing the entries of this vector.
+     */
+    default U toMatrix(int rows, int cols) {
+        return toMatrix(new Shape(rows, cols));
+    }
+
+
+    /**
+     * <p>Converts this vector to a matrix with a specified shape.
+     * <p>Note, the following must be satisfied: {@code shape.totalEntriesIntValueExact() == this.size}.
+     *
+     * @param shape Shape of the matrix. Must be rank 2.
+     * @return A matrix with the specified number of rows and columns containing the entries of this vector.
+     */
+    U toMatrix(Shape shape);
+
 
 
     /**
@@ -184,10 +231,30 @@ public interface VectorMixin<T extends VectorMixin<T, U, V, W>,
 
 
     /**
-     * Computes the magnitude of this vector.
+     * Computes the magnitude of this vector. This is an alias of {@link #norm()}.
      * @return The magnitude of this vector.
+     * @see #magSquared()
      */
-    W mag();
+    default double mag() {
+        return norm();
+    }
+
+
+    /**
+     * Computes the norm of this vector. This is the same as {@link #mag()}.
+     * @return The norm (specifically &ell;<sup>2</sup>) of this vector.
+     * @see #mag()
+     * @see #magSquared()
+     */
+    double norm();
+
+
+    /**
+     * Computes the squared magnitude of this vector.
+     * @return The squared magnitude of this vector.
+     * @see #mag()
+     */
+    double magSquared();
 
 
     /**

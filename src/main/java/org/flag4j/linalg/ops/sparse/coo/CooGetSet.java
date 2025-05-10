@@ -67,7 +67,7 @@ public final class CooGetSet {
     public static <T> SparseMatrixData<T> setRow(Shape srcShape, T[] srcEntries, int[] rowIndices, int[] colIndices,
                                                  int rowIdx,
                                                  int size, T[] row, int[] indices) {
-        if(srcShape.get(1) != size) {
+        if(srcShape.getSize(1) != size) {
             throw new IllegalArgumentException("Cannot set row of matrix with shape " + srcShape
                     + " with a vector of size " + size + ".");
         }
@@ -113,8 +113,8 @@ public final class CooGetSet {
     public static <T> SparseMatrixData<T> setCol(Shape srcShape, T[] srcEntries, int[] rowIndices, int[] colIndices,
                                                  int colIdx,
                                                  int size, T[] col, int[] indices) {
-        ValidateParameters.validateArrayIndices(srcShape.get(1), colIdx);
-        ValidateParameters.ensureAllEqual(srcShape.get(0), size);
+        ValidateParameters.validateArrayIndices(srcShape.getSize(1), colIdx);
+        ValidateParameters.ensureAllEqual(srcShape.getSize(0), size);
 
         // Initialize destination arrays with the new column and the appropriate indices.
         List<T> destEntries = new ArrayList<>(Arrays.asList(col));
@@ -461,8 +461,8 @@ public final class CooGetSet {
         List<Integer> rowIndices = ArrayConversions.toArrayList(ArrayUtils.shift(row, src2RowIndices));
         List<Integer> colIndices = ArrayConversions.toArrayList(ArrayUtils.shift(col, src2ColIndices));
 
-        int[] rowRange = ArrayBuilder.intRange(row, shape2.get(0) + row);
-        int[] colRange = ArrayBuilder.intRange(col, shape2.get(1) + col);
+        int[] rowRange = ArrayBuilder.intRange(row, shape2.getSize(0) + row);
+        int[] colRange = ArrayBuilder.intRange(col, shape2.getSize(1) + col);
         copyValuesNotInSlice(src1Entries, src1RowIndices, src1ColIndices, entries, rowIndices, colIndices, rowRange, colRange);
 
         // Ensure the data is sorted properly.
@@ -487,8 +487,8 @@ public final class CooGetSet {
      */
     public static <T> SparseMatrixData<T> getSlice(Shape shape, T[] entries, int[] rowIndices, int[] colIndices,
                                                    int rowStart, int rowEnd, int colStart, int colEnd) {
-        ValidateParameters.validateArrayIndices(shape.get(0), rowStart, rowEnd-1);
-        ValidateParameters.validateArrayIndices(shape.get(1), colStart, colEnd-1);
+        ValidateParameters.validateArrayIndices(shape.getSize(0), rowStart, rowEnd-1);
+        ValidateParameters.validateArrayIndices(shape.getSize(1), colStart, colEnd-1);
 
         List<T> destEntries = new ArrayList<>();
         List<Integer> destRowIndices = new ArrayList<>();
@@ -532,8 +532,8 @@ public final class CooGetSet {
      * @return A sparse vector data object containing the non-zero data and indices along the specified diagonal of the COO matrix.
      */
     public static <T> SparseVectorData<T> getDiag(Shape shape, T[] entries, int[] rowIndices, int[] colIndices, int diagOffset) {
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
 
         ValidateParameters.ensureInRange(diagOffset, -(numRows-1),
                 numCols-1, "diagOffset");
@@ -594,9 +594,9 @@ public final class CooGetSet {
     public static <T> SparseVectorData<T> getRow(Shape shape, T[] entries,
                                                  int[] rowIndices, int[] colIndices,
                                                  int rowIdx, int start, int end) {
-        ValidateParameters.validateArrayIndices(shape.get(0), rowIdx);
-        ValidateParameters.ensureInRange(start, 0, shape.get(1), "start");
-        ValidateParameters.ensureInRange(end, start, shape.get(1), "end");
+        ValidateParameters.validateArrayIndices(shape.getSize(0), rowIdx);
+        ValidateParameters.ensureInRange(start, 0, shape.getSize(1), "start");
+        ValidateParameters.ensureInRange(end, start, shape.getSize(1), "end");
 
         IntPair rowStartEnd = SparseElementSearch.matrixFindRowStartEnd(rowIndices, rowIdx);
         int rowStart = rowStartEnd.first();
@@ -648,9 +648,9 @@ public final class CooGetSet {
                                                  int[] rowIndices, int[] colIndices,
                                                  int colIdx, int start, int end) {
         // Validate parameters.
-        ValidateParameters.validateArrayIndices(shape.get(1), colIdx);
-        ValidateParameters.ensureInRange(start, 0, shape.get(0), "start");
-        ValidateParameters.ensureInRange(end, start, shape.get(0), "end");
+        ValidateParameters.validateArrayIndices(shape.getSize(1), colIdx);
+        ValidateParameters.ensureInRange(start, 0, shape.getSize(0), "start");
+        ValidateParameters.ensureInRange(end, start, shape.getSize(0), "end");
 
         List<T> colEntries = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
@@ -676,10 +676,10 @@ public final class CooGetSet {
      */
     private static void setSliceParamCheck(
             Shape srcShape, Shape valuesShape, int row, int col) {
-        ValidateParameters.validateArrayIndices(srcShape.get(0), row);
-        ValidateParameters.validateArrayIndices(srcShape.get(0), col);
+        ValidateParameters.validateArrayIndices(srcShape.getSize(0), row);
+        ValidateParameters.validateArrayIndices(srcShape.getSize(0), col);
 
-        if(valuesShape.get(0) + row > srcShape.get(0) || valuesShape.get(1) + col > srcShape.get(1)) {
+        if(valuesShape.getSize(0) + row > srcShape.getSize(0) || valuesShape.getSize(1) + col > srcShape.getSize(1)) {
             throw new IndexOutOfBoundsException(
                     String.format("Slice of shape %s starting at (%d, %d) does not fit in matrix of shape %s.",
                             valuesShape, row, col, srcShape));

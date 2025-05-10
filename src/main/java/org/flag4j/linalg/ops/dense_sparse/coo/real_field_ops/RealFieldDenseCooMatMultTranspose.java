@@ -25,8 +25,8 @@
 package org.flag4j.linalg.ops.dense_sparse.coo.real_field_ops;
 
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.Shape;
+import org.flag4j.numbers.Field;
 
 import java.util.Arrays;
 
@@ -59,9 +59,9 @@ public final class RealFieldDenseCooMatMultTranspose {
             double[] deSrc, Shape deShape,
             T[] spSrc, int[] rowIndices, int[] colIndices, Shape spShape,
             T[] dest) {
-        int rows1 = deShape.get(0);
-        int rows2 = spShape.get(0);
-        int cols2 = spShape.get(1);
+        int rows1 = deShape.getSize(0);
+        int rows2 = spShape.getSize(0);
+        int cols2 = spShape.getSize(1);
 
         Arrays.fill(dest, (spSrc.length > 0) ? spSrc[0].getZero() : null);
 
@@ -94,9 +94,9 @@ public final class RealFieldDenseCooMatMultTranspose {
     public static <T extends Field<T>> void multTranspose(
             T[] dSrc, Shape dShape,
             double[] spSrc, int[] rowIndices, int[] colIndices, Shape spShape, T[] dest) {
-        int rows1 = dShape.get(0);
-        int rows2 = spShape.get(0);
-        int cols2 = spShape.get(1);
+        int rows1 = dShape.getSize(0);
+        int rows2 = spShape.getSize(0);
+        int cols2 = spShape.getSize(1);
 
         Arrays.fill(dest, (dSrc.length > 0) ? dSrc[0].getZero() : null);
 

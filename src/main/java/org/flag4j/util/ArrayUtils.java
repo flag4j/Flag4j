@@ -457,8 +457,8 @@ public final class ArrayUtils {
                 throw new IllegalArgumentException("Expected a 1D array, but got a non-array object.");
 
             int length = Array.getLength(nDArray);
-            if (length != shape.get(0))
-                throw new IllegalArgumentException("Shape mismatch: expected " + shape.get(0) + " elements, but got " + length);
+            if (length != shape.getSize(0))
+                throw new IllegalArgumentException("Shape mismatch: expected " + shape.getSize(0) + " elements, but got " + length);
 
             for (int i = 0; i < length; i++)
                 flatArray[offset + i] = (T) Array.get(nDArray, i);
@@ -469,8 +469,8 @@ public final class ArrayUtils {
                 throw new IllegalArgumentException("Expected an array of arrays, but got a non-array object.");
 
             int length = Array.getLength(nDArray);
-            if (length != shape.get(0))
-                throw new IllegalArgumentException("Shape mismatch: expected " + shape.get(0) + " arrays, but got " + length);
+            if (length != shape.getSize(0))
+                throw new IllegalArgumentException("Shape mismatch: expected " + shape.getSize(0) + " arrays, but got " + length);
 
             Shape subShape = shape.slice(1);
             int currentOffset = offset;
@@ -501,8 +501,8 @@ public final class ArrayUtils {
                 throw new IllegalArgumentException("Expected a 1D array of doubles, but got a different type.");
 
             int length = Array.getLength(nDArray);
-            if (length != shape.get(0))
-                throw new IllegalArgumentException("Shape mismatch: expected " + shape.get(0) + " elements, but got " + length);
+            if (length != shape.getSize(0))
+                throw new IllegalArgumentException("Shape mismatch: expected " + shape.getSize(0) + " elements, but got " + length);
 
             System.arraycopy(nDArray, 0, flatArray, offset, length);
             return offset + length;
@@ -511,8 +511,8 @@ public final class ArrayUtils {
                 throw new IllegalArgumentException("Expected an array of arrays, but got a non-array object.");
 
             int length = Array.getLength(nDArray);
-            if (length != shape.get(0))
-                throw new IllegalArgumentException("Shape mismatch: expected " + shape.get(0) + " arrays, but got " + length);
+            if (length != shape.getSize(0))
+                throw new IllegalArgumentException("Shape mismatch: expected " + shape.getSize(0) + " arrays, but got " + length);
 
             Shape subShape = shape.slice(1);
             int currentOffset = offset;

@@ -137,7 +137,7 @@ public final class CsrOps {
                                                       BinaryOperator<T> opp, UnaryOperator<T> uOpp) {
         ValidateParameters.ensureEqualShape(shape1, shape2);
 
-        final int rows1 = shape1.get(0);
+        final int rows1 = shape1.getSize(0);
 
         List<T> dest = new ArrayList<>();
         int[] rowPointers = new int[src1RowPointers.length];

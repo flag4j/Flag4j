@@ -29,7 +29,7 @@ import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
 
 /**
- * This class provides low level implementations for vector ops with one dense real vector and one dense field vector.
+ * This class provides low-level implementations for vector ops with one dense real vector and one dense field vector.
  */
 public final class RealFieldDenseVectorOps {
 

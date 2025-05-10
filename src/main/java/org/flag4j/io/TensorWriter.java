@@ -24,7 +24,7 @@
 
 package org.flag4j.io;
 
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.Matrix;
@@ -65,7 +65,7 @@ import java.util.StringJoiner;
  * TensorWriter.toCsv("matrix2.csv", matrix2, ";");  // Specify delimiter.
  *
  * // Serialize a tensor to a binary file
- * AbstractTensor tensor = new AbstractTensor(...);
+ * AbstractNDArray tensor = new AbstractNDArray(...);
  * TensorWriter.write("tensor.ser", tensor);
  * }</pre>
  */
@@ -84,7 +84,7 @@ public final class TensorWriter {
      * @param src Source object to write to the specified file.
      * @throws IOException If any I/O error occurs when attempting to write to file.
      */
-    public static void write(String fileName, AbstractTensor<?, ?, ?> src) throws IOException {
+    public static void write(String fileName, AbstractNDArray<?, ?, ?> src) throws IOException {
         boolean successfulWrite = true;
 
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {

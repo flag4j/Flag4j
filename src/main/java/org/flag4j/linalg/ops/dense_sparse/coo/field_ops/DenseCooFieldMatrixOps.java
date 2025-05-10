@@ -24,18 +24,19 @@
 
 package org.flag4j.linalg.ops.dense_sparse.coo.field_ops;
 
-import org.flag4j.numbers.Field;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.field_arrays.AbstractCooFieldMatrix;
 import org.flag4j.arrays.backend.field_arrays.AbstractDenseFieldMatrix;
 import org.flag4j.arrays.backend.field_arrays.AbstractDenseFieldVector;
 import org.flag4j.linalg.ops.common.field_ops.FieldOps;
+import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.util.Arrays;
 
 /**
- * This class contains low level implementations for ops between a dense and a sparse field matrix.
+ * This class contains low-level implementations for ops between a dense and a sparse field matrix.
  */
 public final class DenseCooFieldMatrixOps {
 
@@ -99,7 +100,7 @@ public final class DenseCooFieldMatrixOps {
         ValidateParameters.ensureEqualShape(src1.shape, src2.shape);
         T[] destData = src1.makeEmptyDataArray(src1.data.length);
         FieldOps.scalMult(src1.data, -1, destData);
-        AbstractDenseFieldMatrix<?, ?, T> dest = src1.makeLikeTensor(src1.shape, destData);
+        AbstractDenseFieldMatrix<?, ?, T> dest = src1.makeLikeNDArray(src1.shape, destData);
 
         for(int i=0; i<src2.nnz; i++) {
             int idx = src2.rowIndices[i]*src1.numCols + src2.colIndices[i];
@@ -152,7 +153,7 @@ public final class DenseCooFieldMatrixOps {
      * @param colIndices2 Non-zero column indices of the second matrix in the element-wise product.
      * @param dest Array to store the non-zero data of the sparse COO matrix resulting from the element-wise multiplication
      * (modified). Must have same length as {@code data2}. May be the same array as {@code data2}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !shape1.equals(shape2)}
+     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}
      */
     public static <T extends Field<T>> void elemMult(
             Shape shape1, T[] data1,
@@ -161,7 +162,7 @@ public final class DenseCooFieldMatrixOps {
         ValidateParameters.ensureEqualShape(shape1, shape2);
         ValidateParameters.ensureArrayLengthsEq(dest.length, data2.length);
 
-        int src1NumCols = shape1.get(1);
+        int src1NumCols = shape1.getSize(1);
 
         for(int i=0, size=dest.length; i<size; i++) {
             int row = rowIndices2[i];

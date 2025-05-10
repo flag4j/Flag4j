@@ -26,7 +26,7 @@ package org.flag4j.arrays.backend.primitive_arrays;
 
 
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.field_arrays.TensorOverField;
 import org.flag4j.linalg.ops.common.real.AggregateReal;
 import org.flag4j.linalg.ops.common.real.RealOps;
@@ -39,7 +39,7 @@ import org.flag4j.util.Flag4jConstants;
  * agnostic to weather the tensor is dense or sparse.
  */
 public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
-        extends AbstractTensor<T, double[], Double>
+        extends AbstractNDArray<T, double[], Double>
         implements TensorOverField<T, T, double[], Double> {
 
     // TODO: Adjust method JavaDocs to reflect that it may compute a solution only using non-zero
@@ -77,7 +77,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * @see #roundToZero(double)
      */
     public T round() {
-        return makeLikeTensor(this.shape, RealOps.round(this.data));
+        return makeLikeNDArray(this.shape, RealOps.round(this.data));
     }
 
 
@@ -92,7 +92,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * @see #roundToZero(double)
      */
     public T round(int precision) {
-        return makeLikeTensor(this.shape, RealOps.round(this.data, precision));
+        return makeLikeNDArray(this.shape, RealOps.round(this.data, precision));
     }
 
 
@@ -108,7 +108,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * @see #round(int)
      */
     public T roundToZero() {
-        return makeLikeTensor(this.shape, RealOps.roundToZero(this.data, Flag4jConstants.EPS_F64));
+        return makeLikeNDArray(this.shape, RealOps.roundToZero(this.data, Flag4jConstants.EPS_F64));
     }
 
 
@@ -124,7 +124,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * @see #round(int)
      */
     public T roundToZero(double threshold) {
-        return makeLikeTensor(this.shape, RealOps.roundToZero(this.data, threshold));
+        return makeLikeNDArray(this.shape, RealOps.roundToZero(this.data, threshold));
     }
 
 
@@ -153,7 +153,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public T copy() {
-        return makeLikeTensor(shape, data.clone());
+        return makeLikeNDArray(shape, data.clone());
     }
 
 
@@ -188,7 +188,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public T abs() {
-        return makeLikeTensor(shape, RealOps.abs(data));
+        return makeLikeNDArray(shape, RealOps.abs(data));
     }
 
 
@@ -231,7 +231,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */
@@ -388,7 +388,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public T add(double b) {
-        return makeLikeTensor(shape, RealDenseOps.add(data, b, null));
+        return makeLikeNDArray(shape, RealDenseOps.add(data, b, null));
     }
 
 
@@ -412,7 +412,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public T mult(double b) {
-        return makeLikeTensor(shape, RealOps.scalMult(data, b, null));
+        return makeLikeNDArray(shape, RealOps.scalMult(data, b, null));
     }
 
 
@@ -436,7 +436,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public T sub(double b) {
-        return makeLikeTensor(shape, RealDenseOps.sub(data, b, null));
+        return makeLikeNDArray(shape, RealDenseOps.sub(data, b, null));
     }
 
 
@@ -490,7 +490,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public T div(double b) {
-        return makeLikeTensor(shape, RealOps.scalDiv(data, b, null));
+        return makeLikeNDArray(shape, RealOps.scalDiv(data, b, null));
     }
 
 
@@ -514,7 +514,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public T sqrt() {
-        return makeLikeTensor(shape, RealOps.sqrt(data));
+        return makeLikeNDArray(shape, RealOps.sqrt(data));
     }
 
 
@@ -525,7 +525,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public T recip() {
-        return makeLikeTensor(shape, RealDenseOps.recip(data));
+        return makeLikeNDArray(shape, RealDenseOps.recip(data));
     }
 
 

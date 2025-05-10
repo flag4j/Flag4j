@@ -41,13 +41,13 @@ class ShapeTests {
 
 
     @Test
-    void getTestCase() {
+    void getSizeTestCase() {
         // ----------- sub-case 1 -----------
         expDims1 = new int[]{1, 5, 18};
         shape1 = new Shape(expDims1);
 
         for(int i = 0; i< expDims1.length; i++) {
-            assertEquals(expDims1[i], shape1.get(i));
+            assertEquals(expDims1[i], shape1.getSize(i));
         }
 
         // ----------- sub-case 3 -----------
@@ -55,7 +55,7 @@ class ShapeTests {
         shape1 = new Shape(expDims1);
 
         for(int i = 0; i< expDims1.length; i++) {
-            assertEquals(expDims1[i], shape1.get(i));
+            assertEquals(expDims1[i], shape1.getSize(i));
         }
     }
 

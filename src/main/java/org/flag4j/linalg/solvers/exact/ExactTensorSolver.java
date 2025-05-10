@@ -26,7 +26,7 @@ package org.flag4j.linalg.solvers.exact;
 
 
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.AbstractTensor;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.backend.VectorMixin;
 import org.flag4j.arrays.backend.semiring_arrays.TensorOverSemiring;
@@ -48,7 +48,7 @@ import org.flag4j.util.ValidateParameters;
  * @param <U> Matrix type equivalent of tensor to solve.
  * @param <V> Vector type equivalent of tensor to solve.
  */
-public abstract class ExactTensorSolver<T extends AbstractTensor<T, ?, ?>,
+public abstract class ExactTensorSolver<T extends AbstractNDArray<T, ?, ?>,
         U extends MatrixMixin<U, ?, V, ?>,
         V extends VectorMixin<V, U, ?, ?>> implements LinearSolver<T> {
 

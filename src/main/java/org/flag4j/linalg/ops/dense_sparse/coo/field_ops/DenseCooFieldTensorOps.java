@@ -60,7 +60,7 @@ public final class DenseCooFieldTensorOps {
             destEntries[idx] = destEntries[idx].add(src2.data[i]);
         }
 
-        return src1.makeLikeTensor(src1.shape, destEntries);
+        return src1.makeLikeNDArray(src1.shape, destEntries);
     }
 
 
@@ -100,7 +100,7 @@ public final class DenseCooFieldTensorOps {
                     destEntries[idx].sub(src2.data[i]);
         }
 
-        return src1.makeLikeTensor(src1.shape, destEntries);
+        return src1.makeLikeNDArray(src1.shape, destEntries);
     }
 
 

@@ -1,10 +1,10 @@
 package org.flag4j.arrays.dense.vector;
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.dense.CVector;
 import org.flag4j.arrays.dense.Vector;
 import org.flag4j.arrays.sparse.CooCVector;
 import org.flag4j.arrays.sparse.CooVector;
+import org.flag4j.numbers.Complex128;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,8 +43,8 @@ class VectorShapeTests {
         bEntries = new double[]{0, -924.34, 5, 1.34545};
         B = new Vector(bEntries);
 
-        assertTrue(A.sameShape(B));
-        assertTrue(A.sameShape(B));
+        assertTrue(A.hasSameShape(B));
+        assertTrue(A.hasSameShape(B));
 
         // ------------------ sub-case 2 ------------------
         aEntries = new double[]{1.23, 45, -0.435, 22.15};
@@ -52,8 +52,8 @@ class VectorShapeTests {
         bEntries = new double[]{0, -924.34, 5, 1.34545, 34.4};
         B = new Vector(bEntries);
 
-        assertFalse(A.sameShape(B));
-        assertFalse(A.sameShape(B));
+        assertFalse(A.hasSameShape(B));
+        assertFalse(A.hasSameShape(B));
     }
 
 
@@ -68,8 +68,8 @@ class VectorShapeTests {
         bEntries = new Complex128[]{new Complex128(34, -0.34), new Complex128(0.445, 15.5), new Complex128(0.455), new Complex128(0, -8.435)};
         B = new CVector(bEntries);
 
-        assertTrue(A.sameShape(B));
-        assertTrue(A.sameShape(B));
+        assertTrue(A.hasSameShape(B));
+        assertTrue(A.hasSameShape(B));
 
         // ------------------ sub-case 2 ------------------
         aEntries = new double[]{1.23, 45, -0.435, 22.15};
@@ -77,8 +77,8 @@ class VectorShapeTests {
         bEntries = new Complex128[]{new Complex128(0.455), new Complex128(0, -8.435)};
         B = new CVector(bEntries);
 
-        assertFalse(A.sameShape(B));
-        assertFalse(A.sameShape(B));
+        assertFalse(A.hasSameShape(B));
+        assertFalse(A.hasSameShape(B));
     }
 
 
@@ -95,8 +95,8 @@ class VectorShapeTests {
         size = 4;
         B = new CooVector(size, bEntries, indices);
 
-        assertTrue(A.sameShape(B));
-        assertTrue(A.sameShape(B));
+        assertTrue(A.hasSameShape(B));
+        assertTrue(A.hasSameShape(B));
 
         // ------------------ sub-case 2 ------------------
         aEntries = new double[]{1.23, 45, -0.435, 22.15};
@@ -106,8 +106,8 @@ class VectorShapeTests {
         size = 4096;
         B = new CooVector(size, bEntries, indices);
 
-        assertFalse(A.sameShape(B));
-        assertFalse(A.sameShape(B));
+        assertFalse(A.hasSameShape(B));
+        assertFalse(A.hasSameShape(B));
     }
 
 
@@ -124,8 +124,8 @@ class VectorShapeTests {
         size = 4;
         B = new CooCVector(size, bEntries, indices);
 
-        assertTrue(A.sameShape(B));
-        assertTrue(A.sameShape(B));
+        assertTrue(A.hasSameShape(B));
+        assertTrue(A.hasSameShape(B));
 
         // ------------------ sub-case 2 ------------------
         aEntries = new double[]{1.23, 45, -0.435, 22.15};
@@ -135,7 +135,7 @@ class VectorShapeTests {
         size = 4096;
         B = new CooCVector(size, bEntries, indices);
 
-        assertFalse(A.sameShape(B));
-        assertFalse(A.sameShape(B));
+        assertFalse(A.hasSameShape(B));
+        assertFalse(A.hasSameShape(B));
     }
 }

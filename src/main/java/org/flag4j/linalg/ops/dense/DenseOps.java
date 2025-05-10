@@ -47,8 +47,8 @@ public final class DenseOps {
      */
     public static <T> void swapRows(Shape shape, T[] data, int rowIdx1, int rowIdx2) {
         ValidateParameters.ensureRank(shape, 2);
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
         ValidateParameters.validateArrayIndices(numRows, rowIdx1, rowIdx2);
 
         swapRowsUnsafe(shape, data, rowIdx1, rowIdx2, 0, numCols);
@@ -75,7 +75,7 @@ public final class DenseOps {
         // Quick return when indices are equal.
         if(rowIdx1 == rowIdx2) return;
 
-        final int cols = shape.get(1);
+        final int cols = shape.getSize(1);
         final int rowOffset1 = rowIdx1*cols;
         final int rowOffset2 = rowIdx2*cols;
         T temp;
@@ -101,8 +101,8 @@ public final class DenseOps {
      */
     public static <T> void swapCols(Shape shape, T[] data, int colIdx1, int colIdx2) {
         ValidateParameters.ensureRank(shape, 2);
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
         ValidateParameters.validateArrayIndices(numCols, colIdx1, colIdx2);
 
         swapColsUnsafe(shape, data, colIdx1, colIdx2, 0, numRows);
@@ -127,7 +127,7 @@ public final class DenseOps {
     public static <T> void swapColsUnsafe(Shape shape, T[] data, int colIdx1, int colIdx2, int start, int stop) {
         if(colIdx1 == colIdx2) return;
 
-        final int cols = shape.get(1);
+        final int cols = shape.getSize(1);
         int rowOffset = start*cols;
         T temp;
 

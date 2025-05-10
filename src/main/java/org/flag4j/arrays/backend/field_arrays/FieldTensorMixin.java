@@ -70,7 +70,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] diff = makeEmptyDataArray(data.length);
         RingOps.sub(data, b, diff);
-        return makeLikeTensor(getShape(), diff);
+        return makeLikeNDArray(getShape(), diff);
     }
 
 
@@ -96,7 +96,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] conj = makeEmptyDataArray(data.length);
         RingOps.conj(data, conj);
-        return makeLikeTensor(getShape(), conj);
+        return makeLikeNDArray(getShape(), conj);
     }
 
 
@@ -109,7 +109,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] recip = makeEmptyDataArray(data.length);
         FieldOps.recip(data, recip);
-        return makeLikeTensor(getShape(), recip);
+        return makeLikeNDArray(getShape(), recip);
     }
 
 
@@ -214,7 +214,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] dest = makeEmptyDataArray(data.length);
         SemiringOps.add(getData(), b, dest);
-        return makeLikeTensor(getShape(), dest);
+        return makeLikeNDArray(getShape(), dest);
     }
 
 
@@ -242,7 +242,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] dest = makeEmptyDataArray(data.length);
         SemiringOps.scalMult(getData(), b, dest);
-        return makeLikeTensor(getShape(), dest);
+        return makeLikeNDArray(getShape(), dest);
     }
 
 
@@ -314,7 +314,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] dest = makeEmptyDataArray(data.length);
         FieldOps.add(data, b, dest);
-        return makeLikeTensor(getShape(), dest);
+        return makeLikeNDArray(getShape(), dest);
     }
 
     /**
@@ -340,7 +340,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] dest = makeEmptyDataArray(data.length);
         FieldOps.mult(data, b, dest);
-        return makeLikeTensor(getShape(), dest);
+        return makeLikeNDArray(getShape(), dest);
     }
 
     /**
@@ -366,7 +366,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] dest = makeEmptyDataArray(data.length);
         FieldOps.sub(data, b, dest);
-        return makeLikeTensor(getShape(), dest);
+        return makeLikeNDArray(getShape(), dest);
     }
 
     /**
@@ -396,7 +396,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] dest = makeEmptyDataArray(data.length);
         FieldOps.div(data, b, dest);
-        return makeLikeTensor(getShape(), dest);
+        return makeLikeNDArray(getShape(), dest);
     }
 
     /**
@@ -430,7 +430,7 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
         V[] data = getData();
         V[] dest = makeEmptyDataArray(data.length);
         FieldOps.div(data, b, dest);
-        return makeLikeTensor(getShape(), dest);
+        return makeLikeNDArray(getShape(), dest);
     }
 
 
@@ -450,7 +450,6 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
     }
 
 
-    // TODO: Remove norms. They need only be defined for vectors and matrices.
     /**
      * Computes the Euclidean norm of this vector.
      *
@@ -461,7 +460,6 @@ public interface FieldTensorMixin<T extends FieldTensorMixin<T, U, V>,
     }
 
 
-    // TODO: Remove norms. They need only be defined for vectors and matrices.
     /**
      * Computes the p-norm of this vector.
      *

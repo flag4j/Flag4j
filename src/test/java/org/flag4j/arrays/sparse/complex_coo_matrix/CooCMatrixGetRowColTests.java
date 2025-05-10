@@ -34,7 +34,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(3);
         expEntries = new Complex128[]{};
         expIndices = new int[]{};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getRow(2));
 
@@ -48,7 +48,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(11);
         expEntries = new Complex128[]{};
         expIndices = new int[]{};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getRow(18));
 
@@ -62,7 +62,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(5);
         expEntries = new Complex128[]{};
         expIndices = new int[]{};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getRow(0));
 
@@ -111,7 +111,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(2);
         expEntries = new Complex128[]{};
         expIndices = new int[]{};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getRow(2, 1, 3));
 
@@ -125,7 +125,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(7);
         expEntries = new Complex128[]{};
         expIndices = new int[]{};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getRow(18, 0, 7));
 
@@ -139,7 +139,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(3);
         expEntries = new Complex128[]{};
         expIndices = new int[]{};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getRow(0, 1, 4));
 
@@ -208,7 +208,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(3);
         expEntries = new Complex128[]{new Complex128("0.57563+0.65813i"), new Complex128("0.95458+0.46474i")};
         expIndices = new int[]{0, 2};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(2));
 
@@ -222,7 +222,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(11);
         expEntries = new Complex128[]{};
         expIndices = new int[]{};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(18));
 
@@ -236,7 +236,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(5);
         expEntries = new Complex128[]{};
         expIndices = new int[]{};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(0));
 
@@ -270,7 +270,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(5);
         expEntries = new Complex128[]{new Complex128("0.8627+0.19761i"), new Complex128("0.88528+0.83323i")};
         expIndices = new int[]{0, 3};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(2));
 
@@ -284,7 +284,7 @@ class CooCMatrixGetRowColTests {
         expShape = new Shape(5);
         expEntries = new Complex128[]{};
         expIndices = new int[]{};
-        exp = new CooCVector(expShape.get(0), expEntries, expIndices);
+        exp = new CooCVector(expShape.getSize(0), expEntries, expIndices);
 
         assertEquals(exp, a.getCol(2));
     }

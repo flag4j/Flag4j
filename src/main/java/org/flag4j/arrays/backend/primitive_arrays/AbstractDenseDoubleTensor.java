@@ -36,7 +36,7 @@ import org.flag4j.linalg.ops.dense.real.RealDenseOps;
 import org.flag4j.linalg.ops.dense.real.RealDenseTensorDot;
 import org.flag4j.linalg.ops.dense.semiring_ops.DenseSemiringOps;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 /**
  * This is the base class of all real primitive double tensors. The methods implemented in this class are agnostic to weather the
@@ -121,13 +121,13 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      * @return The transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #T(int, int)
      * @see #T()
      */
     @Override
     public T T(int... axes) {
-        return makeLikeTensor(shape.permuteAxes(axes),
+        return makeLikeNDArray(shape.permuteAxes(axes),
                 TransposeDispatcher.dispatchTensor(data, shape, axes));
     }
 
@@ -139,14 +139,14 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T sub(T b) {
         // TODO: For methods like RealDenseOperations.sub which only take arrays, the shape check should be done in the method itself
         //   and we will perform no bounds check in RealDenseOperations.sub (which needs to be documented within the method itself).
         ValidateParameters.ensureEqualShape(shape, b.shape);
-        return makeLikeTensor(shape, RealDenseOps.sub(data, b.data, null));
+        return makeLikeNDArray(shape, RealDenseOps.sub(data, b.data, null));
     }
 
 
@@ -155,7 +155,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      *
      * @param b Second tensor in the element-wise difference.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public void subEq(T b) {
         ValidateParameters.ensureEqualShape(shape, b.shape);
@@ -170,12 +170,12 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T add(T b) {
         ValidateParameters.ensureEqualShape(shape, b.shape);
-        return makeLikeTensor(shape, RealDenseOps.add(data, b.data, null));
+        return makeLikeNDArray(shape, RealDenseOps.add(data, b.data, null));
     }
 
     /**
@@ -203,7 +203,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
     @Override
     public T elemMult(T b) {
         ValidateParameters.ensureEqualShape(shape, b.shape);
-        return makeLikeTensor(shape, RealDenseElemMult.elemMult(data, b.data, null));
+        return makeLikeNDArray(shape, RealDenseElemMult.elemMult(data, b.data, null));
     }
 
 
@@ -238,7 +238,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
     public T tensorDot(T src2, int[] aAxes, int[] bAxes) {
         RealDenseTensorDot problem = new RealDenseTensorDot(
                 shape, data, src2.shape, src2.data, aAxes, bAxes);
-        return makeLikeTensor(problem.getOutputShape(), problem.compute());
+        return makeLikeNDArray(problem.getOutputShape(), problem.compute());
     }
 
 
@@ -277,7 +277,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
     @Override
     public T div(T b) {
         ValidateParameters.ensureEqualShape(shape, b.shape);
-        return makeLikeTensor(shape, RealDenseElemDiv.dispatch(data, b.data, null));
+        return makeLikeNDArray(shape, RealDenseElemDiv.dispatch(data, b.data, null));
     }
 
 
@@ -351,12 +351,12 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws TensorShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
         ValidateParameters.ensureTotalEntriesEqual(shape, newShape);
-        return makeLikeTensor(newShape, data.clone());
+        return makeLikeNDArray(newShape, data.clone());
     }
 
 
@@ -375,7 +375,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      * @return A new matrix containing the data of this matrix rounded to the specified precision.
      */
     public T round(int precision) {
-        return makeLikeTensor(shape, RealOps.round(data, precision));
+        return makeLikeNDArray(shape, RealOps.round(data, precision));
     }
 
 
@@ -385,7 +385,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      * @return A copy of this matrix with all data within {@code tol} of zero set to zero.
      */
     public T roundToZero(double tolerance) {
-        return makeLikeTensor(shape, RealOps.roundToZero(data, tolerance));
+        return makeLikeNDArray(shape, RealOps.roundToZero(data, tolerance));
     }
 
 
@@ -399,7 +399,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      * @see #allClose(AbstractDoubleTensor, double, double)
      */
     public boolean allClose(T b) {
-        return sameShape(b) && RealProperties.allClose(data, b.data);
+        return hasSameShape(b) && RealProperties.allClose(data, b.data);
     }
 
 
@@ -412,6 +412,6 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      * @see #allClose(AbstractDoubleTensor)
      */
     public boolean allClose(T b, double relTol, double absTol) {
-        return sameShape(b) && RealProperties.allClose(data, b.data, relTol, absTol);
+        return hasSameShape(b) && RealProperties.allClose(data, b.data, relTol, absTol);
     }
 }

@@ -29,7 +29,7 @@ import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.ValidateParameters;
 
 /**
- * This class contains low level implementations of element-wise division algorithms for real dense tensors.
+ * This class contains low-level implementations of element-wise division algorithms for real dense tensors.
  */
 public final class RealDenseElemDiv {
 

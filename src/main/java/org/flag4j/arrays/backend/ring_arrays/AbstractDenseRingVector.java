@@ -31,7 +31,7 @@ import org.flag4j.linalg.VectorNorms;
 import org.flag4j.linalg.ops.dense.ring_ops.DenseRingTensorOps;
 import org.flag4j.numbers.Ring;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.TensorShapeException;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 /**
  * <p>The base class for all dense vectors whose data are {@link Ring} elements.
@@ -74,10 +74,25 @@ public abstract class AbstractDenseRingVector<T extends AbstractDenseRingVector<
 
 
     /**
-     * Computes the Euclidean norm of this vector.
+     * Computes the squared magnitude of this vector.
      *
-     * @return The Euclidean norm of this vector.
+     * @return The squared magnitude of this vector.
+     *
+     * @see #mag()
      */
+    @Override
+    public double magSquared() {
+        return VectorNorms.normSquared(data) ;
+    }
+
+
+    /**
+     * Computes the norm of this vector. This is the same as {@link #mag()}.
+     * @return The norm (specifically &ell;<sup>2</sup>) of this vector.
+     * @see #mag()
+     * @see #magSquared()
+     */
+    @Override
     public double norm() {
         return VectorNorms.norm(data);
     }
@@ -102,22 +117,22 @@ public abstract class AbstractDenseRingVector<T extends AbstractDenseRingVector<
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws TensorShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T sub(T b) {
         V[] diff = makeEmptyDataArray(data.length);
         DenseRingTensorOps.sub(shape, data, b.shape, b.data, diff);
-        return makeLikeTensor(shape, diff);
+        return makeLikeNDArray(shape, diff);
     }
 
 
     /**
-     * Computes the element-wise difference between two vectors of the same shape and stores the result in this vectors.
+     * Computes the element-wise difference between two vectors of the same shape and stores the result in this vector.
      *
      * @param b Second vectors in the element-wise difference.
      *
-     * @throws TensorShapeException If this vectors and {@code b} do not have the same shape.
+     * @throws ArrayShapeException If this vectors and {@code b} do not have the same shape.
      */
     public void subEq(T b) {
         DenseRingTensorOps.sub(shape, data, b.shape, b.data, data);
@@ -153,7 +168,7 @@ public abstract class AbstractDenseRingVector<T extends AbstractDenseRingVector<
      * @return The conjugate transpose of this tensor with its axes permuted by the {@code axes} array.
      *
      * @throws IndexOutOfBoundsException If any element of {@code axes} is out of bounds for the rank of this tensor.
-     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {1, 2, 3, ... N-1}}.
+     * @throws IllegalArgumentException  If {@code axes} is not a permutation of {@code {0, 1, 2, ... N-1}}.
      * @see #H(int, int)
      * @see #H()
      */

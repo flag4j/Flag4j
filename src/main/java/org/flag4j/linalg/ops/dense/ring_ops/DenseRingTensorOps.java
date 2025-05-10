@@ -24,9 +24,10 @@
 
 package org.flag4j.linalg.ops.dense.ring_ops;
 
-import org.flag4j.numbers.Ring;
 import org.flag4j.arrays.Shape;
+import org.flag4j.numbers.Ring;
 import org.flag4j.util.ValidateParameters;
+import org.flag4j.util.exceptions.ArrayShapeException;
 
 /**
  * Utility class for computing ops between two dense {@link Ring} tensors.
@@ -45,7 +46,7 @@ public final class DenseRingTensorOps {
      * @param shape2 Shape of the second tensor in the element-wise difference.
      * @param src2 Entries of the second tensor in the element-wise difference.
      * @param dest Array to store the resulting element-wise difference. May be the same array as either {@code src1} or {@code src2}.
-     * @throws org.flag4j.util.exceptions.TensorShapeException If {@code !shape1.equals(shape2)}.
+     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}.
      * @throws ArrayIndexOutOfBoundsException If {@code src2.length < src2.length || dest.length < src1.length}
      */
     public static <T extends Ring<T>> void sub(Shape shape1, T[] src1,
@@ -67,11 +68,11 @@ public final class DenseRingTensorOps {
      * @return {@code true} if this matrix is Hermitian; {@code false} otherwise.
      */
     public static <T extends Ring<T>> boolean isHermitian(Shape shape, T[] src) {
-        if(shape.get(0)!=shape.get(1)) return false;
+        if(shape.getSize(0)!=shape.getSize(1)) return false;
 
-        int numCols = shape.get(1);
+        int numCols = shape.getSize(1);
 
-        for(int i=0, rows=shape.get(0); i<rows; i++) {
+        for(int i = 0, rows = shape.getSize(0); i<rows; i++) {
             int count1 = i*numCols;
             int count2 = i;
             int stop = count1 + i;
@@ -101,8 +102,8 @@ public final class DenseRingTensorOps {
      * @return True if the {@code src} matrix is close the identity matrix or if the matrix has zero data.
      */
     public static <T extends Ring<T>> boolean isCloseToIdentity(Shape shape, T[] src) {
-        int numRows = shape.get(0);
-        int numCols = shape.get(1);
+        int numRows = shape.getSize(0);
+        int numCols = shape.getSize(1);
 
         if(src == null || numRows!=numCols) return false;
         if(src.length == 0) return true;

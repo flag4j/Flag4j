@@ -171,14 +171,14 @@ public class SemiringTensor<T extends Semiring<T>> extends AbstractDenseSemiring
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public SemiringTensor<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new SemiringTensor<>(shape, entries);
+    public SemiringTensor<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new SemiringTensor<>(shape, data);
     }
 
 

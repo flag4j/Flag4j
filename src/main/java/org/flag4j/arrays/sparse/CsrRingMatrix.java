@@ -219,14 +219,14 @@ public class CsrRingMatrix<T extends Ring<T>> extends AbstractCsrRingMatrix<
      * the same non-zero indices as this tensor.
      *
      * @param shape Shape of the tensor to construct.
-     * @param entries Entries of the tensor to construct.
+     * @param data Entries of the tensor to construct.
      *
      * @return A tensor of the same type and with the same non-zero indices as this tensor with the given the {@code shape} and
      * {@code data}.
      */
     @Override
-    public CsrRingMatrix<T> makeLikeTensor(Shape shape, T[] entries) {
-        return new CsrRingMatrix<>(shape, entries, rowPointers.clone(), colIndices.clone());
+    public CsrRingMatrix<T> makeLikeNDArray(Shape shape, T[] data) {
+        return new CsrRingMatrix<>(shape, data, rowPointers.clone(), colIndices.clone());
     }
 
 
@@ -272,7 +272,7 @@ public class CsrRingMatrix<T extends Ring<T>> extends AbstractCsrRingMatrix<
 
 
     /**
-     * Gets a range of a row of this matrix.
+     * Gets a range of rows in this matrix.
      *
      * @param rowIdx The index of the row to get.
      * @param colStart The staring column of the row range to get (inclusive).
@@ -307,7 +307,7 @@ public class CsrRingMatrix<T extends Ring<T>> extends AbstractCsrRingMatrix<
 
 
     /**
-     * Gets a range of a column of this matrix.
+     * Gets a range of columns in this matrix.
      *
      * @param colIdx The index of the column to get.
      * @param rowStart The staring row of the column range to get (inclusive).
