@@ -330,7 +330,7 @@ public final class SparseUtils {
     /**
      * A helper method which copies from a sparse COO matrix to a set of three arrays (non-zero data, row indices, and
      * column indices) but skips over a specified range.
-     * @param srcEntries Non-zero matrix to copy ranges from.
+     * @param srcEntries Non-zero-matrix to copy ranges from.
      * @param srcRowIndices Row indices of matrix to copy ranges from.
      * @param srcColIndices Column indices of matrix to copy ranges from.
      * @param destEntries Array to copy {@code} src non-zero data to.

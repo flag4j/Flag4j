@@ -172,7 +172,7 @@ public class CooFieldMatrix<T extends Field<T>> extends AbstractCooFieldMatrix<C
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO matrices.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO matrices.
      * @param shape The shape of the matrix to construct.
      * @param data The non-zero data of this COO matrix.
      * @param rowIndices The non-zero row indices of the COO matrix.
@@ -213,7 +213,7 @@ public class CooFieldMatrix<T extends Field<T>> extends AbstractCooFieldMatrix<C
      * @return A sparse COO tensor of the same type as this tensor with the specified non-zero data and indices.
      */
     @Override
-    public CooFieldMatrix<T> makeLikeTensor(Shape shape, T[] entries, int[] rowIndices, int[] colIndices) {
+    public CooFieldMatrix<T> makeLikeNDArray(Shape shape, T[] entries, int[] rowIndices, int[] colIndices) {
         return new CooFieldMatrix<T>(shape, entries, rowIndices, colIndices);
     }
 
@@ -229,7 +229,7 @@ public class CooFieldMatrix<T extends Field<T>> extends AbstractCooFieldMatrix<C
      * @return A COO matrix with the specified shape, non-zero data, and non-zero indices.
      */
     @Override
-    public CooFieldMatrix<T> makeLikeTensor(Shape shape, List<T> entries, List<Integer> rowIndices, List<Integer> colIndices) {
+    public CooFieldMatrix<T> makeLikeNDArray(Shape shape, List<T> entries, List<Integer> rowIndices, List<Integer> colIndices) {
         return new CooFieldMatrix<>(shape, entries, rowIndices, colIndices);
     }
 
@@ -258,7 +258,7 @@ public class CooFieldMatrix<T extends Field<T>> extends AbstractCooFieldMatrix<C
      * @return A dense tensor with the specified {@code shape} and {@code data} which is a similar type to this sparse tensor.
      */
     @Override
-    public FieldMatrix<T> makeLikeDenseTensor(Shape shape, T[] entries) {
+    public FieldMatrix<T> makeLikeDenseNDArray(Shape shape, T[] entries) {
         return new FieldMatrix<>(shape, entries);
     }
 
@@ -309,7 +309,7 @@ public class CooFieldMatrix<T extends Field<T>> extends AbstractCooFieldMatrix<C
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -375,7 +375,7 @@ public class CooFieldMatrix<T extends Field<T>> extends AbstractCooFieldMatrix<C
      *
      * @return The result of multiplying this matrix with {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the size of
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the size of
      *                                {@code b}.
      */
     @Override

@@ -43,6 +43,7 @@ import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
 import java.util.Arrays;
+import java.util.List;
 
 // TODO: Javadoc.
 public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex128> {
@@ -208,6 +209,15 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      */
     public CVector(String... data) {
         this(new Shape(data.length), ArrayConversions.toComplex128(data, null));
+    }
+
+
+    /**
+     * Constructs a dense complex vector from a list of complex numbers.
+     * @param data List containing the entries of the vector.
+     */
+    public CVector(List<Complex128> data) {
+        super(new Shape(data.size()), data.toArray(new Complex128[data.size()]));
     }
 
 
@@ -496,7 +506,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      *
      * @param estimatedSparsity Estimated sparsity of the tensor. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * overestimate the sparsity. If speed is the concern, it is better to underestimate the sparsity.
+     * overestimate the sparsity. If speed is the primary concern, it is better to underestimate the sparsity.
      *
      * @return A sparse COO tensor that is equivalent to this dense tensor.
      *

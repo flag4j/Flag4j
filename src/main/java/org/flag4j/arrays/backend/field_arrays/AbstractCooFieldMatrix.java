@@ -156,7 +156,7 @@ public abstract class AbstractCooFieldMatrix<T extends AbstractCooFieldMatrix<T,
     public T H() {
         W[] dest = makeEmptyDataArray(data.length);
         FieldOps.conj(data, dest);
-        T transpose = makeLikeTensor(shape.swapAxes(0, 1), dest, colIndices.clone(), rowIndices.clone());
+        T transpose = makeLikeNDArray(shape.swapAxes(0, 1), dest, colIndices.clone(), rowIndices.clone());
         transpose.sortIndices(); // Ensure the indices are sorted correctly.
         return transpose;
     }

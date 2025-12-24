@@ -26,7 +26,7 @@ package org.flag4j.arrays.dense;
 
 
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleNDArray;
 import org.flag4j.arrays.sparse.CooCTensor;
 import org.flag4j.arrays.sparse.CooTensor;
 import org.flag4j.io.PrettyPrint;
@@ -56,7 +56,7 @@ import java.util.List;
  *
  * <p>The {@link #data} of a Tensor are mutable but the {@link #shape} is fixed.
  */
-public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
+public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -401,7 +401,7 @@ public class Tensor extends AbstractDenseDoubleTensor<Tensor> {
      * Converts this tensor to an equivalent sparse COO tensor.
      * @param estimatedSparsity Estimated sparsity of the tensor. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * overestimate the sparsity. If speed is the concern, it is better to underestimate the sparsity.
+     * overestimate the sparsity. If speed is the primary concern, it is better to underestimate the sparsity.
      * @return A sparse COO tensor that is equivalent to this dense tensor.
      * @see #toCoo(double)
      */

@@ -88,7 +88,7 @@ public class CsrRingMatrix<T extends Ring<T>> extends AbstractCsrRingMatrix<
 
 
     /**
-     * Constructs a sparse CSR matrix representing the zero matrix for the field which {@code ringElement} belongs to.
+     * Constructs a sparse CSR matrix representing the zero-matrix for the field which {@code ringElement} belongs to.
      * @param shape Shape of the CSR matrix to construct.
      * @param ringElement Element of the field which the entries of this
      */
@@ -99,7 +99,7 @@ public class CsrRingMatrix<T extends Ring<T>> extends AbstractCsrRingMatrix<
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing CSR matrices.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing CSR matrices.
      * @param shape The shape of the matrix to construct.
      * @param data The non-zero data of this COO matrix.
      * @param rowPointers The non-zero row pointers of the CSR matrix.
@@ -240,7 +240,7 @@ public class CsrRingMatrix<T extends Ring<T>> extends AbstractCsrRingMatrix<
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -258,7 +258,7 @@ public class CsrRingMatrix<T extends Ring<T>> extends AbstractCsrRingMatrix<
      *
      * @return The result of multiplying this matrix with {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the size of
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the size of
      *                                {@code b}.
      */
     @Override

@@ -60,7 +60,7 @@ public final class SemiringCsrProperties {
             }
         }
 
-        return true; // If we reach this point then the matrix must be upper triangular.
+        return true; // If we reach this point, then the matrix must be upper triangular.
     }
 
 
@@ -85,7 +85,7 @@ public final class SemiringCsrProperties {
             }
         }
 
-        return true; // If we reach this point then the matrix must be lower-triangular.
+        return true; // If we reach this point, then the matrix must be lower-triangular.
     }
 
 

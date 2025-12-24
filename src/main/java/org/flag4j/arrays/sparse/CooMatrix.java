@@ -24,13 +24,16 @@
 
 package org.flag4j.arrays.sparse;
 
+import org.flag4j.arrays.ArrayMask;
+import org.flag4j.arrays.IntTuple;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseMatrixData;
 import org.flag4j.arrays.backend.MatrixMixin;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleNDArray;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.Matrix;
+import org.flag4j.arrays.dense.Tensor;
 import org.flag4j.arrays.dense.Vector;
 import org.flag4j.io.PrettyPrint;
 import org.flag4j.io.PrintOptions;
@@ -52,10 +55,10 @@ import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.BinaryOperator;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.Function;
 
 
 /**
@@ -91,14 +94,14 @@ import java.util.function.BinaryOperator;
  *
  * <p>If indices need to be sorted, call {@link #sortIndices()}.
  */
-public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
+public class CooMatrix extends AbstractDoubleNDArray<CooMatrix>
         implements MatrixMixin<CooMatrix, Matrix, CooVector, Double> {
     // TODO: Implement sparse-matrix dense-vector multiplication. (And for other sparse matrix types including CSR).
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Row indices for non-zero value of this sparse COO matrix.
+     * Row indices for the non-zero values of this sparse COO matrix.
      */
     public final int[] rowIndices;
     /**
@@ -182,8 +185,8 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Constructs a square zero matrix with the specified size.
-     * @param size Size of the square zero matrix to construct.
+     * Constructs a square zero-matrix with the specified size.
+     * @param size Size of the square zero-matrix to construct.
      */
     public CooMatrix(int size) {
         super(new Shape(size, size), new double[0]);
@@ -195,9 +198,9 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Constructs a zero matrix with the specified shape.
-     * @param rows The number of rows in the zero matrix.
-     * @param cols The number of columns in the zero matrix.
+     * Constructs a zero-matrix with the specified shape.
+     * @param rows The number of rows in the zero-matrix.
+     * @param cols The number of columns in the zero-matrix.
      */
     public CooMatrix(int rows, int cols) {
         super(new Shape(rows, cols), new double[0]);
@@ -210,7 +213,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Constructs a zero matrix with the specified shape.
+     * Constructs a zero-matrix with the specified shape.
      * @param shape
      */
     public CooMatrix(Shape shape) {
@@ -276,7 +279,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO matrices.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO matrices.
      * @param shape The shape of the matrix to construct.
      * @param data The non-zero data of this COO matrix.
      * @param rowIndices The non-zero row indices of the COO matrix.
@@ -331,7 +334,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -407,7 +410,180 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * The sparsity of this sparse tensor. That is, the decimal percentage of elements in this tensor which are zero.
+     * <p>Reduces all elements of this array by repeatedly applying
+     * the specified {@code accumulator}, along the specified axes, to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} will <em>only</em> be applied to the non-zero elements of this nD array.
+     *
+     * <p><strong>Warning:</strong> Reducing a sparse matrix has the potential to destroy the sparsity of the array.
+     * For example, the following cases would result in dense outputs which would not be represented efficiently by a 
+     * {@code CooTensor}.
+     * In such cases,
+     * it would be better to call {@link #reduceToDense(Double, DoubleBinaryOperator, int...)} which will return a dense tensor.
+     * <ul>
+     *     <li>If {@code axes} specifies both {@code 0} and {@code 1},
+     *     then a scalar (zero rank tensor) will be returned.</li>
+     *
+     *     <li>If this matrix is a diagonal matrix (or nearly diagonal), then even though the matrix may be extremely sparse,
+     *     passing a single axis ({@code 0} or {@code 1}) will result in a dense output.</li>
+     * </ul>
+     *
+     * @param identity The starting value for the reduction.
+     * <strong>Note:</strong>Unlike with dense nD array objects, the identity may <i>not</i> be {@code null}.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this matrix but with the specified {@code axes} removed.
+     *
+     * @throws NullPointerException If {@code accumulator} or {@code identity} is {@code null}.
+     * @see #reduce(Double, BinaryOperator)
+     * @see #reduceToDense(Double, DoubleBinaryOperator, int...) 
+     */
+    @Override
+    public CooTensor reduce(Double identity, DoubleBinaryOperator accumulator, int... axes) {
+        Objects.requireNonNull(identity, "The identity object must not be null when reducing sparse nD arrays.");
+
+        if(axes.length > 2)
+            throw new LinearAlgebraException("Up to 2 axes may be specified for array of rank 2.");
+
+        if(axes.length == 0) {
+            return toTensor(); // Reduction is over zero axes; copy to tensor and return.
+        } else if(axes.length == 2) {
+            ValidateParameters.ensureValidAxes(shape, axes);
+            if(axes[0] == axes[1])
+                throw new LinearAlgebraException("Cannot specify duplicate axes for reduction.");
+
+            return new CooTensor(new Shape(), new double[]{reduce(identity, accumulator)}, new int[][]{{0}});
+        } else {
+            Map<IntTuple, Double> reducedData = new HashMap<>();
+            Shape reducedShape;
+            int[] keys;
+
+            if(axes[0] == 0) {
+                reducedShape = new Shape(numCols);
+                keys = colIndices;
+            } else if(axes[0] == 1) {
+                reducedShape = new Shape(numRows);
+                keys = rowIndices;
+            } else {
+                throw new LinearAlgebraException("Invalid axis specified for tensor of rank 2: axis=" + axes[0]);
+            }
+
+            for(int i=0, size=data.length; i<size; i++) {
+                IntTuple keyIdx = new IntTuple(keys[i]);
+
+                final double value = data[i];
+                reducedData.compute(keyIdx, (k, oldVal) ->
+                        accumulator.applyAsDouble(oldVal == null ? identity : oldVal, value));
+            }
+
+            return new CooTensor(reducedShape, reducedData);
+        }
+    }
+
+
+    /**
+     * <p>Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} will <em>only</em> be applied to the non-zero elements of this nD array.
+     *
+     * <p><strong>Warning:</strong> Reducing a sparse matrix <i>may</i> yield a sparse result which would not
+     * be efficiently represented
+     * by a {@code Tensor}.
+     * In such cases, it would be better to use {@link #reduce(Double, DoubleBinaryOperator, int...)}.
+     * The following examples illustrate some possible cases this would occur.
+     * <ul>
+     *     <li>If {@code axes.length == 0} then this method is functionally identical to calling
+     *     {@code toDense().toTensor()}. 
+     *     If this matrix is very sparse, this is most likely not desirable.</li>
+     *     <li>If {@code axes = {0}} and there are only a few non-empty columns, then the result will likely be sparse.</li>
+     *     <li>If {@code axes = {1}} and there are only a few non-empty rows, then the result will likely be sparse.</li>
+     * </ul>
+     *
+     * @param identity The starting value for the reduction.
+     * <strong>Note:</strong>Unlike with dense nD array objects, the identity may <i>not</i> be {@code null}.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this matrix but with the specified {@code axes} removed.
+     *
+     * @throws NullPointerException If {@code accumulator} or {@code identity} is {@code null}.
+     * @see #reduce(Double, BinaryOperator)
+     * @see #reduceToDense(Double, DoubleBinaryOperator, int...)
+     */
+    public Tensor reduceToDense(Double identity, DoubleBinaryOperator accumulator, int... axes) {
+        Objects.requireNonNull(identity, "The identity object must not be null when reducing sparse nD arrays.");
+
+        if(axes.length > 2)
+            throw new LinearAlgebraException("Up to 2 axes may be specified for array of rank 2.");
+
+        if(axes.length == 0) {
+            return toDense().toTensor();  // Reduction is over zero axes; copy to tensor and return.
+        } else if(axes.length == 2) {
+            ValidateParameters.ensureValidAxes(shape, axes);
+            if(axes[0] == axes[1])
+                throw new LinearAlgebraException("Cannot specify duplicate axes for reduction.");
+
+            return new Tensor(new Shape(), new double[]{reduce(identity, accumulator)});
+        } else {
+            Shape reducedShape;
+            double[] reducedData;
+            int[] keys;
+
+            if(axes[0] == 0) {
+                reducedShape = new Shape(numCols);
+                reducedData = new double[numCols];
+                keys = colIndices;
+            } else if(axes[0] == 1) {
+                reducedShape = new Shape(numRows);
+                reducedData = new double[numRows];
+                keys = rowIndices;
+            } else {
+                throw new LinearAlgebraException("Invalid axis specified for tensor of rank 2: axis=" + axes[0]);
+            }
+
+            // Fill the full array with the identity object.
+            Arrays.fill(reducedData, identity);
+
+            for(int i=0, size=data.length; i<size; i++) {
+                int keyIdx = keys[i];
+                reducedData[keyIdx] = accumulator.applyAsDouble(reducedData[keyIdx], data[i]);
+            }
+
+            return new Tensor(reducedShape, reducedData);
+        }
+    }
+
+
+    /**
+     * Checks if each entry in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each entry in this nD array against.
+     *
+     * @return An {@link ArrayMask} of the same shape as this nD array containing the boolean results from evaluating each
+     * entry in the nD array against the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #filter(Function)
+     */
+    @Override
+    public ArrayMask where(Function<Double, Boolean> predicate) {
+        BitSet mask = new BitSet(data.length);
+
+        for(int i=0, size=data.length; i<size; i++)
+            mask.set(rowIndices[i]*numCols + colIndices[i], predicate.apply(data[i]));
+
+        return new ArrayMask(shape, mask);
+    }
+
+
+    /**
+     * The sparsity of this sparse tensor. That is, the decimal percentage of elements in this tensor that are zero.
      *
      * @return The density of this sparse tensor.
      */
@@ -460,7 +636,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
     public CsrMatrix toCsr() {
         int[] csrRowPointers = new int[numRows + 1];
 
-        // Copy the non-zero data and column indices. Count number of data per row.
+        // Copy the non-zero data and column indices. Count the number of data per row.
         for(int i = 0, size = data.length; i<size; i++)
             csrRowPointers[rowIndices[i] + 1]++;
 
@@ -502,6 +678,30 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
+     * Gets elements of this nD array according to a boolean {@code mask} (i.e., "masked select").
+     *
+     * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
+     *
+     * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
+     * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
+     *
+     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     */
+    @Override
+    public Vector get(ArrayMask mask) {
+        ValidateParameters.ensureEqualShape(this.shape, mask.shape);
+        double[] destData = new double[mask.cardinality()];
+
+        for(int i=mask.data.nextSetBit(0), count=0; i>=0; i=mask.data.nextSetBit(i+1)) {
+            int[] ndIdx = shape.getNdIndices(i);  // Convert to nD index.
+            destData[count++] = get(ndIdx[0], ndIdx[1]);
+        }
+
+        return new Vector(destData);
+    }
+
+
+    /**
      * Sets the element of this tensor at the specified indices.
      *
      * @param value New value to set the specified index of this tensor to.
@@ -522,7 +722,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Flattens tensor to single dimension while preserving order of data.
+     * Flattens tensor to a single dimension while preserving the order of data.
      *
      * @return The flattened tensor.
      *
@@ -711,9 +911,9 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}. This will be a tensor of rank
      * {@code this.getRank() - 2} with the same shape as this tensor but with {@code axis1} and {@code axis2} removed.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than, this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal, or the tensor does not have the same length along the two axes.)
      */
     @Override
     public CooMatrix tensorTr(int axis1, int axis2) {
@@ -759,13 +959,14 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
 
     /**
-     * Computes the element-wise reciprocals of non-zero values of this tensor.
+     * Computes the element-wise reciprocals of non-zero values in this tensor.
      *
      * @return A tensor containing the reciprocals of the non-zero values in this tensor.
      */
     @Override
     public CooMatrix recip() {
-        return super.recip(); // Overrides method from super class to emphasize it operates on the non-zero values in the tensor.
+        // Overrides method from super class to emphasize it operates on the non-zero values in the tensor.
+        return super.recip();
     }
 
 
@@ -907,7 +1108,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
     @Override
     public boolean isTriU() {
         for(int i = 0, size = data.length; i<size; i++)
-            if(rowIndices[i] > colIndices[i] && data[i] != 0) return false; // Then entry is not in upper triangle.
+            if(rowIndices[i] > colIndices[i] && data[i] != 0) return false; // Then entry is not in the upper triangle.
 
         return true;
     }
@@ -925,7 +1126,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
     @Override
     public boolean isTriL() {
         for(int i = 0, size = data.length; i<size; i++)
-            if(rowIndices[i] < colIndices[i]&& data[i] != 0) return false; // Then entry is not in lower triangle.
+            if(rowIndices[i] < colIndices[i]&& data[i] != 0) return false; // Then entry is not in the lower triangle.
 
         return true;
     }
@@ -976,7 +1177,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return The result of matrix multiplying this matrix with matrix {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the number of rows in matrix {@code b}.
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the number of rows in matrix {@code b}.
      */
     @Override
     public Matrix mult(CooMatrix b) {
@@ -998,7 +1199,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return The result of matrix multiplying this matrix with matrix {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the number of rows in matrix {@code b}.
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the number of rows in matrix {@code b}.
      */
     public CMatrix mult(CooCMatrix b) {
         ValidateParameters.ensureMatMultShapes(shape, b.shape);
@@ -1141,7 +1342,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
         System.arraycopy(rowIndices, 0, destRowIndices, 0, data.length);
         System.arraycopy(colIndices, 0, destColIndices, 0, data.length);
 
-        // Copy values and indices from vector.
+        // Copy values and indices from the vector.
         System.arraycopy(b.data, 0, destEntries, data.length, b.data.length);
         Arrays.fill(destColIndices, data.length, destColIndices.length, numCols);
         System.arraycopy(b.indices, 0, destRowIndices, data.length, b.data.length);
@@ -1424,7 +1625,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return The result of matrix multiplying this matrix with vector {@code b}.
      *
-     * @throws IllegalArgumentException If the number of columns in this matrix do not equal the
+     * @throws IllegalArgumentException If the number of columns in this matrix does not equal the
      *                                  number of data in the vector {@code b}.
      */
     @Override
@@ -1439,7 +1640,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
     /**
      * Converts this matrix to an equivalent vector. If this matrix is not shaped as a row/column vector,
-     * it will first be flattened then converted to a vector.
+     * it will first be flattened, then converted to a vector.
      *
      * @return A vector equivalent to this matrix.
      */
@@ -1522,7 +1723,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      * @return The column at index {@code colIdx} of this matrix between the {@code rowStart} and {@code rowEnd}
      * indices.
      *
-     * @throws @throws                  IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the
+     * @throws IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the
      *                                  shape of this matrix.
      * @throws IllegalArgumentException If {@code rowEnd} is less than {@code rowStart}.
      */
@@ -1625,7 +1826,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return A copy of this matrix with the specified column set to {@code values}.
      *
-     * @throws IllegalArgumentException If the values vector has a different length than the number of rows in this matrix.
+     * @throws IllegalArgumentException If the {@code values} vector has a different length than the number of rows in this matrix.
      * @throws IndexOutOfBoundsException If {@code colIndex < 0 || colIndex >= this.numCols}.
      */
     public CooMatrix setCol(CooVector values, int colIndex) {
@@ -1641,7 +1842,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
      *
      * @return A copy of this matrix with the specified row set to {@code values}.
      *
-     * @throws IllegalArgumentException If the values vector has a different length than the number of rows in this matrix.
+     * @throws IllegalArgumentException If the {@code values} vector has a different length than the number of rows in this matrix.
      * @throws
      */
     @Override
@@ -1653,11 +1854,11 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
     /**
      * Sets a specified row of this matrix to an array.
      *
-     * @param row Array containing values to replace specified row in this matrix.
+     * @param row Array containing values to replace the specified row in this matrix.
      * @param rowIdx Index of the row to set.
      *
      * @return If this matrix is dense, the row set operation is done in-place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new row and returned.
+     * If this matrix is sparse, a copy will be created with the new row and returned.
      */
     public CooMatrix setRow(double[] row, int rowIdx) {
         return RealCooMatrixGetSet.setRow(this, rowIdx, row);
@@ -1705,8 +1906,8 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
 
     /**
      * Coalesces this sparse COO matrix. An uncoalesced matrix is a sparse matrix with multiple data for a single index. This
-     * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
-     * than summation is desired, use {@link #coalesce(BinaryOperator)}.
+     * method will ensure that each index only has one non-zero value by summing up duplicated data.
+     * If another form of aggregation other than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse COO matrix which is equivalent to this COO matrix.
      * @see #coalesce(BinaryOperator)
      */
@@ -1826,7 +2027,7 @@ public class CooMatrix extends AbstractDoubleTensor<CooMatrix>
                 result.append(String.format("%-" + width + "s", value));
             }
 
-            // Get last entry now
+            // Get the last entry now
             value = StringUtils.ValueOfRound(data[size-1], precision);
             width = padding + value.length();
             value = centering ? StringUtils.center(value, width) : value;

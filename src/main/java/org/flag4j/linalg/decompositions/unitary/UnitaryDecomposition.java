@@ -226,7 +226,7 @@ public abstract class UnitaryDecomposition<T extends MatrixMixin<T, ?, ?, ?>, U>
 
     /**
      * Gets the upper triangular/Hessenburg matrix from the last decomposition.
-     * @param U Storage for upper triangular/Hessenburg matrix. Assumed to be the zero matrix of an appropriate size.
+     * @param U Storage for upper triangular/Hessenburg matrix. Assumed to be the zero-matrix of an appropriate size.
      * @return The upper triangular/Hessenburg matrix from the last decomposition.
      */
     protected abstract T getUpper(T U);

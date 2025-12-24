@@ -1036,7 +1036,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      * Converts this matrix to an equivalent sparse COO matrix.
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * overestimate the sparsity. If speed is the concern, it is better to underestimate the sparsity.
+     * overestimate the sparsity. If speed is the primary concern, it is better to underestimate the sparsity.
      * @return A sparse COO matrix that is equivalent to this dense matrix.
      * @see #toCoo() 
      */
@@ -1065,7 +1065,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
      * Converts this matrix to an equivalent sparse CSR matrix.
      * @param estimatedSparsity Estimated sparsity of the matrix. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * overestimate the sparsity. If speed is the concern, it is better to underestimate the sparsity.
+     * overestimate the sparsity. If speed is the primary concern, it is better to underestimate the sparsity.
      * @return A sparse CSR matrix that is equivalent to this dense matrix.
      * @see #toCsr()
      */

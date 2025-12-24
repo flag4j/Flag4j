@@ -158,7 +158,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      *             the product sums will be computed along the last {@code N} dimensions of this tensor and the first {@code N}
      *             dimensions of.
      * @return The tensor dot product over the specified axes.
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes {@code aAxis}
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes {@code aAxis}
      * and {@code bAxis}.
      * @throws IllegalArgumentException If either axis is out of bounds of the corresponding tensor.
      */
@@ -178,7 +178,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * @param aAxis Axis along which to compute products for this tensor.
      * @param bAxis Axis along which to compute products for {@code src2} tensor.
      * @return The tensor dot product over the specified axes.
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes {@code aAxis}
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes {@code aAxis}
      * and {@code bAxis}.
      * @throws IllegalArgumentException If either axis is out of bounds of the corresponding tensor.
      */
@@ -194,7 +194,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * @param aAxes Axes along which to compute products for this tensor.
      * @param bAxes Axes along which to compute products for {@code src2} tensor.
      * @return The tensor dot product over the specified axes.
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      * {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      * are out of bounds for the corresponding tensor.
@@ -241,7 +241,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * @param axis2 Second axis for 2D subarray.
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
      * (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
@@ -265,6 +265,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
     /**
      * Computes the sum of all values in this tensor.
      * @return The sum of all values in this tensor.
+     * @see #sum(int...) 
      */
     W sum();
 
@@ -274,13 +275,15 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * @param axes Axes along which to compute the sum. All axes must be in the range {@code [0, this.rank() - 1]}.
      * @return A tensor with the same shape as this tensor but with the specified axes removed.
      * The returned tensor will contain the summations along the specified {@code axes}.
+     * @see #sum()
      */
-    T sum(int... axes);
+    TensorOverSemiring<?, ?, ?, W> sum(int... axes);
 
 
     /**
      * Computes the product of all values in this tensor.
      * @return The product of all values in this tensor.
+     * @see #prod(int...)
      */
     W prod();
 
@@ -288,8 +291,9 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
     /**
      * Computes the product of all values in this tensor along the specified {@code axes}.
      * @param axes Axes along which to compute the product. All axes must be in the range {@code [0, this.rank() - 1]}.
-     * @return A tensor with the same shape as this tensor but with the specified axes removed. \
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
      * The returned tensor will contain the summations along the specified {@code axes}.
+     * @see #prod()
      */
-    W prod(int axis);
+    TensorOverSemiring<?, ?, ?, W> prod(int... axes);
 }

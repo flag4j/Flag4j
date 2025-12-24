@@ -1,13 +1,13 @@
 package org.flag4j;
 
-import org.flag4j.numbers.Complex128;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleNDArray;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.CTensor;
 import org.flag4j.arrays.dense.CVector;
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.arrays.sparse.CooMatrix;
 import org.flag4j.arrays.sparse.CooVector;
+import org.flag4j.numbers.Complex128;
 import org.junit.jupiter.api.Assertions;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -96,7 +96,7 @@ public final class CustomAssertions {
     }
 
 
-    public static void assertEquals(AbstractDenseDoubleTensor<?> exp, AbstractDenseDoubleTensor<?> act, double delta) {
+    public static void assertEquals(AbstractDenseDoubleNDArray<?> exp, AbstractDenseDoubleNDArray<?> act, double delta) {
         Assertions.assertEquals(exp.shape, act.shape);
         assertArrayEquals(exp.data, act.data, delta);
     }

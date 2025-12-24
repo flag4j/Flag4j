@@ -157,7 +157,7 @@ public abstract class AbstractCooRingMatrix<T extends AbstractCooRingMatrix<T, U
                 shape, this.data, rowIndices, colIndices,
                 b.shape, b.data, b.rowIndices, b.colIndices);
 
-        return makeLikeTensor(data.shape(), data.data(), data.rowData(), data.colData());
+        return makeLikeNDArray(data.shape(), data.data(), data.rowData(), data.colData());
     }
 
 

@@ -76,8 +76,8 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Non-zero data of this tensor of this tensor.
-     * @param indices Indices of the non-zero data of this tensor.
+     * @param entries Non-zero data in this tensor.
+     * @param indices Indices of the Non-zero data in this tensor.
      */
     public CooCTensor(Shape shape, Complex128[] entries, int[][] indices) {
         super(shape, entries, indices);
@@ -89,8 +89,8 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Non-zero data of this tensor of this tensor.
-     * @param indices Indices of the non-zero data of this tensor.
+     * @param entries Non-zero data in this tensor.
+     * @param indices Indices of the Non-zero data in this tensor.
      */
     public CooCTensor(Shape shape, List<Complex128> entries, List<int[]> indices) {
         super(shape, entries.toArray(new Complex128[0]), indices.toArray(new int[0][]));
@@ -102,8 +102,8 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Non-zero data of this tensor of this tensor.
-     * @param indices Indices of the non-zero data of this tensor.
+     * @param entries Non-zero data in this tensor.
+     * @param indices Indices of the Non-zero data in this tensor.
      */
     public CooCTensor(Shape shape, Complex64[] entries, int[][] indices) {
         super(shape, new Complex128[entries.length], indices);
@@ -118,8 +118,8 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Non-zero data of this tensor of this tensor.
-     * @param indices Indices of the non-zero data of this tensor.
+     * @param entries Non-zero data in this tensor.
+     * @param indices Indices of the Non-zero data in this tensor.
      */
     public CooCTensor(Shape shape) {
         super(shape, new Complex128[0], new int[0][shape.getRank()]);
@@ -131,8 +131,8 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Non-zero data of this tensor of this tensor.
-     * @param indices Indices of the non-zero data of this tensor.
+     * @param entries Non-zero data in this tensor.
+     * @param indices Indices of the Non-zero data in this tensor.
      */
     public CooCTensor(Shape shape, double[] entries, int[][] indices) {
         super(shape, ArrayConversions.toComplex128(entries, null), indices);
@@ -150,9 +150,9 @@ public class CooCTensor extends AbstractCooFieldTensor<CooCTensor, CTensor, Comp
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO tensors.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO tensors.
      * @param shape The shape of the tensor to construct.
-     * @param data The non-zero data of this tensor.
+     * @param data The Non-zero data in this tensor.
      * @param indices The indices of the non-zero data.
      * @param dummy Dummy object to distinguish this constructor from the safe variant. It is completely ignored in this constructor.
      */

@@ -25,7 +25,9 @@
 package org.flag4j.arrays.sparse;
 
 import org.flag4j.arrays.Shape;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.ring_arrays.AbstractCooRingMatrix;
+import org.flag4j.arrays.backend.semiring_arrays.TensorOverSemiring;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
 import org.flag4j.arrays.dense.RingMatrix;
 import org.flag4j.arrays.dense.RingTensor;
@@ -34,11 +36,13 @@ import org.flag4j.linalg.ops.common.ring_ops.RingOps;
 import org.flag4j.linalg.ops.dense.real.RealDenseTranspose;
 import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringMatMult;
 import org.flag4j.numbers.Ring;
+import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
 import java.util.List;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
 
 /**
  * Represents a sparse matrix whose non-zero-elements are stored in Coordinate List (COO) format, with all data elements
@@ -171,7 +175,7 @@ public class CooRingMatrix<T extends Ring<T>> extends AbstractCooRingMatrix<
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO matrices.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO matrices.
      * @param shape The shape of the matrix to construct.
      * @param data The non-zero data of this COO matrix.
      * @param rowIndices The non-zero row indices of the COO matrix.
@@ -212,7 +216,7 @@ public class CooRingMatrix<T extends Ring<T>> extends AbstractCooRingMatrix<
      * @return A sparse COO tensor of the same type as this tensor with the specified non-zero data and indices.
      */
     @Override
-    public CooRingMatrix<T> makeLikeTensor(Shape shape, T[] entries, int[] rowIndices, int[] colIndices) {
+    public CooRingMatrix<T> makeLikeNDArray(Shape shape, T[] entries, int[] rowIndices, int[] colIndices) {
         return new CooRingMatrix<>(shape, entries, rowIndices, colIndices);
     }
 
@@ -228,7 +232,7 @@ public class CooRingMatrix<T extends Ring<T>> extends AbstractCooRingMatrix<
      * @return A COO matrix with the specified shape, non-zero data, and non-zero indices.
      */
     @Override
-    public CooRingMatrix<T> makeLikeTensor(Shape shape, List<T> entries, List<Integer> rowIndices, List<Integer> colIndices) {
+    public CooRingMatrix<T> makeLikeNDArray(Shape shape, List<T> entries, List<Integer> rowIndices, List<Integer> colIndices) {
         return new CooRingMatrix<>(shape, entries, rowIndices, colIndices);
     }
 
@@ -257,7 +261,7 @@ public class CooRingMatrix<T extends Ring<T>> extends AbstractCooRingMatrix<
      * @return A dense tensor with the specified {@code shape} and {@code data} which is a similar type to this sparse tensor.
      */
     @Override
-    public RingMatrix<T> makeLikeDenseTensor(Shape shape, T[] entries) {
+    public RingMatrix<T> makeLikeDenseNDArray(Shape shape, T[] entries) {
         return new RingMatrix<>(shape, entries);
     }
 
@@ -322,6 +326,51 @@ public class CooRingMatrix<T extends Ring<T>> extends AbstractCooRingMatrix<
 
 
     /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array but with the specified {@code axes} removed.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(Semiring, BinaryOperator) 
+     */
+    @Override
+    public AbstractNDArray<?, ?, T> reduce(T identity, BinaryOperator<T> accumulator, int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Extracts elements of this nD array that satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return A flat 1D array containing the elements of this nD array that satisfy the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #where(Function)
+     */
+    @Override
+    public AbstractNDArray<?, ?, T> filter(Function<T, Boolean> predicate) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
      * Computes the tensor contraction of this tensor with a specified tensor over the specified set of axes. That is,
      * computes the sum of products between the two tensors along the specified set of axes.
      *
@@ -331,7 +380,7 @@ public class CooRingMatrix<T extends Ring<T>> extends AbstractCooRingMatrix<
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -343,13 +392,47 @@ public class CooRingMatrix<T extends Ring<T>> extends AbstractCooRingMatrix<
 
 
     /**
+     * Computes the sum of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the sum. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #sum()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, T> sum(int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Computes the product of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the product. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #prod()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, T> prod(int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
      * Computes the matrix-vector multiplication of a vector with this matrix.
      *
      * @param b Vector in the matrix-vector multiplication.
      *
      * @return The result of multiplying this matrix with {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the size of
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the size of
      *                                {@code b}.
      */
     @Override

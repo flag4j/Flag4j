@@ -26,7 +26,7 @@ package org.flag4j.linalg;
 
 
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleNDArray;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.CTensor;
 import org.flag4j.arrays.dense.Matrix;
@@ -83,8 +83,8 @@ public final class TensorInvert {
      * @return The 'inverse' of this tensor as defined in the above sense.
      * @throws IllegalArgumentException If {@code numIndices} is not positive.
      */
-    public static <T extends AbstractDenseDoubleTensor<T>> T inv(
-            AbstractDenseDoubleTensor<T> src, int numIndices) {
+    public static <T extends AbstractDenseDoubleNDArray<T>> T inv(
+            AbstractDenseDoubleNDArray<T> src, int numIndices) {
         ValidateParameters.ensurePositive(numIndices);
 
         Shape originalShape = src.shape;

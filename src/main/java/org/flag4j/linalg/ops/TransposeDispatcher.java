@@ -25,7 +25,7 @@
 package org.flag4j.linalg.ops;
 
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleNDArray;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractDenseSemiringTensor;
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.linalg.ops.dense.DenseTranspose;
@@ -195,7 +195,7 @@ public final class TransposeDispatcher {
      * @return The result of the tensor transpose.
      * @throws ArrayIndexOutOfBoundsException If either axis is not within the {@code src} tensor.
      */
-    public static <T extends AbstractDoubleTensor<T>> T dispatchTensor(
+    public static <T extends AbstractDoubleNDArray<T>> T dispatchTensor(
             T src, int axis1, int axis2) {
         int rank = src.getRank();
         double[] dest;

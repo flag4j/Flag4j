@@ -24,11 +24,11 @@
 
 package org.flag4j.linalg.ops.dense;
 
-import org.flag4j.numbers.Semiring;
 import org.flag4j.arrays.Shape;
 import org.flag4j.linalg.ops.TensorDot;
 import org.flag4j.linalg.ops.TransposeDispatcher;
 import org.flag4j.linalg.ops.dense.semiring_ops.DenseSemiringMatMultDispatcher;
+import org.flag4j.numbers.Semiring;
 
 /**
  * Instances of this class can be used to compute the tensor dot product between two dense tensors.
@@ -46,7 +46,7 @@ public class DenseSemiringTensorDot<T extends Semiring<T>> extends TensorDot<T[]
      * @param src1Axes Axes along which to compute products for {@code src1} tensor.
      * @param src2Axes Axes along which to compute products for {@code src2} tensor.
      * @throws IllegalArgumentException If {@code src1Axes} and {@code src2Axes} do not match in length, or if any of the axes
-     * are out of bounds for the corresponding tensor. Or, If the two tensors shapes do not match along the specified axes pairwise
+     * are out of bounds for the corresponding tensor. Or, If the two tensor's shapes do not match along the specified axes pairwise
      * in {@code src1Axes} and {@code src2Axes}.
      */
     public DenseSemiringTensorDot(Shape shape1, T[] src1,

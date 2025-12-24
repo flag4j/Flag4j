@@ -27,7 +27,7 @@ package org.flag4j.arrays.dense;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.MatrixMixin;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleNDArray;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
 import org.flag4j.arrays.sparse.*;
 import org.flag4j.io.PrettyPrint;
@@ -73,7 +73,7 @@ import java.util.List;
  * The {@code Matrix} class
  * provides functionality for real dense matrix operations, supporting mutable data with a fixed shape.
  * This class extends
- * {@link AbstractDenseDoubleTensor} and offers additional methods optimized for complex
+ * {@link AbstractDenseDoubleNDArray} and offers additional methods optimized for complex
  * arithmetic and matrix computations.
  *
  * <p>A {@code Matrix} is essentially equivalent to a rank-2 tensor but includes extended functionality
@@ -112,7 +112,7 @@ import java.util.List;
  * @see Tensor
  * @see Vector
  */
-public class Matrix extends AbstractDenseDoubleTensor<Matrix>
+public class Matrix extends AbstractDenseDoubleNDArray<Matrix>
         implements MatrixMixin<Matrix, Matrix, Vector, Double> {
     private static final long serialVersionUID = 1L;
 

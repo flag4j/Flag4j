@@ -37,7 +37,8 @@ import java.util.StringJoiner;
  * @see Pair
  * @see Triple
  */
-public record IntTuple(int[] data) {
+public record IntTuple(int... data) {
+
 
     /**
      * Gets the size of the tuple.
@@ -56,6 +57,7 @@ public record IntTuple(int[] data) {
 
     @Override
     public boolean equals(Object obj) {
+        if(obj == this) return true;
         if(obj == null) return false;
         if(obj.getClass() != getClass()) return false;
 
@@ -70,6 +72,6 @@ public record IntTuple(int[] data) {
         for(int d : data)
             joiner.add(String.valueOf(d));
 
-        return "Tuple[data=" + joiner.toString() + "]";
+        return "IntTuple[data=" + joiner.toString() + "]";
     }
 }

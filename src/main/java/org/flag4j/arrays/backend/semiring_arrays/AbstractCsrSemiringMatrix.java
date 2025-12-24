@@ -465,7 +465,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
      *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */
@@ -734,7 +734,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * @param rowIdx Index of the row to set.
      *
      * @return If this matrix is dense, the row set operation is done in-place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new row and returned.
+     * If this matrix is sparse, a copy will be created with the new row and returned.
      */
     @Override
     public T setRow(V row, int rowIdx) {
@@ -749,7 +749,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * @param colIdx Index of the column to set.
      *
      * @return If this matrix is dense, the column set operation is done in-place and a reference to this matrix is returned.
-     * If this matrix is sparse a copy will be created with the new column and returned.
+     * If this matrix is sparse, a copy will be created with the new column and returned.
      */
     @Override
     public T setCol(V col, int colIdx) {

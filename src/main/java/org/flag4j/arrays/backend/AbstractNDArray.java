@@ -25,8 +25,8 @@
 package org.flag4j.arrays.backend;
 
 
+import org.flag4j.arrays.ArrayMask;
 import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.dense.ArrayMask;
 import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.io.Serializable;
@@ -65,6 +65,9 @@ import java.util.function.UnaryOperator;
  */
 public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
         implements Serializable {
+
+    // TODO: An nD index should be called an "index" not "indices". Need to change verbiage in this class (and others).
+    //  "indices" should only be used 
 
     /**
      * Entry data of this nD array.
@@ -106,7 +109,7 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * Gets the shape of this nD array.
      * @return The shape of this nD array.
      * @see #getRank()
-     * @see #getSize(int)
+     * @see #getShape(int)
      */
     public Shape getShape() {
         return shape;
@@ -118,20 +121,20 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * @param axis The axis along which to get the size of.
      * @return The size of this nD array along {@code axis}.
      * @see #getShape()
-     * @see #getSize(int)
+     * @see #getShape(int)
      */
-    public int getSize(int axis) {
+    public int getShape(int axis) {
         return shape.getSize(axis);
     }
 
 
     /**
-     * Gets the element of this nD array at the specified indices.
-     * @param indices Indices of the element to get.
-     * @return The element of this nD array at the specified indices.
-     * @throws IndexOutOfBoundsException If any indices are not within this nD array.
+     * Gets the element of this nD array at the specified index.
+     * @param index Index of the element to get.
+     * @return The element of this nD array at the specified index.
+     * @throws IndexOutOfBoundsException If {@code index} is not within the bounds of this nD array.
      */
-    public abstract V get(int... indices);
+    public abstract V get(int... index);
 
 
     /**
@@ -141,19 +144,19 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
      * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
      */
-    public abstract T get(ArrayMask mask);
+    public abstract AbstractNDArray<?, ?, V> get(ArrayMask mask);
 
     // TODO: Need to add the get(set)Slice and get(set)Items methods definitions here.
 
     /**
-     * Sets the element of this nD array at the specified indices.
+     * Sets the element of this nD array at the specified index.
      * @param value New value to set the specified index of this nD array to.
-     * @param indices Indices of the element to set.
+     * @param index Index of the element to set.
      * @return If this nD array is dense, a reference to this nD array is returned.
      * If this nD array is sparse, a copy of this nD array with the updated value is returned.
-     * @throws IndexOutOfBoundsException If {@code indices} is not within the bounds of this nD array.
+     * @throws IndexOutOfBoundsException If {@code index} is not within the bounds of this nD array.
      */
-    public abstract T set(V value, int... indices);
+    public abstract T set(V value, int... index);
 
 
     /**
@@ -308,11 +311,11 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
 
 
     /**
-     * Applies a map to each item in this nD array.
+     * Applies a map to each item in this nD array. This operation is done in-place.
      * If this nD array is sparse, the {@code mapper} operation will only be applied to the non-zero
      * elements in this nD array.
      * @param mapper The operation to apply to each item in this nD array.
-     * @return A new nD array with the same shape as this nD array containing the mapped values.
+     * @return A reference to this nD array.
      * @throws NullPointerException If {@code mapper} is {@code null}.
      */
     public abstract T map(UnaryOperator<V> mapper);
@@ -323,10 +326,13 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * the specified {@code accumulator} to an ongoing intermediate result that is initialized to {@code identity}.
      *
      * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
-     * If this nD array is sparse, then the {@code accumulator} will only be
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
      * applied to the non-zero elements of this nD array.
      *
-     * @param identity The starting value for the reduction.
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the
+     * starting value of the
+     * reduction.
      * @param accumulator A binary operator that combines the current accumulated
      * result with the next array element and returns the updated result.
      * @return The final accumulated scalar of type {@code V}. If this nD array is empty, {@code identity} will be returned.
@@ -343,19 +349,21 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * {@code identity}.
      *
      * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
-     * If this nD array is sparse, then the {@code accumulator} will only be
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
      * applied to the non-zero elements of this nD array.
      *
-     * @param identity The starting value for the reduction.
-     * @param accumulator A binary operator that combines the current accumulated
-     * result with the next array element and returns the updated result.
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
      * @param axes The axes along which reduce this nD array.
      * @return An nD array of the same shape as this nD array but with the specified {@code axes} removed.
      * @throws NullPointerException If {@code accumulator} is {@code null}.
      *
      * @see #reduce(V, BinaryOperator)
      */
-    public abstract T reduce(V identity, BinaryOperator<V> accumulator, int... axes);
+    public abstract AbstractNDArray<?, ?, V> reduce(V identity, BinaryOperator<V> accumulator, int... axes);
 
 
     /**
@@ -378,7 +386,7 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      *
      * @see #where(Function)
      */
-    public abstract T filter(Function<V, Boolean> predicate);
+    public abstract AbstractNDArray<?, ?, V> filter(Function<V, Boolean> predicate);
 
 
     /**
@@ -399,4 +407,13 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * @see #any(Function)
      */
     public abstract boolean all(Function<V, Boolean> predicate);
+
+
+    /**
+     * Counts the number of elements in this nD array which satisfy the specified {@code predicate}.
+     * @param predicate The predicate to check each element in this nD array against.
+     * @return The number of elements in this nD array which satisfy the specified {@code predicate}.
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     */
+    public abstract int countTrue(Function<V, Boolean> predicate);
 }

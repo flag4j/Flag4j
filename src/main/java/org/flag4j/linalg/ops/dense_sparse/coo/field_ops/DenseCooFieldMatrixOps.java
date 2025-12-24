@@ -202,7 +202,7 @@ public final class DenseCooFieldMatrixOps {
             quotient[i] = src1.data[i].div(src2.data[row*src2.numCols + col]);
         }
 
-        return src1.makeLikeTensor(src1.shape, quotient, src1.rowIndices.clone(), src1.colIndices.clone());
+        return src1.makeLikeNDArray(src1.shape, quotient, src1.rowIndices.clone(), src1.colIndices.clone());
     }
 
 
@@ -219,7 +219,7 @@ public final class DenseCooFieldMatrixOps {
             AbstractDenseFieldVector<?, ?, T> col) {
         T[] sumEntries = src.makeEmptyDataArray(src.shape.totalEntriesIntValueExact());
         Arrays.fill(sumEntries, (col.data.length > 0) ? col.data[0].getZero() : null);
-        AbstractDenseFieldMatrix<?, ?, T> sum = src.makeLikeDenseTensor(src.shape, sumEntries);
+        AbstractDenseFieldMatrix<?, ?, T> sum = src.makeLikeDenseNDArray(src.shape, sumEntries);
 
         for(int j=0; j<sum.numCols; j++)
             sum.setCol(col.data, j);
@@ -246,7 +246,7 @@ public final class DenseCooFieldMatrixOps {
 
         T[] sumEntries = src.makeEmptyDataArray(src.shape.totalEntriesIntValueExact());
         Arrays.fill(sumEntries, (row.data.length > 0) ? row.data[0].getZero() : null);
-        AbstractDenseFieldMatrix<?, ?, T> sum = src.makeLikeDenseTensor(src.shape, sumEntries);
+        AbstractDenseFieldMatrix<?, ?, T> sum = src.makeLikeDenseNDArray(src.shape, sumEntries);
 
         for(int i=0; i<sum.numRows; i++)
             sum.setRow(row.data, i);

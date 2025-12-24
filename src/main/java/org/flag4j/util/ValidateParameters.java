@@ -30,6 +30,7 @@ import org.flag4j.util.exceptions.LinearAlgebraException;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * This utility class contains several methods for ensuring parameters satisfy some condition.
@@ -164,7 +165,7 @@ public final class ValidateParameters {
     /**
      * Checks if a set of values is greater than or equal to a specified threshold.
      * @param threshold Threshold value.
-     * @param values Values to compare against threshold.
+     * @param values Values to compare against the threshold.
      * @throws IllegalArgumentException If any of the values are less than the threshold.
      */
     public static void ensureAllGreaterEq(double threshold, double... values) {
@@ -178,7 +179,7 @@ public final class ValidateParameters {
     /**
      * Checks if a set of values is greater than or equal to a specified threshold.
      * @param threshold Threshold value.
-     * @param values Values to compare against threshold.
+     * @param values Values to compare against the threshold.
      * @throws IllegalArgumentException If any of the values are less than the threshold.
      */
     public static void ensureAllGreaterEq(int threshold, int... values) {
@@ -192,7 +193,7 @@ public final class ValidateParameters {
     /**
      * Checks if {@code values[i] >= threshold} for all {@code i = 0, 1, ..., values.length}.
      * @param threshold Threshold value.
-     * @param value Value to compare against threshold.
+     * @param value Values to compare against the threshold.
      * @throws IllegalArgumentException If {@code values[i] < threshold} for <b>any</b> {@code i = 0, 1, ..., values.length}.
      */
     public static void ensureGreaterEq(int threshold, int value) {
@@ -204,7 +205,7 @@ public final class ValidateParameters {
     /**
      * Checks if {@code value >= threshold}.
      * @param threshold Threshold value.
-     * @param value Values to compare against threshold.
+     * @param value Values to compare against the threshold.
      * @param name Name of parameter.
      * @throws IllegalArgumentException If {@code value < threshold}.
      */
@@ -217,7 +218,7 @@ public final class ValidateParameters {
     /**
      * Checks if {@code values[i] <= threshold} for all {@code i = 0, 1, ..., values.length}.
      * @param threshold Threshold value.
-     * @param values Values to compare against threshold.
+     * @param values Values to compare against the threshold.
      * @throws IllegalArgumentException If {@code values[i] > threshold} for <b>any</b> {@code i = 0, 1, ..., values.length}.
      */
     public static void ensureLessEq(double threshold, double... values) {
@@ -231,7 +232,7 @@ public final class ValidateParameters {
     /**
      * Checks if {@code values[i] <= threshold} for all {@code i = 0, 1, ..., values.length}.
      * @param threshold Threshold value.
-     * @param values Values to compare against threshold.
+     * @param values Values to compare against the threshold.
      * @throws IllegalArgumentException {@code values[i] > threshold} for <b>any</b> {@code i = 0, 1, ..., values.length}.
      */
     public static void ensureLessEq(int threshold, int... values) {
@@ -245,7 +246,7 @@ public final class ValidateParameters {
     /**
      * Checks if {@code values <= threshold}.
      * @param threshold Threshold value.
-     * @param value Value to compare against threshold.
+     * @param value Values to compare against the threshold.
      * @param name Name of parameter.
      * @throws IllegalArgumentException If {@code values > threshold}.
      */
@@ -257,7 +258,7 @@ public final class ValidateParameters {
     /**
      * Checks if {@code values <= threshold}.
      * @param threshold Threshold value.
-     * @param value Value to compare against threshold.
+     * @param value Values to compare against the threshold.
      * @param name Name of parameter.
      * @throws IllegalArgumentException If {@code values > threshold}.
      */
@@ -326,7 +327,7 @@ public final class ValidateParameters {
     /**
      * Checks if a shape represents a square tensor.
      * @param shape Shape to check.
-     * @throws ArrayShapeException If all axes of the shape are not the same length.
+     * @throws ArrayShapeException If all axes of the shape are different lengths.
      */
     public static void ensureSquare(Shape shape) {
         ValidateParameters.ensureAllEqual(shape.getDims());
@@ -384,7 +385,7 @@ public final class ValidateParameters {
 
 
     /**
-     * Checks that a list of axis are a permutation of {@code {0, 1, 2, ..., n-1}}.
+     * Checks that a list of axes is a permutation of {@code {0, 1, 2, ..., n-1}}.
      * @param axes List of axes of interest.
      * @param n The length of the permutation.
      * @throws IllegalArgumentException If {@code axis} is not a permutation of {@code {0, 1, 2, ..., n-1}}.
@@ -508,6 +509,29 @@ public final class ValidateParameters {
         for(int axis : axes) {
             if(axis < 0 || axis >= rank)
                 throw new LinearAlgebraException(String.format("Axis %d is out of bounds for rank %d.", axis, rank));
+        }
+    }
+
+
+    /**
+     * Checks that all provided {@code axes} are valid, and unique, with respect to the given {@code shape}.
+     * @param shape The shape of interest.
+     * @param axes The axes to validate.
+     */
+    public static void ensureValidUniqueAxes(Shape shape, int... axes) {
+        int rank = shape.getRank();
+        HashSet<Integer> seenAxes = new HashSet<>(rank);
+
+        for(int axis : axes) {
+            if(axis < 0 || axis >= rank) {
+                throw new LinearAlgebraException(
+                        String.format("Axis %d is out of bounds for shape %s with rank %d.", axis, shape, rank));
+            } else if(seenAxes.contains(axis)) {
+                throw new LinearAlgebraException(
+                        String.format("Axes must be unique but duplicate axes found in %s.", Arrays.toString(axes)));
+            } else {
+                seenAxes.add(axis);
+            }
         }
     }
 

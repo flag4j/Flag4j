@@ -24,6 +24,8 @@
 
 package org.flag4j.arrays.backend.semiring_arrays;
 
+import org.flag4j.arrays.ArrayMask;
+import org.flag4j.arrays.Pair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseTensorData;
 import org.flag4j.arrays.backend.AbstractNDArray;
@@ -36,10 +38,18 @@ import org.flag4j.linalg.ops.dense.semiring_ops.DenseSemiringConversions;
 import org.flag4j.linalg.ops.dense.semiring_ops.DenseSemiringElemMult;
 import org.flag4j.linalg.ops.dense.semiring_ops.DenseSemiringOps;
 import org.flag4j.numbers.Semiring;
+import org.flag4j.util.ArrayMapper;
+import org.flag4j.util.ArrayReducer;
 import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.ArrayShapeException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
+import java.util.List;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 
 /**
@@ -113,7 +123,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
 
 
     /**
-     * Constructs a sparse COO tensor which is of a similar type as this dense tensor.
+     * Constructs a sparse COO tensor, which is of a similar type as this dense tensor.
      * @param shape Shape of the COO tensor.
      * @param data Non-zero data of the COO tensor.
      * @param rowIndices Non-zero row indices of the COO tensor.
@@ -140,6 +150,29 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
 
 
     /**
+     * Gets elements of this nD array according to a boolean {@code mask} (i.e., "masked select").
+     *
+     * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
+     *
+     * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
+     * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
+     *
+     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     */
+    @Override
+    public AbstractNDArray<?, ?, V> get(ArrayMask mask) {
+        ValidateParameters.ensureEqualShape(this.shape, mask.shape);
+        V[] values = makeEmptyDataArray(mask.cardinality());
+        BitSet maskData = mask.data;
+
+        for (int i = maskData.nextSetBit(0), vIdx = 0; i >= 0; i = maskData.nextSetBit(i + 1))
+            values[vIdx++] = data[i];
+
+        return makeLikeNDArray(new Shape(values.length), values);
+    }
+
+
+    /**
      * Sets the element of this tensor at the specified indices.
      *
      * @param value New value to set the specified index of this tensor to.
@@ -158,7 +191,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
 
 
     /**
-     * Flattens tensor to single dimension while preserving order of data.
+     * Flattens tensor to a single dimension while preserving the order of data.
      *
      * @return The flattened tensor.
      *
@@ -276,7 +309,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -302,9 +335,9 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal, or the tensor does not have the same length along the two axes.)
      */
     @Override
     public T tensorTr(int axis1, int axis2) {
@@ -312,6 +345,38 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
         V[] destEntries = makeEmptyDataArray(destShape.totalEntriesIntValueExact());
         DenseSemiringOps.tensorTr(shape, data, axis1, axis2, destShape, destEntries);
         return makeLikeNDArray(destShape, destEntries);
+    }
+
+
+    /**
+     * Computes the sum of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the sum. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #sum()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, V> sum(int... axes) {
+        return reduce(getZeroElement(), (V a, V b) -> a.add(b), axes);
+    }
+
+
+    /**
+     * Computes the product of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the product. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #prod()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, V> prod(int... axes) {
+        return reduce(getZeroElement(), (V a, V b) -> a.mult(b), axes);
     }
 
 
@@ -413,6 +478,177 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
 
 
     /**
+     * Applies a map to each item in this nD array.
+     * This operation is done in-place.
+     * If this nD array is sparse, the {@code mapper} operation will only be applied to the non-zero
+     * elements in this nD array.
+     *
+     * @param mapper The operation to apply to each item in this nD array.
+     *
+     * @return A reference to this nD array.
+     *
+     * @throws NullPointerException If {@code mapper} is {@code null}.
+     */
+    @Override
+    public T map(UnaryOperator<V> mapper) {
+        ArrayMapper.map(data, mapper);
+        return (T) this;
+    }
+
+
+    /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the
+     * starting value of the
+     * reduction.
+     * @param accumulator A binary operator that combines the current accumulated
+     * result with the next array element and returns the updated result.
+     *
+     * @return The final accumulated scalar of type {@code V}. If this nD array is empty, {@code identity} will be returned.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(V, BinaryOperator, int...)
+     */
+    @Override
+    public V reduce(V identity, BinaryOperator<V> accumulator) {
+        return ArrayReducer.reduce(data, identity, accumulator);
+    }
+
+
+    /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array but with the specified {@code axes} removed.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(V, BinaryOperator)
+     */
+    @Override
+    public AbstractDenseSemiringTensor<?, V> reduce(V identity, BinaryOperator<V> accumulator, int... axes) {
+        V[] dest = makeEmptyDataArray(data.length);
+        Pair<Shape, V[]> reduced = ArrayReducer.reduce(shape, data, identity, accumulator, dest, axes);
+        return makeLikeNDArray(reduced.first(), reduced.second());
+    }
+
+
+    /**
+     * Checks if each entry in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each entry in this nD array against.
+     *
+     * @return An {@link ArrayMask} of the same shape as this nD array containing the boolean results from evaluating each
+     * entry in the nD array against the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #filter(Function)
+     */
+    @Override
+    public ArrayMask where(Function<V, Boolean> predicate) {
+        BitSet mask = new BitSet(data.length);
+
+        for(int i=0, size=data.length; i<size; i++)
+            if(predicate.apply(data[i])) mask.set(i);
+
+        return new ArrayMask(shape, mask);
+    }
+
+
+    /**
+     * Extracts elements of this nD array that satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return A flat 1D array containing the elements of this nD array that satisfy the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #where(Function)
+     */
+    @Override
+    public AbstractDenseSemiringTensor<?, V> filter(Function<V, Boolean> predicate) {
+        List<V> dest = new ArrayList<>();
+
+        for(V value : data)
+            if(predicate.apply(value)) dest.add(value);
+
+        return makeLikeNDArray(shape, dest.toArray(makeEmptyDataArray(dest.size())));
+    }
+
+
+    /**
+     * Checks if <em>any</em> element in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>any</em> element in this nD array satisfies the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #all(Function)
+     */
+    @Override
+    public boolean any(Function<V, Boolean> predicate) {
+        for(V value : data)
+            if(predicate.apply(value)) return true;
+
+        return false;
+    }
+
+
+    /**
+     * Checks if <em>all</em> elements in this nD array satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>all</em> elements in this nD array satisfy the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #any(Function)
+     */
+    @Override
+    public boolean all(Function<V, Boolean> predicate) {
+        for(V value : data)
+            if(!predicate.apply(value)) return false;
+
+        return true;
+    }
+
+
+    /**
+     * Counts the number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return The number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     */
+    @Override
+    public int countTrue(Function<V, Boolean> predicate) {
+        // TODO: Implement this method
+        return 0;
+    }
+
+
+    /**
      * Converts this tensor to an equivalent sparse COO tensor.
      * @return A sparse COO tensor that is equivalent to this dense tensor.
      * @see #toCoo(double)
@@ -426,7 +662,7 @@ public abstract class AbstractDenseSemiringTensor<T extends AbstractDenseSemirin
      * Converts this tensor to an equivalent sparse COO tensor.
      * @param estimatedSparsity Estimated sparsity of the tensor. Must be between 0 and 1 inclusive. If this is an accurate estimation
      * it <em>may</em> provide a slight speedup and can reduce unneeded memory consumption. If memory is a concern, it is better to
-     * overestimate the sparsity. If speed is the concern it is better to underestimate the sparsity.
+     * overestimate the sparsity. If speed is the primary concern, it is better to underestimate the sparsity.
      * @return A sparse COO tensor that is equivalent to this dense tensor.
      * @see #toCoo()
      */

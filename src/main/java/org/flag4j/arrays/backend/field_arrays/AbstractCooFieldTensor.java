@@ -84,9 +84,9 @@ public abstract class AbstractCooFieldTensor<T extends AbstractCooFieldTensor<T,
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO tensors.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO tensors.
      * @param shape The shape of the tensor to construct.
-     * @param data The non-zero data of this tensor.
+     * @param data The Non-zero data in this tensor.
      * @param indices The indices of the non-zero data.
      * @param dummy Dummy object to distinguish this constructor from the safe variant. It is completely ignored in this constructor.
      */

@@ -134,7 +134,7 @@ public class CooFieldTensor<T extends Field<T>>
      * creates a tensor with the specified data and shape.
      *
      * @param shape shape of this tensor.
-     * @param entries non-zero data of this tensor of this tensor. if this tensor is dense, this specifies all data within the
+     * @param entries Non-zero data in this tensor. if this tensor is dense, this specifies all data within the
      * tensor.
      * if this tensor is sparse, this specifies only the non-zero data of the tensor.
      * @param indices
@@ -148,7 +148,7 @@ public class CooFieldTensor<T extends Field<T>>
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param entries Non-zero data of this tensor of this tensor. If this tensor is dense, this specifies all data within the
+     * @param entries Non-zero data in this tensor. If this tensor is dense, this specifies all data within the
      * tensor.
      * If this tensor is sparse, this specifies only the non-zero data of the tensor.
      * @param indices
@@ -159,9 +159,9 @@ public class CooFieldTensor<T extends Field<T>>
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO tensors.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO tensors.
      * @param shape The shape of the tensor to construct.
-     * @param data The non-zero data of this tensor.
+     * @param data The Non-zero data in this tensor.
      * @param indices The indices of the non-zero data.
      * @param dummy Dummy object to distinguish this constructor from the safe variant. It is completely ignored in this constructor.
      */
@@ -253,7 +253,7 @@ public class CooFieldTensor<T extends Field<T>>
      * the shape and data.
      *
      * @param shape Shape of the sparse tensor to construct.
-     * @param data Entries of the spares tensor to construct.
+     * @param data Entries of the sparse tensor to construct.
      *
      * @return A sparse tensor of the same type as this tensor with the same indices as this sparse tensor and with the provided
      * the shape and data.

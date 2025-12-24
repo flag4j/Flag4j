@@ -159,7 +159,7 @@ public final class RealFieldDenseCooMatrixOps {
             destEntries[i] = src2.data[i].mult(src1.data[row*src1.numCols + col]);
         }
 
-        return src2.makeLikeTensor(src2.shape, destEntries, src2.rowIndices.clone(), src2.colIndices.clone());
+        return src2.makeLikeNDArray(src2.shape, destEntries, src2.rowIndices.clone(), src2.colIndices.clone());
     }
 
 
@@ -213,6 +213,6 @@ public final class RealFieldDenseCooMatrixOps {
             quotient[i] = src1.data[i].div(src2.data[row*src2.numCols + col]);
         }
 
-        return src1.makeLikeTensor(src1.shape, quotient, src1.rowIndices.clone(), src1.colIndices.clone());
+        return src1.makeLikeNDArray(src1.shape, quotient, src1.rowIndices.clone(), src1.colIndices.clone());
     }
 }

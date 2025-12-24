@@ -133,7 +133,7 @@ public class CooRingTensor<T extends Ring<T>> extends AbstractCooRingTensor<CooR
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param data Non-zero data of this tensor of this tensor. If this tensor is dense, this specifies all data within the
+     * @param data Non-zero data in this tensor. If this tensor is dense, this specifies all data within the
      * tensor.
      * If this tensor is sparse, this specifies only the non-zero data of the tensor.
      * @param indices
@@ -147,7 +147,7 @@ public class CooRingTensor<T extends Ring<T>> extends AbstractCooRingTensor<CooR
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param data Non-zero data of this tensor of this tensor. If this tensor is dense, this specifies all data within the
+     * @param data Non-zero data in this tensor. If this tensor is dense, this specifies all data within the
      * tensor.
      * If this tensor is sparse, this specifies only the non-zero data of the tensor.
      * @param indices
@@ -158,9 +158,9 @@ public class CooRingTensor<T extends Ring<T>> extends AbstractCooRingTensor<CooR
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO tensors.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO tensors.
      * @param shape The shape of the tensor to construct.
-     * @param data The non-zero data of this tensor.
+     * @param data The Non-zero data in this tensor.
      * @param indices The indices of the non-zero data.
      * @param dummy Dummy object to distinguish this constructor from the safe variant. It is completely ignored in this constructor.
      */

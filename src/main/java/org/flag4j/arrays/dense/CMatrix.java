@@ -124,7 +124,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
 
 
     /**
-     * Creates a zero matrix with the specified {@code shape}.
+     * Creates a zero-matrix with the specified {@code shape}.
      *
      * @param shape Shape of this matrix.
      */
@@ -136,9 +136,9 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
 
 
     /**
-     * Creates a square zero matrix with the specified {@code size}.
+     * Creates a square zero-matrix with the specified {@code size}.
      *
-     * @param size Size of the zero matrix to construct. The resulting matrix will have shape {@code (size, size)}
+     * @param size Size of the zero-matrix to construct. The resulting matrix will have shape {@code (size, size)}
      */
     public CMatrix(int size) {
         super(new Shape(size, size), new Complex128[size*size]);
@@ -175,7 +175,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
 
 
     /**
-     * Creates a zero matrix with the specified shape.
+     * Creates a zero-matrix with the specified shape.
      *
      * @param rows The number of rows in this matrix.
      * @param cols The number of columns in this matrix.
@@ -888,7 +888,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The result of matrix multiplying this matrix with vector {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the number
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the number
      *                                of length of the vector {@code b}.
      */
     public CVector mult(Vector b) {
@@ -971,7 +971,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The result of matrix multiplying this matrix with vector {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the number
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the number
      *                                of length of the vector {@code b}.
      */
     public CVector mult(CooVector b) {
@@ -989,7 +989,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The result of matrix multiplying this matrix with vector {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the number
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the number
      *                                of length of the vector {@code b}.
      */
     public CVector mult(CooCVector b) {

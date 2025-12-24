@@ -44,7 +44,7 @@ public class RealDenseTensorDot extends TensorDot<double[]> {
      * @param src1Axes Axes along which to compute products for {@code src1} tensor.
      * @param src2Axes Axes along which to compute products for {@code src2} tensor.
      * @throws IllegalArgumentException If {@code src1Axes} and {@code src2Axes} do not match in length, or if any of the axes
-     * are out of bounds for the corresponding tensor. Or, If the two tensors shapes do not match along the specified axes pairwise
+     * are out of bounds for the corresponding tensor. Or, If the two tensor's shapes do not match along the specified axes pairwise
      * in {@code src1Axes} and {@code src2Axes}.
      */
     public RealDenseTensorDot(Shape shape1, double[] src1,

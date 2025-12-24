@@ -50,7 +50,7 @@ public final class RealCsrMatrixTensorDot {
      * @param src2Axes Axes along which to compute products for {@code src2} tensor.
      * @return The tensor dot product over the specified axes. If the result is a rank zero tensor a 1&times;1 matrix with the value will
      * be returned. If the result is a rank one tensor a matrix with a single row will be returned.
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      * {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      * are out of bounds for the corresponding tensor.

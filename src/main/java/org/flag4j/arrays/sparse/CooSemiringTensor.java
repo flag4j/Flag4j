@@ -24,6 +24,7 @@
 
 package org.flag4j.arrays.sparse;
 
+import org.flag4j.arrays.IntTuple;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractCooSemiringTensor;
 import org.flag4j.arrays.dense.SemiringTensor;
@@ -36,8 +37,10 @@ import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 
 
@@ -133,7 +136,7 @@ public class CooSemiringTensor<T extends Semiring<T>> extends AbstractCooSemirin
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param data Non-zero data of this tensor of this tensor. If this tensor is dense, this specifies all data within the
+     * @param data Non-zero data in this tensor. If this tensor is dense, this specifies all data within the
      * tensor.
      * If this tensor is sparse, this specifies only the non-zero data of the tensor.
      * @param indices
@@ -147,20 +150,21 @@ public class CooSemiringTensor<T extends Semiring<T>> extends AbstractCooSemirin
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param data Non-zero data of this tensor of this tensor. If this tensor is dense, this specifies all data within the
+     * @param data Non-zero data in this tensor. If this tensor is dense, this specifies all data within the
      * tensor.
      * If this tensor is sparse, this specifies only the non-zero data of the tensor.
      * @param indices
      */
     public CooSemiringTensor(Shape shape, List<T> data, List<int[]> indices) {
+        // TODO: we probably cant do this.
         super(shape, (T[]) data.toArray(), indices.toArray(new int[0][]));
     }
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO tensors.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO tensors.
      * @param shape The shape of the tensor to construct.
-     * @param data The non-zero data of this tensor.
+     * @param data The Non-zero data in this tensor.
      * @param indices The indices of the non-zero data.
      * @param dummy Dummy object to distinguish this constructor from the safe variant. It is completely ignored in this constructor.
      */
@@ -244,6 +248,25 @@ public class CooSemiringTensor<T extends Semiring<T>> extends AbstractCooSemirin
     public CooSemiringTensor<T> makeLikeNDArray(Shape shape, T[] data) {
         return new CooSemiringTensor<>(shape, data, ArrayUtils.deepCopy2D(indices, null));
     }
+
+
+    // TODO: Implementation.
+    public static <T extends Semiring<T>> CooSemiringTensor<T> fromIndexDataMap(Shape shape, Map<IntTuple, T> indexDataMap) {
+        int nnz = indexDataMap.size();
+        List<T> data = new ArrayList<T>(nnz);
+        int[][] indices = new int[nnz][shape.getRank()];
+
+        int count = 0;
+        for(Map.Entry<IntTuple, T> entry : indexDataMap.entrySet()) {
+            indices[count] = entry.getKey().data();
+            data.add(entry.getValue());
+            count++;
+        }
+
+        return new CooSemiringTensor<>(shape, (T[]) data.toArray(), indices);
+    }
+
+    
 
     /**
      * Converts this tensor to an equivalent vector. If this tensor is not rank 1, then it will be flattened.

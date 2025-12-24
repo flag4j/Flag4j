@@ -24,12 +24,14 @@
 
 package org.flag4j.arrays.sparse;
 
+import org.flag4j.arrays.ArrayMask;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseVectorData;
 import org.flag4j.arrays.backend.VectorMixin;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleNDArray;
 import org.flag4j.arrays.dense.CVector;
 import org.flag4j.arrays.dense.Matrix;
+import org.flag4j.arrays.dense.Tensor;
 import org.flag4j.arrays.dense.Vector;
 import org.flag4j.io.PrettyPrint;
 import org.flag4j.io.PrintOptions;
@@ -52,6 +54,8 @@ import org.flag4j.util.exceptions.LinearAlgebraException;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.Function;
 
 
 /**
@@ -83,7 +87,7 @@ import java.util.function.BinaryOperator;
  *
  * <p>If indices need to be sorted for any reason, call {@link #sortIndices()}.
  */
-public class CooVector extends AbstractDoubleTensor<CooVector>
+public class CooVector extends AbstractDoubleNDArray<CooVector>
         implements VectorMixin<CooVector, CooMatrix, Matrix, Double> {
 
     private static final long serialVersionUID = 1L;
@@ -237,7 +241,7 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO vectors.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO vectors.
      * @param shape Shape of the COO vector to construct.
      * @param data The non-zero data of this vector.
      * @param indices The indices of the non-zero values.
@@ -403,6 +407,28 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
     public CooVector T(int... axes) {
         ValidateParameters.ensurePermutation(axes);
         return copy();
+    }
+
+
+    /**
+     * Checks if each entry in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each entry in this nD array against.
+     *
+     * @return An {@link ArrayMask} of the same shape as this nD array containing the boolean results from evaluating each
+     * entry in the nD array against the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #filter(Function)
+     */
+    @Override
+    public ArrayMask where(Function<Double, Boolean> predicate) {
+        BitSet mask = new BitSet();
+
+        for(int i=0; i<data.length; i++)
+            mask.set(indices[i], predicate.apply(data[i]));
+
+        return new ArrayMask(shape, mask);
     }
 
 
@@ -912,6 +938,28 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
 
 
     /**
+     * Gets elements of this nD array according to a boolean {@code mask} (i.e., "masked select").
+     *
+     * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
+     *
+     * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
+     * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
+     *
+     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     */
+    @Override
+    public Vector get(ArrayMask mask) {
+        double[] values = new double[mask.countTrue()];
+        BitSet maskBits = mask.data;
+
+        for(int i = maskBits.nextSetBit(0), j = 0; i >= 0; i = maskBits.nextSetBit(i+1))
+            values[j++] = get(i);
+
+        return new Vector(values);
+    }
+
+
+    /**
      * Sets the element of this tensor at the specified indices.
      *
      * @param value New value to set the specified index of this tensor to.
@@ -996,6 +1044,104 @@ public class CooVector extends AbstractDoubleTensor<CooVector>
         ValidateParameters.ensureRank(newShape, 1);
         ValidateParameters.ensureTotalEntriesEqual(shape, newShape);
         return copy();
+    }
+
+
+    /**
+     * Reduces elements of this array, along a specified set of axes, by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to elements of this nD array along the specified axes in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * <strong>Warning:</strong> This method is provided as part of the nD Array API.
+     * However, it is unlikely that users would wish to use this method over {@link #reduce(Double, DoubleBinaryOperator)}
+     * or {@link #reduceToDense(Double, DoubleBinaryOperator, int...)} for a vector.
+     * There are only two valid values for {@code axes} as follows:
+     * <ul>
+     *     <li>If {@code axes.length == 0} then this method is equivalent to calling {@link #toTensor()}.</li>
+     *     <li>If {@code axes.length == 1} and {@code axes[0] == 0} then this method will return a sparse scalar tensor with
+     *     a single value.
+     *     This scalar value can be gotten in a dense scalar tensor or as a single primitive value by calling
+     *     {@link #reduceToDense(Double, DoubleBinaryOperator, int...)} or {@link #reduce(Double, DoubleBinaryOperator)}
+     *     respectively.</li>
+     * </ul>
+     *
+     * @param identity The starting value for the reduction.
+     * <strong>Note:</strong>Unlike with dense nD array objects, the identity may <i>not</i> be {@code null}.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array, but with the specified {@code axes} removed, containing the result of
+     * the reduction operation.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(Double, BinaryOperator)
+     * @see #reduceToDense(Double, DoubleBinaryOperator, int...)
+     */
+    @Override
+    public CooTensor reduce(Double identity, DoubleBinaryOperator accumulator, int... axes) {
+        Objects.requireNonNull(identity, "The identity object must not be null when reducing sparse nD arrays.");
+
+        if(axes.length == 0) return toTensor();
+        if(axes.length != 1 || axes[0] != 0) {
+            throw new IllegalArgumentException(
+                    "Illegal axes specified for vector. Only a single axis (zero) may be specified for vector reduction.");
+        }
+
+        return new CooTensor(
+                new Shape(),
+                new double[]{reduce(identity, accumulator)},
+                new int[][]{{0}}
+        );
+    }
+
+
+    /**
+     * Reduces elements of this array, along a specified set of axes, by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to elements of this nD array along the specified axes in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * <strong>Warning:</strong> Not specifying any axes (i.e., {@code axes.length == 0}) will result in converting this
+     * COO vector to a dense tensor which is likely not desirable.
+     * <ul>
+     *     <li>If {@code axes.length == 0} then this method is equivalent to calling {@code this.toDense().toTensor()}.</li>
+     *     <li>If {@code axes.length == 1} and {@code axes[0] == 0} then this method is equivalent to calling
+     *     {@code this.reduce(identity, accumulator)} then wrapping it in a scalar {@link Tensor}.</li>
+     * </ul>
+     *
+     * @param identity The starting value for the reduction.
+     * <strong>Note:</strong>Unlike with dense nD array objects, the identity may <i>not</i> be {@code null}.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return A dense nD array of the same shape as this nD array, but with the specified {@code axes} removed, containing the
+     * result of the reduction operation.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(Double, BinaryOperator)
+     */
+    public Tensor reduceToDense(Double identity, DoubleBinaryOperator accumulator, int... axes) {
+        Objects.requireNonNull(identity, "The identity object must not be null when reducing sparse nD arrays.");
+
+        if(axes.length == 0) return toDense().toTensor();
+        if(axes.length != 1 || axes[0] != 0) {
+            throw new IllegalArgumentException(
+                    "Illegal axes specified for vector. Only a single axis (zero) may be specified for vector reduction.");
+        }
+
+        return new Tensor(
+                new Shape(),
+                new double[]{reduce(identity, accumulator)}
+        );
     }
 
 

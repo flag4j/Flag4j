@@ -26,7 +26,7 @@ package org.flag4j.arrays.dense;
 
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.VectorMixin;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDenseDoubleNDArray;
 import org.flag4j.arrays.sparse.CooCVector;
 import org.flag4j.arrays.sparse.CooVector;
 import org.flag4j.io.PrintOptions;
@@ -59,7 +59,7 @@ import java.util.List;
  *
  * <p>Vectors have mutable data but are fixed in size.
  */
-public class Vector extends AbstractDenseDoubleTensor<Vector>
+public class Vector extends AbstractDenseDoubleNDArray<Vector>
         implements VectorMixin<Vector, Matrix, Matrix, Double> {
     private static final long serialVersionUID = 1L;
 
@@ -157,6 +157,15 @@ public class Vector extends AbstractDenseDoubleTensor<Vector>
      */
     public Vector(Vector a) {
         this(a.shape, a.data.clone());
+    }
+
+
+    /**
+     * Constructs a vector using a {@link List}
+     * @param data A list containing the data of the vector to construct.
+     */
+    public Vector(List<Double> data) {
+        this(ArrayConversions.fromDoubleList(data));
     }
 
 

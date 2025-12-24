@@ -102,7 +102,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param data Non-zero data of this tensor of this tensor. If this tensor is dense, this specifies all data within the
+     * @param data Non-zero data in this tensor. If this tensor is dense, this specifies all data within the
      * tensor.
      * If this tensor is sparse, this specifies only the non-zero data of the tensor.
      */
@@ -119,9 +119,9 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO tensors.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO tensors.
      * @param shape The shape of the tensor to construct.
-     * @param data The non-zero data of this tensor.
+     * @param data The Non-zero data in this tensor.
      * @param indices The indices of the non-zero data.
      * @param dummy Dummy object to distinguish this constructor from the safe variant. It is completely ignored in this constructor.
      */
@@ -271,7 +271,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -299,7 +299,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
      *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      */

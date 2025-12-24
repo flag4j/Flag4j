@@ -24,9 +24,11 @@
 
 package org.flag4j.arrays.sparse;
 
+import org.flag4j.arrays.ArrayMask;
+import org.flag4j.arrays.IntTuple;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.MatrixMixin;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleNDArray;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.CVector;
@@ -47,10 +49,10 @@ import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.BinaryOperator;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.Function;
 
 import static org.flag4j.linalg.ops.sparse.SparseUtils.sortCsrMatrix;
 
@@ -118,7 +120,7 @@ import static org.flag4j.linalg.ops.sparse.SparseUtils.sortCsrMatrix;
  * @see Vector
  * @see CooVector
  */
-public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
+public class CsrMatrix extends AbstractDoubleNDArray<CsrMatrix>
         implements MatrixMixin<CsrMatrix, Matrix, CooVector, Double> {
 
     // TODO: Implement sparse-matrix dense-vector multiplication.
@@ -207,9 +209,9 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
 
     /**
-     * Constructs a zero matrix with the specified shape.
-     * @param numRows Number of rows in the zero matrix to construct.
-     * @param numCols Number of columns in the zero matrix to construct.
+     * Constructs a zero-matrix with the specified shape.
+     * @param numRows Number of rows in the zero-matrix to construct.
+     * @param numCols Number of columns in the zero-matrix to construct.
      */
     public CsrMatrix(int numRows, int numCols) {
         super(new Shape(numRows, numCols), new double[0]);
@@ -223,8 +225,8 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
 
     /**
-     * Constructs zero matrix with the specified {@code shape}.
-     * @param shape Shape of the zero matrix to construct. Must be rank 2.
+     * Constructs zero-matrix with the specified {@code shape}.
+     * @param shape Shape of the zero-matrix to construct. Must be rank 2.
      * @throws ArrayShapeException If {@code shape.getRank() != 2}.
      */
     public CsrMatrix(Shape shape) {
@@ -240,7 +242,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing CSR matrices.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing CSR matrices.
      * @param shape The shape of the matrix to construct.
      * @param data The non-zero data of this COO matrix.
      * @param rowPointers The non-zero row pointers of the CSR matrix.
@@ -286,6 +288,71 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
 
     /**
+     * Reduces elements of this array, along a specified set of axes, by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to elements of this nD array along the specified axes in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array, but with the specified {@code axes} removed, containing the result of
+     * the reduction operation.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(Double, BinaryOperator)
+     */
+    @Override
+    public AbstractDoubleNDArray<?> reduce(Double identity, DoubleBinaryOperator accumulator, int... axes) {
+        final int axis = axes[0];
+        final Map<IntTuple, Double> reduced = new HashMap<>();
+
+        if (axis == 0) {  // Reduce over rows (aggregate columns).
+            Shape outShape = new Shape(numCols);
+
+            // walk every non-zero exactly once
+            for (int row = 0; row < numRows; row++) {
+                for (int p = rowPointers[row]; p < rowPointers[row + 1]; p++) {
+                    int col = colIndices[p];
+                    double value = data[p];
+
+                    reduced.compute(new IntTuple(col), (k, oldVal) ->
+                            accumulator.applyAsDouble(oldVal == null ? identity : oldVal, value));
+                }
+            }
+
+            return new CooTensor(outShape, reduced);
+        } else if (axis == 1) {  // Reduce over columns (aggregate rows).
+            Shape outShape = new Shape(numRows);
+
+            for (int row = 0; row < numRows; row++) {
+                int start = rowPointers[row];
+                int end = rowPointers[row + 1];
+
+                if (start == end) continue;
+
+                double acc = identity;
+                for (int p = start; p < end; p++)
+                    acc = accumulator.applyAsDouble(acc, data[p]);
+
+                reduced.put(new IntTuple(row), acc);
+            }
+
+            return new CooTensor(outShape, reduced);
+        } else {
+            throw new LinearAlgebraException("Invalid axis for rank-2 array: axis=" + axis);
+        }
+    }
+
+
+    /**
      * Computes the tensor contraction of this tensor with a specified tensor over the specified set of axes. That is,
      * computes the sum of products between the two tensors along the specified set of axes.
      *
@@ -295,7 +362,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -318,9 +385,9 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal, or the tensor does not have the same length along the two axes.)
      */
     @Override
     public CooTensor tensorTr(int axis1, int axis2) {
@@ -365,7 +432,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
             newRowPointers = rowPointers.clone();
             newColIndices = colIndices.clone();
         } else {
-            loc = -loc - 1; // Compute insertion index as specified by Arrays.binarySearch
+            loc = -loc - 1; // Compute the insertion index as specified by Arrays.binarySearch
             newEntries = new double[data.length + 1];
             newColIndices = new int[data.length + 1];
 
@@ -390,7 +457,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
 
     /**
-     * Flattens tensor to single dimension while preserving order of data.
+     * Flattens tensor to a single dimension while preserving the order of data.
      *
      * @return The flattened tensor.
      *
@@ -446,6 +513,28 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
         int row = indices[0];
         int col = indices[1];
         return get(row, col);
+    }
+
+
+    /**
+     * Gets elements of this nD array according to a boolean {@code mask} (i.e., "masked select").
+     *
+     * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
+     *
+     * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
+     * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
+     *
+     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     */
+    @Override
+    public Vector get(ArrayMask mask) {
+        double[] values = new double[mask.cardinality()];
+        BitSet maskBits = mask.data;
+
+        for(int i=maskBits.nextSetBit(0), j=0; i>=0; i=maskBits.nextSetBit(i+1))
+            values[j++] = data[i];
+
+        return new Vector(values);
     }
 
 
@@ -511,7 +600,29 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
 
     /**
-     * The sparsity of this sparse CSR matrix. That is, the decimal percentage of elements in this matrix which are zero.
+     * Checks if each entry in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each entry in this nD array against.
+     *
+     * @return An {@link ArrayMask} of the same shape as this nD array containing the boolean results from evaluating each
+     * entry in the nD array against the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #filter(Function)
+     */
+    @Override
+    public ArrayMask where(Function<Double, Boolean> predicate) {
+        BitSet mask = new BitSet();
+
+        for(int i=0, size=data.length; i<size; i++)
+            mask.set(i, predicate.apply(data[i]));
+
+        return new ArrayMask(shape, mask);
+    }
+
+
+    /**
+     * The sparsity of this sparse CSR matrix. That is, the decimal percentage of elements in this matrix that are zero.
      *
      * @return The density of this sparse matrix.
      */
@@ -526,7 +637,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
     /**
      * Gets the density of this tensor as a decimal percentage.
-     * That is, the percentage of data in this tensor that are non-zero.
+     * That is, the percentage of data in this tensor that is non-zero.
      * @return The density of this tensor as a decimal percentage.
      * @see #getSparsity()
      */
@@ -671,7 +782,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
             }
         }
 
-        return true; // If we reach this point then the matrix must be upper triangular.
+        return true; // If we reach this point, then the matrix must be upper triangular.
     }
 
 
@@ -698,7 +809,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
             }
         }
 
-        return true; // If we reach this point then the matrix must be lower-triangular.
+        return true; // If we reach this point, then the matrix must be lower-triangular.
     }
 
 
@@ -730,7 +841,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
     /**
      * <p>Computes the determinant of a square matrix.
-     * <p><b>WARNING:</b> This method will convert the matrix to a dense matrix in order to compute the determinant.
+     * <p><b>WARNING:</b> This method will convert the matrix to a dense matrix to compute the determinant.
      *
      * @return The determinant of this matrix.
      *
@@ -760,8 +871,8 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * <p>Computes the matrix multiplication between two sparse CSR matrices and stores the result in a CSR matrix.
      *
      * <p>Warning: This method will likely be slower than {@link #mult(CsrMatrix)} if the result of multiplying this matrix
-     * with {@code b} is not very sparse. Further, multiplying two sparse matrices may result in a dense matrix so this
-     * method should be used with caution.
+     * with {@code b} is not very sparse.
+     * Further, multiplying two sparse matrices may result in a dense matrix, so this method should be used with caution.
      *
      * @param b Matrix to multiply to this matrix.
      * @return The result of matrix multiplying this matrix with {@code b} as a sparse CSR matrix.
@@ -775,8 +886,8 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * <p>Computes the matrix multiplication between two sparse CSR matrices and stores the result in a CSR matrix.
      *
      * <p>Warning: This method will likely be slower than {@link #mult(CsrMatrix)} if the result of multiplying this matrix
-     * with {@code b} is not very sparse. Further, multiplying two sparse matrices may result in a dense matrix so this
-     * method should be used with caution.
+     * with {@code b} is not very sparse.
+     * Further, multiplying two sparse matrices may result in a dense matrix, so this method should be used with caution.
      *
      * @param b Matrix to multiply to this matrix.
      * @return The result of matrix multiplying this matrix with {@code b} as a sparse CSR matrix.
@@ -1084,7 +1195,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
             newRowPointers = rowPointers.clone();
             newColIndices = colIndices.clone();
         } else {
-            loc = -loc - 1; // Compute insertion index as specified by Arrays.binarySearch
+            loc = -loc - 1;  // Compute the insertion index as specified by Arrays.binarySearch
             newEntries = new double[data.length + 1];
             newColIndices = new int[data.length + 1];
 
@@ -1191,7 +1302,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
     /**
      * Converts this matrix to an equivalent vector. If this matrix is not shaped as a row/column vector,
-     * it will first be flattened then converted to a vector.
+     * it will first be flattened, then converted to a vector.
      *
      * @return A vector equivalent to this matrix.
      */
@@ -1320,8 +1431,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      * @return The column at index {@code colIdx} of this matrix between the {@code rowStart} and {@code rowEnd}
      * indices.
      *
-     * @throws @throws                  IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the
-     *                                  shape of this matrix.
+     * @throws IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the shape of this matrix.
      * @throws IllegalArgumentException If {@code rowEnd} is less than {@code rowStart}.
      */
     public CooVector getCol(int colIdx, int rowStart, int rowEnd) {
@@ -1401,7 +1511,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IndexOutOfBoundsException If the values vector has a different length than the number of rows in this matrix.
+     * @throws IndexOutOfBoundsException If the {@code values} vector has a different length than the number of rows in this matrix.
      */
     public CsrMatrix setCol(CooVector values, int colIndex) {
         // Convert to COO first for more efficient modification.
@@ -1417,7 +1527,8 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @return A reference to this matrix.
      *
-     * @throws IndexOutOfBoundsException If the values vector has a different length than the number of rows in this matrix.
+     * @throws IndexOutOfBoundsException If the {@code values} vector has a different length than the number of rows in this
+     * matrix.
      */
     public CsrMatrix setRow(CooVector values, int rowIndex) {
         // Convert to COO first for more efficient modification.
@@ -1511,7 +1622,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
      *
      * @param B Second matrix in the matrix multiplication.
      * @return The result of matrix multiplying this matrix with matrix {@code b}.
-     * @throws IllegalArgumentException If the number of columns in this matrix do not equal the number of rows in matrix {@code b}.
+     * @throws IllegalArgumentException If the number of columns in this matrix does not equal the number of rows in matrix {@code b}.
      */
     public CMatrix mult(CMatrix B) {
         return (CMatrix) RealFieldDenseCsrMatMult.standard(this, B);
@@ -1678,7 +1789,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
 
     /**
      * Coalesces this sparse CSR matrix. An uncoalesced matrix is a sparse matrix with multiple data for a single index. This
-     * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
+     * method will ensure that each index only has one non-zero value by summing up duplicated data. If another form of aggregation other
      * than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse CSR matrix which is equivalent to this CSR matrix.
      * @see #coalesce(BinaryOperator)
@@ -1735,7 +1846,7 @@ public class CsrMatrix extends AbstractDoubleTensor<CsrMatrix>
                 result.append(String.format("%-" + width + "s", value));
             }
 
-            // Get last entry now
+            // Get the last entry now
             value = StringUtils.ValueOfRound(data[size-1], precision);
             width = padding + value.length();
             value = centering ? StringUtils.center(value, width) : value;

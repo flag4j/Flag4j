@@ -156,7 +156,7 @@ public class CsrFieldMatrix<T extends Field<T>> extends AbstractCsrFieldMatrix<C
 
 
     /**
-     * Constructs a sparse CSR matrix representing the zero matrix for the field which {@code fieldElement} belongs to.
+     * Constructs a sparse CSR matrix representing the zero-matrix for the field which {@code fieldElement} belongs to.
      * @param shape Shape of the CSR matrix to construct.
      * @param fieldElement Element of the field which the entries of this
      */
@@ -167,7 +167,7 @@ public class CsrFieldMatrix<T extends Field<T>> extends AbstractCsrFieldMatrix<C
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing CSR matrices.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing CSR matrices.
      * @param shape The shape of the matrix to construct.
      * @param data The non-zero data of this COO matrix.
      * @param rowPointers The non-zero row pointers of the CSR matrix.
@@ -365,7 +365,7 @@ public class CsrFieldMatrix<T extends Field<T>> extends AbstractCsrFieldMatrix<C
      *
      * @return The result of multiplying this matrix with {@code b}.
      *
-     * @throws LinearAlgebraException If the number of columns in this matrix do not equal the size of
+     * @throws LinearAlgebraException If the number of columns in this matrix does not equal the size of
      *                                {@code b}.
      */
     @Override
@@ -502,8 +502,7 @@ public class CsrFieldMatrix<T extends Field<T>> extends AbstractCsrFieldMatrix<C
      * @return The column at index {@code colIdx} of this matrix between the {@code rowStart} and {@code rowEnd}
      * indices.
      *
-     * @throws @throws                  IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the
-     *                                  shape of this matrix.
+     * @throws IndexOutOfBoundsException If either {@code colEnd} are {@code colStart} out of bounds for the shape of this matrix.
      * @throws IllegalArgumentException If {@code rowEnd} is less than {@code rowStart}.
      */
     public CooFieldVector<T> getCol(int colIdx, int rowStart, int rowEnd) {
@@ -587,7 +586,7 @@ public class CsrFieldMatrix<T extends Field<T>> extends AbstractCsrFieldMatrix<C
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.

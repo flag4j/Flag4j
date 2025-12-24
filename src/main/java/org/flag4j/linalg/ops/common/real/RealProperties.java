@@ -187,10 +187,9 @@ public final class RealProperties {
      * @param src Entries of the tensor.
      * @return {@code true} is any entry of {@code src} is {@link Double#NaN}; {@code false} otherwise.
      */
-    public static boolean isAllNaN(double[] src) {
+    public static boolean containsNaN(double[] src) {
         for(double value : src)
             if(Double.isNaN(value)) return true;
-
         return false;
     }
 

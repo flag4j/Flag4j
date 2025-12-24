@@ -25,8 +25,11 @@
 package org.flag4j.arrays.backend.primitive_arrays;
 
 
+import org.flag4j.arrays.ArrayMask;
+import org.flag4j.arrays.Pair;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.dense.Tensor;
+import org.flag4j.arrays.dense.Vector;
 import org.flag4j.linalg.ops.TransposeDispatcher;
 import org.flag4j.linalg.ops.common.real.RealOps;
 import org.flag4j.linalg.ops.common.real.RealProperties;
@@ -35,16 +38,22 @@ import org.flag4j.linalg.ops.dense.real.RealDenseElemMult;
 import org.flag4j.linalg.ops.dense.real.RealDenseOps;
 import org.flag4j.linalg.ops.dense.real.RealDenseTensorDot;
 import org.flag4j.linalg.ops.dense.semiring_ops.DenseSemiringOps;
+import org.flag4j.util.ArrayReducer;
 import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.ArrayShapeException;
 
+import java.util.BitSet;
+import java.util.function.BinaryOperator;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.Function;
+
 /**
- * This is the base class of all real primitive double tensors. The methods implemented in this class are agnostic to weather the
- * tensor is dense or sparse.
+ * This is the base class of all real primitive double tensors.
+ * The methods implemented in this class are agnostic to whether the tensor is dense or sparse.
  * @param <T> The type of the tensor.
  */
-public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T>>
-        extends AbstractDoubleTensor<T> {
+public abstract class AbstractDenseDoubleNDArray<T extends AbstractDoubleNDArray<T>>
+        extends AbstractDoubleNDArray<T> {
 
     /**
      * Creates a tensor with the specified data and shape.
@@ -53,7 +62,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      * @param entries Entries of this tensor. If this tensor is dense, this specifies all data within the tensor.
      * If this tensor is sparse, this specifies only the non-zero data of the tensor.
      */
-    protected AbstractDenseDoubleTensor(Shape shape, double[] entries) {
+    protected AbstractDenseDoubleNDArray(Shape shape, double[] entries) {
         super(shape, entries);
         ValidateParameters.ensureAllEqual(shape.totalEntriesIntValueExact(), entries.length);
     }
@@ -72,6 +81,32 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
     public Double get(int... indices) {
         ValidateParameters.validateTensorIndex(shape, indices);
         return data[shape.get1DIndex(indices)];
+    }
+
+
+    /**
+     * Gets elements of this nD array according to a boolean {@code mask} (i.e., "masked select").
+     *
+     * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
+     *
+     * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
+     * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
+     *
+     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     */
+    @Override
+    public Vector get(ArrayMask mask) {
+        ValidateParameters.ensureEqualShape(shape, mask.shape);
+
+        BitSet maskBits = mask.data;
+        int trueCount = maskBits.cardinality();
+        double[] values = new double[trueCount];
+
+        int count = 0;
+        for (int i = maskBits.nextSetBit(0); i >= 0; i = maskBits.nextSetBit(i + 1))
+            values[count++] = data[i];
+
+        return new Vector(values);
     }
 
 
@@ -129,6 +164,59 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
     public T T(int... axes) {
         return makeLikeNDArray(shape.permuteAxes(axes),
                 TransposeDispatcher.dispatchTensor(data, shape, axes));
+    }
+
+
+    /**
+     * Reduces elements of this array, along a specified set of axes, by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to elements of this nD array along the specified axes in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array, but with the specified {@code axes} removed, containing the result of
+     * the reduction operation.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(Double, BinaryOperator)
+     * @see #reduce(Double, DoubleBinaryOperator)
+     * @see #reduce(Double, BinaryOperator, int...)
+     */
+    @Override
+    public Tensor reduce(Double identity, DoubleBinaryOperator accumulator, int... axes) {
+        Pair<Shape, double[]> reduced = ArrayReducer.reduce(shape, data, identity, accumulator, axes);
+        return new Tensor(reduced.first(), reduced.second());
+    }
+
+
+    /**
+     * Checks if each entry in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each entry in this nD array against.
+     *
+     * @return An {@link ArrayMask} of the same shape as this nD array containing the boolean results from evaluating each
+     * entry in the nD array against the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #filter(Function)
+     */
+    @Override
+    public ArrayMask where(Function<Double, Boolean> predicate) {
+        BitSet mask = new BitSet(data.length);
+
+        for(int i=0, size=data.length; i<size; i++)
+            mask.set(i, predicate.apply(data[i]));
+
+        return new ArrayMask(shape, mask);
     }
 
 
@@ -229,7 +317,7 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -254,9 +342,9 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal, or the tensor does not have the same length along the two axes.)
      */
     @Override
     public Tensor tensorTr(int axis1, int axis2) {
@@ -391,12 +479,12 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
 
     /**
      * Checks if all data of this matrix are "close" as defined below. Custom tolerances may be specified using
-     * {@link #allClose(AbstractDoubleTensor, double, double)}.
+     * {@link #allClose(AbstractDoubleNDArray, double, double)}.
      * @param b Second tensor in the comparison.
-     * @return True if both tensors have the same shape and all data are "close" element-wise, i.e.
+     * @return True if both tensors have the same shape and all data are "close" element-wise, i.e.,
      * elements {@code x} and {@code y} at the same positions in the two tensors respectively and satisfy
      * {@code |x-y| <= (1E-08 + 1E-05*|y|)}. Otherwise, returns false.
-     * @see #allClose(AbstractDoubleTensor, double, double)
+     * @see #allClose(AbstractDoubleNDArray, double, double)
      */
     public boolean allClose(T b) {
         return hasSameShape(b) && RealProperties.allClose(data, b.data);
@@ -406,10 +494,10 @@ public abstract class AbstractDenseDoubleTensor<T extends AbstractDoubleTensor<T
     /**
      * Checks if all data of this matrix are "close" as defined below.
      * @param b Second tensor in the comparison.
-     * @return True if both tensors have the same length and all data are "close" element-wise, i.e.
+     * @return True if both tensors have the same length and all data are "close" element-wise, i.e.,
      * elements {@code x} and {@code y} at the same positions in the two tensors respectively and satisfy
      * {@code |x-y| <= (absTol + relTol*|y|)}. Otherwise, returns false.
-     * @see #allClose(AbstractDoubleTensor)
+     * @see #allClose(AbstractDoubleNDArray)
      */
     public boolean allClose(T b, double relTol, double absTol) {
         return hasSameShape(b) && RealProperties.allClose(data, b.data, relTol, absTol);

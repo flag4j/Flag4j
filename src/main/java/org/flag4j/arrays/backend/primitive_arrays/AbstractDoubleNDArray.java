@@ -28,17 +28,24 @@ package org.flag4j.arrays.backend.primitive_arrays;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.field_arrays.TensorOverField;
+import org.flag4j.arrays.dense.Vector;
 import org.flag4j.linalg.ops.common.real.AggregateReal;
 import org.flag4j.linalg.ops.common.real.RealOps;
 import org.flag4j.linalg.ops.common.real.RealProperties;
 import org.flag4j.linalg.ops.dense.real.RealDenseOps;
+import org.flag4j.util.ArrayMapper;
+import org.flag4j.util.ArrayReducer;
 import org.flag4j.util.Flag4jConstants;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.*;
 
 /**
  * This is the base class of all real primitive double tensors, matrices, or vectors. The methods implemented in this class are
- * agnostic to weather the tensor is dense or sparse.
+ * agnostic to whether the tensor is dense or sparse.
  */
-public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
+public abstract class AbstractDoubleNDArray<T extends AbstractDoubleNDArray<T>>
         extends AbstractNDArray<T, double[], Double>
         implements TensorOverField<T, T, double[], Double> {
 
@@ -52,7 +59,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      * @param entries Entries of this tensor. If this tensor is dense, this specifies all data within the tensor.
      * If this tensor is sparse, this specifies only the non-zero data of the tensor.
      */
-    protected AbstractDoubleTensor(Shape shape, double[] entries) {
+    protected AbstractDoubleNDArray(Shape shape, double[] entries) {
         super(shape, entries);
     }
 
@@ -65,6 +72,238 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
     @Override
     public int dataLength() {
         return data.length;
+    }
+
+
+    /**
+     * Computes the sum of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the sum. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     */
+    @Override
+    public AbstractDoubleNDArray<?> sum(int... axes) {
+        return reduce(null, (double x, double y)->x+y, axes);
+    }
+
+
+    /**
+     * <p>Computes the product of all values in this tensor along the specified {@code axes}.
+     * <p>For sparse tensors, this method will only consider the non-zero values.
+     * @param axes Axes along which to compute the product. All axes must be in the range {@code [0, this.rank() - 1]}.
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     * @see #prod()
+     */
+    @Override
+    public AbstractDoubleNDArray<?> prod(int... axes) {
+        return reduce(null, (double x, double y)->x*y, axes);
+    }
+
+
+    /**
+     * Applies a map to each item in this nD array.
+     * This operation is done in-place.
+     *
+     * If this nD array is sparse, the {@code mapper} operation will only be applied to the non-zero elements in this nD array.
+     *
+     * @param mapper The operation to apply to each item in this nD array.
+     *
+     * @return A reference to this nD array.
+     *
+     * @throws NullPointerException If {@code mapper} is {@code null}.
+     * @see #map(DoubleUnaryOperator) 
+     */
+    @Override
+    public T map(UnaryOperator<Double> mapper) {
+        map((double x)->mapper.apply(x));
+        return (T) this;
+    }
+
+
+    /**
+     * Applies a map to each item in this nD array.
+     * This operation is done in-place.
+     *
+     * If this nD array is sparse, the {@code mapper} operation will only be applied to the non-zero elements in this nD array.
+     *
+     * @param mapper The operation to apply to each item in this nD array.
+     *
+     * @return A reference to this nD array.
+     *
+     * @throws NullPointerException If {@code mapper} is {@code null}.
+     * @see #map(UnaryOperator)
+     */
+    public T map(DoubleUnaryOperator mapper) {
+        ArrayMapper.map(data, mapper);
+        return (T) this;
+    }
+
+
+    /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the
+     * starting value of the
+     * reduction.
+     * @param accumulator A binary operator that combines the current accumulated
+     * result with the next array element and returns the updated result.
+     *
+     * @return The final accumulated scalar. If this nD array is empty, {@code identity} will be returned.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(Double, DoubleBinaryOperator)
+     */
+    @Override
+    public Double reduce(Double identity, BinaryOperator<Double> accumulator) {
+        // Wrap the accumulator as a DoubleBinaryOperator.
+        return reduce(identity, (double x, double y)->accumulator.apply(x, y));
+    }
+
+
+    /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the
+     * starting value of the
+     * reduction.
+     * @param accumulator A binary operator that combines the current accumulated
+     * result with the next array element and returns the updated result.
+     *
+     * @return The final accumulated scalar. If this nD array is empty, {@code identity} will be returned.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     *
+     * @see #reduce(Double, BinaryOperator)
+     */
+    public Double reduce(Double identity, DoubleBinaryOperator accumulator) {
+        return ArrayReducer.reduce(data, identity, accumulator);
+    }
+
+
+    /**
+     * Reduces elements of this array, along a specified set of axes, by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to elements of this nD array along the specified axes in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array, but with the specified {@code axes} removed, containing the result of
+     * the reduction operation.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(Double, BinaryOperator)
+     */
+    public AbstractDoubleNDArray<?> reduce(Double identity, BinaryOperator<Double> accumulator, int... axes) {
+        // Wrap the accumulator as a DoubleBinaryOperator.
+        return reduce(identity, (double x, double y)->accumulator.apply(x, y), axes);
+    }
+
+
+    /**
+     * Reduces elements of this array, along a specified set of axes, by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to elements of this nD array along the specified axes in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array, but with the specified {@code axes} removed, containing the result of
+     * the reduction operation.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(Double, BinaryOperator)
+     */
+    public abstract AbstractDoubleNDArray<?> reduce(Double identity, DoubleBinaryOperator accumulator, int... axes);
+
+
+    /**
+     * Checks if <em>any</em> element in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>any</em> element in this nD array satisfies the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #all(Function)
+     */
+    @Override
+    public boolean any(Function<Double, Boolean> predicate) {
+        for(double v : data)
+            if (predicate.apply(v)) return true;
+
+        return false;
+    }
+
+
+    /**
+     * Checks if <em>all</em> elements in this nD array satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>all</em> elements in this nD array satisfy the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #any(Function)
+     */
+    @Override
+    public boolean all(Function<Double, Boolean> predicate) {
+        for(double v : data)
+            if (!predicate.apply(v)) return false;
+
+        return true;
+    }
+
+
+    /**
+     * Extracts elements of this nD array that satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return A flat 1D array containing the elements of this nD array that satisfy the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #where(Function)
+     */
+    @Override
+    public Vector filter(Function<Double, Boolean> predicate) {
+        List<Double> filtered = new ArrayList<>(data.length / 4);
+
+        for(double v : data)
+            if(predicate.apply(v)) filtered.add(v);
+
+        return new Vector(filtered);
     }
 
 
@@ -113,12 +352,13 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
 
 
     /**
-     * Rounds values which are close to zero in absolute value to zero. If the matrix is complex, both the real and imaginary components will be rounded
-     * independently.
-     * @param threshold Threshold for rounding values to zero. That is, if a value in this matrix is less than the threshold in absolute value then it
-     *                  will be rounded to zero. This value must be non-negative.
+     * Rounds values which are close to zero in absolute value to zero.
+     * If the matrix is complex, both the real and imaginary components will be rounded independently.
+     * @param threshold Threshold for rounding values to zero.
+     * That is, if a value in this matrix is less than the threshold in absolute value, then it will be rounded to zero.
+     * This value must be non-negative.
      * @return A copy of this matrix with rounded values.
-     * @throws IllegalArgumentException If threshold is negative.
+     * @throws IllegalArgumentException If the threshold is negative.
      * @see #roundToZero()
      * @see #round()
      * @see #round(int)
@@ -374,7 +614,7 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public Double prod() {
-        return AggregateReal.sum(data);
+        return AggregateReal.prod(data);
     }
 
 
@@ -567,6 +807,26 @@ public abstract class AbstractDoubleTensor<T extends AbstractDoubleTensor<T>>
      */
     @Override
     public boolean containsNaN() {
-        return RealProperties.isAllNaN(data);
+        return RealProperties.containsNaN(data);
+    }
+
+
+    /**
+     * Counts the number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return The number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     */
+    @Override
+    public int countTrue(Function<Double, Boolean> predicate) {
+        int count = 0;
+
+        for (Double v : data)
+            if (predicate.apply(v)) count++;
+
+        return count;
     }
 }

@@ -375,7 +375,7 @@ public class Shape implements Serializable {
         if(totalEntries!=null) return totalEntries;
 
         // Otherwise, the total data needs to be computed.
-        BigInteger product = BigInteger.ONE;
+        BigInteger product = BigInteger.ONE;  // We can start at one because scalar tensors have a single entry.
         for(int dim : dims)
             product = product.multiply(BigInteger.valueOf(dim));
         totalEntries = product;
@@ -396,9 +396,9 @@ public class Shape implements Serializable {
      * @see #totalEntriesLongValueExact()
      */
     public int totalEntriesIntValueExact() {
-        if(totalEntriesIntExact >= 0) return totalEntriesIntExact; // The Value has already been computed.
+        if(totalEntriesIntExact >= 0) return totalEntriesIntExact;  // The Value has already been computed.
         long product = 1;
-        totalEntriesIntExact = 1;
+        totalEntriesIntExact = 1;  // We can start at one because scalar tensors have a single entry.
 
         for (int dim : dims) {
             product *= dim;

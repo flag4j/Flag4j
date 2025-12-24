@@ -59,7 +59,7 @@ public final class RealCooMatrixGetSet {
      */
     public static double matrixGet(CooMatrix src, int row, int col) {
         int idx = SparseElementSearch.matrixBinarySearch(src.rowIndices, src.colIndices, row, col);
-        return idx<0 ? 0 : src.data[idx];
+        return (idx < 0) ? 0 : src.data[idx];
     }
 
 

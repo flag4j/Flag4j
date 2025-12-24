@@ -239,7 +239,7 @@ public final class RealDenseOps {
      *
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
      *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
      * @throws IllegalArgumentException If {@code dest.length == destShape.totalEntriesIntValueExact()}.

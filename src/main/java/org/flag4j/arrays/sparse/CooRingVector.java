@@ -169,7 +169,7 @@ public class CooRingVector<T extends Ring<T>> extends AbstractCooRingVector<
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO vectors.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO vectors.
      * @param shape Shape of the COO vector to construct.
      * @param data The non-zero data of this vector.
      * @param indices The indices of the non-zero values.

@@ -25,10 +25,13 @@
 package org.flag4j.arrays.sparse;
 
 
+import org.flag4j.arrays.ArrayMask;
+import org.flag4j.arrays.IntTuple;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseTensorData;
-import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleTensor;
+import org.flag4j.arrays.backend.primitive_arrays.AbstractDoubleNDArray;
 import org.flag4j.arrays.dense.Tensor;
+import org.flag4j.arrays.dense.Vector;
 import org.flag4j.io.PrettyPrint;
 import org.flag4j.io.PrintOptions;
 import org.flag4j.linalg.ops.common.real.RealProperties;
@@ -40,14 +43,14 @@ import org.flag4j.linalg.ops.sparse.coo.real.RealSparseEquals;
 import org.flag4j.linalg.ops.sparse.coo.real_complex.RealComplexCooTensorOps;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
+import org.flag4j.util.ShapeUtils;
 import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.ArrayShapeException;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BinaryOperator;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.Function;
 
 
 /**
@@ -68,7 +71,7 @@ import java.util.function.BinaryOperator;
  *     <li>The non-zero {@link #data} of the tensor. All other data in the tensor are
  *     assumed to be zero. Zero value can also explicitly be stored in {@link #data}.</li>
  *     <li><p>The {@link #indices} of the non-zero value in the sparse tensor. Many ops assume indices to be sorted in a
- *     row-major format (i.e., last index increased fastest) but often this is not explicitly verified.
+ *     row-major format (i.e., the last index increased fastest), but often this is not explicitly verified.
  *
  *     <p>The {@link #indices} array has shape {@code (nnz, rank)} where {@link #nnz} is the number of non-zero data in this
  *     sparse tensor and {@code rank} is the {@link #getRank() tensor rank} of the tensor. This means {@code indices[i]} is the nD
@@ -85,7 +88,7 @@ import java.util.function.BinaryOperator;
  *
  * <p>If indices need to be sorted for any reason, call {@link #sortIndices()}.
  */
-public class CooTensor extends AbstractDoubleTensor<CooTensor> {
+public class CooTensor extends AbstractDoubleNDArray<CooTensor> {
 
     private static final long serialVersionUID = 1L;
 
@@ -106,7 +109,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param data Non-zero data of this tensor of this COO tensor.
+     * @param data Non-zero data in this COO tensor.
      * @param indices The non-zero indices of this COO tensor. Must have dimensions {@code (nnz, rank)}.
      *
      * @throws IllegalArgumentException If {@code shape}, {@code data}, and {@code indices} do <em>not</em>
@@ -124,7 +127,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      * Creates a tensor with the specified data and shape.
      *
      * @param shape Shape of this tensor.
-     * @param data Non-zero data of this tensor of this tensor.
+     * @param data Non-zero data in this tensor.
      * @param indices The non-zero indices of this COO tensor. Must have dimensions {@code (nnz, rank)}.
      *
      * @throws IllegalArgumentException If {@code shape}, {@code data}, and {@code indices} do <em>not</em>
@@ -139,8 +142,8 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * Creates a zero matrix with the specified shape.
-     * @param shape The shape of the zero matrix to construct.
+     * Creates a zero-matrix with the specified shape.
+     * @param shape The shape of the zero-matrix to construct.
      */
     public CooTensor(Shape shape) {
         super(shape, new double[0]);
@@ -165,7 +168,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
     /**
      * Constructs a copy of the specified matrix.
-     * @param b Matrix to make copy of.
+     * @param b Matrix to make a copy of.
      */
     public CooTensor(CooTensor b) {
         super(b.shape, b.data.clone());
@@ -176,9 +179,9 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * Constructor useful for avoiding parameter validation while constructing COO tensors.
+     * Constructor useful for avoiding unnecessary parameter validation while constructing COO tensors.
      * @param shape The shape of the tensor to construct.
-     * @param data The non-zero data of this tensor.
+     * @param data The Non-zero data in this tensor.
      * @param indices The indices of the non-zero data.
      * @param dummy Dummy object to distinguish this constructor from the safe variant. It is completely ignored in this constructor.
      */
@@ -187,6 +190,27 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
         super(shape, data);
         this.indices = indices;
         this.nnz = data.length;
+    }
+
+
+    /**
+     * Creates a real dense nD COO tensor with the specified {@code shape}, non-zero data, and indices.
+     *
+     * @param shape The shape of the COO tensor to construct.
+     * @param indexDataMap A map where the keys represent the non-zero indices and the values represent the non-zero values of
+     * the COO tensor to construct.
+     */
+    public CooTensor(Shape shape, Map<IntTuple, Double> indexDataMap) {
+        super(shape, new double[indexDataMap.size()]);
+        this.nnz = indexDataMap.size();
+        this.indices = new int[nnz][shape.getRank()];
+
+        int count = 0;
+        for(Map.Entry<IntTuple, Double> entry : indexDataMap.entrySet()) {
+            this.indices[count] = entry.getKey().data();
+            this.data[count] = entry.getValue();
+            count++;
+        }
     }
 
 
@@ -210,7 +234,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      * the shape and data.
      *
      * @param shape Shape of the sparse tensor to construct.
-     * @param data Entries of the spares tensor to construct.
+     * @param data Entries of the sparse tensor to construct.
      *
      * @return A sparse tensor of the same type as this tensor with the same indices as this sparse tensor and with the provided
      * the shape and data.
@@ -250,7 +274,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * Makes a dense tensor with the specified shape and data which is a similar type to this sparse tensor.
+     * Makes a dense tensor with the specified shape and data, which is a similar type to this sparse tensor.
      *
      * @param shape Shape of the dense tensor.
      * @param data Entries of the dense tensor.
@@ -263,7 +287,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * The sparsity of this sparse tensor. That is, the decimal percentage of elements in this tensor which are zero.
+     * The sparsity of this sparse tensor. That is, the decimal percentage of elements in this tensor that are zero.
      * @return The density of this sparse tensor.
      * @see #getDensity()
      */
@@ -278,7 +302,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
     /**
      * Gets the density of this tensor as a decimal percentage.
-     * That is, the percentage of data in this tensor that are non-zero.
+     * That is, the percentage of elements in this tensor that are non-zero.
      * @return The density of this tensor as a decimal percentage.
      * @see #getSparsity()
      */
@@ -289,8 +313,8 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
     /**
      * Converts this tensor to an equivalent complex tensor.
-     * @return A complex COO tensor whose non-zero data have real component equal to the non-zero data of this tensor and
-     * imaginary components zero.
+     * @return A complex COO tensor whose non-zero data have a real component equal to the Non-zero data in this tensor and
+     * imaginary parts zero.
      */
     public CooCTensor toComplex() {
         return CooCTensor.unsafeMake(shape,
@@ -326,12 +350,36 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
     @Override
     public Double get(int... indices) {
         ValidateParameters.validateTensorIndex(shape, indices);
-        if(data.length == 0) return null; // Can not get reference of field so no way to get zero-element.
+        if(data.length == 0) return null;  // Cannot get reference of field, so there is no way to get the zero-element.
 
         for(int i=0; i<nnz; i++)
             if(Arrays.equals(this.indices[i], indices)) return data[i];
 
         return 0.0; // Return zero if the index is not found.
+    }
+
+
+    /**
+     * Gets elements of this nD array according to a boolean {@code mask} (i.e., "masked select").
+     *
+     * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
+     *
+     * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
+     * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
+     *
+     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     */
+    @Override
+    public Vector get(ArrayMask mask) {
+        double[] maskedData = new double[mask.cardinality()];
+        BitSet maskBits = mask.data;
+
+        for(int i = maskBits.nextSetBit(0), j = 0; i >= 0; i=maskBits.nextSetBit(i + 1)) {
+            int[] nDIndex = shape.getNdIndices(i);
+            maskedData[j++] = get(nDIndex);
+        }
+
+        return new Vector(maskedData);
     }
 
 
@@ -350,7 +398,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
         ValidateParameters.validateTensorIndex(shape, index);
         CooTensor dest;
 
-        // Check if value already exists in tensor.
+        // Check if the value already exists in the tensor.
         int idx = -1;
         for(int i=0; i<indices.length; i++) {
             if(Arrays.equals(indices[i], index)) {
@@ -360,7 +408,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
         }
 
         if(idx > -1) {
-            // Copy data and set new value.
+            // Copy data and set the new value.
             dest = unsafeMake(shape, data.clone(), ArrayUtils.deepCopy2D(indices, null));
             dest.data[idx] = value;
             dest.indices[idx] = index;
@@ -383,7 +431,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * Flattens tensor to single dimension while preserving order of data.
+     * Flattens tensor to a single dimension while preserving the order of data.
      *
      * @return The flattened tensor.
      *
@@ -631,7 +679,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      *
      * @return The tensor dot product over the specified axes.
      *
-     * @throws IllegalArgumentException If the two tensors shapes do not match along the specified axes pairwise in
+     * @throws IllegalArgumentException If the two tensor's shapes do not match along the specified axes pairwise in
      *                                  {@code aAxes} and {@code bAxes}.
      * @throws IllegalArgumentException If {@code aAxes} and {@code bAxes} do not match in length, or if any of the axes
      *                                  are out of bounds for the corresponding tensor.
@@ -655,9 +703,9 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
      * @return The generalized trace of this tensor along {@code axis1} and {@code axis2}. This will be a tensor of rank
      * {@code this.getRank() - 2} with the same shape as this tensor but with {@code axis1} and {@code axis2} removed.
      *
-     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensors rank.
+     * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal, or the tensor does not have the same length along the two axes.)
      */
     @Override
     public CooTensor tensorTr(int axis1, int axis2) {
@@ -765,7 +813,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
         int rank = getRank();
         ValidateParameters.validateArrayIndices(rank, axis1, axis2);
 
-        if(axis1 == axis2) return copy(); // Simply return a copy.
+        if(axis1 == axis2) return copy();   // Simply Return a copy.
 
         int[][] transposeIndices = new int[nnz][rank];
         double[] transposeEntries = new double[nnz];
@@ -776,7 +824,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
             ArrayUtils.swap(transposeIndices[i], axis1, axis2);
         }
 
-        // Create sparse coo tensor and sort values lexicographically by indices.
+        // Create a sparse coo tensor and sort values lexicographically by indices.
         CooTensor transpose = makeLikeTensor(shape.swapAxes(axis1, axis2), transposeEntries, transposeIndices);
         transpose.sortIndices();
 
@@ -817,7 +865,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
             }
         }
 
-        // Create sparse COO tensor and sort values lexicographically by indices.
+        // Create a sparse COO tensor and sort values lexicographically by indices.
         CooTensor transpose = makeLikeTensor(shape.permuteAxes(axes), transposeEntries, transposeIndices);
         transpose.sortIndices();
 
@@ -826,7 +874,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
-     * <p>Computes the element-wise reciprocals of the non-zero-elements of this sparse tensor.
+     * <p>Computes the element-wise reciprocals of the non-zero-elements in this sparse tensor.
      *
      * <p>Note: This method <b>only</b> computes the reciprocals of the non-zero-elements.
      *
@@ -846,6 +894,90 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
 
     /**
+     * <p>Reduces elements of this array, along a specified set of axes, by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to elements of this nD array along the specified axes in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction.
+     * <strong>Note:</strong>Unlike with dense nD array objects, the identity may <i>not</i> be {@code null}.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array, but with the specified {@code axes} removed, containing the result of
+     * the reduction operation.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(Double, BinaryOperator)
+     */
+    @Override
+    public AbstractDoubleNDArray<?> reduce(Double identity, DoubleBinaryOperator accumulator, int... axes) {
+        Objects.requireNonNull(identity, "The identity object must not be null when reducing sparse nD arrays.");
+        ValidateParameters.ensureValidAxes(shape, axes);
+
+        final int rank = shape.getRank();
+        if (axes.length == 0) return copy();  // No axes to reduce; simply return a copy.
+
+        // Determine which axes survive the reduction.
+        boolean[] reduceAxis = ShapeUtils.getNormalizedFlags(axes, rank);
+        int reducedRank = rank - axes.length;
+        int[] reducedDims = new int[reducedRank];
+        int[] keepToOrigAxis = new int[reducedRank];
+
+        for (int i = 0, j = 0; i < rank; ++i) {
+            if (!reduceAxis[i]) {
+                reducedDims[j] = shape.getSize(i);
+                keepToOrigAxis[j++] = i;
+            }
+        }
+        Shape reducedShape = new Shape(reducedDims);
+        int[] reducedStrides = reducedShape.getStrides();
+
+         // Accumulate values keyed using a flat index.
+        Map<Integer, Double> accMap = new HashMap<>();
+        for (int p = 0, nnz = data.length; p < nnz; ++p) {
+            int[] coord = indices[p];
+
+            int flatIdx = 0;
+            for (int k = 0; k < reducedRank; ++k)
+                flatIdx += coord[keepToOrigAxis[k]]*reducedStrides[k];
+
+            final double value = data[p];
+            accMap.compute(flatIdx, (k, oldVal) ->
+                    accumulator.applyAsDouble(oldVal == null ? identity : oldVal, value));
+        }
+
+         // Build the sparse COO output tensor.
+        int outNnz = accMap.size();
+        double[] outData = new double[outNnz];
+        int[][]  outIdx  = new int[outNnz][reducedRank];
+
+        int q = 0;
+        for (Map.Entry<Integer, Double> e : accMap.entrySet()) {
+            int flat = e.getKey();
+            outData[q] = e.getValue();
+
+            // un-flatten the coordinate.
+            int rem = flat;
+            for (int k = 0; k < reducedRank; k++) {
+                int stride = reducedStrides[k];
+                int coordinate = rem / stride;
+                outIdx[q][k] = coordinate;
+                rem -= coordinate * stride;
+            }
+
+            q++;
+        }
+
+        return new CooTensor(reducedShape, outData, outIdx);
+    }
+
+
+    /**
      * Creates a deep copy of this tensor.
      *
      * @return A deep copy of this tensor.
@@ -853,6 +985,28 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
     @Override
     public CooTensor copy() {
         return unsafeMake(shape, data.clone(), ArrayUtils.deepCopy2D(indices, null));
+    }
+
+
+    /**
+     * Checks if each non-zero entry in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each non-zero entry in this nD array against.
+     *
+     * @return An {@link ArrayMask} of the same shape as this nD array containing the boolean results from evaluating each
+     * entry in the nD array against the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #filter(Function)
+     */
+    @Override
+    public ArrayMask where(Function<Double, Boolean> predicate) {
+        BitSet result = new BitSet();
+
+        for(int i = 0, size = data.length; i<size; i++)
+            result.set(i, predicate.apply(data[i]));
+
+        return new ArrayMask(shape, result);
     }
 
 
@@ -909,7 +1063,7 @@ public class CooTensor extends AbstractDoubleTensor<CooTensor> {
 
     /**
      * Coalesces this sparse COO tensor. An uncoalesced tensor is a sparse tensor with multiple data for a single index. This
-     * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
+     * method will ensure that each index only has one non-zero value by summing up duplicated data. If another form of aggregation other
      * than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse COO tensor which is equivalent to this COO tensor.
      * @see #coalesce(BinaryOperator)

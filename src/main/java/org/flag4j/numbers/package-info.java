@@ -32,7 +32,7 @@
  *   <li>{@link Ring}</li>
  *   <li>{@link Field}</li>
  * </ul>
- * and provides concrete implementations for various data types:
+ * and provides reference concrete implementations for various data types:
  * <ul>
  *   <li>{@link org.flag4j.numbers.BoolSemiring}</li>
  *   <li>{@link org.flag4j.numbers.RealInt16}</li>

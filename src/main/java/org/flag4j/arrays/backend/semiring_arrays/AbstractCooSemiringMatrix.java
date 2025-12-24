@@ -25,10 +25,7 @@
 package org.flag4j.arrays.backend.semiring_arrays;
 
 
-import org.flag4j.arrays.IntPair;
-import org.flag4j.arrays.Shape;
-import org.flag4j.arrays.SparseMatrixData;
-import org.flag4j.arrays.SparseVectorData;
+import org.flag4j.arrays.*;
 import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.MatrixMixin;
 import org.flag4j.arrays.sparse.SparseValidation;
@@ -40,14 +37,19 @@ import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringMatMult;
 import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringMatrixOps;
 import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringMatrixProperties;
 import org.flag4j.numbers.Semiring;
+import org.flag4j.util.ArrayMapper;
+import org.flag4j.util.ArrayReducer;
 import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static org.flag4j.linalg.ops.sparse.SparseUtils.copyRanges;
 
@@ -176,7 +178,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * @param colIndices Non-zero column indices of the matrix.
      * @return A sparse COO tensor of the same type as this tensor with the specified non-zero data and indices.
      */
-    public abstract T makeLikeTensor(Shape shape, W[] entries, int[] rowIndices, int[] colIndices);
+    public abstract T makeLikeNDArray(Shape shape, W[] entries, int[] rowIndices, int[] colIndices);
 
 
     /**
@@ -187,7 +189,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * @param colIndices Non-zero column indices of the matrix.
      * @return A COO matrix with the specified shape, non-zero data, and non-zero indices.
      */
-    public abstract T makeLikeTensor(Shape shape, List<W> entries, List<Integer> rowIndices, List<Integer> colIndices);
+    public abstract T makeLikeNDArray(Shape shape, List<W> entries, List<Integer> rowIndices, List<Integer> colIndices);
 
 
     /**
@@ -206,7 +208,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * @param entries Entries of the dense tensor.
      * @return A dense tensor with the specified {@code shape} and {@code data} which is a similar type to this sparse tensor.
      */
-    public abstract U makeLikeDenseTensor(Shape shape, W[] entries);
+    public abstract U makeLikeDenseNDArray(Shape shape, W[] entries);
 
 
     /**
@@ -297,12 +299,29 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * construction or if it was not set with {@link #setZeroElement(Semiring)} then
      * {@code null} will be returned.
      *
-     * @throws ArrayIndexOutOfBoundsException If any index is not within this tensor.
+     * @throws ArrayIndexOutOfBoundsException If any, index is not within this tensor.
      */
     @Override
     public W get(int... index) {
         ValidateParameters.validateTensorIndex(shape, index);
         return get(index[0], index[1]);
+    }
+
+
+    /**
+     * Gets elements of this nD array according to a boolean {@code mask} (i.e., "masked select").
+     *
+     * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
+     *
+     * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
+     * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
+     *
+     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     */
+    @Override
+    public AbstractNDArray<?, ?, W> get(ArrayMask mask) {
+        // TODO: Implement this method
+        return null;
     }
 
 
@@ -335,7 +354,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      */
     @Override
     public T set(W value, int row, int col) {
-        // Find position of row index within the row indices if it exits.
+        // Find the position of row index within the row indices if it exits.
         int idx = SparseElementSearch.matrixBinarySearch(rowIndices, colIndices, row, col);
         W[] destEntries;
         int[] destRowIndices;
@@ -361,7 +380,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
             destColIndices = colIndices.clone();
         }
 
-        return makeLikeTensor(shape, destEntries, destRowIndices, destColIndices);
+        return makeLikeNDArray(shape, destEntries, destRowIndices, destColIndices);
     }
 
 
@@ -379,7 +398,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         SparseMatrixData<W> dest = CooGetSet.setRow(
                 shape, data, rowIndices, colIndices,
                 rowIdx, row.size, row.data, row.indices);
-        return makeLikeTensor(dest.shape(), dest.data(), dest.rowData(), dest.colData());
+        return makeLikeNDArray(dest.shape(), dest.data(), dest.rowData(), dest.colData());
     }
 
 
@@ -399,7 +418,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
                 shape, data, rowIndices, colIndices,
                 colIndex, col.size, col.data, col.indices);
         CooDataSorter sorter = new CooDataSorter(dest.data(), dest.rowData(), dest.colData()).sparseSort();
-        return makeLikeTensor(dest.shape(), dest.data(), dest.rowData(), dest.colData());
+        return makeLikeNDArray(dest.shape(), dest.data(), dest.rowData(), dest.colData());
     }
 
 
@@ -437,8 +456,8 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
             destIndices[i] = shape.get1DIndex(rowIndices[i], colIndices[i]);
 
         return (axis == 0)
-                ? makeLikeTensor(flatShape, data.clone(), destIndices, new int[data.length])
-                : makeLikeTensor(flatShape, data.clone(), new int[data.length], destIndices);
+                ? makeLikeNDArray(flatShape, data.clone(), destIndices, new int[data.length])
+                : makeLikeNDArray(flatShape, data.clone(), new int[data.length], destIndices);
     }
 
 
@@ -467,7 +486,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
             newColIndices[i] = flatIndex % newColCount;
         }
 
-        return makeLikeTensor(newShape, data.clone(), newRowIndices, newColIndices);
+        return makeLikeNDArray(newShape, data.clone(), newRowIndices, newColIndices);
     }
 
 
@@ -481,7 +500,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      */
     @Override
     public T T() {
-        T transpose = makeLikeTensor(shape.swapAxes(0, 1), data.clone(), colIndices.clone(), rowIndices.clone());
+        T transpose = makeLikeNDArray(shape.swapAxes(0, 1), data.clone(), colIndices.clone(), rowIndices.clone());
         transpose.sortIndices(); // Ensure the indices are sorted correctly.
 
         return transpose;
@@ -654,7 +673,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
                 data, rowIndices, colIndices, shape,
                 b.data, b.rowIndices, b.colIndices, b.shape, dest);
 
-        return makeLikeDenseTensor(new Shape(numRows, b.numCols), dest);
+        return makeLikeDenseNDArray(new Shape(numRows, b.numCols), dest);
     }
 
 
@@ -699,7 +718,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
                 b.data, b.rowIndices, b.colIndices,
                 destEntries, destRowIndices, destColIndices);
 
-        return makeLikeTensor(destShape, destEntries, destRowIndices, destColIndices);
+        return makeLikeNDArray(destShape, destEntries, destRowIndices, destColIndices);
     }
 
 
@@ -726,7 +745,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
                 b.data, b.rowIndices, b.colIndices,
                 destEntries, destRowIndices, destColIndices);
 
-        return makeLikeTensor(destShape, destEntries, destRowIndices, destColIndices);
+        return makeLikeNDArray(destShape, destEntries, destRowIndices, destColIndices);
     }
 
 
@@ -750,7 +769,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
                 b.data, b.indices,
                 destEntries, destRowIndices, destColIndices);
 
-        return makeLikeTensor(destShape, destEntries, destRowIndices, destColIndices);
+        return makeLikeNDArray(destShape, destEntries, destRowIndices, destColIndices);
     }
 
 
@@ -926,7 +945,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
             }
         }
 
-        return makeLikeTensor(shape, entries, rowIndices, colIndices);
+        return makeLikeNDArray(shape, entries, rowIndices, colIndices);
     }
 
 
@@ -973,7 +992,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
             newColIndices.add(colIndices[i]);
         }
 
-        return makeLikeTensor(shape, entries, newRowIndices, newColIndices);
+        return makeLikeNDArray(shape, entries, newRowIndices, newColIndices);
     }
 
 
@@ -1004,7 +1023,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
             }
         }
 
-        return makeLikeTensor(shape, destEntries, destRowIndices, destColIndices);
+        return makeLikeNDArray(shape, destEntries, destRowIndices, destColIndices);
     }
 
 
@@ -1045,7 +1064,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
             destColIdx.add(newCol);
         }
 
-        return makeLikeTensor(shape, destEntries, destRowIdx, destColIdx);
+        return makeLikeNDArray(shape, destEntries, destRowIdx, destColIdx);
     }
 
 
@@ -1069,7 +1088,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
                 shape, data, rowIndices, colIndices,
                 values.shape, values.data, values.rowIndices, values.colIndices,
                 rowStart, colStart);
-        return makeLikeTensor(sliceData.shape(), sliceData.data(), sliceData.rowData(), sliceData.colData());
+        return makeLikeNDArray(sliceData.shape(), sliceData.data(), sliceData.rowData(), sliceData.colData());
     }
 
 
@@ -1091,7 +1110,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         SparseMatrixData<W> sliceData = CooGetSet.getSlice(
                 shape, data, rowIndices, colIndices,
                 rowStart, rowEnd, colStart, colEnd);
-        return makeLikeTensor(sliceData.shape(), sliceData.data(), sliceData.rowData(), sliceData.colData());
+        return makeLikeNDArray(sliceData.shape(), sliceData.data(), sliceData.rowData(), sliceData.colData());
     }
 
 
@@ -1114,7 +1133,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     @Override
     public T getTriU(int diagOffset) {
         SparseMatrixData<W> data = CooGetSet.getTriU(diagOffset, shape, this.data, rowIndices, colIndices);
-        return makeLikeTensor(data.shape(),  data.data(), data.rowData(), data.colData());
+        return makeLikeNDArray(data.shape(),  data.data(), data.rowData(), data.colData());
     }
 
 
@@ -1137,7 +1156,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     @Override
     public T getTriL(int diagOffset) {
         SparseMatrixData<W> data = CooGetSet.getTriL(diagOffset, shape, this.data, rowIndices, colIndices);
-        return makeLikeTensor(data.shape(),  data.data(), data.rowData(), data.colData());
+        return makeLikeNDArray(data.shape(),  data.data(), data.rowData(), data.colData());
     }
 
 
@@ -1149,6 +1168,130 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     @Override
     public T copy() {
         return makeLikeNDArray(shape, data.clone());
+    }
+
+
+    /**
+     * Applies a map to each item in this nD array. This operation is done in-place.
+     * If this nD array is sparse, the {@code mapper} operation will only be applied to the non-zero
+     * elements in this nD array.
+     *
+     * @param mapper The operation to apply to each item in this nD array.
+     *
+     * @return A reference to this nD array.
+     *
+     * @throws NullPointerException If {@code mapper} is {@code null}.
+     */
+    @Override
+    public T map(UnaryOperator<W> mapper) {
+        ArrayMapper.map(data, mapper);
+        return (T) this;
+    }
+
+
+    /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the
+     * starting value of the
+     * reduction.
+     * @param accumulator A binary operator that combines the current accumulated
+     * result with the next array element and returns the updated result.
+     *
+     * @return The final accumulated scalar of type {@code V}. If this nD array is empty, {@code identity} will be returned.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(V, BinaryOperator, int...)
+     */
+    @Override
+    public W reduce(W identity, BinaryOperator<W> accumulator) {
+        return ArrayReducer.reduce(data, identity, accumulator);
+    }
+
+
+    /**
+     * Checks if each entry in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each entry in this nD array against.
+     *
+     * @return An {@link ArrayMask} of the same shape as this nD array containing the boolean results from evaluating each
+     * entry in the nD array against the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #filter(Function)
+     */
+    @Override
+    public ArrayMask where(Function<W, Boolean> predicate) {
+        BitSet mask = new BitSet(data.length);
+
+        for(int i=0, size=data.length; i<size; i++)
+            mask.set(i, predicate.apply(data[i]));
+
+        return new ArrayMask(shape, mask);
+    }
+
+
+    /**
+     * Checks if <em>any</em> element in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>any</em> element in this nD array satisfies the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #all(Function)
+     */
+    @Override
+    public boolean any(Function<W, Boolean> predicate) {
+        for(W v : data)
+            if (predicate.apply(v)) return true;
+
+        return false;
+    }
+
+
+    /**
+     * Checks if <em>all</em> elements in this nD array satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>all</em> elements in this nD array satisfy the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #any(Function)
+     */
+    @Override
+    public boolean all(Function<W, Boolean> predicate) {
+        for(W v : data)
+            if (!predicate.apply(v)) return false;
+
+        return true;
+    }
+
+
+    /**
+     * Counts the number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return The number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     */
+    @Override
+    public int countTrue(Function<W, Boolean> predicate) {
+        int count = 0;
+
+        for (W v : data)
+            if (predicate.apply(v)) count++;
+
+        return count;
     }
 
 
@@ -1226,7 +1369,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
                 shape, this.data, rowIndices, colIndices,
                 b.shape, b.data, b.rowIndices, b.colIndices);
 
-        return makeLikeTensor(data.shape(), data.data(), data.rowData(), data.colData());
+        return makeLikeNDArray(data.shape(), data.data(), data.rowData(), data.colData());
     }
 
 
@@ -1245,7 +1388,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
                 shape, this.data, rowIndices, colIndices,
                 b.shape, b.data, b.rowIndices, b.colIndices);
 
-        return makeLikeTensor(data.shape(), data.data(), data.rowData(), data.colData());
+        return makeLikeNDArray(data.shape(), data.data(), data.rowData(), data.colData());
     }
 
 
@@ -1263,14 +1406,14 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      *
      * @throws IndexOutOfBoundsException If the two axes are not both larger than zero and less than this tensor's rank.
      * @throws IllegalArgumentException  If {@code axis1 == axis2} or {@code this.shape.get(axis1) != this.shape.get(axis1)}
-     *                                   (i.e., the axes are equal or the tensor does not have the same length along the two axes.)
+     *                                   (i.e., the axes are equal, or the tensor does not have the same length along the two axes.)
      */
     @Override
     public T tensorTr(int axis1, int axis2) {
         ValidateParameters.ensureNotEquals(axis1, axis2);
         ValidateParameters.ensureValidAxes(shape, axis1, axis2);
 
-        return makeLikeTensor(new Shape(1, 1), (W[]) new Semiring[]{tr()}, new int[]{0}, new int[]{0});
+        return makeLikeNDArray(new Shape(1, 1), (W[]) new Semiring[]{tr()}, new int[]{0}, new int[]{0});
     }
 
 
@@ -1294,7 +1437,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
         for(int i = 0; i< nnz; i++)
             entries[rowIndices[i]*numCols + colIndices[i]] = data[i];
 
-        return makeLikeDenseTensor(shape, entries);
+        return makeLikeDenseNDArray(shape, entries);
     }
 
 
@@ -1342,7 +1485,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
 
     /**
      * Coalesces this sparse COO matrix. An uncoalesced matrix is a sparse matrix with multiple data for a single index. This
-     * method will ensure that each index only has one non-zero value by summing duplicated data. If another form of aggregation other
+     * method will ensure that each index only has one non-zero value by summing up duplicated data. If another form of aggregation other
      * than summation is desired, use {@link #coalesce(BinaryOperator)}.
      * @return A new coalesced sparse COO matrix which is equivalent to this COO matrix.
      * @see #coalesce(BinaryOperator) 
@@ -1361,7 +1504,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      */
     public T coalesce(BinaryOperator<W> aggregator) {
         SparseMatrixData<W> mat = SparseUtils.coalesce(aggregator, shape, data, rowIndices, colIndices);
-        return makeLikeTensor(mat.shape(), mat.data(), mat.rowData(), mat.colData());
+        return makeLikeNDArray(mat.shape(), mat.data(), mat.rowData(), mat.colData());
     }
 
 
@@ -1371,6 +1514,6 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      */
     public T dropZeros() {
         SparseMatrixData<W> mat = SparseUtils.dropZeros(shape, data, rowIndices, colIndices);
-        return makeLikeTensor(mat.shape(), mat.data(), mat.rowData(), mat.colData());
+        return makeLikeNDArray(mat.shape(), mat.data(), mat.rowData(), mat.colData());
     }
 }
