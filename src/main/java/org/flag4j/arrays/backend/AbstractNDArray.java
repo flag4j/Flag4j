@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -99,6 +100,9 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * </ul>
      */
     protected AbstractNDArray(Shape shape, U data) {
+        Objects.requireNonNull(shape, "Shape cannot be null.");
+        Objects.requireNonNull(data, "Tensor data cannot be null.");
+
         this.shape = shape;
         this.data = data;
         rank = shape.getRank();

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,11 @@
 
 package org.flag4j.arrays.sparse;
 
-import org.flag4j.arrays.IntTuple;
+import org.flag4j.arrays.ArrayMask;
 import org.flag4j.arrays.Shape;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractCooSemiringTensor;
+import org.flag4j.arrays.backend.semiring_arrays.TensorOverSemiring;
 import org.flag4j.arrays.dense.SemiringTensor;
 import org.flag4j.arrays.dense.SemiringVector;
 import org.flag4j.io.PrettyPrint;
@@ -37,11 +39,11 @@ import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 
 /**
@@ -156,7 +158,10 @@ public class CooSemiringTensor<T extends Semiring<T>> extends AbstractCooSemirin
      * @param indices
      */
     public CooSemiringTensor(Shape shape, List<T> data, List<int[]> indices) {
-        // TODO: we probably cant do this.
+        // TODO URGENT: we definitely can't do this. Need to pass in class (Class<T>) or use the zeroElements class.
+        //  Using the zero element class seems much more error prone for users of the library. There would be this HUGE very strange
+        //  caveat where zero tensors would not know the class of the elements (or the zero object). We could force the user to pass
+        //  a non-null reference object into the constructor. Then use that to get zero object and class.
         super(shape, (T[]) data.toArray(), indices.toArray(new int[0][]));
     }
 
@@ -234,6 +239,23 @@ public class CooSemiringTensor<T extends Semiring<T>> extends AbstractCooSemirin
 
 
     /**
+     * Gets elements of this nD array according to a boolean {@code mask} (i.e., "masked select").
+     *
+     * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
+     *
+     * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
+     * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
+     *
+     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     */
+    @Override
+    public AbstractNDArray<?, ?, T> get(ArrayMask mask) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
      * Constructs a tensor of the same type as this tensor with the given the {@code shape} and
      * {@code data}. The resulting tensor will also have
      * the same non-zero indices as this tensor.
@@ -250,23 +272,197 @@ public class CooSemiringTensor<T extends Semiring<T>> extends AbstractCooSemirin
     }
 
 
-    // TODO: Implementation.
-    public static <T extends Semiring<T>> CooSemiringTensor<T> fromIndexDataMap(Shape shape, Map<IntTuple, T> indexDataMap) {
-        int nnz = indexDataMap.size();
-        List<T> data = new ArrayList<T>(nnz);
-        int[][] indices = new int[nnz][shape.getRank()];
-
-        int count = 0;
-        for(Map.Entry<IntTuple, T> entry : indexDataMap.entrySet()) {
-            indices[count] = entry.getKey().data();
-            data.add(entry.getValue());
-            count++;
-        }
-
-        return new CooSemiringTensor<>(shape, (T[]) data.toArray(), indices);
+    /**
+     * Computes the sum of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the sum. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #sum()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, T> sum(int... axes) {
+        // TODO: Implement this method
+        return null;
     }
 
-    
+
+    /**
+     * Computes the product of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the product. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #prod()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, T> prod(int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Applies a map to each item in this nD array. This operation is done in-place.
+     * If this nD array is sparse, the {@code mapper} operation will only be applied to the non-zero
+     * elements in this nD array.
+     *
+     * @param mapper The operation to apply to each item in this nD array.
+     *
+     * @return A reference to this nD array.
+     *
+     * @throws NullPointerException If {@code mapper} is {@code null}.
+     */
+    @Override
+    public CooSemiringTensor<T> map(UnaryOperator<T> mapper) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the
+     * starting value of the
+     * reduction.
+     * @param accumulator A binary operator that combines the current accumulated
+     * result with the next array element and returns the updated result.
+     *
+     * @return The final accumulated scalar of type {@code V}. If this nD array is empty, {@code identity} will be returned.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(V, BinaryOperator, int...)
+     */
+    @Override
+    public T reduce(T identity, BinaryOperator<T> accumulator) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array but with the specified {@code axes} removed.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(V, BinaryOperator)
+     */
+    @Override
+    public AbstractNDArray<?, ?, T> reduce(T identity, BinaryOperator<T> accumulator, int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Checks if each entry in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each entry in this nD array against.
+     *
+     * @return An {@link ArrayMask} of the same shape as this nD array containing the boolean results from evaluating each
+     * entry in the nD array against the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #filter(Function)
+     */
+    @Override
+    public ArrayMask where(Function<T, Boolean> predicate) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Extracts elements of this nD array that satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return A flat 1D array containing the elements of this nD array that satisfy the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #where(Function)
+     */
+    @Override
+    public AbstractNDArray<?, ?, T> filter(Function<T, Boolean> predicate) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Checks if <em>any</em> element in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>any</em> element in this nD array satisfies the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #all(Function)
+     */
+    @Override
+    public boolean any(Function<T, Boolean> predicate) {
+        // TODO: Implement this method
+        return false;
+    }
+
+
+    /**
+     * Checks if <em>all</em> elements in this nD array satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>all</em> elements in this nD array satisfy the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #any(Function)
+     */
+    @Override
+    public boolean all(Function<T, Boolean> predicate) {
+        // TODO: Implement this method
+        return false;
+    }
+
+
+    /**
+     * Counts the number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return The number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     */
+    @Override
+    public int countTrue(Function<T, Boolean> predicate) {
+        // TODO: Implement this method
+        return 0;
+    }
+
 
     /**
      * Converts this tensor to an equivalent vector. If this tensor is not rank 1, then it will be flattened.

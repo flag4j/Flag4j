@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,11 @@
 
 package org.flag4j.arrays.sparse;
 
+import org.flag4j.arrays.ArrayMask;
 import org.flag4j.arrays.Shape;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.field_arrays.AbstractCooFieldVector;
+import org.flag4j.arrays.backend.semiring_arrays.TensorOverSemiring;
 import org.flag4j.arrays.dense.CMatrix;
 import org.flag4j.arrays.dense.CVector;
 import org.flag4j.io.PrettyPrint;
@@ -42,6 +45,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 
 /**
@@ -295,6 +301,23 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
 
 
     /**
+     * Gets elements of this nD array according to a boolean {@code mask} (i.e., "masked select").
+     *
+     * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
+     *
+     * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
+     * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
+     *
+     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     */
+    @Override
+    public AbstractNDArray<?, ?, Complex128> get(ArrayMask mask) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
      * Constructs a tensor of the same type as this tensor with the given the {@code shape} and
      * {@code data}. The resulting tensor will also have
      * the same non-zero indices as this tensor.
@@ -308,6 +331,198 @@ public class CooCVector extends AbstractCooFieldVector<CooCVector, CVector, CooC
     @Override
     public CooCVector makeLikeNDArray(Shape shape, Complex128[] data) {
         return new CooCVector(shape, data, indices.clone());
+    }
+
+
+    /**
+     * Computes the sum of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the sum. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #sum()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, Complex128> sum(int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Computes the product of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the product. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #prod()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, Complex128> prod(int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Applies a map to each item in this nD array. This operation is done in-place.
+     * If this nD array is sparse, the {@code mapper} operation will only be applied to the non-zero
+     * elements in this nD array.
+     *
+     * @param mapper The operation to apply to each item in this nD array.
+     *
+     * @return A reference to this nD array.
+     *
+     * @throws NullPointerException If {@code mapper} is {@code null}.
+     */
+    @Override
+    public CooCVector map(UnaryOperator<Complex128> mapper) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the
+     * starting value of the
+     * reduction.
+     * @param accumulator A binary operator that combines the current accumulated
+     * result with the next array element and returns the updated result.
+     *
+     * @return The final accumulated scalar of type {@code V}. If this nD array is empty, {@code identity} will be returned.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(V, BinaryOperator, int...)
+     */
+    @Override
+    public Complex128 reduce(Complex128 identity, BinaryOperator<Complex128> accumulator) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array but with the specified {@code axes} removed.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(V, BinaryOperator)
+     */
+    @Override
+    public AbstractNDArray<?, ?, Complex128> reduce(Complex128 identity, BinaryOperator<Complex128> accumulator, int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Checks if each entry in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each entry in this nD array against.
+     *
+     * @return An {@link ArrayMask} of the same shape as this nD array containing the boolean results from evaluating each
+     * entry in the nD array against the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #filter(Function)
+     */
+    @Override
+    public ArrayMask where(Function<Complex128, Boolean> predicate) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Extracts elements of this nD array that satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return A flat 1D array containing the elements of this nD array that satisfy the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #where(Function)
+     */
+    @Override
+    public AbstractNDArray<?, ?, Complex128> filter(Function<Complex128, Boolean> predicate) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Checks if <em>any</em> element in this nD array satisfies the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>any</em> element in this nD array satisfies the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #all(Function)
+     */
+    @Override
+    public boolean any(Function<Complex128, Boolean> predicate) {
+        // TODO: Implement this method
+        return false;
+    }
+
+
+    /**
+     * Checks if <em>all</em> elements in this nD array satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return {@code true} if <em>all</em> elements in this nD array satisfy the {@code predicate}; otherwise {@code false}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #any(Function)
+     */
+    @Override
+    public boolean all(Function<Complex128, Boolean> predicate) {
+        // TODO: Implement this method
+        return false;
+    }
+
+
+    /**
+     * Counts the number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return The number of elements in this nD array which satisfy the specified {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     */
+    @Override
+    public int countTrue(Function<Complex128, Boolean> predicate) {
+        // TODO: Implement this method
+        return 0;
     }
 
 

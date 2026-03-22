@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,7 @@ import org.flag4j.util.exceptions.ArrayShapeException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 
 /**
@@ -97,6 +98,11 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      */
     private double sparsity = -1.0;
 
+    /**
+     * The class of the semiring that this tensor's elements belong to.
+     */
+    protected Class<V> valueClass;
+
 
     /**
      * Creates a tensor with the specified data and shape.
@@ -104,17 +110,24 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      * @param shape Shape of this tensor.
      * @param data Non-zero data in this tensor. If this tensor is dense, this specifies all data within the
      * tensor.
-     * If this tensor is sparse, this specifies only the non-zero data of the tensor.
+     * @param indices Indices of the non-zero data in this tensor.
+     * @param zeroElement The zero-element of this tensor.
+     * @param valueClass The class of the semiring that this tensor's elements belong to.
      */
-    protected AbstractCooSemiringTensor(Shape shape, V[] data, int[][] indices) {
+    protected AbstractCooSemiringTensor(Shape shape, V[] data, int[][] indices, V zeroElement, Class<V> valueClass) {
         super(shape, data);
+
+        Objects.requireNonNull(zeroElement, "The zero element cannot be null.");
+        Objects.requireNonNull(valueClass, "The value class cannot be null.");
+        if (!zeroElement.isZero())
+            throw new IllegalArgumentException("The provided zeroElement is not an additive identity.");
+
         SparseValidation.validateCoo(shape, data.length, indices);
 
         this.indices = indices;
         this.nnz = data.length;
-
-        // Attempt to set the zero-element for the semiring.
-        this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
+        this.zeroElement = zeroElement;
+        valueClass = valueClass;
     }
 
 
@@ -125,14 +138,13 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      * @param indices The indices of the non-zero data.
      * @param dummy Dummy object to distinguish this constructor from the safe variant. It is completely ignored in this constructor.
      */
-    protected AbstractCooSemiringTensor(Shape shape, V[] data, int[][] indices, Object dummy) {
+    protected AbstractCooSemiringTensor(Shape shape, V[] data, int[][] indices, V zeroElement, Class<V> valueClass, Object dummy) {
         super(shape, data);
 
         this.indices = indices;
         this.nnz = data.length;
-
-        // Attempt to set the zero-element for the semiring.
-        this.zeroElement = (data.length > 0 && data[0] != null) ? data[0].getZero() : null;
+        this.zeroElement = zeroElement;
+        this.valueClass = valueClass;
     }
 
     /**
@@ -191,11 +203,9 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      * @throws IllegalArgumentException If {@code zeroElement} is not an additive identity for the semiring.
      */
     public void setZeroElement(V zeroElement) {
-        if (zeroElement.isZero()) {
-            this.zeroElement = zeroElement;
-        } else {
+        if (!zeroElement.isZero())
             throw new IllegalArgumentException("The provided zeroElement is not an additive identity.");
-        }
+        this.zeroElement = zeroElement;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,6 +50,10 @@ public interface SemiringTensorMixin<T extends SemiringTensorMixin<T, U, V>,
      * @return An empty array of the same type as the data array of this tensor.
      */
     default V[] makeEmptyDataArray(int length) {
+        // TODO URGENT: This will not work with generic semiring tensors (nor in any other generic array object).
+        //  We need to pass the class into the constructor of the actual concrete object. e.g,
+        //      `public SemiringTensor(Shape shape, V[] data, Class<V> semiringClass) { ... this.semiringClass = semiringClass; ... }`
+        //      and do `return (V[]) Array.newInstance(semiringClass, length);`
         return (V[]) new Semiring[length];
     }
 

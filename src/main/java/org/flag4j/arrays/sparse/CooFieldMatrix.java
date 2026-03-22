@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,9 @@
 package org.flag4j.arrays.sparse;
 
 import org.flag4j.arrays.Shape;
+import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.field_arrays.AbstractCooFieldMatrix;
+import org.flag4j.arrays.backend.semiring_arrays.TensorOverSemiring;
 import org.flag4j.arrays.backend.smart_visitors.MatrixVisitor;
 import org.flag4j.arrays.dense.FieldMatrix;
 import org.flag4j.arrays.dense.FieldTensor;
@@ -42,6 +44,7 @@ import org.flag4j.util.exceptions.LinearAlgebraException;
 
 import java.util.List;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
 
 /**
  * <p>Instances of this class represent a sparse matrix whose non-zero-elements are stored in Coordinate List (COO) format, with all
@@ -297,6 +300,51 @@ public class CooFieldMatrix<T extends Field<T>> extends AbstractCooFieldMatrix<C
 
 
     /**
+     * Reduces all elements of this array to a single scalar by repeatedly applying
+     * the specified {@code accumulator} to an ongoing intermediate result that is initialized to
+     * {@code identity}.
+     *
+     * <p>The {@code accumulator} is applied to <em>every</em> element of this nD array in order.
+     * If this nD array is sparse, then the {@code accumulator} will <em>only</em> be
+     * applied to the non-zero elements of this nD array.
+     *
+     * @param identity The starting value for the reduction (this may be {@code null}).
+     * If {@code null}, then the first entry of this array will be used as the starting value of the
+     * reduction.
+     * @param accumulator The binary operator used to accumulate elements of this nD array.
+     * For the results to be well-defined, the accumulator must be associative and communitive.
+     * @param axes The axes along which reduce this nD array.
+     *
+     * @return An nD array of the same shape as this nD array but with the specified {@code axes} removed.
+     *
+     * @throws NullPointerException If {@code accumulator} is {@code null}.
+     * @see #reduce(V, BinaryOperator)
+     */
+    @Override
+    public AbstractNDArray<?, ?, T> reduce(T identity, BinaryOperator<T> accumulator, int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Extracts elements of this nD array that satisfy the specified {@code predicate}.
+     *
+     * @param predicate The predicate to check each element in this nD array against.
+     *
+     * @return A flat 1D array containing the elements of this nD array that satisfy the {@code predicate}.
+     *
+     * @throws NullPointerException If {@code predicate} is {@code null}.
+     * @see #where(Function)
+     */
+    @Override
+    public AbstractNDArray<?, ?, T> filter(Function<T, Boolean> predicate) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
      * <p>Computes the tensor contraction of this tensor with a specified tensor over the specified set of axes. That is,
      * computes the sum of products between the two tensors along the specified set of axes.
      *
@@ -317,6 +365,40 @@ public class CooFieldMatrix<T extends Field<T>> extends AbstractCooFieldMatrix<C
     @Override
     public FieldTensor<T> tensorDot(CooFieldMatrix<T> src2, int[] aAxes, int[] bAxes) {
         return toTensor().tensorDot(src2.toTensor(), aAxes, bAxes);
+    }
+
+
+    /**
+     * Computes the sum of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the sum. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #sum()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, T> sum(int... axes) {
+        // TODO: Implement this method
+        return null;
+    }
+
+
+    /**
+     * Computes the product of all values in this tensor along the specified {@code axes}.
+     *
+     * @param axes Axes along which to compute the product. All axes must be in the range {@code [0, this.rank() - 1]}.
+     *
+     * @return A tensor with the same shape as this tensor but with the specified axes removed.
+     * The returned tensor will contain the summations along the specified {@code axes}.
+     *
+     * @see #prod()
+     */
+    @Override
+    public TensorOverSemiring<?, ?, ?, T> prod(int... axes) {
+        // TODO: Implement this method
+        return null;
     }
 
 

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 
 package org.flag4j.arrays.sparse;
 
-import org.flag4j.arrays.IntTuple;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractCooSemiringMatrix;
@@ -38,13 +37,9 @@ import org.flag4j.linalg.ops.dense.real.RealDenseTranspose;
 import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringMatMult;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayConversions;
-import org.flag4j.util.ValidateParameters;
 import org.flag4j.util.exceptions.LinearAlgebraException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
@@ -282,46 +277,8 @@ public class CooSemiringMatrix<T extends Semiring<T>> extends AbstractCooSemirin
      */
     @Override
     public AbstractNDArray<?, ?, T> reduce(T identity, BinaryOperator<T> accumulator, int... axes) {
-        Objects.requireNonNull(identity, "The identity object must not be null when reducing sparse nD arrays.");
-
-        if(axes.length > 2)
-            throw new LinearAlgebraException("Up to 2 axes may be specified for array of rank 2.");
-
-        if(axes.length == 0) {
-            return toTensor(); // Reduction is over zero axes; copy to tensor and return.
-        } else if(axes.length == 2) {
-            ValidateParameters.ensureValidAxes(shape, axes);
-            if(axes[0] == axes[1])
-                throw new LinearAlgebraException("Cannot specify duplicate axes for reduction.");
-
-            T[] dest = makeEmptyDataArray(1);
-            dest[0] = reduce(identity, accumulator);
-            return new CooSemiringTensor<>(new Shape(), dest, new int[][]{{0}});
-        } else {
-            Map<IntTuple, T> reducedData = new HashMap<>();
-            Shape reducedShape;
-            int[] keys;
-
-            if(axes[0] == 0) {
-                reducedShape = new Shape(numCols);
-                keys = colIndices;
-            } else if(axes[0] == 1) {
-                reducedShape = new Shape(numRows);
-                keys = rowIndices;
-            } else {
-                throw new LinearAlgebraException("Invalid axis specified for tensor of rank 2: axis=" + axes[0]);
-            }
-
-            for(int i=0, size=data.length; i<size; i++) {
-                IntTuple keyIdx = new IntTuple(keys[i]);
-
-                final T value = data[i];
-                reducedData.compute(keyIdx, (k, oldVal) ->
-                        accumulator.apply(oldVal == null ? identity : oldVal, value));
-            }
-
-            return new CooSemiringTensor<>(reducedShape, reducedData);
-        }
+        // TODO: Implement this method
+        return null;
     }
 
 
