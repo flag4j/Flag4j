@@ -81,12 +81,13 @@ public abstract class AbstractDenseNDArray<T extends AbstractDenseNDArray<T, U, 
     }
 
 
-    abstract T makeLikeNDArray(Shape shape, U data, int offset, int[] strides, boolean isBase);
+    abstract T makeLikeNDArray(Shape shape, U buffer, int offset, int[] strides, boolean isBase);
 
 
     @Override
-    abstract T makeLikeNDArray(Shape shape, U data) {
-        return makeLikeNDArray(shape, copy, 0, null, true);
+    T makeLikeNDArray(Shape shape, U buffer) {
+        // Force the data to be copied since this constructs a contiguous layout.
+        return makeLikeNDArray(shape, copyBuffer(buffer), 0, null, true);
     }
 
 
@@ -124,7 +125,8 @@ public abstract class AbstractDenseNDArray<T extends AbstractDenseNDArray<T, U, 
      * @see #isContiguous()
      */
     public int[] getStridesCopy() {
-        return strides.clone();
+        if (strides == null) return null;
+        else return strides.clone();
     }
 
 
@@ -185,7 +187,7 @@ public abstract class AbstractDenseNDArray<T extends AbstractDenseNDArray<T, U, 
      * @see #copy()
      */
     public T view() {
-        return makeLikeNDArray(shape, dataBuffer, strides, false);
+        return makeLikeNDArray(shape, dataBuffer, offset, strides, false);
     }
 
 

@@ -96,7 +96,6 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V> 
      *     <li>If this nD array is dense, this specifies <em>all</em> data within this nD array.</li>
      *     <li>If this nD array is sparse, this specifies <em>only</em> the non-zero data of this nD array.</li>
      * </ul>
-     * @param isBase Whether this nD array is a base array.
      */
     protected AbstractNDArray(Shape shape, U dataBuffer) {
         Objects.requireNonNull(shape, "Shape cannot be null.");
@@ -245,7 +244,7 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V> 
      * Computes the sparsity of this nD array. That is, the ratio of zero entries to total entries as a decimal percentage.
      * @return The sparsity of this nD array.
      *
-     * @see #getSparsity()
+     * @see #getDensity()
      * @see #isSparse()
      * @see #isDense()
      */
@@ -258,7 +257,7 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V> 
      * Computes the density of this nD array. That is, the ratio of non-zero entries to total entries as a decimal percentage.
      * @return The density of this nD array.
      *
-     * @see #getDensity()
+     * @see #getSparsity()
      * @see #isSparse()
      * @see #isDense()
      */
@@ -268,7 +267,7 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V> 
 
 
     /**
-     * Gets the size of the 1D data buffet object backing this nD array.
+     * Gets the size of the 1D data buffer object backing this nD array.
      * @return The size of the 1D data object backing this nD array.
      */
     public abstract int dataBufferSize();
@@ -278,12 +277,12 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V> 
      * Creates a deep copy of the specified 1D data buffer object.
      * @return A deep copy of the specified 1D data buffer object.
      */
-    public abstract int copyBuffer(U buffer);
+    public abstract U copyBuffer(U buffer);
 
 
     /**
-     * Gest the size of a 1D data buffer object.
-     * @param buffer THe 1D data buffer object. Must be non-null.
+     * Gets the size of a 1D data buffer object.
+     * @param buffer The 1D data buffer object. Must be non-null.
      * @return The size of the 1D data buffer object.
      */
     protected abstract int getSize(U buffer);
@@ -413,11 +412,6 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V> 
     /**
      * <p>Constructs an nD array of the same type as this nD array with the given {@code shape} and {@code data}.
      * <p>If this nD array is sparse, the resulting nD array will also have the same non-zero indices as this nD array.
-     *
-     * <p><strong>Warning</strong>:
-     * Incorrectly setting {@code isBase} to {@code true} can lead to unexpected and undefined behavior.
-     * Only call this method if you <strong><em>absolutely know</em></strong> what you are doing and
-     * use it with <strong><em>extreme caution</em></strong>.</p>
      *
      * @param shape Shape of the nD array to construct.
      * @param data Entries of the nD array to construct.
@@ -562,8 +556,8 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V> 
 
         ensureZeroIsIdentity(identity, accumulator);
 
-        V r = identity != null ? identity : get(0);
-        int start = identity != null ? 1 : 0;
+        V r = identity != null ? identity : getStored(0);
+        int start = identity != null ? 0 : 1;
 
         for (int i = start, n = dataBufferSize(); i < n; i++)
             r = accumulator.apply(r, getStored(i));
