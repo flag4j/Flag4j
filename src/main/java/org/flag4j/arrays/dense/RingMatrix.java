@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -141,7 +141,7 @@ public class RingMatrix<T extends Ring<T>> extends AbstractDenseRingMatrix<
      * @param fillValue Entries of this matrix.
      */
     public RingMatrix(Shape shape, T fillValue) {
-        super(shape, (T[]) new Ring[shape.totalEntriesIntValueExact()]);
+        super(shape, (T[]) new Ring[shape.numelIntValueExact()]);
         Arrays.fill(data, fillValue);
     }
 
@@ -333,7 +333,7 @@ public class RingMatrix<T extends Ring<T>> extends AbstractDenseRingMatrix<
      * @see #I(Shape, Ring)
      */
     public static <T extends Ring<T>> RingMatrix<T> I(Shape shape, T fieldValue) {
-        Field[] identityValues = new Field[shape.totalEntriesIntValueExact()];
+        Field[] identityValues = new Field[shape.numelIntValueExact()];
         Arrays.fill(identityValues, (Field) fieldValue.getZero());
         Field one = (Field) fieldValue.getOne();
 

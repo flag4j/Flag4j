@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2025. Jacob Watters
+ * Copyright (c) 2025-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,14 +26,15 @@ package org.flag4j.arrays;
 
 /**
  * <p>Data record to store a pair of integer values (i.e., a 2-tuple).
- * <p>{@code IntPairs} are immutable.
+ * <p>{@code IntPair}s are immutable.
  *
  * @param <T> The type of the first element in the pair.
  * @param <V> The type of the second element in the pair.
+ * @see IntTriple
  * @see IntTuple
  * @see Pair
  * @see Tuple
  * @see Triple
  */
-public record IntPair(int first, int second) {
+public final record IntPair(int first, int second) {
 }

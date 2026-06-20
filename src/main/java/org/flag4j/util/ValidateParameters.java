@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2025. Jacob Watters
+ * Copyright (c) 2022-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,8 @@
 package org.flag4j.util;
 
 import org.flag4j.arrays.Shape;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -46,11 +46,11 @@ public final class ValidateParameters {
      * Checks if two {@link Shape} objects are equivalent.
      * @param shape1 First shape.
      * @param shape2 Second shape.
-     * @throws ArrayShapeException If shapes are not equivalent.
+     * @throws NDArrayShapeException If shapes are not equivalent.
      */
     public static void ensureEqualShape(Shape shape1, Shape shape2) {
         if(!shape1.equals(shape2))
-            throw new ArrayShapeException(ErrorMessages.equalShapeErrMsg(shape1, shape2));
+            throw new NDArrayShapeException(ErrorMessages.equalShapeErrMsg(shape1, shape2));
     }
 
 
@@ -84,11 +84,11 @@ public final class ValidateParameters {
      * Checks that two shapes have the same total number of data.
      * @param shape1 First shape to compare.
      * @param shape2 Second shape to compare.
-     * @throws ArrayShapeException If the two shapes do not have the same total number of data.
+     * @throws NDArrayShapeException If the two shapes do not have the same total number of data.
      */
     public static void ensureTotalEntriesEqual(Shape shape1, Shape shape2) {
-        if(!shape1.totalEntries().equals(shape2.totalEntries()))
-            throw new ArrayShapeException(ErrorMessages.getShapeTotalEntriesErr(shape1, shape2));
+        if(!shape1.numel().equals(shape2.numel()))
+            throw new NDArrayShapeException(ErrorMessages.getShapeTotalEntriesErr(shape1, shape2));
     }
 
 
@@ -327,7 +327,7 @@ public final class ValidateParameters {
     /**
      * Checks if a shape represents a square tensor.
      * @param shape Shape to check.
-     * @throws ArrayShapeException If all axes of the shape are different lengths.
+     * @throws NDArrayShapeException If all axes of the shape are different lengths.
      */
     public static void ensureSquare(Shape shape) {
         ValidateParameters.ensureAllEqual(shape.getDims());

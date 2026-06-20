@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import org.flag4j.linalg.MatrixNorms;
 import org.flag4j.linalg.ops.common.ring_ops.RingProperties;
 import org.flag4j.linalg.ops.dense.ring_ops.DenseRingTensorOps;
 import org.flag4j.numbers.Ring;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 /**
  * The base class for all dense matrices whose elements are members of a {@link Ring}.
@@ -78,7 +78,7 @@ public abstract class AbstractDenseRingMatrix<T extends AbstractDenseRingMatrix<
      *
      * @param b Second matrix in the element-wise difference.
      *
-     * @throws ArrayShapeException If this matrix and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this matrix and {@code b} do not have the same shape.
      */
     public void subEq(T b) {
         DenseRingTensorOps.sub(shape, data, b.shape, b.data, data);

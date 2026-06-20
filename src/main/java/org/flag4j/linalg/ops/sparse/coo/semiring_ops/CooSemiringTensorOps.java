@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@ import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseTensorData;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.*;
 
@@ -109,7 +109,7 @@ public final class CooSemiringTensorOps {
      * @param src2Entries Non-zero data of the second tensor.
      * @param src2Indices Non-zero indices of the second tensor.
      * @return The element-wise product of the two specified tensors.
-     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}.
+     * @throws NDArrayShapeException If {@code !shape1.equals(shape2)}.
      */
     public static <V extends Semiring<V>> SparseTensorData<V> elemMult(
             Shape shape1, V[] src1Entries, int[][] src1Indices,

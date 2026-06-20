@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,8 +46,8 @@ import org.flag4j.linalg.ops.sparse.csr.real_complex.RealComplexCsrMatMult;
 import org.flag4j.numbers.Complex128;
 import org.flag4j.util.StringUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
@@ -170,7 +170,7 @@ public class CsrMatrix extends AbstractDoubleNDArray<CsrMatrix>
      * values in row {@code i}.
      * @param colIndices Column indices for each non-zero value in this sparse CSR matrix. Must satisfy
      * {@code data.length == colData.length}.
-     * @throws ArrayShapeException If {@code shape.getRank() != 2}.
+     * @throws NDArrayShapeException If {@code shape.getRank() != 2}.
      */
     public CsrMatrix(Shape shape, double[] data, int[] rowPointers, int[] colIndices) {
         super(shape, data);
@@ -227,7 +227,7 @@ public class CsrMatrix extends AbstractDoubleNDArray<CsrMatrix>
     /**
      * Constructs zero-matrix with the specified {@code shape}.
      * @param shape Shape of the zero-matrix to construct. Must be rank 2.
-     * @throws ArrayShapeException If {@code shape.getRank() != 2}.
+     * @throws NDArrayShapeException If {@code shape.getRank() != 2}.
      */
     public CsrMatrix(Shape shape) {
         super(shape, new double[0]);
@@ -490,7 +490,7 @@ public class CsrMatrix extends AbstractDoubleNDArray<CsrMatrix>
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws NDArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public CsrMatrix reshape(Shape newShape) {
@@ -524,7 +524,7 @@ public class CsrMatrix extends AbstractDoubleNDArray<CsrMatrix>
      * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
      * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
      *
-     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape as this nD array.
      */
     @Override
     public Vector get(ArrayMask mask) {
@@ -652,7 +652,7 @@ public class CsrMatrix extends AbstractDoubleNDArray<CsrMatrix>
      * @return A dense matrix equivalent to this sparse CSR matrix.
      */
     public Matrix toDense() {
-        double[] dest = new double[shape.totalEntries().intValueExact()];
+        double[] dest = new double[shape.numel().intValueExact()];
 
         for(int i=0; i<rowPointers.length-1; i++) {
             int rowOffset = i*numCols;
@@ -1334,7 +1334,7 @@ public class CsrMatrix extends AbstractDoubleNDArray<CsrMatrix>
             }
         }
 
-        return CooVector.unsafeMake(shape.totalEntries().intValueExact(), data.clone(), indices);
+        return CooVector.unsafeMake(shape.numel().intValueExact(), data.clone(), indices);
     }
 
 

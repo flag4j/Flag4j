@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ public final class CsrConversions {
 
         if (axis == 0) {
             // Flatten to a single row.
-            destShape = new Shape(1, shape.totalEntriesIntValueExact());
+            destShape = new Shape(1, shape.numelIntValueExact());
 
             // Compute flattened column indices.
             for(int i=0; i<numRows; i++) {
@@ -80,7 +80,7 @@ public final class CsrConversions {
 
         } else {
             // Flatten to a single column.
-            int flatSize = shape.totalEntriesIntValueExact();
+            int flatSize = shape.numelIntValueExact();
             destShape = new Shape(flatSize, 1);
 
             // Identify rows with non-zero value.
@@ -111,7 +111,7 @@ public final class CsrConversions {
      */
     public static <T> void toDense(Shape shape, T[] entries, int[] rowPointers, int[] colIndices,
                                    T[] dest, T zero) {
-        if(dest.length < shape.totalEntriesIntValueExact()) {
+        if(dest.length < shape.numelIntValueExact()) {
             throw new IllegalArgumentException("Dense destination array of length " + dest.length + " is too small to store values " +
                     "for shape " + shape);
         }

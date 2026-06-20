@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2025. Jacob Watters
+ * Copyright (c) 2025-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import org.flag4j.util.ArrayMapper;
 import org.flag4j.util.ArrayReducer;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
@@ -75,7 +75,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      */
     public ArrayMask(Shape shape, BitSet data) {
         super(shape, data);
-        dataLength = shape.totalEntriesIntValueExact();
+        dataLength = shape.numelIntValueExact();
     }
 
 
@@ -87,7 +87,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      */
     public ArrayMask(Shape shape, boolean[] data) {
         super(shape, new BitSet(data.length));
-        dataLength = shape.totalEntriesIntValueExact();
+        dataLength = shape.numelIntValueExact();
 
         for(int i=0, size=data.length; i<size; i++)
             this.data.set(i, data[i]);
@@ -102,7 +102,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      */
     public ArrayMask(Shape shape, List<Boolean> data) {
         super(shape, new BitSet(data.size()));
-        dataLength = shape.totalEntriesIntValueExact();
+        dataLength = shape.numelIntValueExact();
 
         for(int i=0, size=dataLength; i<size; i++)
             this.data.set(i, data.get(i));
@@ -116,7 +116,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      * @return
      */
     public static ArrayMask fromTrueIndices(Shape shape, int[] indices) {
-        int newDataLength = shape.totalEntriesIntValueExact();
+        int newDataLength = shape.numelIntValueExact();
         BitSet bits = new BitSet(newDataLength);
         for (int i : indices) {
             if (i < 0 || i >= newDataLength)
@@ -152,7 +152,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
      * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
      *
-     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape as this nD array.
      */
     @Override
     public ArrayMask get(ArrayMask mask) {
@@ -315,7 +315,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
         ValidateParameters.ensureValidAxes(shape, axis);
         int[] dims = new int[rank];
         Arrays.fill(dims, 1);
-        dims[axis] = shape.totalEntriesIntValueExact();
+        dims[axis] = shape.numelIntValueExact();
         return new ArrayMask(new Shape(dims), (BitSet) data.clone());
     }
 
@@ -327,7 +327,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      *
      * @return A copy of this nD array with the new shape.
      *
-     * @throws ArrayShapeException If {@code newShape} does not have the same total number of entries as {@link #shape this.shape}.
+     * @throws NDArrayShapeException If {@code newShape} does not have the same total number of entries as {@link #shape this.shape}.
      * @see #reshape(int...)
      */
     @Override
@@ -370,7 +370,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
                     " tensor.");
         }
 
-        BitSet dest = new BitSet(shape.totalEntries().intValue());
+        BitSet dest = new BitSet(shape.numel().intValue());
 
         Shape destShape = shape.swapAxes(axis1, axis2);
         int[] destIndices;
@@ -409,7 +409,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
                     " tensor.");
         }
 
-        BitSet dest = new BitSet(shape.totalEntries().intValue());
+        BitSet dest = new BitSet(shape.numel().intValue());
         Shape destShape = shape.permuteAxes(axes);
         int[] destIndices;
 
@@ -666,7 +666,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      * <p>To do this operation in-place, use {@link #andEq(ArrayMask)}.
      * @param mask The mask to compute logical AND with. Must have the same shape as this nD array.
      * @return The element-wise logical AND of this nD array with the specified {@code mask}.
-     * @throws ArrayShapeException If {@code mask} has a different shape than this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape than this nD array.
      * @see #andEq(ArrayMask)
      */
     public ArrayMask and(ArrayMask mask) {
@@ -683,7 +683,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      *
      * @param mask The mask to compute logical AND with. Must have the same shape as this nD array.
      * @return A reference to this nD array.
-     * @throws ArrayShapeException If {@code mask} has a different shape than this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape than this nD array.
      * @see #and(ArrayMask)
      */
     public ArrayMask andEq(ArrayMask mask) {
@@ -698,7 +698,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      *
      * @param mask The mask to compute logical OR with. Must have the same shape as this nD array.
      * @return The element-wise logical OR of this nD array with the specified {@code mask}.
-     * @throws ArrayShapeException If {@code mask} has a different shape than this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape than this nD array.
      * @see #orEq(ArrayMask)
      */
     public ArrayMask or(ArrayMask mask) {
@@ -715,7 +715,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      *
      * @param mask The mask to compute logical OR with. Must have the same shape as this nD array.
      * @return A reference to this nD array.
-     * @throws ArrayShapeException If {@code mask} has a different shape than this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape than this nD array.
      * @see #or(ArrayMask)
      */
     public ArrayMask orEq(ArrayMask mask) {
@@ -730,7 +730,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      *
      * @param mask The mask to compute logical XOR with. Must have the same shape as this nD array.
      * @return The element-wise logical XOR of this nD array with the specified {@code mask}.
-     * @throws ArrayShapeException If {@code mask} has a different shape than this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape than this nD array.
      * @see #xorEq(ArrayMask)
      */
     public ArrayMask xor(ArrayMask mask) {
@@ -747,7 +747,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      *
      * @param mask The mask to compute logical XOR with. Must have the same shape as this nD array.
      * @return A reference to this nD array.
-     * @throws ArrayShapeException If {@code mask} has a different shape than this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape than this nD array.
      * @see #xor(ArrayMask)
      */
     public ArrayMask xorEq(ArrayMask mask) {
@@ -779,7 +779,7 @@ public class ArrayMask extends AbstractNDArray<ArrayMask, BitSet, Boolean> {
      */
     @Override
     public String toString() {
-        int size = shape.totalEntries().intValueExact();
+        int size = shape.numel().intValueExact();
         StringBuilder result = new StringBuilder(String.format("shape: %s\n", shape));
 
         int maxCols = PrintOptions.getMaxColumns();

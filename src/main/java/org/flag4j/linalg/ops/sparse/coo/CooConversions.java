@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ public final class CooConversions {
      * @throws IllegalArgumentException If {@code dest.length != shape.totalEntriesIntValueExact()}.
      */
     public static <T> void toDense(Shape shape, T[] entries, int[][] indices, T[] dest) {
-        if(dest.length != shape.totalEntriesIntValueExact()) {
+        if(dest.length != shape.numelIntValueExact()) {
             throw new IllegalArgumentException("Cannot store data from tensor with shape "
                     + shape + " in an array of length " + dest.length + ".");
         }

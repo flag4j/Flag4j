@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -44,8 +44,8 @@ import org.flag4j.linalg.ops.dispatch.Cm128DeMatMultDispatcher;
 import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.Arrays;
 
@@ -117,7 +117,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      * @param fillValue Value to fill this matrix with.
      */
     public CMatrix(Shape shape, Complex128 fillValue) {
-        super(shape, new Complex128[shape.totalEntriesIntValueExact()]);
+        super(shape, new Complex128[shape.numelIntValueExact()]);
         setZeroElement(Complex128.ZERO);
         Arrays.fill(data, fillValue);
     }
@@ -129,7 +129,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      * @param shape Shape of this matrix.
      */
     public CMatrix(Shape shape) {
-        super(shape, new Complex128[shape.totalEntriesIntValueExact()]);
+        super(shape, new Complex128[shape.numelIntValueExact()]);
         setZeroElement(Complex128.ZERO);
         Arrays.fill(data, Complex128.ZERO);
     }
@@ -294,7 +294,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      * @param fillValue Value to fill matrix with.
      */
     public CMatrix(Shape shape, Double fillValue) {
-        super(shape, new Complex128[shape.totalEntriesIntValueExact()]);
+        super(shape, new Complex128[shape.numelIntValueExact()]);
         setZeroElement(Complex128.ZERO);
         Arrays.fill(data, new Complex128(fillValue));
     }
@@ -576,7 +576,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix add(CooCMatrix b) {
         return (CMatrix) DenseCooFieldMatrixOps.add(this, b);
@@ -590,7 +590,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix add(Matrix b) {
         Complex128[] dest = new Complex128[data.length];
@@ -606,7 +606,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix add(CooMatrix b) {
         return (CMatrix) RealFieldDenseCooMatrixOps.add(this, b);
@@ -620,7 +620,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix sub(CooCMatrix b) {
         return (CMatrix) DenseCooFieldMatrixOps.sub(this, b);
@@ -634,7 +634,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix sub(Matrix b) {
         Complex128[] dest = new Complex128[data.length];
@@ -651,7 +651,7 @@ public class CMatrix extends AbstractDenseFieldMatrix<CMatrix, CVector, Complex1
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CMatrix sub(CooMatrix b) {
         return (CMatrix) RealFieldDenseCooMatrixOps.sub(this, b);

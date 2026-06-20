@@ -61,21 +61,21 @@ class ShapeTests {
 
 
     @Test
-    void totalEntriesTestCase() {
+    void numelTestCase() {
         // ----------- sub-case 1 -----------
         expDims1 = new int[]{1, 5, 18};
         shape1 = new Shape(expDims1);
-        assertEquals(5 * 18, shape1.totalEntries().intValue());
+        assertEquals(5 * 18, shape1.numel().intValue());
 
         // ----------- sub-case 2 -----------
         expDims1 = new int[]{4, 903, 11, 45};
         shape1 = new Shape(expDims1);
-        assertEquals(4*903*11*45, shape1.totalEntries().intValue());
+        assertEquals(4*903*11*45, shape1.numel().intValue());
 
         // ----------- sub-case 3 -----------
         expDims1 = new int[]{};
         shape1 = new Shape(expDims1); // Represents a scalar value.
-        assertEquals(1, shape1.totalEntries().intValue());
+        assertEquals(1, shape1.numel().intValue());
     }
 
 

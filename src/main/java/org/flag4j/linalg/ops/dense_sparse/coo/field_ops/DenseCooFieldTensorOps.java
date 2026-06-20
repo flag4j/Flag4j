@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -169,7 +169,7 @@ public final class DenseCooFieldTensorOps {
      * src1}.
      */
     public static <T extends Field<T>> AbstractDenseFieldTensor<?, T> add(AbstractCooFieldTensor<?, ?, T> src1, Field<T> b) {
-        T[] sumEntries = src1.makeEmptyDataArray(src1.shape.totalEntriesIntValueExact());
+        T[] sumEntries = src1.makeEmptyDataArray(src1.shape.numelIntValueExact());
         Arrays.fill(sumEntries, b);
         AbstractDenseFieldTensor<?, T> sum = src1.makeLikeDenseTensor(src1.shape, sumEntries);
 
@@ -190,7 +190,7 @@ public final class DenseCooFieldTensorOps {
      * src1}.
      */
     public static <T extends Field<T>> AbstractDenseFieldTensor<?, T> sub(AbstractCooFieldTensor<?, ?, T> src1, Field<T> b) {
-        T[] sumEntries = src1.makeEmptyDataArray(src1.shape.totalEntriesIntValueExact());
+        T[] sumEntries = src1.makeEmptyDataArray(src1.shape.numelIntValueExact());
         Arrays.fill(sumEntries, b);
         AbstractDenseFieldTensor<?, T> sum = src1.makeLikeDenseTensor(src1.shape, sumEntries);
 

@@ -7,8 +7,8 @@ import org.flag4j.arrays.sparse.CooVector;
 import org.flag4j.linalg.ops.dense_sparse.coo.field_ops.DenseCooFieldVectorOps;
 import org.flag4j.linalg.ops.dense_sparse.coo.real_field_ops.RealFieldDenseCooVectorOps;
 import org.flag4j.numbers.Complex128;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -669,6 +669,6 @@ class CVectorAddTests {
         b = new CooCVector(sparseSize, bEntries, sparseIndices);
 
         CooCVector finalB2 = b;
-        assertThrows(ArrayShapeException.class, ()-> DenseCooFieldVectorOps.addEq(a, finalB2));
+        assertThrows(NDArrayShapeException.class, ()-> DenseCooFieldVectorOps.addEq(a, finalB2));
     }
 }

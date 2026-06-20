@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,8 +60,8 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -287,7 +287,7 @@ public class Matrix extends AbstractDenseDoubleNDArray<Matrix>
      * @throws IllegalArgumentException If the {@code shape} is not of rank 2.
      */
     public Matrix(Shape shape) {
-        super(shape, new double[shape.totalEntriesIntValueExact()]);
+        super(shape, new double[shape.numelIntValueExact()]);
         ValidateParameters.ensureRank(shape, 2);
         this.numRows = shape.getSize(0);
         this.numCols = shape.getSize(1);
@@ -301,7 +301,7 @@ public class Matrix extends AbstractDenseDoubleNDArray<Matrix>
      * @throws IllegalArgumentException If the {@code shape} is not of rank 2.
      */
     public Matrix(Shape shape, double value) {
-        super(shape, new double[shape.totalEntries().intValue()]);
+        super(shape, new double[shape.numel().intValue()]);
         Arrays.fill(super.data, value);
         ValidateParameters.ensureRank(shape, 2);
         this.numRows = shape.getSize(0);
@@ -1791,7 +1791,7 @@ public class Matrix extends AbstractDenseDoubleNDArray<Matrix>
      * Computes the matrix multiplication between this matrix and a complex dense matrix.
      * @param b The complex dense matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
+     * @throws NDArrayShapeException If {@code this.numCols != b.numRows}.
      */
     public CMatrix mult(CMatrix b) {
         Complex128[] entries = MatrixMultiplyDispatcher.dispatch(this, b);
@@ -1804,7 +1804,7 @@ public class Matrix extends AbstractDenseDoubleNDArray<Matrix>
      * Computes the matrix multiplication between this matrix and a real sparse CSR matrix.
      * @param b The real sparse matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
+     * @throws NDArrayShapeException If {@code this.numCols != b.numRows}.
      */
     public Matrix mult(CsrMatrix b) {
         return RealCsrDenseMatMult.standard(this, b);
@@ -1815,7 +1815,7 @@ public class Matrix extends AbstractDenseDoubleNDArray<Matrix>
      * Computes the matrix multiplication between this matrix and a complex sparse CSR matrix.
      * @param b The complex sparse matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
+     * @throws NDArrayShapeException If {@code this.numCols != b.numRows}.
      */
     public CMatrix mult(CsrCMatrix b) {
         return (CMatrix) RealFieldDenseCsrMatMult.standard(this, b);
@@ -1826,7 +1826,7 @@ public class Matrix extends AbstractDenseDoubleNDArray<Matrix>
      * Computes the matrix multiplication between this matrix and a real sparse COO matrix.
      * @param b The real sparse matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
+     * @throws NDArrayShapeException If {@code this.numCols != b.numRows}.
      * @implNote This method computes the matrix product as {@code this.mult(b.toCsr());}.
      */
     public Matrix mult(CooMatrix b) {
@@ -1838,7 +1838,7 @@ public class Matrix extends AbstractDenseDoubleNDArray<Matrix>
      * Computes the matrix multiplication between this matrix and a complex sparse COO matrix.
      * @param b The complex sparse matrix in the matrix multiplication.
      * @return The matrix product between this matrix and {@code b}.
-     * @throws ArrayShapeException If {@code this.numCols != b.numRows}.
+     * @throws NDArrayShapeException If {@code this.numCols != b.numRows}.
      * @implNote This method computes the matrix product as {@code this.mult(b.toCsr());}.
      */
     public CMatrix mult(CooCMatrix b) {
@@ -1905,7 +1905,7 @@ public class Matrix extends AbstractDenseDoubleNDArray<Matrix>
      *
      * @return The element-wise quotient of this tensor and {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b}s shapes are not equal.
+     * @throws NDArrayShapeException If this tensor and {@code b}s shapes are not equal.
      */
     public CMatrix div(CMatrix b) {
         Complex128[] dest = new Complex128[data.length];

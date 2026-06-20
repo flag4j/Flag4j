@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -49,8 +49,8 @@ import org.flag4j.linalg.ops.sparse.coo.real.RealSparseEquals;
 import org.flag4j.linalg.ops.sparse.coo.real_complex.RealComplexSparseVectorOps;
 import org.flag4j.numbers.Complex128;
 import org.flag4j.util.*;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
@@ -945,7 +945,7 @@ public class CooVector extends AbstractDoubleNDArray<CooVector>
      * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
      * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
      *
-     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape as this nD array.
      */
     @Override
     public Vector get(ArrayMask mask) {
@@ -1036,7 +1036,7 @@ public class CooVector extends AbstractDoubleNDArray<CooVector>
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as
+     * @throws NDArrayShapeException If {@code newShape} does not have the same number of total entries as
      * {@link #shape this.shape}.
      */
     @Override
@@ -1667,7 +1667,7 @@ public class CooVector extends AbstractDoubleNDArray<CooVector>
      * Computes the element-wise multiplication between this vector and a real dense vector.
      * @param b The real dense vector in the element-wise product.
      * @return The element-wise product of this vector and {@code b}.
-     * @throws ArrayShapeException If the two vectors have different sizes.
+     * @throws NDArrayShapeException If the two vectors have different sizes.
      */
     public CooVector elemMult(Vector b) {
         return RealDenseSparseVectorOps.elemMult(b, this);

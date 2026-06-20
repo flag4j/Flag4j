@@ -3,8 +3,8 @@ package org.flag4j.arrays.sparse.sparse_complex_vector;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.sparse.CooCVector;
 import org.flag4j.numbers.Complex128;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -46,8 +46,8 @@ class CooCVectorReshapeTests {
         assertEquals(exp, a.flatten(0));
 
         // ------------------ sub-case 2 ------------------
-        assertThrows(ArrayShapeException.class, ()->a.reshape(new Shape(sparseSize-2)));
-        assertThrows(ArrayShapeException.class, ()->a.reshape(sparseSize+32));
+        assertThrows(NDArrayShapeException.class, ()->a.reshape(new Shape(sparseSize-2)));
+        assertThrows(NDArrayShapeException.class, ()->a.reshape(sparseSize+32));
         assertThrows(LinearAlgebraException.class, ()->a.flatten(-35));
         assertThrows(LinearAlgebraException.class, ()->a.flatten(1));
     }

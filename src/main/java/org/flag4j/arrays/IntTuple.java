@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,11 +33,12 @@ import java.util.StringJoiner;
  *
  * @param data The values of the integer tuple.
  * @see IntPair
+ * @see IntTriple
  * @see Tuple
  * @see Pair
  * @see Triple
  */
-public record IntTuple(int... data) {
+public final record IntTuple(int... data) {
 
 
     /**

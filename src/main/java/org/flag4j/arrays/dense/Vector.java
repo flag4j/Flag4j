@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,8 +45,8 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.StringUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -868,7 +868,7 @@ public class Vector extends AbstractDenseDoubleNDArray<Vector>
      *
      * @param b Second tensor in the element-wise sum.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public void addEq(Vector b) {
@@ -884,7 +884,7 @@ public class Vector extends AbstractDenseDoubleNDArray<Vector>
      *
      * @param b Second tensor in the element-wise difference.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public void subEq(Vector b) {
@@ -900,7 +900,7 @@ public class Vector extends AbstractDenseDoubleNDArray<Vector>
      *
      * @param b The denominator tensor in the element-wise quotient.
      *
-     * @throws ArrayShapeException If this tensor and {@code b}s shapes are not equal.
+     * @throws NDArrayShapeException If this tensor and {@code b}s shapes are not equal.
      */
     @Override
     public void divEq(Vector b) {
@@ -918,7 +918,7 @@ public class Vector extends AbstractDenseDoubleNDArray<Vector>
      *
      * @return The element-wise quotient of this tensor and {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b}s shapes are not equal.
+     * @throws NDArrayShapeException If this tensor and {@code b}s shapes are not equal.
      */
     @Override
     public Vector div(Vector b) {

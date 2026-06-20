@@ -27,7 +27,7 @@ package org.flag4j.arrays.backend;
 
 import org.flag4j.arrays.ArrayMask;
 import org.flag4j.arrays.Shape;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -146,7 +146,7 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * @param mask The boolean mask specifying which elements to get from this nD array. Must be the same shape as this nD array.
      * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
      * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
-     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape as this nD array.
      */
     public abstract AbstractNDArray<?, ?, V> get(ArrayMask mask);
 
@@ -197,7 +197,7 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * @return The total number of elements in this nD array.
      */
     public BigInteger totalEntries() {
-        return shape.totalEntries();
+        return shape.numel();
     }
 
 
@@ -237,7 +237,7 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * Copies and reshapes this nD array.
      * @param newShape New shape for the nD array.
      * @return A copy of this nD array with the new shape.
-     * @throws ArrayShapeException If {@code newShape} does not have the same total number of entries as {@link #shape this.shape}.
+     * @throws NDArrayShapeException If {@code newShape} does not have the same total number of entries as {@link #shape this.shape}.
      * @see #reshape(int...) 
      */
     public abstract T reshape(Shape newShape);
@@ -247,7 +247,7 @@ public abstract class AbstractNDArray<T extends AbstractNDArray<T, U, V>, U, V>
      * Copies and reshapes this nD array.
      * @param dims The dimensions of the new shape.
      * @return A copy of this nD array with the new shape.
-     * @throws ArrayShapeException If {@code dims} does not represent a shape with the same total number
+     * @throws NDArrayShapeException If {@code dims} does not represent a shape with the same total number
      * of entries as {@link #shape this.shape}.
      * @see #reshape(Shape)
      */

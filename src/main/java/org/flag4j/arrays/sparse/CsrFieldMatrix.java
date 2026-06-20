@@ -593,7 +593,7 @@ public class CsrFieldMatrix<T extends Field<T>> extends AbstractCsrFieldMatrix<C
             }
         }
 
-        return new CooFieldVector<T>(shape.totalEntriesIntValueExact(), data.clone(), indices);
+        return new CooFieldVector<T>(shape.numelIntValueExact(), data.clone(), indices);
     }
 
 

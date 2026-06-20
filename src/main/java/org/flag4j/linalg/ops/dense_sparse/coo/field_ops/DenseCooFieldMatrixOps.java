@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import org.flag4j.arrays.backend.field_arrays.AbstractDenseFieldVector;
 import org.flag4j.linalg.ops.common.field_ops.FieldOps;
 import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.Arrays;
 
@@ -153,7 +153,7 @@ public final class DenseCooFieldMatrixOps {
      * @param colIndices2 Non-zero column indices of the second matrix in the element-wise product.
      * @param dest Array to store the non-zero data of the sparse COO matrix resulting from the element-wise multiplication
      * (modified). Must have same length as {@code data2}. May be the same array as {@code data2}.
-     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}
+     * @throws NDArrayShapeException If {@code !shape1.equals(shape2)}
      */
     public static <T extends Field<T>> void elemMult(
             Shape shape1, T[] data1,
@@ -217,7 +217,7 @@ public final class DenseCooFieldMatrixOps {
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> addToEachCol(
             AbstractCooFieldMatrix<?, ?, ?, T> src,
             AbstractDenseFieldVector<?, ?, T> col) {
-        T[] sumEntries = src.makeEmptyDataArray(src.shape.totalEntriesIntValueExact());
+        T[] sumEntries = src.makeEmptyDataArray(src.shape.numelIntValueExact());
         Arrays.fill(sumEntries, (col.data.length > 0) ? col.data[0].getZero() : null);
         AbstractDenseFieldMatrix<?, ?, T> sum = src.makeLikeDenseNDArray(src.shape, sumEntries);
 
@@ -244,7 +244,7 @@ public final class DenseCooFieldMatrixOps {
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> addToEachRow(
             AbstractCooFieldMatrix<?, ?, ?, T> src, AbstractDenseFieldVector<?, ?, T> row) {
 
-        T[] sumEntries = src.makeEmptyDataArray(src.shape.totalEntriesIntValueExact());
+        T[] sumEntries = src.makeEmptyDataArray(src.shape.numelIntValueExact());
         Arrays.fill(sumEntries, (row.data.length > 0) ? row.data[0].getZero() : null);
         AbstractDenseFieldMatrix<?, ?, T> sum = src.makeLikeDenseNDArray(src.shape, sumEntries);
 

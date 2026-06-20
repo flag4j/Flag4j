@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import org.flag4j.arrays.sparse.CooMatrix;
 import org.flag4j.linalg.ops.common.field_ops.FieldOps;
 import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 /**
  * This class contains low-level implementations of ops between real/field and dense/sparse matrices.
@@ -170,7 +170,7 @@ public final class RealFieldDenseCooMatrixOps {
      * @param destEntries Array to store non-zero values resulting from the element-wise product. Assumed to have length
      * {@code src2.nnz}.
      * @return The result of element-wise multiplication.
-     * @throws ArrayShapeException If the matrices do not have the same shape.
+     * @throws NDArrayShapeException If the matrices do not have the same shape.
      */
     public static <T extends Field<T>> void elemMult(
             AbstractDenseFieldMatrix<?, ?, T> src1, CooMatrix src2,

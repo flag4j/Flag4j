@@ -546,7 +546,7 @@ public class CooFieldTensor<T extends Field<T>>
             int[][] tIndices = RealDenseTranspose.standardIntMatrix(indices);
             mat = new CooFieldMatrix<T>(shape, data.clone(), tIndices[0], tIndices[1]);
         } else {
-            CooFieldTensor<T> flat = reshape(new Shape(1, shape.totalEntriesIntValueExact()));
+            CooFieldTensor<T> flat = reshape(new Shape(1, shape.numelIntValueExact()));
             int[][] tIndices = RealDenseTranspose.standardIntMatrix(flat.indices);
             mat = new CooFieldMatrix<T>(flat.shape, flat.data.clone(), tIndices[0], tIndices[0]);
         }

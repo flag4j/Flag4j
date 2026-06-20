@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import org.flag4j.arrays.SparseTensorData;
 import org.flag4j.arrays.backend.semiring_arrays.AbstractCooSemiringTensor;
 import org.flag4j.linalg.ops.sparse.coo.ring_ops.CooRingTensorOps;
 import org.flag4j.numbers.Ring;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 /**
  * <p>Base class for all sparse {@link Ring} tensors stored in coordinate list (COO) format. The data of this COO tensor are
@@ -100,7 +100,7 @@ public abstract class AbstractCooRingTensor<T extends AbstractCooRingTensor<T, U
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T sub(T b) {

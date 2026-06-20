@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -136,7 +136,7 @@ public abstract class TensorDot<T> {
         // -----------------------------------------------------
 
         destShape = new Shape(ArrayJoiner.join(src1Dims, src2Dims));
-        destLength = destShape.totalEntriesIntValueExact();
+        destLength = destShape.numelIntValueExact();
     }
 
 

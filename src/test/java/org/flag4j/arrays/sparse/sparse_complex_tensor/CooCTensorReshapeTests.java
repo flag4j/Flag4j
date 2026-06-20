@@ -3,7 +3,7 @@ package org.flag4j.arrays.sparse.sparse_complex_tensor;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.sparse.CooCTensor;
 import org.flag4j.numbers.Complex128;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -122,7 +122,7 @@ class CooCTensorReshapeTests {
         assertEquals(exp, A.reshape(2, 4, 3, 2));
 
         // ----------------------------- sub-case 4 -----------------------------
-        assertThrows(ArrayShapeException.class, ()->A.reshape(150, 12));
+        assertThrows(NDArrayShapeException.class, ()->A.reshape(150, 12));
     }
 
 

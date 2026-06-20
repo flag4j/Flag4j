@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +76,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
      * @param shape Shape of this tensor.
      */
     public Tensor(Shape shape) {
-        super(shape, new double[shape.totalEntries().intValueExact()]);
+        super(shape, new double[shape.numel().intValueExact()]);
     }
 
 
@@ -140,7 +140,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
         ValidateParameters.ensureValidAxes(shape, axis);
         int[] dims = new int[rank];
         Arrays.fill(dims, 1);
-        dims[axis] = shape.totalEntriesIntValueExact();
+        dims[axis] = shape.numelIntValueExact();
         return new Tensor(new Shape(dims), data.clone());
     }
 
@@ -230,7 +230,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
      * @param shape New shape for the matrix. Must be rank-2 and have the same number of total entries as {@code this.shape}.
      * @return A matrix with the specified shape and data equivalent to this tensor.
      * @throws IllegalArgumentException If {@code shape} does not have the same total number of entries {@code this.shape}.
-     * @throws ArrayShapeException If {@code shape.getRank() != 2}.
+     * @throws NDArrayShapeException If {@code shape.getRank() != 2}.
      */
     public Matrix toMatrix(Shape shape) {
         // Matrix constructor checks the rank of the shape and
@@ -271,7 +271,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public Tensor add(CooTensor b) {
         return RealDenseCooTensorOps.add(this, b);
@@ -285,7 +285,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor add(CTensor b) {
         Complex128[] dest = new Complex128[data.length];
@@ -301,7 +301,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor add(CooCTensor b) {
         Complex128[] dest = new Complex128[data.length];
@@ -327,7 +327,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
      *
      * @param b Second tensor in the element-wise difference.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor sub(CooCTensor b) {
         return RealComplexDenseCooOps.sub(this, b);
@@ -341,7 +341,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public Tensor sub(CooTensor b) {
         return RealDenseCooTensorOps.sub(this, b);
@@ -355,7 +355,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor sub(CTensor b) {
         Complex128[] dest = new Complex128[data.length];
@@ -510,7 +510,7 @@ public class Tensor extends AbstractDenseDoubleNDArray<Tensor> {
      * @return A human-readable string representing this tensor.
      */
     public String toString() {
-        int size = shape.totalEntries().intValueExact();
+        int size = shape.numel().intValueExact();
         StringBuilder result = new StringBuilder(String.format("shape: %s\n", shape));
 
         result.append(PrettyPrint.abbreviatedArray(data,

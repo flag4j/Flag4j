@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import org.flag4j.arrays.sparse.CooVector;
 import org.flag4j.linalg.ops.common.field_ops.FieldOps;
 import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.Arrays;
 
@@ -270,7 +270,7 @@ public final class RealFieldDenseCooVectorOps {
      * @param src1 Dense {@link Field} vector in element-wise product.
      * @param src2 Real COO vector in element-wise product.
      * @return The non-zero data of the element-wise product of {@code src1} and {@code src2}.
-     * @throws ArrayShapeException If {@code !src1.shape.equals(src2.shape)}
+     * @throws NDArrayShapeException If {@code !src1.shape.equals(src2.shape)}
      */
     public static <T extends Field<T>> T[] elemMult(
             AbstractDenseFieldVector<?, ?, T> src1, CooVector src2) {

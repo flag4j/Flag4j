@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,10 @@
 package org.flag4j.util.exceptions;
 
 /**
- * An exception to be thrown when there is an error related to tensor shapes.
+ * Thrown to indicate that an nD array index is not of the proper rank.
  */
-public class ArrayShapeException extends LinearAlgebraException {
-
-    /**
-     * Creates a {@link ArrayShapeException} to be thrown for a linear algebra related error.
-     *
-     * @param errMsg Error message for the exception.
-     */
-    public ArrayShapeException(String errMsg) {
-        super(errMsg);
+public class NDArrayIndexException extends IndexOutOfBoundsException {
+    public NDArrayIndexException(String message) {
+        super(message);
     }
 }

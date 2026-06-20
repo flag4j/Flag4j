@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package org.flag4j.linalg.ops.dense.ring_ops;
 import org.flag4j.arrays.Shape;
 import org.flag4j.numbers.Ring;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 /**
  * Utility class for computing ops between two dense {@link Ring} tensors.
@@ -46,7 +46,7 @@ public final class DenseRingTensorOps {
      * @param shape2 Shape of the second tensor in the element-wise difference.
      * @param src2 Entries of the second tensor in the element-wise difference.
      * @param dest Array to store the resulting element-wise difference. May be the same array as either {@code src1} or {@code src2}.
-     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}.
+     * @throws NDArrayShapeException If {@code !shape1.equals(shape2)}.
      * @throws ArrayIndexOutOfBoundsException If {@code src2.length < src2.length || dest.length < src1.length}
      */
     public static <T extends Ring<T>> void sub(Shape shape1, T[] src1,

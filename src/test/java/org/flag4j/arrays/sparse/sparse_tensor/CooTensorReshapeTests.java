@@ -2,7 +2,7 @@ package org.flag4j.arrays.sparse.sparse_tensor;
 
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.sparse.CooTensor;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -116,7 +116,7 @@ class CooTensorReshapeTests {
                 {0, 15},
                 {1, 7}};
         A = new CooTensor(aShape, aEntries, aIndices);
-        assertThrows(ArrayShapeException.class, ()->A.reshape(150, 12));
+        assertThrows(NDArrayShapeException.class, ()->A.reshape(150, 12));
     }
 
 

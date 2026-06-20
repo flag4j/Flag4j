@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,8 @@ import org.flag4j.numbers.Complex64;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.StringUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -281,7 +281,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CVector add(CooCVector b) {
         return (CVector) DenseCooFieldVectorOps.add(this, b);
@@ -295,7 +295,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CVector add(Vector b) {
         Complex128[] dest = new Complex128[data.length];
@@ -309,7 +309,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      *
      * @param b Second tensor in the element-wise sum.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public void addEq(Vector b) {
         RealFieldDenseOps.add(shape, data, b.shape, b.data, data);
@@ -323,7 +323,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CVector add(CooVector b) {
         return (CVector) RealFieldDenseCooVectorOps.add(this, b);
@@ -337,7 +337,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CVector sub(CooCVector b) {
         return (CVector) DenseCooFieldVectorOps.sub(this, b);
@@ -351,7 +351,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CVector sub(Vector b) {
         Complex128[] dest = new Complex128[data.length];
@@ -368,7 +368,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CVector sub(CooVector b) {
         return (CVector) RealFieldDenseCooVectorOps.sub(this, b);
@@ -532,7 +532,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
     @Override
     public CVector makeLikeNDArray(Shape shape, Complex128[] data) {
         ValidateParameters.ensureRank(shape, 1);
-        ValidateParameters.ensureAllEqual(shape.totalEntriesIntValueExact(), data.length);
+        ValidateParameters.ensureAllEqual(shape.numelIntValueExact(), data.length);
         return new CVector(data);
     }
 
@@ -639,7 +639,7 @@ public class CVector extends AbstractDenseFieldVector<CVector, CMatrix, Complex1
     /**
      * Computes the element-wise difference between two vectors of the same shape.
      * @param b Second tensor in the element-wise difference.
-     * @throws ArrayShapeException If {@code !this.shape.equals(b.shape)}.
+     * @throws NDArrayShapeException If {@code !this.shape.equals(b.shape)}.
      */
     public void subEq(Vector b) {
         RealFieldDenseOps.sub(shape, data, b.shape, b.data, data);

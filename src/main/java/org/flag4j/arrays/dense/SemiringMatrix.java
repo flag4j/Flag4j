@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -147,7 +147,7 @@ public class SemiringMatrix<T extends Semiring<T>> extends AbstractDenseSemiring
      * @param fillValue Entries of this matrix.
      */
     public SemiringMatrix(Shape shape, T fillValue) {
-        super(shape, (T[]) new Semiring[shape.totalEntriesIntValueExact()]);
+        super(shape, (T[]) new Semiring[shape.numelIntValueExact()]);
         Arrays.fill(data, fillValue);
     }
 
@@ -339,7 +339,7 @@ public class SemiringMatrix<T extends Semiring<T>> extends AbstractDenseSemiring
      * @see #I(Shape, Semiring)
      */
     public static <T extends Semiring<T>> SemiringMatrix<T> I(Shape shape, T fieldValue) {
-        Field[] identityValues = new Field[shape.totalEntriesIntValueExact()];
+        Field[] identityValues = new Field[shape.numelIntValueExact()];
         Arrays.fill(identityValues, (Field) fieldValue.getZero());
         Field one = (Field) fieldValue.getOne();
 

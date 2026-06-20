@@ -499,7 +499,7 @@ public class CooRingTensor<T extends Ring<T>> extends AbstractCooRingTensor<CooR
             int[][] tIndices = RealDenseTranspose.standardIntMatrix(indices);
             mat = new CooRingMatrix<T>(shape, data.clone(), tIndices[0], tIndices[1]);
         } else {
-            CooRingTensor<T> flat = reshape(new Shape(1, shape.totalEntriesIntValueExact()));
+            CooRingTensor<T> flat = reshape(new Shape(1, shape.numelIntValueExact()));
             int[][] tIndices = RealDenseTranspose.standardIntMatrix(flat.indices);
             mat = new CooRingMatrix<T>(flat.shape, flat.data.clone(), tIndices[0], tIndices[0]);
         }

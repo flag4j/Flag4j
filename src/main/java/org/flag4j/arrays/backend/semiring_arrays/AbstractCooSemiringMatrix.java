@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,8 +40,8 @@ import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayMapper;
 import org.flag4j.util.ArrayReducer;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -316,7 +316,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
      * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
      *
-     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape as this nD array.
      */
     @Override
     public AbstractNDArray<?, ?, W> get(ArrayMask mask) {
@@ -447,7 +447,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
     public T flatten(int axis) {
         ValidateParameters.ensureValidAxes(shape, axis);
         int[] dims = {1, 1};
-        dims[axis] = shape.totalEntriesIntValueExact();
+        dims[axis] = shape.numelIntValueExact();
         Shape flatShape = new Shape(dims);
 
         int[] destIndices = new int[data.length];
@@ -468,7 +468,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws NDArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
@@ -1361,7 +1361,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T add(T b) {
@@ -1431,7 +1431,7 @@ public abstract class AbstractCooSemiringMatrix<T extends AbstractCooSemiringMat
      * @return A dense matrix equivalent to this sparse COO matrix.
      */
     public U toDense() {
-        W[] entries = makeEmptyDataArray(shape.totalEntriesIntValueExact());
+        W[] entries = makeEmptyDataArray(shape.numelIntValueExact());
         Arrays.fill(entries, getZeroElement());
 
         for(int i = 0; i< nnz; i++)

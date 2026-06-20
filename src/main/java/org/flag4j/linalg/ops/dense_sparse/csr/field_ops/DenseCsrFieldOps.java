@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -125,7 +125,7 @@ public final class DenseCsrFieldOps {
             AbstractCsrFieldMatrix<?, ?, ?, T> src1, double b,
             BinaryOperator<T> opp,
             UnaryOperator<Double> uOpp) {
-        T[] dest = (T[]) new Field[src1.shape.totalEntriesIntValueExact()];
+        T[] dest = (T[]) new Field[src1.shape.numelIntValueExact()];
         T bWrapped = (src1.getZeroElement() != null) ? src1.getZeroElement().add(b) : null;
 
         // Apply unary operator if specified.

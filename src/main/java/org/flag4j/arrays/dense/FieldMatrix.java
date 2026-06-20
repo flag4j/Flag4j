@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -121,7 +121,7 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
      * @param fillValue Entries of this matrix.
      */
     public FieldMatrix(Shape shape, T fillValue) {
-        super(shape, (T[]) new Field[shape.totalEntriesIntValueExact()]);
+        super(shape, (T[]) new Field[shape.numelIntValueExact()]);
         Arrays.fill(data, fillValue);
     }
 
@@ -366,7 +366,7 @@ public class FieldMatrix<T extends Field<T>> extends AbstractDenseFieldMatrix<Fi
      * @see #I(Shape, Field)
      */
     public static <T extends Field<T>> FieldMatrix<T> I(Shape shape, T fieldValue) {
-        Field[] identityValues = new Field[shape.totalEntriesIntValueExact()];
+        Field[] identityValues = new Field[shape.numelIntValueExact()];
         Arrays.fill(identityValues, (Field) fieldValue.getZero());
         Field one = (Field) fieldValue.getOne();
 

@@ -1,9 +1,9 @@
 package org.flag4j.arrays.dense.complex_tensor;
 
-import org.flag4j.numbers.Complex128;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.dense.CTensor;
 import org.flag4j.arrays.dense.Tensor;
+import org.flag4j.numbers.Complex128;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +25,7 @@ class CTensorConstructorTests {
     void shapeConstructorTestCase() {
         // -------------- sub-case 1 --------------
         expShape = new Shape(4, 5, 6, 7, 1, 2, 4);
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = Complex128.ZERO;
         }
@@ -37,7 +37,7 @@ class CTensorConstructorTests {
 
         // -------------- sub-case 2 --------------
         expShape = new Shape();
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = Complex128.ZERO;
         }
@@ -49,7 +49,7 @@ class CTensorConstructorTests {
 
         // -------------- sub-case 3 --------------
         expShape = new Shape(1003);
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = Complex128.ZERO;
         }
@@ -66,7 +66,7 @@ class CTensorConstructorTests {
         // -------------- sub-case 1 --------------
         value = 3.1345;
         expShape = new Shape(4, 5, 6, 7, 1, 2, 4);
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = new Complex128(value);
         }
@@ -79,7 +79,7 @@ class CTensorConstructorTests {
         // -------------- sub-case 2 --------------
         value = 11.4;
         expShape = new Shape();
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = new Complex128(value);
         }
@@ -92,7 +92,7 @@ class CTensorConstructorTests {
         // -------------- sub-case 3 --------------
         value = 8;
         expShape = new Shape(1003);
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = new Complex128(value);
         }
@@ -109,7 +109,7 @@ class CTensorConstructorTests {
         // -------------- sub-case 1 --------------
         valueC = new Complex128(3.1345);
         expShape = new Shape(4, 5, 6, 7, 1, 2, 4);
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = valueC;
         }
@@ -123,7 +123,7 @@ class CTensorConstructorTests {
         // -------------- sub-case 2 --------------
         valueC = new Complex128(11.4, -0.3313);
         expShape = new Shape();
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = valueC;
         }
@@ -136,7 +136,7 @@ class CTensorConstructorTests {
         // -------------- sub-case 3 --------------
         valueC = new Complex128(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
         expShape = new Shape(1003);
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = valueC;
         }
@@ -156,7 +156,7 @@ class CTensorConstructorTests {
                 2, -11334, 11.33434, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, 3.14159, 4, 8, 100, 2343,
                 9.33, 3244, 156.224, 3445, 60.3, 44, 13, 908, 4, 1};
         expRank = expShape.getRank();
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = new Complex128(entriesD[i]);
         }
@@ -172,7 +172,7 @@ class CTensorConstructorTests {
                 2, -11334, 11.33434, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, 3.14159, 4, 8, 100, 2343,
                 9.33, 3244, 156.224, 3445, 60.3, 44, 13, 908, 4, 1};
         expRank = expShape.getRank();
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = new Complex128(entriesD[i]);
         }
@@ -188,7 +188,7 @@ class CTensorConstructorTests {
                 2, -11334, 11.33434, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, 3.14159, 4, 8, 100, 2343,
                 9.33, 3244, 156.224, 3445, 60.3, 44, 13, 908, 4, 1};
         expRank = expShape.getRank();
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = new Complex128(entriesD[i]);
         }
@@ -204,7 +204,7 @@ class CTensorConstructorTests {
                 2, -11334, 11.33434, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, 3.14159, 4, 8, 100, 2343,
                 9.33, 3244, 156.224, 3445, 60.3, 44, 13, 908, 4, 1};
         expRank = expShape.getRank();
-        expEntries = new Complex128[expShape.totalEntries().intValue()];
+        expEntries = new Complex128[expShape.numel().intValue()];
         for(int i=0; i<expEntries.length; i++) {
             expEntries[i] = new Complex128(entriesD[i]);
         }

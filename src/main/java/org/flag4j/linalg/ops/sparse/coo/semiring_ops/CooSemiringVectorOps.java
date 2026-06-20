@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.SparseVectorData;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -151,7 +151,7 @@ public final class CooSemiringVectorOps {
      * @param src2 The non-zero data of the second vector.
      * @param src2Indices The non-zero indices of the second vector.
      * @return The result of the dot product between the two specified COO vectors.
-     * @throws ArrayShapeException If {@code !shape1.equals(shape2)}.
+     * @throws NDArrayShapeException If {@code !shape1.equals(shape2)}.
      */
     public static <T extends Semiring<T>> T dot(Shape shape1, T[] src1, int[] src1Indices,
                                                 Shape shape2, T[] src2, int[] src2Indices) {

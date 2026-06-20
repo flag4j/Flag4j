@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,8 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -250,11 +250,11 @@ public class PermutationMatrix implements Serializable {
      * Computes the matrix-matrix multiplication between two permutation matrices.
      * @param b The matrix to multiply to this permutation matrix.
      * @return The matrix=matrix product of this permutation matrix with {@code b}.
-     * @throws ArrayShapeException If {@code this.size != b.size}.
+     * @throws NDArrayShapeException If {@code this.size != b.size}.
      */
     public PermutationMatrix mult(PermutationMatrix b) {
         if(this.size != b.size) {
-            throw new ArrayShapeException("Shapes not compatible with matrix multiplication: "
+            throw new NDArrayShapeException("Shapes not compatible with matrix multiplication: "
                     + shape + " and " + b.shape + ".");
         }
 

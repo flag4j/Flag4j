@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import org.flag4j.linalg.VectorNorms;
 import org.flag4j.linalg.ops.dense.ring_ops.DenseRingTensorOps;
 import org.flag4j.numbers.Ring;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 /**
  * <p>The base class for all dense vectors whose data are {@link Ring} elements.
@@ -117,7 +117,7 @@ public abstract class AbstractDenseRingVector<T extends AbstractDenseRingVector<
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T sub(T b) {
@@ -132,7 +132,7 @@ public abstract class AbstractDenseRingVector<T extends AbstractDenseRingVector<
      *
      * @param b Second vectors in the element-wise difference.
      *
-     * @throws ArrayShapeException If this vectors and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this vectors and {@code b} do not have the same shape.
      */
     public void subEq(T b) {
         DenseRingTensorOps.sub(shape, data, b.shape, b.data, data);

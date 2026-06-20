@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2025. Jacob Watters
+ * Copyright (c) 2025-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -115,7 +115,7 @@ public final class ArrayReducer {
         computeOutDims(shape, reduceAxes, outDims, outProj);
 
         Shape outShape = new Shape(outDims);
-        if(dest.length != outShape.totalEntriesIntValueExact()) {
+        if(dest.length != outShape.numelIntValueExact()) {
             throw new IllegalArgumentException("dest.length != outShape.totalEntriesIntValueExact");
         }
         if (identity != null) Arrays.fill(dest, identity);
@@ -239,7 +239,7 @@ public final class ArrayReducer {
         computeOutDims(shape, reduceAxes, outDims, outProj);
 
         Shape outShape = new Shape(outDims);
-        boolean[] dst = new boolean[outShape.totalEntriesIntValueExact()];
+        boolean[] dst = new boolean[outShape.numelIntValueExact()];
         if (identity != null) Arrays.fill(dst, identity);
 
         int[] idx = new int[rank];
@@ -299,7 +299,7 @@ public final class ArrayReducer {
         computeOutDims(shape, reduceAxes, outDims, outProj);
 
         Shape outShape = new Shape(outDims);
-        BitSet dest = new BitSet(outShape.totalEntriesIntValueExact());
+        BitSet dest = new BitSet(outShape.numelIntValueExact());
         if (identity != null) {
             for(int i=0, size=dest.size(); i<size; i++)
                 dest.set(i, identity);
@@ -548,7 +548,7 @@ public final class ArrayReducer {
 
         Shape outShape = new Shape(outDims);
 
-        double[] dst = new double[outShape.totalEntriesIntValueExact()];
+        double[] dst = new double[outShape.numelIntValueExact()];
         if (identity != null) Arrays.fill(dst, identity);
 
         int[] idx = new int[rank];
@@ -717,7 +717,7 @@ public final class ArrayReducer {
      */
     public static int getOutSize(Shape srcShape, int[] axes) {
         if (axes.length == 0)
-            return srcShape.totalEntriesIntValueExact();
+            return srcShape.numelIntValueExact();
 
         int rank = srcShape.getRank();
         boolean[] reduceAxes = ShapeUtils.getNormalizedFlags(axes, rank);

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,8 +48,8 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.StringUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -305,7 +305,7 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
      */
     @Override
     public CooCVector makeLikeVector(Shape shape, Complex128[] entries, int[] indices) {
-        return new CooCVector(shape.totalEntriesIntValueExact(), entries, indices);
+        return new CooCVector(shape.numelIntValueExact(), entries, indices);
     }
 
 
@@ -680,7 +680,7 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
      * Computes the element-wise multiplication between this tensor and a real COO matrix.
      * @param b Second matrix in the element-wise product.
      * @return The element-wise product of this tensor with {@code b}.
-     * @throws ArrayShapeException If {@code !this.shape.equals(b.shape)}.
+     * @throws NDArrayShapeException If {@code !this.shape.equals(b.shape)}.
      */
     public CooCMatrix elemMult(CooMatrix b) {
         return RealComplexSparseMatOps.elemMult(this, b);
@@ -701,7 +701,7 @@ public class CooCMatrix extends AbstractCooFieldMatrix<CooCMatrix, CMatrix, CooC
      * Computes the element-wise multiplication between two matrices of the same shape.
      * @param b Second tensor in the element-wise product.
      * @return The element-wise product between this matrix and {@code b}.
-     * @throws ArrayShapeException If {@code !this.shape.equals(b.shape)}
+     * @throws NDArrayShapeException If {@code !this.shape.equals(b.shape)}
      */
     public CooCMatrix elemMult(CMatrix b) {
         Complex128[] dest = new Complex128[nnz];

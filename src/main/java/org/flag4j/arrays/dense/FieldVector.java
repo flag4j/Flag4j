@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -147,7 +147,7 @@ public class FieldVector<T extends Field<T>> extends AbstractDenseFieldVector<Fi
      */
     @Override
     public FieldVector<T> makeLikeNDArray(Shape shape, T[] data) {
-        ValidateParameters.ensureAllEqual(shape.totalEntriesIntValueExact(), data.length);
+        ValidateParameters.ensureAllEqual(shape.numelIntValueExact(), data.length);
         ValidateParameters.ensureRank(shape, 1);
         return new FieldVector<T>(data);
     }
@@ -164,7 +164,7 @@ public class FieldVector<T extends Field<T>> extends AbstractDenseFieldVector<Fi
      */
     @Override
     protected CooFieldVector<T> makeLikeCooTensor(Shape shape, T[] entries, int[][] indices) {
-        return new CooFieldVector<>(shape.totalEntriesIntValueExact(), entries, indices[0]);
+        return new CooFieldVector<>(shape.numelIntValueExact(), entries, indices[0]);
     }
 
 

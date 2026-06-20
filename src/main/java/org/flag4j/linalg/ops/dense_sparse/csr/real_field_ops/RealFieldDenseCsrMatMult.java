@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import org.flag4j.arrays.sparse.CsrMatrix;
 import org.flag4j.numbers.Complex128;
 import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.Arrays;
 
@@ -57,7 +57,7 @@ public final class RealFieldDenseCsrMatMult {
      * @param src1 First matrix in the matrix multiplication.
      * @param src2 Second matrix in the matrix multiplication.
      * @return The result of the matrix multiplication between {@code src1} and {@code src2}.
-     * @throws ArrayShapeException If {@code src1} does not have the same number of columns as {@code src2} has
+     * @throws NDArrayShapeException If {@code src1} does not have the same number of columns as {@code src2} has
      * rows.
      */
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> standard(
@@ -141,7 +141,7 @@ public final class RealFieldDenseCsrMatMult {
      * @param src1 First matrix in the matrix multiplication (dense matrix).
      * @param src2 Second matrix in the matrix multiplication (sparse CSR matrix).
      * @return The result of the matrix multiplication between {@code src1} and {@code src2}.
-     * @throws ArrayShapeException If {@code src1} does not have the same number of columns as {@code src2} has
+     * @throws NDArrayShapeException If {@code src1} does not have the same number of columns as {@code src2} has
      * rows.
      */
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> standard(
@@ -184,7 +184,7 @@ public final class RealFieldDenseCsrMatMult {
      * @param src1 First matrix in the matrix multiplication (dense matrix).
      * @param src2 Second matrix in the matrix multiplication (sparse CSR matrix).
      * @return The result of the matrix multiplication between {@code src1} and {@code src2}.
-     * @throws ArrayShapeException If {@code src1} does not have the same number of columns as {@code src2} has
+     * @throws NDArrayShapeException If {@code src1} does not have the same number of columns as {@code src2} has
      * rows.
      */
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> standard(
@@ -256,7 +256,7 @@ public final class RealFieldDenseCsrMatMult {
      * @param src1 First matrix in the matrix multiplication.
      * @param src2 Second matrix in the matrix multiplication.
      * @return The result of the matrix multiplication between {@code src1} and {@code src2}.
-     * @throws ArrayShapeException If {@code src1} does not have the same number of columns as
+     * @throws NDArrayShapeException If {@code src1} does not have the same number of columns as
      * {@code src2} has rows.
      */
     public static <T extends Field<T>> AbstractDenseFieldMatrix<?, ?, T> standard(

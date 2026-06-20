@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2025. Jacob Watters
+ * Copyright (c) 2022-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -75,20 +75,20 @@ public class Shape implements Serializable {
     /**
      * An array containing the strides of all dimensions within this shape. This is computed lazily and cached.
      */
-    private int[] strides;
+    private final int[] strides;
     /**
      * Flag indicating if strides have been computed for this shape instance or not.
      */
     private boolean hasStrides;
     /**
-     * Total number of entries of this shape. This is only computed on demand by {@link #totalEntries()}.
+     * Total number of entries of this shape. This is only computed on demand by {@link #numel()}.
      */
-    private BigInteger totalEntries = null;
+    private BigInteger numElements = null;
     /**
      * Stores the total number of entries in this shape as an exact integer if possible.
-     * This is only computed on demand by {@link #totalEntriesIntValueExact()}.
+     * This is only computed on demand by {@link #numelIntValueExact()}.
      */
-    private int totalEntriesIntExact = -1;
+    private int numElementsIntExact = -1;
 
 
     /**
@@ -177,7 +177,7 @@ public class Shape implements Serializable {
      * @throws ArithmeticException If the product of this shape's dimensions is too large to be stored in a 32-bit integer.
      */
     public Shape flatten() {
-        return new Shape(totalEntriesIntValueExact());
+        return new Shape(numelIntValueExact());
     }
 
 
@@ -365,20 +365,20 @@ public class Shape implements Serializable {
 
 
     /**
-     * Gets the total number of data for an nD array with this shape.
-     * @return The total number of data for an nD array with this shape.
-     * @see #totalEntriesIntValueExact()
-     * @see #totalEntriesLongValueExact()
+     * Gets the total number of elements for an nD array with this shape.
+     * @return The total number of elements for an nD array with this shape.
+     * @see #numelIntValueExact()
+     * @see #numelLongValueExact()
      */
-    public BigInteger totalEntries() {
-        // Check if totalEntries has already been computed for this shape.
-        if(totalEntries!=null) return totalEntries;
+    public BigInteger numel() {
+        // Check if total elements have already been computed for this shape.
+        if(numElements !=null) return numElements;
 
         // Otherwise, the total data needs to be computed.
         BigInteger product = BigInteger.ONE;  // We can start at one because scalar tensors have a single entry.
         for(int dim : dims)
             product = product.multiply(BigInteger.valueOf(dim));
-        totalEntries = product;
+        numElements = product;
 
         return product;
     }
@@ -388,17 +388,17 @@ public class Shape implements Serializable {
      * <p>Gets the total number of elements for an nD array with this shape.
      * If the total number of elements exceeds {@link Integer#MAX_VALUE}, an exception is thrown.
      *
-     * <p>This method is likely to be more efficient than {@link #totalEntries()} if a primitive int value is desired.
+     * <p>This method is likely to be more efficient than {@link #numel()} if a primitive int value is desired.
      *
      * @return The total number of data for an nD array with this shape.
      * @throws ArithmeticException If the total number of data overflows a primitive int.
-     * @see #totalEntries()
-     * @see #totalEntriesLongValueExact()
+     * @see #numel()
+     * @see #numelLongValueExact()
      */
-    public int totalEntriesIntValueExact() {
-        if(totalEntriesIntExact >= 0) return totalEntriesIntExact;  // The Value has already been computed.
+    public int numelIntValueExact() {
+        if(numElementsIntExact >= 0) return numElementsIntExact;  // The Value has already been computed.
         long product = 1;
-        totalEntriesIntExact = 1;  // We can start at one because scalar tensors have a single entry.
+        numElementsIntExact = 1;  // We can start at one because scalar tensors have a single entry.
 
         for (int dim : dims) {
             product *= dim;
@@ -408,9 +408,9 @@ public class Shape implements Serializable {
                 throw new ArithmeticException("Integer overflow while computing total data in shape: " + this);
         }
 
-        totalEntriesIntExact = (int) product;
+        numElementsIntExact = (int) product;
 
-        return totalEntriesIntExact;
+        return numElementsIntExact;
     }
 
 
@@ -420,11 +420,11 @@ public class Shape implements Serializable {
      *
      * @return The total number of elements for an nD array with this shape.
      * @throws ArithmeticException If the total number of data overflows a primitive int.
-     * @see #totalEntriesIntValueExact()
-     * @see #totalEntries()
+     * @see #numelIntValueExact()
+     * @see #numel()
      */
-    public long totalEntriesLongValueExact() {
-        if(totalEntriesIntExact >= 0) return totalEntriesIntExact; // The Value has already been computed as an integer.
+    public long numelLongValueExact() {
+        if(numElementsIntExact >= 0) return numElementsIntExact; // The Value has already been computed as an integer.
 
         long product = 1;
         for (long value : dims) {
@@ -442,7 +442,7 @@ public class Shape implements Serializable {
 
         // If we can safely cast to an integer, update the cached integer value.
         if (product < Integer.MAX_VALUE)
-            totalEntriesIntExact = (int) product;
+            numElementsIntExact = (int) product;
 
         return product;
     }
@@ -454,7 +454,7 @@ public class Shape implements Serializable {
      * 32-bit integer without overflowing; {@code false} if it would overflow.
      */
     public boolean isIntSized() {
-        if(totalEntriesIntExact >= 0) return true; // Value is already known to be computable as an integer.
+        if(numElementsIntExact >= 0) return true; // Value is already known to be computable as an integer.
         long product = 1;
 
         for (int value : dims) {
@@ -465,7 +465,7 @@ public class Shape implements Serializable {
         }
 
         // Update the cached value since we already computed it.
-        totalEntriesIntExact = (int) product;  // This cast is safe since it will only execute if product <= Integer.MAX_VALUE.
+        numElementsIntExact = (int) product;  // This cast is safe since it will only execute if product <= Integer.MAX_VALUE.
 
         return true;
     }

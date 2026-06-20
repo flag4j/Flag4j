@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -133,7 +133,7 @@ public class SemiringTensor<T extends Semiring<T>> extends AbstractDenseSemiring
      */
     public SemiringTensor(Object nDArray) {
         super(ArrayUtils.nDArrayShape(nDArray),
-                (T[]) new Semiring[ArrayUtils.nDArrayShape(nDArray).totalEntriesIntValueExact()]);
+                (T[]) new Semiring[ArrayUtils.nDArrayShape(nDArray).numelIntValueExact()]);
         ArrayUtils.nDFlatten(nDArray, shape, data, 0);
     }
 
@@ -145,7 +145,7 @@ public class SemiringTensor<T extends Semiring<T>> extends AbstractDenseSemiring
      * @param fillValue Entries of this tensor.
      */
     public SemiringTensor(Shape shape, T fillValue) {
-        super(shape, (T[]) new Semiring[shape.totalEntriesIntValueExact()]);
+        super(shape, (T[]) new Semiring[shape.numelIntValueExact()]);
         Arrays.fill(data, fillValue);
     }
 
@@ -239,7 +239,7 @@ public class SemiringTensor<T extends Semiring<T>> extends AbstractDenseSemiring
      * @return A human-readable string representing this tensor.
      */
     public String toString() {
-        int size = shape.totalEntries().intValueExact();
+        int size = shape.numel().intValueExact();
         StringBuilder result = new StringBuilder(String.format("shape: %s\n", shape));
         result.append("[");
 

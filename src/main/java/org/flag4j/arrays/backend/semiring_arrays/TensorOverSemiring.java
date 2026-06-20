@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.backend.AbstractNDArray;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayBuilder;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 
 /**
@@ -117,7 +117,7 @@ public interface TensorOverSemiring<T extends TensorOverSemiring<T, U, V, W>,
      * Computes the element-wise sum between two tensors of the same shape.
      * @param b Second tensor in the element-wise sum.
      * @return The sum of this tensor with {@code b}.
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     T add(T b);
 

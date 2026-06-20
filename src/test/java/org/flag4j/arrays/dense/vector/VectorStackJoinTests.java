@@ -2,7 +2,7 @@ package org.flag4j.arrays.dense.vector;
 
 import org.flag4j.arrays.dense.Matrix;
 import org.flag4j.arrays.dense.Vector;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,7 +50,7 @@ class VectorStackJoinTests {
         b = new Vector(bEntries);
 
         Vector finalB = b;
-        assertThrows(ArrayShapeException.class, ()->a.stack(finalB));
+        assertThrows(NDArrayShapeException.class, ()->a.stack(finalB));
 
         // ---------------------- sub-case 3 ----------------------
         bEntries = new double[]{0.9345, 1.5,-9.234};
@@ -65,7 +65,7 @@ class VectorStackJoinTests {
         b = new Vector(bEntries);
 
         Vector finalB2 = b;
-        assertThrows(ArrayShapeException.class, ()->a.stack(finalB2, 0));
+        assertThrows(NDArrayShapeException.class, ()->a.stack(finalB2, 0));
 
         // ---------------------- sub-case 5 ----------------------
         bEntries = new double[]{0.9345, 1.5,-9.234};

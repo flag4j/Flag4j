@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,8 +52,8 @@ import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.StringUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
@@ -685,7 +685,7 @@ public class CooMatrix extends AbstractDoubleNDArray<CooMatrix>
      * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
      * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
      *
-     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape as this nD array.
      */
     @Override
     public Vector get(ArrayMask mask) {
@@ -762,7 +762,7 @@ public class CooMatrix extends AbstractDoubleNDArray<CooMatrix>
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws NDArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public CooMatrix reshape(Shape newShape) {
@@ -1651,7 +1651,7 @@ public class CooMatrix extends AbstractDoubleNDArray<CooMatrix>
         for(int i=0, size=nnz; i<size; i++)
             destIndices[i] = rowIndices[i]*colIndices[i];
 
-        return CooVector.unsafeMake(shape.totalEntriesIntValueExact(), data.clone(), destIndices);
+        return CooVector.unsafeMake(shape.numelIntValueExact(), data.clone(), destIndices);
     }
 
 

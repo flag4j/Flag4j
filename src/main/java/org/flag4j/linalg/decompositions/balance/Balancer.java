@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2025. Jacob Watters
+ * Copyright (c) 2025-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import org.flag4j.linalg.decompositions.Decomposition;
 import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.Flag4jConstants;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 
 /**
@@ -333,7 +333,7 @@ public abstract class Balancer<T extends MatrixMixin<T, ?, ?, ?>> extends Decomp
      * @param src Matrix to balance. Must be square. If {@link #inPlace == true} then {@code src} will be modified.
      * Otherwise, {@code src} will <i>not</i> be modified.
      * @return A reference to this balancer object.
-     * @throws ArrayShapeException If {@code src} is not a square matrix.
+     * @throws NDArrayShapeException If {@code src} is not a square matrix.
      */
     @Override
     public Balancer<T> decompose(T src) {

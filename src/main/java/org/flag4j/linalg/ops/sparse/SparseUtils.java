@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ public final class SparseUtils {
      * @return The sparsity of a sparse tensor with the specified {@code shape} and {@code nnz}.
      */
     public static double computeSparsity(Shape shape, int nnz) {
-        BigInteger totalEntries = shape.totalEntries();
+        BigInteger totalEntries = shape.numel();
         BigDecimal sparsity = new BigDecimal(totalEntries).subtract(BigDecimal.valueOf(nnz));
         sparsity = sparsity.divide(new BigDecimal(totalEntries), RoundingMode.HALF_UP);
         return sparsity.doubleValue();

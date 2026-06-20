@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,8 +38,8 @@ import org.flag4j.linalg.ops.sparse.csr.semiring_ops.SemiringCsrOps;
 import org.flag4j.linalg.ops.sparse.csr.semiring_ops.SemiringCsrProperties;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -336,7 +336,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         int[] newRowPointers = new int[2];
         newRowPointers[1] = nnz;
         return makeLikeTensor(
-                new Shape(1, shape.totalEntriesIntValueExact()),
+                new Shape(1, shape.numelIntValueExact()),
                 data.clone(),
                 newRowPointers,
                 colIndices.clone());
@@ -364,7 +364,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
             newColIndices = new int[nnz];
         } else {
             // Flatten to a single column.
-            int flatSize = shape.totalEntriesIntValueExact();
+            int flatSize = shape.numelIntValueExact();
             newColIndices = new int[nnz];  // Set all column indices to 0.
             newRowPointers = new int[flatSize + 1];
         }
@@ -372,7 +372,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
         Shape newShape = CsrConversions.flatten(shape, data, rowPointers, colIndices, axis, newRowPointers, newColIndices);
 
         return makeLikeTensor(
-                new Shape(shape.totalEntriesIntValueExact(), 1),
+                new Shape(shape.numelIntValueExact(), 1),
                 data.clone(),
                 newRowPointers,
                 newColIndices);
@@ -386,7 +386,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws NDArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
@@ -420,7 +420,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T add(T b) {
@@ -1053,7 +1053,7 @@ public abstract class AbstractCsrSemiringMatrix<T extends AbstractCsrSemiringMat
      * @return A dense matrix which is equivalent to this sparse CSR matrix.
      */
     public U toDense() {
-        W[] dest = makeEmptyDataArray(shape.totalEntriesIntValueExact());
+        W[] dest = makeEmptyDataArray(shape.numelIntValueExact());
         CsrConversions.toDense(shape, data, rowPointers, colIndices, dest, zeroElement);
         return makeLikeDenseTensor(shape, dest);
     }

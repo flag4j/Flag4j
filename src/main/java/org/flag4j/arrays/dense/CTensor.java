@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ import org.flag4j.numbers.Complex128;
 import org.flag4j.numbers.Complex64;
 import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.Arrays;
 
@@ -74,7 +74,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      */
     public CTensor(Object nDArray) {
         super(ArrayUtils.nDArrayShape(nDArray),
-                new Complex128[ArrayUtils.nDArrayShape(nDArray).totalEntriesIntValueExact()]);
+                new Complex128[ArrayUtils.nDArrayShape(nDArray).numelIntValueExact()]);
         if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
         ArrayUtils.nDFlatten(nDArray, shape, data, 0);
     }
@@ -111,7 +111,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * @param shape Shape of this tensor.
      */
     public CTensor(Shape shape) {
-        super(shape, new Complex128[shape.totalEntriesIntValueExact()]);
+        super(shape, new Complex128[shape.numelIntValueExact()]);
         if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
         Arrays.fill(data, Complex128.ZERO);
     }
@@ -136,7 +136,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * @param fillValue Value to fill this tensor with.
      */
     public CTensor(Shape shape, Complex64 fillValue) {
-        super(shape, new Complex128[shape.totalEntries().intValueExact()]);
+        super(shape, new Complex128[shape.numel().intValueExact()]);
         if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
         Arrays.fill(data, new Complex128(fillValue));
     }
@@ -149,7 +149,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * @param fillValue Value to fill this tensor with.
      */
     public CTensor(Shape shape, double fillValue) {
-        super(shape, new Complex128[shape.totalEntries().intValueExact()]);
+        super(shape, new Complex128[shape.numel().intValueExact()]);
         if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
         Arrays.fill(data, new Complex128(fillValue));
     }
@@ -163,7 +163,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * {@link ComplexNumberParser#parseNumberToComplex128(String)}.
      */
     public CTensor(Shape shape, String fillValue) {
-        super(shape, new Complex128[shape.totalEntries().intValueExact()]);
+        super(shape, new Complex128[shape.numel().intValueExact()]);
         if(data.length == 0 || data[0] == null) setZeroElement(Complex128.ZERO);
         Arrays.fill(data, new Complex128(fillValue));
     }
@@ -254,7 +254,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor add(CooCTensor b) {
         return (CTensor) DenseCooFieldTensorOps.add(this, b);
@@ -268,7 +268,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor add(Tensor b) {
         Complex128[] dest = new Complex128[data.length];
@@ -282,7 +282,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      *
      * @param b Second tensor in the element-wise sum.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public void addEq(Tensor b) {
         RealFieldDenseOps.add(shape, data, b.shape, b.data, data);
@@ -296,7 +296,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor add(CooTensor b) {
         return (CTensor) RealFieldDenseCooOps.add(this, b);
@@ -310,7 +310,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor sub(CooCTensor b) {
         return (CTensor) DenseCooFieldTensorOps.sub(this, b);
@@ -324,7 +324,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor sub(Tensor b) {
         Complex128[] dest = new Complex128[data.length];
@@ -349,7 +349,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     public CTensor sub(CooTensor b) {
         return (CTensor) RealFieldDenseCooOps.sub(this, b);
@@ -561,7 +561,7 @@ public class CTensor extends AbstractDenseFieldTensor<CTensor, Complex128> {
      * @return A human-readable string representing this tensor.
      */
     public String toString() {
-        int size = shape.totalEntries().intValueExact();
+        int size = shape.numel().intValueExact();
         StringBuilder result = new StringBuilder(String.format("shape: %s\n", shape));
 
         result.append(PrettyPrint.abbreviatedArray(data,

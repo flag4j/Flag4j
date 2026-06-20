@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import org.flag4j.arrays.backend.semiring_arrays.AbstractCooSemiringMatrix;
 import org.flag4j.linalg.ops.sparse.coo.CooConversions;
 import org.flag4j.linalg.ops.sparse.coo.ring_ops.CooRingMatrixOps;
 import org.flag4j.numbers.Ring;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 /**
  * <p>A sparse matrix stored in coordinate list (COO) format. The {@link #data} of this COO matrix are
@@ -149,7 +149,7 @@ public abstract class AbstractCooRingMatrix<T extends AbstractCooRingMatrix<T, U
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T sub(T b) {

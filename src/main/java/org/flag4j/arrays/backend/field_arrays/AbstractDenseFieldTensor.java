@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ public abstract class AbstractDenseFieldTensor<T extends AbstractDenseFieldTenso
      */
     protected AbstractDenseFieldTensor(Shape shape, V[] entries) {
         super(shape, entries);
-        ValidateParameters.ensureAllEqual(shape.totalEntriesIntValueExact(), entries.length);
+        ValidateParameters.ensureAllEqual(shape.numelIntValueExact(), entries.length);
         this.zeroElement = (entries.length > 0 && entries[0] != null) ? entries[0].getZero() : null;
     }
 

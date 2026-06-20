@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023-2025. Jacob Watters
+ * Copyright (c) 2023-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -389,7 +389,7 @@ public final class TransposeDispatcher {
      * @return The appropriate matrix transpose algorithm.
      */
     private static TransposeAlgorithms chooseAlgorithm(Shape shape) {
-        int numEntries = shape.totalEntries().intValueExact();
+        int numEntries = shape.numel().intValueExact();
         return numEntries < CONCURRENT_THRESHOLD ? TransposeAlgorithms.BLOCKED : TransposeAlgorithms.CONCURRENT_BLOCKED;
     }
 
@@ -400,7 +400,7 @@ public final class TransposeDispatcher {
      * @return The appropriate matrix transpose algorithm.
      */
     private static TransposeAlgorithms chooseAlgorithmHermitian(Shape shape) {
-        int numEntries = shape.totalEntries().intValueExact();
+        int numEntries = shape.numel().intValueExact();
         return numEntries < HERMITIAN_BLOCKED_THRESHOLD ? TransposeAlgorithms.BLOCKED : TransposeAlgorithms.CONCURRENT_BLOCKED;
     }
 
@@ -413,7 +413,7 @@ public final class TransposeDispatcher {
     private static TransposeAlgorithms chooseAlgorithmComplex(Shape shape) {
         TransposeAlgorithms algorithm;
 
-        int numEntries = shape.totalEntries().intValueExact();
+        int numEntries = shape.numel().intValueExact();
 
         if(numEntries < STANDARD_THRESHOLD) {
             // Use standard algorithm.

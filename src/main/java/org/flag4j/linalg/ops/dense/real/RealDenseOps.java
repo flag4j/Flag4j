@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2025. Jacob Watters
+ * Copyright (c) 2022-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -247,7 +247,7 @@ public final class RealDenseOps {
     public static void tensorTr(Shape shape, double[] src,
                                 int axis1, int axis2,
                                 Shape destShape, double[] dest) {
-        ValidateParameters.ensureArrayLengthsEq(destShape.totalEntriesIntValueExact(), dest.length);
+        ValidateParameters.ensureArrayLengthsEq(destShape.numelIntValueExact(), dest.length);
         ValidateParameters.ensureNotEquals(axis1, axis2);
         ValidateParameters.validateArrayIndices(shape.getRank(), axis1, axis2);
         ValidateParameters.ensureAllEqual(shape.getSize(axis1), shape.getSize(axis2));

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -134,7 +134,7 @@ public class FieldTensor<T extends Field<T>> extends AbstractDenseFieldTensor<Fi
      */
     public FieldTensor(Object nDArray) {
         super(ArrayUtils.nDArrayShape(nDArray),
-                (T[]) new Field[ArrayUtils.nDArrayShape(nDArray).totalEntriesIntValueExact()]);
+                (T[]) new Field[ArrayUtils.nDArrayShape(nDArray).numelIntValueExact()]);
         ArrayUtils.nDFlatten(nDArray, shape, data, 0);
     }
 
@@ -146,7 +146,7 @@ public class FieldTensor<T extends Field<T>> extends AbstractDenseFieldTensor<Fi
      * @param fillValue Value to fill tensor with.
      */
     public FieldTensor(Shape shape, T fillValue) {
-        super(shape, (T[]) new Field[shape.totalEntries().intValueExact()]);
+        super(shape, (T[]) new Field[shape.numel().intValueExact()]);
         Arrays.fill(data, fillValue);
     }
 
@@ -271,7 +271,7 @@ public class FieldTensor<T extends Field<T>> extends AbstractDenseFieldTensor<Fi
      * @return A human-readable string representing this tensor.
      */
     public String toString() {
-        int size = shape.totalEntries().intValueExact();
+        int size = shape.numel().intValueExact();
         StringBuilder result = new StringBuilder(String.format("shape: %s\n", shape));
         result.append("[");
 

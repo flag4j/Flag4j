@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import org.flag4j.arrays.sparse.CooMatrix;
 import org.flag4j.linalg.ops.common.real.RealOps;
 import org.flag4j.numbers.Complex128;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 /**
  * This class contains low-level implementations of ops between real/complex and dense/sparse matrices.
@@ -50,7 +50,7 @@ public final class RealComplexDenseCooMatOps {
      * @param src1 First matrix.
      * @param src2 Second matrix.
      * @return The result of the matrix addition.
-     * @throws ArrayShapeException If the matrices do not have the same shape.
+     * @throws NDArrayShapeException If the matrices do not have the same shape.
      */
     public static CMatrix add(Matrix src1, CooCMatrix src2) {
         ValidateParameters.ensureEqualShape(src1.shape, src2.shape);
@@ -71,7 +71,7 @@ public final class RealComplexDenseCooMatOps {
      * @param src1 First matrix.
      * @param src2 Second matrix.
      * @return The result of the matrix subtraction.
-     * @throws ArrayShapeException If the matrices do not have the same shape.
+     * @throws NDArrayShapeException If the matrices do not have the same shape.
      */
     public static CMatrix sub(Matrix src1, CooCMatrix src2) {
         ValidateParameters.ensureEqualShape(src1.shape, src2.shape);
@@ -91,7 +91,7 @@ public final class RealComplexDenseCooMatOps {
      * @param src1 First matrix.
      * @param src2 Second matrix.
      * @return The result of the matrix subtraction.
-     * @throws ArrayShapeException If the matrices do not have the same shape.
+     * @throws NDArrayShapeException If the matrices do not have the same shape.
      */
     public static CMatrix sub(CooCMatrix src2, Matrix src1) {
         ValidateParameters.ensureEqualShape(src1.shape, src2.shape);
@@ -111,7 +111,7 @@ public final class RealComplexDenseCooMatOps {
      * @param src1 First matrix.
      * @param src2 Second matrix.
      * @return The result of element-wise multiplication.
-     * @throws ArrayShapeException If the matrices do not have the same shape.
+     * @throws NDArrayShapeException If the matrices do not have the same shape.
      */
     public static CooCMatrix elemMult(CMatrix src1, CooMatrix src2) {
         ValidateParameters.ensureEqualShape(src1.shape, src2.shape);
@@ -134,7 +134,7 @@ public final class RealComplexDenseCooMatOps {
      * @param src1 First matrix in the element-wise product.
      * @param src2 Second matrix in the element-wise product.
      * @return The result of element-wise product of {@code src1} with {@code src2}.
-     * @throws ArrayShapeException If the matrices do not have the same shape.
+     * @throws NDArrayShapeException If the matrices do not have the same shape.
      */
     public static CooCMatrix elemMult(Matrix src1, CooCMatrix src2) {
         ValidateParameters.ensureEqualShape(src1.shape, src2.shape);
@@ -163,7 +163,7 @@ public final class RealComplexDenseCooMatOps {
      * @param src1 Real sparse matrix and numerator in element-wise quotient.
      * @param src2 Real Dense matrix and denominator in element-wise quotient.
      * @return The element-wise quotient of {@code src1} and {@code src2}.
-     * @throws ArrayShapeException If {@code src1} and {@code src2} do not have the same shape.
+     * @throws NDArrayShapeException If {@code src1} and {@code src2} do not have the same shape.
      */
     public static CooCMatrix elemDiv(CooMatrix src1, CMatrix src2) {
         ValidateParameters.ensureEqualShape(src1.shape, src2.shape);

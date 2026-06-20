@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -94,7 +94,7 @@ public abstract class ExactTensorSolver<T extends AbstractNDArray<T, ?, ?>,
             prod *= k;
 
         // Ensure that prod(a.shape.dims[j]) == prod(a.shape.dims[k]) for all b.rank()<=j<a.rank() and 0<=k<b.rank()
-        checkSize(A.getShape().totalEntriesIntValueExact(), prod);
+        checkSize(A.getShape().numelIntValueExact(), prod);
 
         // Reform the problem as a
         U aMat = initMatrix(A, prod); // Reshape and convert tensor A to matrix.

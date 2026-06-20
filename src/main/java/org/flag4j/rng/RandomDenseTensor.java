@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -103,7 +103,7 @@ public class RandomDenseTensor {
      * @return A tensor filled with pseudorandom values uniformly distributed in {@code [0, 1)}.
      */
     public Tensor randomTensor(Shape shape) {
-        double[] data = new double[shape.totalEntriesIntValueExact()];
+        double[] data = new double[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new RealUniform(COMPLEX_RNG, 0, 1));
         return new Tensor(shape, data);
     }
@@ -118,7 +118,7 @@ public class RandomDenseTensor {
      * @throws IllegalArgumentException If {@code max} is less than {@code min}.
      */
     public Tensor randomTensor(Shape shape, double min, double max) {
-        double[] data = new double[shape.totalEntriesIntValueExact()];
+        double[] data = new double[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new RealUniform(COMPLEX_RNG, min, max));
         return new Tensor(shape, data);
     }
@@ -132,7 +132,7 @@ public class RandomDenseTensor {
      * mean of 0.0 and standard deviation of 1.0.
      */
     public Tensor randnTensor(Shape shape) {
-        double[] data = new double[shape.totalEntriesIntValueExact()];
+        double[] data = new double[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new RealGaussian(COMPLEX_RNG, 0, 1));
         return new Tensor(shape, data);
     }
@@ -149,7 +149,7 @@ public class RandomDenseTensor {
      * @throws IllegalArgumentException If standard deviation is negative.
      */
     public Tensor randnTensor(Shape shape, double mean, double std) {
-        double[] data = new double[shape.totalEntriesIntValueExact()];
+        double[] data = new double[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new RealGaussian(COMPLEX_RNG, mean, std));
         return new Tensor(shape, data);
     }
@@ -163,7 +163,7 @@ public class RandomDenseTensor {
      * the complex plane.
      */
     public CTensor randomCTensor(Shape shape) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128UniformDisk(COMPLEX_RNG, 0, 1));
         return new CTensor(shape, data);
     }
@@ -180,7 +180,7 @@ public class RandomDenseTensor {
      * @throws IllegalArgumentException If {@code min >= max} or {@code min < 0}.
      */
     public CTensor randomCTensor(Shape shape, double min, double max) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128UniformDisk(COMPLEX_RNG, min, max));
         return new CTensor(shape, data);
     }
@@ -196,7 +196,7 @@ public class RandomDenseTensor {
      * @see RandomComplex#randnComplex128()
      */
     public CTensor randnCTensor(Shape shape) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128BiGaussian(COMPLEX_RNG, 0, 1, 0, 1));
         return new CTensor(shape, data);
     }
@@ -214,7 +214,7 @@ public class RandomDenseTensor {
      * @see RandomComplex#randnComplex128(double, double)
      */
     public CTensor randnCTensor(Shape shape, double mean, double std) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128BiGaussian(COMPLEX_RNG, mean, std, mean, std));
         return new CTensor(shape, data);
     }
@@ -234,7 +234,7 @@ public class RandomDenseTensor {
      * @see RandomComplex#randnComplex128(double, double, double, double, double)
      */
     public CTensor randnCTensor(Shape shape, double meanRe, double stdRe, double meanIm, double stdIm, double corrCoeff) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128BiGaussian(COMPLEX_RNG, meanRe, stdRe, meanIm, stdIm, corrCoeff));
         return new CTensor(shape, data);
     }
@@ -389,7 +389,7 @@ public class RandomDenseTensor {
      * @return A matrix filled with pseudorandom values uniformly distributed in {@code [0, 1)}.
      */
     public Matrix randomMatrix(Shape shape) {
-        double[] data = new double[shape.totalEntriesIntValueExact()];
+        double[] data = new double[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new RealUniform(COMPLEX_RNG, 0, 1));
         return new Matrix(shape, data);
     }
@@ -404,7 +404,7 @@ public class RandomDenseTensor {
      * @throws IllegalArgumentException If {@code max} is less than {@code min}.
      */
     public Matrix randomMatrix(Shape shape, double min, double max) {
-        double[] data = new double[shape.totalEntriesIntValueExact()];
+        double[] data = new double[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new RealUniform(COMPLEX_RNG, min, max));
         return new Matrix(shape, data);
     }
@@ -418,7 +418,7 @@ public class RandomDenseTensor {
      * mean of 0.0 and standard deviation of 1.0.
      */
     public Matrix randnMatrix(Shape shape) {
-        double[] data = new double[shape.totalEntriesIntValueExact()];
+        double[] data = new double[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new RealGaussian(COMPLEX_RNG, 0, 1));
         return new Matrix(shape, data);
     }
@@ -435,7 +435,7 @@ public class RandomDenseTensor {
      * @throws IllegalArgumentException If standard deviation is negative.
      */
     public Matrix randnMatrix(Shape shape, double mean, double std) {
-        double[] data = new double[shape.totalEntriesIntValueExact()];
+        double[] data = new double[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new RealGaussian(COMPLEX_RNG, mean, std));
         return new Matrix(shape, data);
     }
@@ -449,7 +449,7 @@ public class RandomDenseTensor {
      * the complex plane.
      */
     public CMatrix randomCMatrix(Shape shape) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128UniformDisk(COMPLEX_RNG, 0, 1));
         return new CMatrix(shape, data);
     }
@@ -466,7 +466,7 @@ public class RandomDenseTensor {
      * @throws IllegalArgumentException If {@code min >= max} or {@code min < 0}.
      */
     public CMatrix randomCMatrix(Shape shape, double min, double max) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128UniformDisk(COMPLEX_RNG, min, max));
         return new CMatrix(shape, data);
     }
@@ -482,7 +482,7 @@ public class RandomDenseTensor {
      * @see RandomComplex#randnComplex128()
      */
     public CMatrix randnCMatrix(Shape shape) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128BiGaussian(COMPLEX_RNG, 0, 1, 0, 1));
         return new CMatrix(shape, data);
     }
@@ -500,7 +500,7 @@ public class RandomDenseTensor {
      * @see RandomComplex#randnComplex128(double, double)
      */
     public CMatrix randnCMatrix(Shape shape, double mean, double std) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128BiGaussian(COMPLEX_RNG, mean, std, mean, std));
         return new CMatrix(shape, data);
     }
@@ -520,7 +520,7 @@ public class RandomDenseTensor {
      * @see RandomComplex#randnComplex128(double, double, double, double, double)
      */
     public CMatrix randnCMatrix(Shape shape, double meanRe, double stdRe, double meanIm, double stdIm, double corrCoeff) {
-        Complex128[] data = new Complex128[shape.totalEntriesIntValueExact()];
+        Complex128[] data = new Complex128[shape.numelIntValueExact()];
         RandomArray.randomFill(data, new Complex128BiGaussian(COMPLEX_RNG, meanRe, stdRe, meanIm, stdIm, corrCoeff));
         return new CMatrix(shape, data);
     }

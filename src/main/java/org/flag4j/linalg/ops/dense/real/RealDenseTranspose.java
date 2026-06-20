@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2025. Jacob Watters
+ * Copyright (c) 2022-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ public final class RealDenseTranspose {
                     " tensor.");
         }
 
-        double[] dest = new double[shape.totalEntries().intValue()];
+        double[] dest = new double[shape.numel().intValue()];
         Shape destShape = shape.swapAxes(axis1, axis2);
         int[] destIndices;
 
@@ -89,7 +89,7 @@ public final class RealDenseTranspose {
                     " tensor.");
         }
 
-        double[] dest = new double[shape.totalEntries().intValue()];
+        double[] dest = new double[shape.numel().intValue()];
         Shape destShape = shape.permuteAxes(axes);
         int[] destIndices;
 
@@ -122,7 +122,7 @@ public final class RealDenseTranspose {
                     " tensor.");
         }
 
-        double[] dest = new double[shape.totalEntries().intValue()];
+        double[] dest = new double[shape.numel().intValue()];
         Shape destShape = shape.permuteAxes(axes);
 
         ThreadManager.concurrentOperation(src.length, (startIdx, endIdx) -> {
@@ -152,7 +152,7 @@ public final class RealDenseTranspose {
                     " tensor.");
         }
 
-        double[] dest = new double[shape.totalEntries().intValue()];
+        double[] dest = new double[shape.numel().intValue()];
         Shape destShape = shape.swapAxes(axis1, axis2);
 
         // Compute transpose concurrently.

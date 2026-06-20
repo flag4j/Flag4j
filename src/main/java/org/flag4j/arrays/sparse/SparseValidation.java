@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2025. Jacob Watters
+ * Copyright (c) 2025-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -72,7 +72,7 @@ public final class SparseValidation {
             throw new IllegalArgumentException("Matrix shape must have rank 2 but got rank " + shape);
 
         if (shape.isIntSized()) {
-            int totalEntries = shape.totalEntriesIntValueExact();
+            int totalEntries = shape.numelIntValueExact();
 
             if(nnz > totalEntries) {
                 throw new IllegalArgumentException("The number of non-zero entries cannot be greater than the total number of entries in" +
@@ -108,7 +108,7 @@ public final class SparseValidation {
         int rank = shape.getRank();
 
         if(shape.isIntSized()) {
-            int totalEntries = shape.totalEntriesIntValueExact();
+            int totalEntries = shape.numelIntValueExact();
             if(nnz > totalEntries) {
                 throw new IllegalArgumentException("The number of non-zero entries cannot be greater than the total number of entries in" +
                         " the tensor but got" + " nnz=" + nnz + " and totalEntries=" + totalEntries);
@@ -153,7 +153,7 @@ public final class SparseValidation {
             throw new IllegalArgumentException("Matrix shape must have rank 2 but got rank " + shape);
 
         if (shape.isIntSized()) {
-            int totalEntries = shape.totalEntriesIntValueExact();
+            int totalEntries = shape.numelIntValueExact();
 
             if(nnz > totalEntries) {
                 throw new IllegalArgumentException("The number of non-zero entries cannot be greater than the total number " +

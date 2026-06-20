@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package org.flag4j.arrays.backend.ring_arrays;
 
 import org.flag4j.arrays.backend.semiring_arrays.TensorOverSemiring;
 import org.flag4j.numbers.Ring;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 
 /**
@@ -84,7 +84,7 @@ public interface TensorOverRing<T extends TensorOverRing<T, U, V, W>,
      *
      * @return The difference of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     T sub(T b);
 

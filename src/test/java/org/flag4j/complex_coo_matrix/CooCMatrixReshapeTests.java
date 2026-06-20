@@ -3,7 +3,7 @@ package org.flag4j.complex_coo_matrix;
 import org.flag4j.arrays.Shape;
 import org.flag4j.arrays.sparse.CooCMatrix;
 import org.flag4j.numbers.Complex128;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -152,6 +152,6 @@ class CooCMatrixReshapeTests {
         actColIndices = new int[]{4, 0, 3};
         act = new CooCMatrix(actShape, actData, actRowIndices, actColIndices);
 
-        assertThrows(ArrayShapeException.class, ()->act.reshape(new Shape(4, 5)));
+        assertThrows(NDArrayShapeException.class, ()->act.reshape(new Shape(4, 5)));
     }
 }

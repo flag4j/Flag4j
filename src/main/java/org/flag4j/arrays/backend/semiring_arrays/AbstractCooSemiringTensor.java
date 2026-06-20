@@ -36,7 +36,7 @@ import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringTensorOps;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -241,7 +241,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T add(T b) {
@@ -524,7 +524,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
     public T flatten(int axis) {
         int[] destShape = new int[indices[0].length];
         Arrays.fill(destShape, 1);
-        destShape[axis] = shape.totalEntries().intValueExact();
+        destShape[axis] = shape.numel().intValueExact();
 
         return makeLikeTensor(
                 new Shape(destShape),
@@ -540,7 +540,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws NDArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
@@ -562,7 +562,7 @@ public abstract class AbstractCooSemiringTensor<T extends AbstractCooSemiringTen
      * @throws ArithmeticException If the number of data in the dense tensor exceeds 2,147,483,647.
      */
     public U toDense() {
-        V[] denseEntries= makeEmptyDataArray(shape.totalEntriesIntValueExact());
+        V[] denseEntries= makeEmptyDataArray(shape.numelIntValueExact());
         CooConversions.toDense(shape, data, indices, denseEntries);
         return makeLikeDenseTensor(shape, denseEntries);
     }

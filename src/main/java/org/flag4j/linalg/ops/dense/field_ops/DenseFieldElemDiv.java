@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import org.flag4j.arrays.Shape;
 import org.flag4j.concurrency.ThreadManager;
 import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 
 /**
@@ -57,7 +57,7 @@ public final class DenseFieldElemDiv {
      * @param src2 Second tensor in element-wise division.
      * @param shape2 Shape of the second tensor.
      * @param dest Array to store the result of the element-wise division in.
-     * @throws ArrayShapeException If the tensors do not have the same shape.
+     * @throws NDArrayShapeException If the tensors do not have the same shape.
      */
     public static <T extends Field<T>> void elemDiv(T[] src1, Shape shape1,
                                                     T[] src2, Shape shape2,
@@ -76,7 +76,7 @@ public final class DenseFieldElemDiv {
      * @param src2 Second tensor in element-wise division.
      * @param shape2 Shape of the second tensor.
      * @param dest Array to store the result of the element-wise division in.
-     * @throws ArrayShapeException If the tensors do not have the same shape.
+     * @throws NDArrayShapeException If the tensors do not have the same shape.
      */
     public static <T extends Field<T>> void elemDivConcurrent(T[] src1, Shape shape1,
                                                               T[] src2, Shape shape2,
@@ -97,7 +97,7 @@ public final class DenseFieldElemDiv {
      * @param src2 Entries of second tensor.
      * @param shape2 Shape of second tensor.
      * @param dest Array to store the result of the element-wise division in.
-     * @throws ArrayShapeException
+     * @throws NDArrayShapeException
      */
     public static <T extends Field<T>> void dispatch(T[] src1, Shape shape1,
                                                      T[] src2, Shape shape2,

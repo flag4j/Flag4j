@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023-2025. Jacob Watters
+ * Copyright (c) 2023-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import org.flag4j.arrays.dense.Vector;
 import org.flag4j.arrays.sparse.CooVector;
 import org.flag4j.linalg.ops.common.real.RealOps;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 /**
  * This class provides low level methods for computing ops between a real dense/sparse vector and a
@@ -187,7 +187,7 @@ public class RealDenseSparseVectorOps {
      * @param src1 Dense vector.
      * @param src2 Sparse vector.
      * @return The result of the element-wise multiplication.
-     * @throws ArrayShapeException If the two vectors are not the same size.
+     * @throws NDArrayShapeException If the two vectors are not the same size.
      */
     public static CooVector elemMult(Vector src1, CooVector src2) {
         ValidateParameters.ensureEqualShape(src1.shape, src2.shape);

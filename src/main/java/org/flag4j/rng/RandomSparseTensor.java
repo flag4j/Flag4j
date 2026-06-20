@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -112,7 +112,7 @@ public class RandomSparseTensor {
     private static int nnzFromSparsity(Shape shape, double sparsity) {
         if(sparsity < 0.0 || sparsity > 1.0)
             throw new IllegalArgumentException("sparsity must be between 0.0 and 1.0 but got " + sparsity + ".");
-        return new BigDecimal(shape.totalEntries()).multiply(BigDecimal.valueOf(1.0-sparsity))
+        return new BigDecimal(shape.numel()).multiply(BigDecimal.valueOf(1.0-sparsity))
                 .setScale(0, RoundingMode.HALF_UP).intValueExact();
     }
 
@@ -249,7 +249,7 @@ public class RandomSparseTensor {
     public CooMatrix randomCooMatrix(Shape shape, double min, double max, int nnz) {
         ValidateParameters.ensureGreaterEq(0, nnz);
         ValidateParameters.ensureRank(shape, 2);
-        ValidateParameters.ensureLessEq(shape.totalEntries(), nnz, "nnz");
+        ValidateParameters.ensureLessEq(shape.numel(), nnz, "nnz");
 
         double[] data = new double[nnz];
         RandomArray.randomFill(data, new RealUniform(COMPLEX_RNG, min, max));
@@ -321,7 +321,7 @@ public class RandomSparseTensor {
      */
     public CsrMatrix randomCsrMatrix(Shape shape, double min, double max, int nnz) {
         ValidateParameters.ensureGreaterEq(0, nnz);
-        ValidateParameters.ensureLessEq(shape.totalEntries(), nnz, "nnz");
+        ValidateParameters.ensureLessEq(shape.numel(), nnz, "nnz");
 
         double[] data = new double[nnz];
         RandomArray.randomFill(data, new RealUniform(COMPLEX_RNG, min, max));
@@ -520,7 +520,7 @@ public class RandomSparseTensor {
      * @return A sparse COO tensor whose entries are uniformly distributed in [min, max).
      */
     public CooTensor randomCooTensor(Shape shape, double min, double max, double sparsity) {
-        return randomCooTensor(shape, min, max, nnzFromSparsity(shape.totalEntriesIntValueExact(), sparsity));
+        return randomCooTensor(shape, min, max, nnzFromSparsity(shape.numelIntValueExact(), sparsity));
     }
 
 
@@ -538,7 +538,7 @@ public class RandomSparseTensor {
 
         double[] data = new double[nnz];
         RandomArray.randomFill(data, new RealUniform(COMPLEX_RNG, min, max));
-        int[] indices = RAND_ARRAY.randomUniqueIntegers(nnz, 0, shape.totalEntriesIntValueExact());
+        int[] indices = RAND_ARRAY.randomUniqueIntegers(nnz, 0, shape.numelIntValueExact());
         int[][] nDIndices = shape.getNdIndices(indices);
 
         return new CooTensor(shape, data, nDIndices);
@@ -555,7 +555,7 @@ public class RandomSparseTensor {
      * @return A sparse COO tensor whose entries are uniformly distributed in [min, max).
      */
     public CooCTensor randomCooCTensor(Shape shape, double min, double max, double sparsity) {
-        return randomCooCTensor(shape, min, max, nnzFromSparsity(shape.totalEntriesIntValueExact(), sparsity));
+        return randomCooCTensor(shape, min, max, nnzFromSparsity(shape.numelIntValueExact(), sparsity));
     }
 
 
@@ -573,7 +573,7 @@ public class RandomSparseTensor {
 
         Complex128[] data = new Complex128[nnz];
         RandomArray.randomFill(data, new Complex128UniformDisk(COMPLEX_RNG, min, max));
-        int[] indices = RAND_ARRAY.randomUniqueIntegers(nnz, 0, shape.totalEntriesIntValueExact());
+        int[] indices = RAND_ARRAY.randomUniqueIntegers(nnz, 0, shape.numelIntValueExact());
         int[][] nDIndices = shape.getNdIndices(indices);
 
         return new CooCTensor(shape, data, nDIndices);

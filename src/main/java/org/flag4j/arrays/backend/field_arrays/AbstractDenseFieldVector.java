@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import org.flag4j.linalg.ops.dense.field_ops.DenseFieldElemDiv;
 import org.flag4j.linalg.ops.dense.field_ops.DenseFieldVectorOps;
 import org.flag4j.numbers.Field;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 
 /**
@@ -191,7 +191,7 @@ public abstract class AbstractDenseFieldVector<T extends AbstractDenseFieldVecto
      *
      * @param b The denominator tensor in the element-wise quotient.
      *
-     * @throws ArrayShapeException If this tensor and {@code b}s shapes are not equal.
+     * @throws NDArrayShapeException If this tensor and {@code b}s shapes are not equal.
      */
     public void divEq(T b) {
         ValidateParameters.ensureEqualShape(shape, b.shape);

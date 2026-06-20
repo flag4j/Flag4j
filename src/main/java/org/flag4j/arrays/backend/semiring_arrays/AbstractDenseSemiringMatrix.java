@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -349,7 +349,7 @@ public abstract class AbstractDenseSemiringMatrix<T extends AbstractDenseSemirin
     public T stack(T b) {
         ValidateParameters.ensureArrayLengthsEq(this.numCols, b.numCols);
         Shape stackedShape = new Shape(this.numRows + b.numRows, this.numCols);
-        V[]  stackedEntries = makeEmptyDataArray(stackedShape.totalEntries().intValueExact());
+        V[]  stackedEntries = makeEmptyDataArray(stackedShape.numel().intValueExact());
 
         System.arraycopy(this.data, 0, stackedEntries, 0, this.data.length);
         System.arraycopy(b.data, 0, stackedEntries, this.data.length, b.data.length);

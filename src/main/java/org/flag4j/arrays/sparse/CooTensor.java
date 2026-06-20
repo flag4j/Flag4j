@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ import org.flag4j.util.ArrayConversions;
 import org.flag4j.util.ArrayUtils;
 import org.flag4j.util.ShapeUtils;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
@@ -367,7 +367,7 @@ public class CooTensor extends AbstractDoubleNDArray<CooTensor> {
      * @return A 1D array containing the elements indexed by the {@code true} values in {@code mask}.
      * That is, the values in this nD array at all indices where {@code mask} is {@code true}.
      *
-     * @throws ArrayShapeException If {@code mask} has a different shape as this nD array.
+     * @throws NDArrayShapeException If {@code mask} has a different shape as this nD array.
      */
     @Override
     public Vector get(ArrayMask mask) {
@@ -444,7 +444,7 @@ public class CooTensor extends AbstractDoubleNDArray<CooTensor> {
         for(int i = 0, size = data.length; i<size; i++)
             destIndices[i][0] = shape.get1DIndex(indices[i]);
 
-        return makeLikeTensor(new Shape(shape.totalEntries().intValueExact()), data.clone(), destIndices);
+        return makeLikeTensor(new Shape(shape.numel().intValueExact()), data.clone(), destIndices);
     }
 
 
@@ -464,7 +464,7 @@ public class CooTensor extends AbstractDoubleNDArray<CooTensor> {
         // Compute new shape.
         int[] destShape = new int[indices[0].length];
         Arrays.fill(destShape, 1);
-        destShape[axis] = shape.totalEntries().intValueExact();
+        destShape[axis] = shape.numel().intValueExact();
 
         for(int i = 0, size = data.length; i<size; i++)
             destIndices[i][axis] = shape.get1DIndex(indices[i]);
@@ -480,7 +480,7 @@ public class CooTensor extends AbstractDoubleNDArray<CooTensor> {
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws NDArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public CooTensor reshape(Shape newShape) {

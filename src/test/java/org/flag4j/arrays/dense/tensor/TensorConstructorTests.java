@@ -37,7 +37,7 @@ class TensorConstructorTests {
     void shapeConstructorTestCase() {
         // -------------- sub-case 1 --------------
         expShape = new Shape(4, 5, 6, 7, 1, 2, 4);
-        expEntries = new double[expShape.totalEntries().intValue()];
+        expEntries = new double[expShape.numel().intValue()];
         expRank = expShape.getRank();
         A = new Tensor(expShape);
         assertEquals(expShape, A.shape);
@@ -46,7 +46,7 @@ class TensorConstructorTests {
 
         // -------------- sub-case 2 --------------
         expShape = new Shape();
-        expEntries = new double[expShape.totalEntries().intValue()];
+        expEntries = new double[expShape.numel().intValue()];
         expRank = expShape.getRank();
         A = new Tensor(expShape);
         assertEquals(expShape, A.shape);
@@ -55,7 +55,7 @@ class TensorConstructorTests {
 
         // -------------- sub-case 3 --------------
         expShape = new Shape(1003);
-        expEntries = new double[expShape.totalEntries().intValue()];
+        expEntries = new double[expShape.numel().intValue()];
         expRank = expShape.getRank();
         A = new Tensor(expShape);
         assertEquals(expShape, A.shape);
@@ -69,7 +69,7 @@ class TensorConstructorTests {
         // -------------- sub-case 1 --------------
         value = 3.1345;
         expShape = new Shape(4, 5, 6, 7, 1, 2, 4);
-        expEntries = new double[expShape.totalEntries().intValue()];
+        expEntries = new double[expShape.numel().intValue()];
         expRank = expShape.getRank();
         Arrays.fill(expEntries, value);
         A = new Tensor(expShape, value);
@@ -80,7 +80,7 @@ class TensorConstructorTests {
         // -------------- sub-case 2 --------------
         value = 11.4;
         expShape = new Shape();
-        expEntries = new double[expShape.totalEntries().intValue()];
+        expEntries = new double[expShape.numel().intValue()];
         expRank = expShape.getRank();
         Arrays.fill(expEntries, value);
         A = new Tensor(expShape, value);
@@ -91,7 +91,7 @@ class TensorConstructorTests {
         // -------------- sub-case 3 --------------
         value = 8;
         expShape = new Shape(1003);
-        expEntries = new double[expShape.totalEntries().intValue()];
+        expEntries = new double[expShape.numel().intValue()];
         expRank = expShape.getRank();
         Arrays.fill(expEntries, value);
         A = new Tensor(expShape, value);

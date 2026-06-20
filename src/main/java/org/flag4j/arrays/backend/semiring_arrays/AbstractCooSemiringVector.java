@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024-2025. Jacob Watters
+ * Copyright (c) 2024-2026. Jacob Watters
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,8 @@ import org.flag4j.linalg.ops.sparse.coo.semiring_ops.CooSemiringVectorOps;
 import org.flag4j.numbers.Semiring;
 import org.flag4j.util.ArrayBuilder;
 import org.flag4j.util.ValidateParameters;
-import org.flag4j.util.exceptions.ArrayShapeException;
 import org.flag4j.util.exceptions.LinearAlgebraException;
+import org.flag4j.util.exceptions.NDArrayShapeException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -535,7 +535,7 @@ public abstract class AbstractCooSemiringVector<
      *
      * @return A copy of this tensor with the new shape.
      *
-     * @throws ArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
+     * @throws NDArrayShapeException If {@code newShape} does not have the same number of total entries as {@link #shape this.shape}.
      */
     @Override
     public T reshape(Shape newShape) {
@@ -611,7 +611,7 @@ public abstract class AbstractCooSemiringVector<
      */
     @Override
     public int length() {
-        return shape.totalEntriesIntValueExact();
+        return shape.numelIntValueExact();
     }
 
 
@@ -737,7 +737,7 @@ public abstract class AbstractCooSemiringVector<
      *
      * @return The sum of this tensor with {@code b}.
      *
-     * @throws ArrayShapeException If this tensor and {@code b} do not have the same shape.
+     * @throws NDArrayShapeException If this tensor and {@code b} do not have the same shape.
      */
     @Override
     public T add(T b) {
@@ -848,7 +848,7 @@ public abstract class AbstractCooSemiringVector<
      * @return A dense vector equivalent to this sparse COO vector.
      */
     public U toDense() {
-        Y[] entries = makeEmptyDataArray(shape.totalEntriesIntValueExact());
+        Y[] entries = makeEmptyDataArray(shape.numelIntValueExact());
         Arrays.fill(entries, zeroElement);
 
         for(int i = 0; i< nnz; i++)
