@@ -12,6 +12,7 @@ class ArrayUtilTests {
     String[] srcS;
     Complex128[] expArr, actArr;
     double[] expRange;
+    int[] expRangeI;
 
     @Test
     void copy2Complex128TestCase() {
@@ -87,5 +88,24 @@ class ArrayUtilTests {
 
         // -------------- sub-case 3 --------------
         assertThrows(IllegalArgumentException.class, ()-> ArrayBuilder.range(5, 1));
+    }
+
+
+    @Test
+    void copyStridedRangeTestCase() {
+        int[] src1 = {1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+        int[] src2 = {0, 1};
+        int[] src3 = {};
+        int[] src4 = {1};
+
+        // -------------- sub-cases 1 --------------
+        expRangeI = new int[]{2, 9};
+        assertArrayEquals(expRangeI, ArrayUtils.copyOfStridedRange(src1, 1, 13, 6));
+
+        expRangeI = new int[]{};
+        assertArrayEquals(expRangeI, ArrayUtils.copyOfStridedRange(src1, 1, 1, 0));
+
+        expRangeI = new int[]{13};
+        assertArrayEquals(expRangeI, ArrayUtils.copyOfStridedRange(src1, 11, src1.length, 100));
     }
 }

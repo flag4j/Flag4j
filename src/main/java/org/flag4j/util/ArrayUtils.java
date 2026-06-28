@@ -99,17 +99,85 @@ public final class ArrayUtils {
     /**
      * Computes the cumulative sum of the elements in an array.
      * @param src Source array to compute the cumulative sum of.
-     * @param dest Array to store the result of the cumulative sum. May be the same array as {@code src} or {@code null}.
+     * @param dest Array to store the result of the cumulative sum in. This may be the same array as {@code src} or {@code null}.
      * @return If {@code dest != null} then a reference to {@code dest} is returned. If {@code dest == null} then a new array of
      * the appropriate size will be constructed and returned.
      * @throws IllegalArgumentException If {@code dest != null && dest.length != src.length}.
+     * @throws ArithmeticException If at any point, the cumulative sum overflows an int.
      */
     public static int[] cumSum(int[] src, int[] dest) {
-        ValidateParameters.ensureArrayLengthsEq(src.length, dest.length);
         dest = ArrayBuilder.getOrCreateArray(dest, src.length);
 
-        for(int i=1, size=src.length; i<size; i++)
-            dest[i] = src[i] + src[i-1];
+        if (src.length > 0) dest[0] = src[0];
+        for(int i=1, size=src.length; i<size; i++) {
+            dest[i] = Math.addExact(dest[i-1], src[i]);
+        }
+
+        return dest;
+    }
+
+    /**
+     * Computes the cumulative sum of the elements in an array. Same as {@link #cumSum(int[], int[])} but
+     * <em>does not</em> provide checks for integer overflow.
+     * @param src Source array to compute the cumulative sum of.
+     * @param dest Array to store the result of the cumulative sum in. This may be the same array as `src` or `null`.
+     * @return If {@code dest != null} then a reference to {@code dest} is returned. If {@code dest == null` then a new array of
+     * the appropriate size will be constructed and returned.
+     * @throws IllegalArgumentException If {@code dest != null && dest.length != src.length}.
+     * @throws ArithmeticException If at any point, the cumulative sum overflows an int.
+     * @see #cumSum(int[], int[])
+     */
+    public static int[] cumSumUnchecked(int[] src, int[] dest) {
+        dest = ArrayBuilder.getOrCreateArray(dest, src.length);
+
+        if (src.length > 0) dest[0] = src[0];
+        for(int i=1, size=src.length; i<size; i++) {
+            dest[i] = dest[i-1] + src[i];
+        }
+
+        return dest;
+    }
+
+
+    /**
+     * Computes the cumulative product of the elements in an array.
+     * @param src Source array to compute the cumulative product of.
+     * @param dest Array to store the result of the cumulative product in. This may be the same array as {@code src} or {@code null}.
+     * @return If {@code dest != null} then a reference to {@code dest} is returned. If {@code dest == null} then a new array of
+     * the appropriate size will be constructed and returned.
+     * @throws IllegalArgumentException If {@code dest != null && dest.length != src.length}.
+     * @throws ArithmeticException If at any point, the cumulative product overflows an int.
+     */
+    public static int[] cumProd(int[] src, int[] dest) {
+        dest = ArrayBuilder.getOrCreateArray(dest, src.length);
+
+        if (src.length > 0) dest[0] = src[0];
+        for(int i=1, size=src.length; i<size; i++) {
+            dest[i] = Math.multiplyExact(dest[i-1], src[i]);
+        }
+
+        return dest;
+    }
+
+
+    /**
+     * Computes the cumulative product of the elements in an array. Same as {@link #cumProd(int[], int[])} but
+     * <em>does not</em> provide checks for integer overflow.
+     * @param src Source array to compute the cumulative product of.
+     * @param dest Array to store the result of the cumulative product in. This may be the same array as `src` or `null`.
+     * @return If {@code dest != null} then a reference to {@code dest} is returned. If {@code dest == null` then a new array of
+     * the appropriate size will be constructed and returned.
+     * @throws IllegalArgumentException If {@code dest != null && dest.length != src.length}.
+     * @throws ArithmeticException If at any point, the cumulative product overflows an int.
+     * @see #cumproduct(int[], int[])
+     */
+    public static int[] cumProdUnchecked(int[] src, int[] dest) {
+        dest = ArrayBuilder.getOrCreateArray(dest, src.length);
+
+        if (src.length > 0) dest[0] = src[0];
+        for(int i=1, size=src.length; i<size; i++) {
+            dest[i] = dest[i-1]*src[i];
+        }
 
         return dest;
     }
@@ -896,6 +964,32 @@ public final class ArrayUtils {
 
         for(int i=0, size=src.length; i<size; i++)
             dest[i] = opp.apply(src[i]);
+
+        return dest;
+    }
+
+    // TODO NOW: Update docs to specify negative slice is supported.
+    /**
+     * Copies a strided range of an array.
+     * @param src The source array to copy.
+     * @param from The starting index in {@code src} of the copy (inclusive).
+     * @param to The ending index in {@code src} of the copy (exclusive).
+     * @param stride The stride between elements of {@code src} to copy.
+     * @return A strided copy of {@code src}.
+     */
+    public static int[] copyOfStridedRange(int[] src, int from, int to, int stride) {
+        ValidateParameters.ensureNonZero(stride);
+        ValidateParameters.ensureGreaterEq(from, to);
+
+        int[] dest = new int[(to - from) / Math.abs(stride)];
+
+        if (stride > 0) {
+            for (int j = from; j < to; j+=stride)
+                dest[j] = src[j+stride];
+        } else {
+            for (int j = to - 1; j >= from; j+=stride)
+                dest[j] = src[j+stride];
+        }
 
         return dest;
     }

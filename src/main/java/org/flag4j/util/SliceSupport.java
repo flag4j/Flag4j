@@ -22,21 +22,33 @@
  * SOFTWARE.
  */
 
-package org.flag4j.arrays_new;
+package org.flag4j.util;
 
 import org.flag4j.arrays.Shape;
+import org.flag4j.arrays_new.NDArraySlice;
 
 /**
  * Shared implementation details for strided slices.
  */
-final class SliceSupport {
+public final class SliceSupport {
 
     private SliceSupport() {
         // Utility class.
+        throw new IllegalStateException("Cannot instantiate utility class.");
     }
 
 
-    static void validateAxes(int[] starts, int[] ends, int[] strides) {
+    /**
+     * <p>Validates a set of {@code starts}, {@code ends}, and {@code strides} define a valid nD array slice.
+     * <p>
+     * @param starts The starting indices of the slice.
+     * @param ends The ending indices of the slice.
+     * @param strides The strides of the slice.
+     *
+     * @throws IllegalArgumentException If the specified {@code starts}, {@code ends}, and {@code strides}
+     * <em>do not</em> define a valid nD array slice.s
+     */
+    public static void validateAxes(int[] starts, int[] ends, int[] strides) {
         if (starts.length != ends.length || starts.length != strides.length) {
             throw new IllegalArgumentException(
                     String.format(
@@ -54,7 +66,15 @@ final class SliceSupport {
     }
 
 
-    static void validateAxis(int start, int end, int stride, int axis) {
+    /// Validates that a slice along a specified axis is valid.
+    ///
+    /// @param start The staring index of the slice. Must be non-negative.
+    /// If `stride > 0`, this is inclusive. If `stride < 0`, this in exclusive.
+    /// @param end The ending index of the slice.
+    /// If `stride > 0`, this is exclusive. If `stride < 0`, this in inclusive.
+    /// @param stride The stride of the slice. Must be non-zero.
+    /// @param axis The axis of the slice. This is only used for error messages.
+    public static void validateAxis(int start, int end, int stride, int axis) {
         if (start < 0) {
             throw new IllegalArgumentException(
                     String.format(
@@ -124,7 +144,7 @@ final class SliceSupport {
     }
 
 
-    static boolean canSliceAxis(int start, int end, int stride, int axisSize) {
+    public static boolean canSliceAxis(int start, int end, int stride, int axisSize) {
         if (axisSize < 0 || start < 0 || stride == 0) {
             return false;
         }
@@ -143,7 +163,7 @@ final class SliceSupport {
     }
 
 
-    static int sliceLength(int start, int end, int stride) {
+    public static int sliceLength(int start, int end, int stride) {
         long distance = stride > 0
                 ? (long) end - start
                 : (long) start - end;
@@ -154,7 +174,7 @@ final class SliceSupport {
     }
 
 
-    static Shape resultShape(int[] starts, int[] ends, int[] strides) {
+    public static Shape resultShape(int[] starts, int[] ends, int[] strides) {
         int[] resultDims = new int[starts.length];
 
         for (int axis = 0; axis < starts.length; axis++) {
@@ -175,7 +195,7 @@ final class SliceSupport {
      * @param rank The rank of the slice.
      * @return An IndexOutOfBoundsException for an invalid axis.
      */
-    static IndexOutOfBoundsException invalidAxis(int axis, int rank) {
+    public static IndexOutOfBoundsException invalidAxis(int axis, int rank) {
         return new IndexOutOfBoundsException(
                 String.format(
                         "Slice rank is %d, so valid axis indices are in [0, %d), but got %d.",
@@ -193,7 +213,7 @@ final class SliceSupport {
      * @param rank The rank of the slice.
      * @throws IllegalArgumentException If {@code axis} is negative or greater than {@code rank}.
      */
-    static void validateAxis(int axis, int rank) {
+    public static void validateAxis(int axis, int rank) {
         if (axis < 0 || axis >= rank) {
             throw SliceSupport.invalidAxis(axis, rank);
         }

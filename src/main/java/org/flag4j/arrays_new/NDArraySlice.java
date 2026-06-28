@@ -39,21 +39,21 @@ public interface NDArraySlice {
      * <p>For example, {@code (4, REVERSE_END, -1)} selects indices
      * {@code 4, 3, 2, 1, 0}.
      */
-    public static final int REVERSE_END = -1;
+    int REVERSE_END = -1;
 
     /**
      * Get the start of the nD slice along the given dimension.
      * @param axis The dimension to get the slice start of.
      * @return The start of the nD slice along {@code axis}.
      */
-    public int getStart(int axis);
+    int getStart(int axis);
 
     /**
      * Get the end of the nD slice along the given dimension.
      * @param axis The dimension to get the slice end of.
      * @return The end of the nD slice along {@code axis}.
      */
-    public int getEnd(int axis);
+    int getEnd(int axis);
 
 
     /**
@@ -61,14 +61,14 @@ public interface NDArraySlice {
      * @param axis The dimension to get the stride of.
      * @return The stride of the nD slice along {@code axis}.
      */
-    public int getStride(int axis);
+    int getStride(int axis);
 
     /**
      * Checks if this slice can be applied to the given shape.
      * @param shape The shape to be sliced.
      * @return The result of the slice operation.
      */
-    public boolean canSlice(Shape shape);
+    boolean canSlice(Shape shape);
 
 
     /**
@@ -76,13 +76,13 @@ public interface NDArraySlice {
      * @param axis The dimension to get the slice start, end, and stride of.
      * @return The start, end, and stride of the nD slice along {@code axis}.
      */
-    public IntTriple getStartEndStride(int axis);
+    IntTriple getStartEndStride(int axis);
 
     /**
      * Gets the resulting shape produced by this slice.
      * @return The shape produced by this slice.
      */
-    public Shape getResultShape();
+    Shape getResultShape();
 
     /**
      * Checks whether {@code shape} is exactly the shape produced by this slice.
@@ -94,12 +94,12 @@ public interface NDArraySlice {
      * @param shape Candidate result shape.
      * @return {@code true} if {@code shape} is exactly the result shape of this slice.
      */
-    public boolean isResultShape(Shape shape);
+    boolean isResultShape(Shape shape);
 
 
     /**
      * Gets the rank of the resulting shape produced by this slice.
      * @return THe rank of the resulting shape produced by this slice.
      */
-    public int getResultRank();
+    int getResultRank();
 }

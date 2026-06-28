@@ -268,6 +268,15 @@ public final class ValidateParameters {
     }
 
 
+    /// Checks if `value < 0 || value > 0`
+    /// @param value Value of interest.
+    /// @throws IllegalArgumentException If `value != 0`.
+    public static void ensureNonZero(int value) {
+        if (value == 0) throw new IllegalArgumentException(
+                String.format("value must be non-zero but got %d", value));
+    }
+
+
     /**
      * Checks if {@code value > 0}.
      * @param value Value of interest.

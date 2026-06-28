@@ -69,28 +69,137 @@ public final class ArrayBuilder {
         // Hide default constructor for utility class.
     }
 
-
     /**
      * Checks if an array is {@code null} and constructs a new array with the specified {@code size} if so.
+     * In the case where the array is <em>not</em> {@code null}, a check will be made to ensure that the actual array
+     * size matches the expected {@code size}.
      * @param arr Array of interest.
      * @param size Size of the array to construct and return in the event that {@code arr == null}.
-     * @return If {@code arr == null} then a new array with length {@code size} is created and returned.
-     * Otherwise, if {@code arr != null} then a reference to {@code arr} is returned.
+     *             If {@code arr != null}, this will be used to verify the array is this size.
+     * @return
+     * <ul>
+     *     <li>If {@code arr == null} then a new array with length {@code size} is created and returned.</li>
+     *     <li>If {@code arr != null} then a reference to {@code arr} is returned.</li>
+     * </ul>
+     * @throws IllegalArgumentException If {@code arr != null && arr.length != size}.
      */
-    public static int[] getOrCreateArray(int[] arr, int size) {
-        return arr == null ? new int[size] : arr;
+    public static boolean[] getOrCreateArray(boolean[] arr, int size) {
+        boolean isNull = arr == null;
+
+        if (!isNull && arr.length != size) {
+            throw new IllegalArgumentException(
+                    ErrorMessages.getArrayHasLengthErr(size, arr.length, null)
+            );
+        }
+
+        return isNull ? new boolean[size] : arr;
     }
 
 
     /**
      * Checks if an array is {@code null} and constructs a new array with the specified {@code size} if so.
+     * In the case where the array is <em>not</em> {@code null}, a check will be made to ensure that the actual array
+     * size matches the expected {@code size}.
      * @param arr Array of interest.
      * @param size Size of the array to construct and return in the event that {@code arr == null}.
-     * @return If {@code arr == null} then a new array with length {@code size} is created and returned.
-     * Otherwise, if {@code arr != null} then a reference to {@code arr} is returned.
+     *             If {@code arr != null}, this will be used to verify the array is this size.
+     * @return
+     * <ul>
+     *     <li>If {@code arr == null} then a new array with length {@code size} is created and returned.</li>
+     *     <li>If {@code arr != null} then a reference to {@code arr} is returned.</li>
+     * </ul>
+     * @throws IllegalArgumentException If {@code arr != null && arr.length != size}.
+     */
+    public static int[] getOrCreateArray(int[] arr, int size) {
+        boolean isNull = arr == null;
+
+        if (!isNull && arr.length != size) {
+            throw new IllegalArgumentException(
+                    ErrorMessages.getArrayHasLengthErr(size, arr.length, null)
+            );
+        }
+
+        return isNull ? new int[size] : arr;
+    }
+
+    /**
+     * Checks if an array is {@code null} and constructs a new array with the specified {@code size} if so.
+     * In the case where the array is <em>not</em> {@code null}, a check will be made to ensure that the actual array
+     * size matches the expected {@code size}.
+     * @param arr Array of interest.
+     * @param size Size of the array to construct and return in the event that {@code arr == null}.
+     *             If {@code arr != null}, this will be used to verify the array is this size.
+     * @return
+     * <ul>
+     *     <li>If {@code arr == null} then a new array with length {@code size} is created and returned.</li>
+     *     <li>If {@code arr != null} then a reference to {@code arr} is returned.</li>
+     * </ul>
+     * @throws IllegalArgumentException If {@code arr != null && arr.length != size}.
+     */
+    public static long[] getOrCreateArray(long[] arr, int size) {
+        boolean isNull = arr == null;
+
+        if (!isNull && arr.length != size) {
+            throw new IllegalArgumentException(
+                    ErrorMessages.getArrayHasLengthErr(size, arr.length, null)
+            );
+        }
+
+        return isNull ? new long[size] : arr;
+    }
+
+
+    /**
+     * Checks if an array is {@code null} and constructs a new array with the specified {@code size} if so.
+     * In the case where the array is <em>not</em> {@code null}, a check will be made to ensure that the actual array
+     * size matches the expected {@code size}.
+     * @param arr Array of interest.
+     * @param size Size of the array to construct and return in the event that {@code arr == null}.
+     *             If {@code arr != null}, this will be used to verify the array is this size.
+     * @return
+     * <ul>
+     *     <li>If {@code arr == null} then a new array with length {@code size} is created and returned.</li>
+     *     <li>If {@code arr != null} then a reference to {@code arr} is returned.</li>
+     * </ul>
+     * @throws IllegalArgumentException If {@code arr != null && arr.length != size}.
      */
     public static double[] getOrCreateArray(double[] arr, int size) {
-        return arr == null ? new double[size] : arr;
+        boolean isNull = arr == null;
+
+        if (!isNull && arr.length != size) {
+            throw new IllegalArgumentException(
+                    ErrorMessages.getArrayHasLengthErr(size, arr.length, null)
+            );
+        }
+
+        return isNull ? new double[size] : arr;
+    }
+
+
+    /**
+     * Checks if an array is {@code null} and constructs a new array with the specified {@code size} if so.
+     * In the case where the array is <em>not</em> {@code null}, a check will be made to ensure that the actual array
+     * size matches the expected {@code size}.
+     * @param arr Array of interest.
+     * @param size Size of the array to construct and return in the event that {@code arr == null}.
+     *             If {@code arr != null}, this will be used to verify the array is this size.
+     * @return
+     * <ul>
+     *     <li>If {@code arr == null} then a new array with length {@code size} is created and returned.</li>
+     *     <li>If {@code arr != null} then a reference to {@code arr} is returned.</li>
+     * </ul>
+     * @throws IllegalArgumentException If {@code arr != null && arr.length != size}.
+     */
+    public static float[] getOrCreateArray(float[] arr, int size) {
+        boolean isNull = arr == null;
+
+        if (!isNull && arr.length != size) {
+            throw new IllegalArgumentException(
+                    ErrorMessages.getArrayHasLengthErr(size, arr.length, null)
+            );
+        }
+
+        return isNull ? new float[size] : arr;
     }
 
 

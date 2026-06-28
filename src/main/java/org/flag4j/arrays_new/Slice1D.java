@@ -26,11 +26,12 @@ package org.flag4j.arrays_new;
 
 import org.flag4j.arrays.IntTriple;
 import org.flag4j.arrays.Shape;
+import org.flag4j.util.SliceSupport;
 
 import java.util.Objects;
 
-import static org.flag4j.arrays_new.SliceSupport.sliceLength;
-import static org.flag4j.arrays_new.SliceSupport.validateAxis;
+import static org.flag4j.util.SliceSupport.sliceLength;
+import static org.flag4j.util.SliceSupport.validateAxis;
 
 /**
  * Represents a fully specified one-dimensional strided array slice.

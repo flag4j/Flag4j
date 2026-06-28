@@ -389,7 +389,7 @@ public final class ErrorMessages {
      */
     public static String getArrayHasLengthErr(int expLength, int actLength, String arrayName) {
         if(arrayName == null)
-            return String.format(ARRAY_HAS_LENGTH_NAMED_ERR, expLength, actLength, arrayName);
+            return String.format(ARRAY_HAS_LENGTH_NAMED_ERR, arrayName, expLength, actLength);
         else
             return String.format(ARRAY_HAS_LENGTH_ERR, expLength, actLength);
     }
