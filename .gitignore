@@ -7,3 +7,5 @@ qodana.yaml
 /target/
 /docs/
 /local_scripts/
+
+*.log
