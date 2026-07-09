@@ -24,11 +24,11 @@
 
 package org.flag4jv3.algebra;
 
-import org.flag4jv3.scalars.FiniteFieldElement;
+import org.flag4jv3.scalars.FiniteFieldScalar;
 
 import java.math.BigInteger;
 
-public interface FiniteField<T extends FiniteFieldElement<T>> extends Field<T> {
+public interface FiniteField<T extends FiniteFieldScalar<T>> extends Field<T> {
     BigInteger order();
 
     int degree();

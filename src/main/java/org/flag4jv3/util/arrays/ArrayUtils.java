@@ -27,8 +27,8 @@ package org.flag4jv3.util.arrays;
 import org.flag4jv3.ndarrays.Shape;
 import org.flag4jv3.numbers.Complex64;
 import org.flag4jv3.scalars.Complex128;
-import org.flag4jv3.scalars.FieldElement;
-import org.flag4jv3.scalars.SemiringElement;
+import org.flag4jv3.scalars.FieldScalar;
+import org.flag4jv3.scalars.SemiringScalar;
 import org.flag4jv3.util.ValidateParameters;
 
 import java.lang.reflect.Array;
@@ -704,8 +704,8 @@ public final class ArrayUtils {
      * @param src Array to flatten.
      * @return The flattened array.
      */
-    public static <T extends FieldElement<T>> T[] flatten(T[][] src) {
-        T[] flat = (T[]) new FieldElement[src.length*src[0].length];
+    public static <T extends FieldScalar<T>> T[] flatten(T[][] src) {
+        T[] flat = (T[]) new FieldScalar[src.length*src[0].length];
 
         // Copy 2D array to 1D array.
         int flatIdx = 0;
@@ -723,8 +723,8 @@ public final class ArrayUtils {
      * @param src Array to flatten.
      * @return The flattened array.
      */
-    public static <T extends SemiringElement<T>> T[] flatten(T[][] src) {
-        T[] flat = (T[]) new SemiringElement[src.length*src[0].length];
+    public static <T extends SemiringScalar<T>> T[] flatten(T[][] src) {
+        T[] flat = (T[]) new SemiringScalar[src.length*src[0].length];
 
         // Copy 2D array to 1D array.
         int flatIdx = 0;

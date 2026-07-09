@@ -24,9 +24,9 @@
 
 package org.flag4jv3.algebra;
 
-import org.flag4jv3.scalars.RingElement;
+import org.flag4jv3.scalars.RingScalar;
 
-public interface Ring<T extends RingElement<T>> extends Semiring<T> {
+public interface Ring<T extends RingScalar<T>> extends Semiring<T> {
 
     /// The characteristic of the ring.
     ///

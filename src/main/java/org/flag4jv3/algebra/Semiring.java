@@ -24,7 +24,7 @@
 
 package org.flag4jv3.algebra;
 
-import org.flag4jv3.scalars.SemiringElement;
+import org.flag4jv3.scalars.SemiringScalar;
 
 /// Defines the mathematical structure of a [semiring](https://en.wikipedia.org/wiki/Semiring).
 ///
@@ -47,12 +47,12 @@ import org.flag4jv3.scalars.SemiringElement;
 ///
 /// This interface represents the algebraic *structure* itself.
 /// Each element of the semiring exposes a reference back to its
-/// structure via [SemiringElement#structure()], so that `zero()`/`one()` are always
+/// structure via [SemiringScalar#structure()], so that `zero()`/`one()` are always
 /// consistent across elements and reachable without an element instance in hand.
 ///
 /// @param <T> the type of element belonging to this semiring.
-/// @see SemiringElement
-public interface Semiring<T extends SemiringElement<T>> {
+/// @see SemiringScalar
+public interface Semiring<T extends SemiringScalar<T>> {
     /// The additive identity element `0` of this semiring satisfying `a + 0 = a`
     /// for every element `a` in this semiring.
     ///

@@ -24,7 +24,15 @@
 
 package org.flag4jv3.scalars;
 
-public interface QuadraticExtensionElement<T extends QuadraticExtensionElement<T>>
-        extends RingElement<T> {
-    T conjugate();
+import org.flag4jv3.algebra.Ring;
+
+public interface RingScalar<T extends RingScalar<T>> extends SemiringScalar<T> {
+    @Override
+    Ring<T> structure();
+
+    T sub(T b);
+
+    default T negate() {
+        return zero().sub(self());
+    }
 }

@@ -24,20 +24,7 @@
 
 package org.flag4jv3.scalars;
 
-public interface AnalyticF64Scalar<T extends AnalyticF64Scalar<T>> extends AnalyticScalar<T> {
-
-    @Override
-    default T sqrt() {
-        return pow(0.5);
-    }
-
-
-    default T root(float n) {
-        return pow(1.0/n);
-    }
-
-
-    T pow(double a);
-
-
+public interface QuadraticExtensionScalar<T extends QuadraticExtensionScalar<T>>
+        extends RingScalar<T> {
+    T conjugate();
 }

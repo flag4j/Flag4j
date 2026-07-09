@@ -26,7 +26,7 @@ package org.flag4jv3.scalars;
 
 import org.flag4jv3.algebra.Field;
 
-public interface FieldElement<T extends FieldElement<T>> extends RingElement<T> {
+public interface FieldScalar<T extends FieldScalar<T>> extends RingScalar<T> {
     @Override
     Field<T> structure();
 

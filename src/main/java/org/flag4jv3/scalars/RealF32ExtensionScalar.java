@@ -22,34 +22,49 @@
  * SOFTWARE.
  */
 
-package org.flag4jv3.algebra.linear;
+package org.flag4jv3.scalars;
 
-import org.flag4jv3.algebra.Field;
-import org.flag4jv3.scalars.FieldScalar;
+// TODO NOW: Docs
 
-// TODO: Docs
-//  Also, do we actually want this? I dont think so. I think just defining interfaces
-//  like TensorOverField, VectorOverField is enough.
-public interface VectorSpace<V extends VectorSpace<V, S>, S extends FieldScalar<S>> {
-    Field<S> scalarField();
+/// Scalars which represent a real number with 64-biut floating point precision or an extension of real numbers
+/// with 64-biut floating point precision should implement this class.
+///
+/// For example, a complex number represented internally as two 64-bit floating points (for real and imaginary
+/// components) should implement this interface.
+public interface RealF32ExtensionScalar<T extends RealF32ExtensionScalar<T>> extends AnalyticScalar<T> {
 
-    default S zeroScalar() {
-        return scalarField().zero();
+    @Override
+    default T sqrt() {
+        return pow(0.5f);
     }
 
-    V zero();
-
-    default S one() {
-        return scalarField().one();
+    default T root(float n) {
+        return pow(1.0f/n);
     }
 
-    V add(V y);
+    T log(float base);
 
-    V negate();
-
-    default V subtract(V y) {
-        return add(y.negate());
+    @Override
+    default T log10() {
+        return ln().div((float) Math.log(10));
     }
 
-    V mult(S scalar);
+    T pow(float a);
+
+    T add(float a);
+    T sub(float a);
+    T mult(float b);
+    T div(float a);
+
+    /// (<i>e<sup>x</sup>&nbsp;-&nbsp;e<sup>-x</sup></i>)/2
+    @Override
+    default T sinh() {
+        return exp().sub(negate().exp()).div(2.0f);
+    }
+
+    /// (<i>e<sup>x</sup>&nbsp;+&nbsp;e<sup>-x</sup></i>)/2
+    @Override
+    default T cosh() {
+        return exp().add(negate().exp()).div(2.0f);
+    }
 }

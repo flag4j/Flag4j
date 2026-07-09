@@ -24,9 +24,9 @@
 
 package org.flag4jv3.algebra;
 
-import org.flag4jv3.scalars.FieldElement;
+import org.flag4jv3.scalars.FieldScalar;
 
-public interface Field<T extends FieldElement<T>> extends Ring<T> {
+public interface Field<T extends FieldScalar<T>> extends Ring<T> {
 
 
 }

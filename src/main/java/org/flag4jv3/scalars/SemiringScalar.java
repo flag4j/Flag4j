@@ -31,7 +31,7 @@ import org.flag4jv3.algebra.Semiring;
 /// An element of a [Semiring] is a value supporting associative/commutative addition and
 /// associative multiplication that distributes over addition, with additive/multiplicative identities `0` and `1`.
 /// Semirings do not guarantee additive inverses, so subtraction is not defined here; see
-/// [RingElement] for that.
+/// [RingScalar] for that.
 ///
 /// ### Implementation notes
 /// - Implementations should be **immutable**: every operation returns a new instance
@@ -44,8 +44,8 @@ import org.flag4jv3.algebra.Semiring;
 ///
 /// @param <T> the concrete element type.
 /// @see Semiring
-/// @see RingElement
-public interface SemiringElement<T extends SemiringElement<T>> {
+/// @see RingScalar
+public interface SemiringScalar<T extends SemiringScalar<T>> {
     Semiring<T> structure();
 
     /// Gets a reference to `this` object.

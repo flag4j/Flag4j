@@ -24,10 +24,10 @@
 
 package org.flag4jv3.scalars;
 
-/// Scalars that behave similarly to real numbers should implement this interface.
-///
-/// For example, complex numbers behave similarly to reals in many ways.
-public interface AnalyticScalar<T extends AnalyticScalar<T>> extends FieldElement<T> {
+/// Scalars which are analytic and so functions like `exp` and the trig functions can be defined generally
+/// for the field as the locally convergent Taylor series for the respective function. Since polynomials only rely
+/// on operations defined for the field, this gives a valid definition for these functions for a general field.
+public interface AnalyticScalar<T extends AnalyticScalar<T>> extends FieldScalar<T> {
 
     default double abs() {
         return mag();
@@ -49,27 +49,77 @@ public interface AnalyticScalar<T extends AnalyticScalar<T>> extends FieldElemen
         return ln().div(base.ln());
     }
 
+    T log10();
+
+    T log2();
+
+    T log1p();
+
     default T pow(T exponent) {
         return exponent.mult(this.ln()).exp();
     }
 
-
+    // TODO NOW: We can default some of these (e.g., tan(x) = sin(x)/cos(x))
     T sin();
 
     T cos();
 
-    T tan();
+    default T tan() {
+        return sin().div(cos());
+    }
+
+    default T cot() {
+        return cos().div(sin());
+    }
+
+    default T sec() {
+        return cos().inv();
+    }
+
+    default T csc() {
+        return sin().inv();
+    }
 
     T asin();
 
     T acos();
 
-    // TODO NOW: Can add defults to these.
     T atan();
 
+    T asec();
+
+    T acsc();
+
+
+    /// (<i>e<sup>x</sup>&nbsp;-&nbsp;e<sup>-x</sup></i>)/2
     T sinh();
 
+    /// (<i>e<sup>x</sup>&nbsp;+&nbsp;e<sup>-x</sup></i>)/2
     T cosh();
 
-    T tanh();
+    /// (<i>e<sup>x</sup>&nbsp;-&nbsp;e<sup>-x</sup></i>)/(<i>e<sup>x</sup>&nbsp;+&nbsp;e<sup>-x</sup></i>)
+    default T tanh() {
+        T exp = exp();
+        T negExp = exp.negate();
+
+        return exp.sub(negExp).div(exp.add(negExp));
+    }
+
+
+    default T sech() {
+        return cosh().inv();
+    }
+
+
+    default T csch() {
+        return sinh().inv();
+    }
+
+
+    default T coth() {
+        T exp = exp();
+        T negExp = exp.negate();
+
+        return exp.add(negExp).div(exp.sub(negExp));
+    }
 }

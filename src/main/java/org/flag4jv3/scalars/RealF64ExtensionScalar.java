@@ -24,42 +24,47 @@
 
 package org.flag4jv3.scalars;
 
-import org.flag4jv3.algebra.FiniteField;
+// TODO NOW: Docs
 
-import java.math.BigInteger;
-import java.util.List;
+/// Scalars which represent a real number with 64-biut floating point precision or an extension of real numbers
+/// with 64-biut floating point precision should implement this class.
+///
+/// For example, a complex number represented internally as two 64-bit floating points (for real and imaginary
+/// components) should implement this interface.
+public interface RealF64ExtensionScalar<T extends RealF64ExtensionScalar<T>> extends AnalyticScalar<T> {
 
-public interface FiniteFieldElement<T extends FiniteFieldElement<T>> extends FieldElement<T> {
     @Override
-    FiniteField<T> structure();
-
-    default BigInteger order() {
-        return structure().order();
+    default T sqrt() {
+        return pow(0.5);
     }
 
-    default int degree() {
-        return structure().degree();
+    default T root(double n) {
+        return pow(1.0/n);
     }
 
-    default int characteristic() {
-        return structure().characteristic();
+    T log(double base);
+
+    @Override
+    default T log10() {
+        return ln().div(Math.log(10));
     }
 
-    public abstract List<BigInteger> coefficients();
+    T pow(double a);
 
-    default T frobenius() {
-        return pow(characteristic());
+    T add(double a);
+    T sub(double a);
+    T mult(double b);
+    T div(double a);
+
+    /// (<i>e<sup>x</sup>&nbsp;-&nbsp;e<sup>-x</sup></i>)/2
+    @Override
+    default T sinh() {
+        return exp().sub(negate().exp()).div(2.0);
     }
 
-    default T frobenius(int power) {
-        if (power < 0) {
-            throw new IllegalArgumentException("power must be non-negative.");
-        }
-
-        T result = self();
-        for (int i = 0; i < power; i++) {
-            result = result.frobenius();
-        }
-        return result;
+    /// (<i>e<sup>x</sup>&nbsp;+&nbsp;e<sup>-x</sup></i>)/2
+    @Override
+    default T cosh() {
+        return exp().add(negate().exp()).div(2.0);
     }
 }

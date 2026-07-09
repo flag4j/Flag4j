@@ -24,5 +24,6 @@
 
 package org.flag4jv3.scalars;
 
-public class Complex128 implements FieldElement<Complex128>, QuadraticExtensionElement<Complex128> {
+public class Complex128 implements RealF64ExtensionScalar<Complex128> {
+
 }

@@ -24,15 +24,42 @@
 
 package org.flag4jv3.scalars;
 
-import org.flag4jv3.algebra.Ring;
+import org.flag4jv3.algebra.FiniteField;
 
-public interface RingElement<T extends RingElement<T>> extends SemiringElement<T> {
+import java.math.BigInteger;
+import java.util.List;
+
+public interface FiniteFieldScalar<T extends FiniteFieldScalar<T>> extends FieldScalar<T> {
     @Override
-    Ring<T> structure();
+    FiniteField<T> structure();
 
-    T sub(T b);
+    default BigInteger order() {
+        return structure().order();
+    }
 
-    default T negate() {
-        return zero().sub(self());
+    default int degree() {
+        return structure().degree();
+    }
+
+    default int characteristic() {
+        return structure().characteristic();
+    }
+
+    public abstract List<BigInteger> coefficients();
+
+    default T frobenius() {
+        return pow(characteristic());
+    }
+
+    default T frobenius(int power) {
+        if (power < 0) {
+            throw new IllegalArgumentException("power must be non-negative.");
+        }
+
+        T result = self();
+        for (int i = 0; i < power; i++) {
+            result = result.frobenius();
+        }
+        return result;
     }
 }

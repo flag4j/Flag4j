@@ -32,7 +32,7 @@ final class DefaultHelpers {
     }
 
 
-    static <T extends SemiringElement<T>> T pow(T base, int power) {
+    static <T extends SemiringScalar<T>> T pow(T base, int power) {
         // This static implementation exists so that it can be used by child interfaces (e.g., the FieldElement) interface.
         if (power < 0) {
             throw new IllegalArgumentException("power must be non-negative.");
