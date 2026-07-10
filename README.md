@@ -1,7 +1,7 @@
 
 [![Build and Deploy Javadoc](https://github.com/jacobdwatters/Flag4j/actions/workflows/javadoc-gh-pages.yml/badge.svg)](https://github.com/jacobdwatters/Flag4j/actions/workflows/javadoc-gh-pages.yml)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=jacobdwatters_Flag4j&metric=coverage)](https://sonarcloud.io/summary/new_code?id=jacobdwatters_Flag4j)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=jacobdwatters_Flag4j&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=jacobdwatters_Flag4j)![Uploading flag4j_primary_logo_variant2.svg…]()
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=jacobdwatters_Flag4j&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=jacobdwatters_Flag4j)
 <img width="4096" height="2048" alt="flag4j_primary_logo_variant2" src="https://github.com/user-attachments/assets/a07a02c1-fec0-4011-a656-64b8a866e486" />
 
 # Flag4j - Fast Linear Algebra for Java
