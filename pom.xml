@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.flag4j</groupId>
     <artifactId>flag4j</artifactId>
-    <version>0.1.0-beta</version>
+    <version>0.2.0-beta</version>
 
     <distributionManagement>
         <repository>
@@ -18,19 +18,19 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.11.3</version>
+            <version>6.1.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.11.3</version>
+            <version>6.1.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
     <properties>
-        <maven.compiler.source>23</maven.compiler.source>
-        <maven.compiler.target>23</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <sonar.organization>jacobdwatters</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,11 +41,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.15.0</version>
                 <configuration>
                     <useIncrementalCompilation>true</useIncrementalCompilation>
-                    <source>23</source>
-                    <target>23</target>
+                    <source>25</source>
+                    <target>25</target>
                     <compilerArgs>
                         <arg>-Xmaxerrs</arg>
                         <arg>10000</arg>
@@ -57,15 +57,30 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.5.6</version>
                 <configuration>
                     <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <configuration>
+                    <javadocDirectory>${basedir}/docs_resources</javadocDirectory>
+
+                    <addStylesheets>
+                        <addStylesheet>flag4jbetterjdocs.css</addStylesheet>
+                    </addStylesheets>
+                    <additionalOptions>
+                        <additionalOption>--syntax-highlight</additionalOption>
+                    </additionalOptions>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>0.8.15</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>

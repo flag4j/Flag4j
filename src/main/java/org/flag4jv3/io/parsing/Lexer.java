@@ -24,7 +24,8 @@
 
 package org.flag4jv3.io.parsing;
 
-public abstract class Lexer {
+/// Simple lexer for producing [Token]s during parsing.
+abstract class Lexer {
 
     /**
      * Content of the lexer.
@@ -81,7 +82,7 @@ public abstract class Lexer {
 
     /**
      * Produces next {@link Token} from the string being parsed. Also removes this
-     * Token from the string. This method implements a finite automata which describes the legal arrangement of
+     * Token from the string. This method implements finite automata that describe the legal arrangement of
      * tokens within a complex number.
      *
      * @return Next {@link Token} in string.

@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.StringJoiner;
 
 /**
- * Represents the shape of an nD array (e.g., tensor, matrix, vector, etc.) specifying its dimensions and provides
+ * Represents the shape of an nD-array (e.g., tensor, matrix, vector, etc.) specifying its dimensions and provides
  * utilities for shape-related operations.
  *
  * <p>The {@code Shape} class is immutable with respect to its dimensions, ensuring thread safety and consistency.
@@ -43,8 +43,8 @@ import java.util.StringJoiner;
  * <h2>Example usage:</h2>
  * <pre>{@code
  * Shape shape = new Shape();  // Creates a shape for a scalar value.
- * shape = new Shape(3, 4, 5);  // Creates a shape for a 3x4x5 nD array.
- * int rank = shape.getRank();  // Gets the rank (number of dimensions).
+ * shape = new Shape(3, 4, 5);  // Creates a shape for a 3x4x5 nD-array.
+ * int rank = shape.rank();  // Gets the rank (number of dimensions).
  * }</pre>
  *
  * @see NDArrayBase
@@ -54,10 +54,8 @@ public class Shape implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The rank of an nD array with this shape.
-     */
-    public final int rank;
+    /// The rank of this shape.
+    final int rank;
     /**
      * An array containing the size of each dimension in this shape.
      */
@@ -71,9 +69,6 @@ public class Shape implements Serializable {
      * This is only computed on demand by {@link #numelIntValueExact()}.
      */
     private int numElementsIntExact = -1;
-
-    /// Stores the strides of a contiguous array with this shape. Lazily evaluated.
-    private int[] contiguousStrides = null;
 
 
     /**
@@ -91,9 +86,9 @@ public class Shape implements Serializable {
 
 
     /**
-     * Gets the shape of an nD array as an array of dimensions.
+     * Gets the shape of an nD-array as an array of dimensions.
      *
-     * @return Shape of an nD array as an integer array.
+     * @return Shape of an nD-array as an integer array.
      */
     public int[] dims() {
         return dims.clone();
@@ -191,7 +186,7 @@ public class Shape implements Serializable {
     /// @return If `axis` of this` is already squeezed, then `this` is returned. Otherwise, a new shape which is
     /// a squeezed copy of `this` on `axis` is returned.
     ///
-    /// @throws IllegalArgumentException If `axis` is negative or greater than this shapes rank-1.
+    /// @throws IllegalArgumentException If `axis` is negative or greater than this shape's rank-1.
     /// @see #squeeze()
     /// @see #squeeze(int...)
     public Shape squeeze(int axis) {
@@ -215,11 +210,11 @@ public class Shape implements Serializable {
 
     /// Squeezes this shape on a set of `axes`. That is, removes any `axes` that has size one.
     ///
-    /// @param axex The axes to squeeze.
+    /// @param axes The axes to squeeze.
     /// @return If all `axes` of this` are already squeezed, then `this` is returned. Otherwise, a new shape which is
     /// a squeezed copy of `this` on `axes` is returned.
     ///
-    /// @throws IllegalArgumentException If any axis in `axes` is negative or greater than this shapes rank-1.
+    /// @throws IllegalArgumentException If any axis in `axes` is negative or greater than this shape's rank-1.
     /// @see #squeeze()
     /// @see #squeeze(int)
     public Shape squeeze(int... axes) {
@@ -337,9 +332,9 @@ public class Shape implements Serializable {
 
 
     /**
-     * Gets the total number of elements for an nD array with this shape.
+     * Gets the total number of elements for an nD-array with this shape.
      *
-     * @return The total number of elements for an nD array with this shape.
+     * @return The total number of elements for an nD-array with this shape.
      *
      * @see #numelIntValueExact()
      * @see #numelLongValueExact()
@@ -348,7 +343,7 @@ public class Shape implements Serializable {
         // Check if total elements have already been computed for this shape.
         if (numElements != null) return numElements;
 
-        // Otherwise, the total items needs to be computed.
+        // Otherwise, it needs to be computed.
         BigInteger product = BigInteger.ONE;  // We can start at one because scalar tensors have a single entry.
         for (int dim : dims)
             product = product.multiply(BigInteger.valueOf(dim));
@@ -359,12 +354,12 @@ public class Shape implements Serializable {
 
 
     /**
-     * <p>Gets the total number of elements for an nD array with this shape.
+     * <p>Gets the total number of elements for an nD-array with this shape.
      * If the total number of elements exceeds {@link Integer#MAX_VALUE}, an exception is thrown.
      *
      * <p>This method is likely to be more efficient than {@link #numel()} if a primitive int value is desired.
      *
-     * @return The total number of items for an nD array with this shape.
+     * @return The total number of items for an nD-array with this shape.
      *
      * @throws ArithmeticException If the total number of items overflows a primitive int.
      * @see #numel()
@@ -387,10 +382,10 @@ public class Shape implements Serializable {
 
 
     /**
-     * <p>Gets the total number of elements for an nD array with this shape as a {@code long}.
+     * <p>Gets the total number of elements for an nD-array with this shape as a {@code long}.
      * If the total number of elements exceeds {@link Long#MAX_VALUE}, an exception is thrown.
      *
-     * @return The total number of elements for an nD array with this shape.
+     * @return The total number of elements for an nD-array with this shape.
      *
      * @throws ArithmeticException If the total number of items overflows a primitive int.
      * @see #numelIntValueExact()
@@ -435,151 +430,63 @@ public class Shape implements Serializable {
     }
 
 
-    /**
-     * Gets the strides of a contiguous nD array with this shape.
-     *
-     * @return The strides of a contiguous nD array with this shape.
-     */
-    public int[] getContiguousStrides() {
-        ensureStridesComputed();
-        return contiguousStrides.clone();
+    /// Gets the conical contiguous strides of an nD-array with this shape and specified [order][ContiguousOrder].
+    ///
+    /// @param order The [order][ContiguousOrder] to get the strides of. Must be [C][ContiguousOrder#C]
+    /// or [F][ContiguousOrder#F].
+    /// @return The conical contiguous strides of an nD-array with this shape and [order][ContiguousOrder].
+    ///
+    /// @throws IllegalArgumentException If `order` is not [C][ContiguousOrder#C] or [F][ContiguousOrder#F].
+    /// @throws ArithmeticException      If all strides are *not* int sized.
+    /// @see #getCContiguousStrides()
+    /// @see #getFContiguousStrides()
+    public int[] getContiguousStrides(ContiguousOrder order) {
+        return switch (order) {
+            case C -> getCContiguousStrides();
+            case F -> getFContiguousStrides();
+            default -> throw new IllegalStateException("order must be C of F but got " + order);
+        };
     }
 
 
-    /**
-     * Gets the strides of a contiguous nD array with this shape.
-     * <p><b>Warning:</b> This method returns a reference to the internal array of strides. Modifying this array may lead to
-     * unexpected behavior. Do <em>not</em> modify this array directly or leak it to other objects where it can be modified.
-     *
-     * @return The strides of a contiguous nD array with this shape.
-     */
-    int[] getContiguousStridesUnsafe() {
-        ensureStridesComputed();
-        return contiguousStrides;
+    /// Gets the conical [C-contiguous][ContiguousOrder#C] strides of an nD-array with this shape.
+    ///
+    /// @return The conical [C-contiguous][ContiguousOrder#C] strides of an nD-array with this shape.
+    ///
+    /// @throws ArithmeticException If all strides are *not* int sized.
+    /// @see #getContiguousStrides(ContiguousOrder)
+    /// @see #getFContiguousStrides()
+    public int[] getCContiguousStrides() {
+        int[] strides = new int[rank];
+        if (rank == 0) return strides;
+
+        strides[rank - 1] = 1;
+
+        for (int i = rank - 2; i >= 0; i--) {
+            strides[i] = Math.multiplyExact(dims[i + 1], strides[i + 1]);
+        }
+
+        return strides;
     }
 
 
-    /**
-     * Computes the index of the 1D items array for a dense nD array from nD indices for an nD array with this shape.
-     *
-     * @param nDIndex nD index within an nD array with this shape.
-     * @return The 1D index of the element at the specified nD index in the 1D items array of a dense nD array.
-     *
-     * @throws IllegalArgumentException  If the number of indices does not match the rank of this shape.
-     * @throws IndexOutOfBoundsException If any index does not fit within an nD array with this shape.
-     * @see #to1DIndexUnsafe(int...)
-     */
-    public int to1DIndex(int... nDIndex) {
-        if (nDIndex.length != rank) {
-            throw new IllegalArgumentException("Indices rank " + nDIndex.length + " does not match shape with rank " + rank);
+    /// Gets the conical [F-contiguous][ContiguousOrder#F] strides of an nD-array with this shape.
+    ///
+    /// @return The conical [F-contiguous][ContiguousOrder#F] strides of an nD-array with this shape.
+    ///
+    /// @throws ArithmeticException If all strides are *not* int sized.
+    /// @see #getContiguousStrides(ContiguousOrder)
+    /// @see #getCContiguousStrides()
+    public int[] getFContiguousStrides() {
+        int[] strides = new int[rank];
+        if (rank == 0) return strides;
+
+        strides[0] = 1;
+        for (int i = 1; i < rank; i++) {
+            strides[i] = Math.multiplyExact(dims[i - 1], strides[i - 1]);
         }
 
-        ensureStridesComputed();
-
-        int index = 0;
-        for (int axis = 0; axis < rank; axis++) {
-            int idx = nDIndex[axis];
-            if (idx < 0 || idx >= dims[axis]) {
-                throw new IndexOutOfBoundsException("Index " + idx + " out of bounds for axis " + axis +
-                        " of shape " + this);
-            }
-
-            index += idx*contiguousStrides[axis];
-        }
-
-        return index;
-    }
-
-
-    /**
-     * <p>Computes the index of the 1D items array, for a dense nD array, from nD indices for an nD array with this shape.
-     * <p><b>Warning</b>: Unlike {@link #to1DIndex(int...)}, this method does not perform bounds checking on indices. This can lead
-     * to exceptions or undefined behavior if {@code ndIndex} is not a valid nDIndex for this shape. This method is intended
-     * to be used internally. Only use this method if you <em>absolutly</em> know what you are doing.
-     *
-     * @param nDIndex Indices of nD array with this shape.
-     * @return The index of the element at the specified indices in the 1D items array of a dense nD array.
-     *
-     * @throws IllegalArgumentException  If the number of indices does not match the rank of this shape.
-     * @throws IndexOutOfBoundsException If any index does not fit within an nD array with this shape.
-     * @see #to1DIndex(int...)
-     */
-    public int to1DIndexUnsafe(int... nDIndex) {
-        ensureStridesComputed(); // Computes strides if not previously computed.
-
-        int index = 0;
-        for (int i = 0, stop = rank; i < stop; i++)
-            index += nDIndex[i]*contiguousStrides[i];
-
-        return index;
-    }
-
-
-    /**
-     * Efficiently computes the nD array index based on a 1D index from the internal 1D items array.
-     *
-     * @param index Index of the internal 1D items array.
-     * @return The multidimensional indices corresponding to the 1D items array index. This will be an array of integers
-     * with length equal to the {@link #rank() rank} of this shape.
-     *
-     * @see #toNDIndices(int...)
-     * @see #to1DIndex(int...)
-     */
-    public int[] toNDIndex(int index) {
-        ensureStridesComputed(); // Ensure strides are initialized if not already.
-
-        int numElements = numelIntValueExact();
-        if (index < 0 || index >= numElements) {
-            throw new IndexOutOfBoundsException(
-                    "1D index " + index + " out of bounds for shape " + this);
-        }
-
-        int[] indices = new int[rank];
-        int remaining = index;
-
-        for (int axis = 0; axis < rank; axis++) {
-            indices[axis] = remaining/contiguousStrides[axis];
-            remaining %= contiguousStrides[axis];
-        }
-
-        return indices;
-    }
-
-
-    /**
-     * Efficiently computes the nD array indices from multiple 1D indices from the internal 1D items array.
-     *
-     * @param indices Array of 1D indices.
-     * @return The multidimensional indices corresponding to the 1D items array index. This will be an array of integers
-     * with length equal to the {@link #rank} of this shape.
-     *
-     * @see #toNDIndex(int)
-     * @see #to1DIndex(int...)
-     */
-    public int[][] toNDIndices(int... indices) {
-        ensureStridesComputed();
-
-        int numElements = numelIntValueExact();
-        int[][] nDIndices = new int[indices.length][rank];
-
-        for (int i = 0; i < indices.length; i++) {
-            int flatIndex = indices[i];
-
-            if (flatIndex < 0 || flatIndex >= numElements) {
-                throw new IndexOutOfBoundsException(
-                        "1D index " + flatIndex + " out of bounds for shape " + this);
-            }
-
-            int remaining = flatIndex;
-            int[] ndIndex = nDIndices[i];
-
-            for (int axis = 0; axis < rank; axis++) {
-                ndIndex[axis] = remaining/contiguousStrides[axis];
-                remaining %= contiguousStrides[axis];
-            }
-        }
-
-        return nDIndices;
+        return strides;
     }
 
 
@@ -654,31 +561,12 @@ public class Shape implements Serializable {
     }
 
 
-    /// Computes the strides of a contiguous nD array with this shape. This fills out and sets
-    /// [#contiguousStrides] and [#numElementsIntExact].
-    ///
-    /// @throws ArithmeticException If the product of all dimensions of this shape *do not* fit in an integer.
-    private void ensureStridesComputed() {
-        if (contiguousStrides == null) return; // Already computed; nothing to do.
-
-        // Check for some trivial cases.
-        if (rank == 0) {
-            contiguousStrides = new int[0];
-            numElementsIntExact = 1; // Rank-0 tensors are scalars.
-            return;
-        } else if (rank == 1) {
-            contiguousStrides = new int[]{1};
-            numElementsIntExact = dims[0];
-        }
-
-        int[] strides = new int[rank];
-        strides[rank - 1] = 1;
-        for (int i = rank - 2; i >= 0; i--) {
-            strides[i] = Math.multiplyExact(dims[i + 1], strides[i + 1]);
-        }
-
-        // Verify that the total element count fits in an int.
-        numElementsIntExact = Math.multiplyExact(dims[0], strides[0]);
-        contiguousStrides = strides; // We defer setting until here. If an exception is thrown, this will correctly stay null.
+    /**
+     * Gets the rank of this shape (e.g., the number of dimensions this shape represents).
+     *
+     * @return The rank of this shape.
+     */
+    public int rank() {
+        return rank;
     }
 }

@@ -56,7 +56,7 @@ public sealed interface ElemType permits ElemType.Builtin, ElemType.Generic {
     Algebra algebra();
 
     /**
-     * Boxed element class: Double.class, Complex128.class, Rational.class, ...
+     * Boxed element class: Double.class, DoublePair.class, Rational.class, ...
      */
     Class<?> elementClass();
 
@@ -72,7 +72,7 @@ public sealed interface ElemType permits ElemType.Builtin, ElemType.Generic {
         FLT64(Algebra.FIELD, Double.class);
         // todo now: Implement the field, rings, semirings, etc.
 //        CPLX64 (Algebra.FIELD,    Complex64.class),
-//        CPLX128(Algebra.FIELD,    Complex128.class);
+//        CPLX128(Algebra.FIELD,    DoublePair.class);
 
         private final Algebra algebra;
         private final Class<?> elementClass;

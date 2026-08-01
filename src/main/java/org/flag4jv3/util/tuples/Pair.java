@@ -26,6 +26,10 @@ package org.flag4jv3.util.tuples;
 
 /// Represents an immutable pair of values.
 ///
+/// Note that a [Pair] is only *shallowly* immutable. If the `first` or `second` element is itself a mutable object,
+/// then it will still be mutable even when wrapped inside the [Pair] object. However, `first` and `second`
+/// will *always* point to the same object reference.
+///
 /// @param first The first element of the pair.
 /// @param second The second element of the pair.
 /// @param <T> The type of the first element in the pair.

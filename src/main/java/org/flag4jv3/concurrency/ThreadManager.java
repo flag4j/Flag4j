@@ -67,13 +67,31 @@ public final class ThreadManager {
 
 
     /**
-     * Simple thread factory for creating basic daemon threads.
+     * Marker type for threads belonging to this manager's pool. Allows O(1) detection of
+     * re-entrant kernel dispatch (see {@link #isWorkerThread()}).
      */
-    private static final ThreadFactory DAEMON_FACTORY = r -> {
-        Thread thread = new Thread(r);
-        thread.setDaemon(true); // Set the thread as a daemon thread to avoid blocking JVM shutdown.
-        return thread;
-    };
+    /// Marker type for threads belonging to this manage's pool. Allows O(1) detection of re-entrant kernel dispatch
+    /// (see [#isWorkerThread()]) to prevent deadlocking.
+    private static final class Flag4jWorker extends Thread {
+        Flag4jWorker(Runnable target) {
+            super(target);
+            setDaemon(true);  // Do not block JVM shutdown.
+        }
+    }
+
+    private static final ThreadFactory DAEMON_FACTORY = Flag4jWorker::new;
+
+
+    /**
+     * Checks if the calling thread is a worker thread of this manager's pool. Kernels dispatched
+     * from a worker thread are executed inline rather than re-partitioned; see
+     * {@link #concurrentKernel(int, TensorKernel)}.
+     *
+     * @return {@code true} if the calling thread belongs to this manager's pool.
+     */
+    public static boolean isWorkerThread() {
+        return Thread.currentThread() instanceof Flag4jWorker;
+    }
 
 
     /**
@@ -151,24 +169,28 @@ public final class ThreadManager {
      * @see #concurrentBlockedKernel(int, int, TensorKernel)
      */
     public static void concurrentKernel(final int totalSize, final TensorKernel kernel) {
-        // Calculate chunk size.
-        final int LOCAL_PARALLELISM = getParallelismLevel();
-        int chunkSize = (totalSize + LOCAL_PARALLELISM - 1)/LOCAL_PARALLELISM;
-        List<Future<?>> futures = new ArrayList<>(LOCAL_PARALLELISM);
+        if (totalSize <= 0) return;
 
-        for (int threadIndex = 0; threadIndex < LOCAL_PARALLELISM; threadIndex++) {
-            final int startIdx = threadIndex*chunkSize;
-            final int endIdx = Math.min(startIdx + chunkSize, totalSize);
-
-            if (startIdx >= totalSize) break;
-
-            futures.add(ThreadManager.threadPool.submit(() -> {
-                kernel.apply(startIdx, endIdx);
-            }));
+        final int parallelism = getParallelismLevel();
+        // Re-entrant dispatch (already on a pool thread) must not submit and block: the pool is
+        // fixed-size, so a worker waiting on subtasks it cannot schedule would deadlock.
+        if (parallelism == 1 || isWorkerThread()) {
+            kernel.apply(0, totalSize);
+            return;
         }
 
-        // Wait for all tasks to complete.
-        awaitAll(futures);
+        final int numChunks = Math.min(parallelism, totalSize);
+        List<Future<?>> futures = new ArrayList<>(numChunks - 1);
+
+        // Submit all chunks but the last; the calling thread computes that one itself.
+        for (int i = 0; i < numChunks - 1; i++) {
+            final int start = (int) ((long) i*totalSize/numChunks);
+            final int end = (int) ((long) (i + 1)*totalSize/numChunks);
+            if (start < end) futures.add(threadPool.submit(() -> kernel.apply(start, end)));
+        }
+
+        final int lastStart = (int) ((long) (numChunks - 1)*totalSize/numChunks);
+        runInlineAndAwait(kernel, lastStart, totalSize, futures);
     }
 
 
@@ -197,19 +219,48 @@ public final class ThreadManager {
      */
     public static void concurrentBlockedKernel(final int totalSize, final int blockSize, final TensorKernel kernel) {
         if (totalSize <= 0) return;
-        final int localParallelism = getParallelismLevel();
-        final int numBlocks = (totalSize + blockSize - 1)/blockSize;
-        final int blocksPerWorker = (numBlocks + localParallelism - 1)/localParallelism;
-        final int bandSize = blocksPerWorker*blockSize;
-
-        List<Future<?>> futures = new ArrayList<>(Math.min(localParallelism, numBlocks));
-        for (int start = 0; start < totalSize; start += bandSize) {
-            final int s = start;
-            final int e = Math.min(start + bandSize, totalSize);
-            futures.add(threadPool.submit(() -> kernel.apply(s, e)));
+        if (blockSize <= 0) {
+            throw new IllegalArgumentException("blockSize must be positive but got " + blockSize + ".");
         }
 
-        awaitAll(futures);
+        final int parallelism = getParallelismLevel();
+        if (parallelism == 1 || isWorkerThread()) {
+            kernel.apply(0, totalSize);
+            return;
+        }
+
+        final int numBlocks = (totalSize + blockSize - 1)/blockSize;
+        final int numBands = Math.min(parallelism, numBlocks);
+        List<Future<?>> futures = new ArrayList<>(numBands - 1);
+
+        for (int i = 0; i < numBands - 1; i++) {
+            final int start = (int) ((long) i*numBlocks/numBands)*blockSize;
+            final int end = (int) ((long) (i + 1)*numBlocks/numBands)*blockSize;
+            if (start < end) futures.add(threadPool.submit(() -> kernel.apply(start, end)));
+        }
+
+        final int lastStart = (int) ((long) (numBands - 1)*numBlocks/numBands)*blockSize;
+        runInlineAndAwait(kernel, lastStart, totalSize, futures);
+    }
+
+
+    private static void runInlineAndAwait(TensorKernel kernel, int start, int end, List<Future<?>> futures) {
+        Throwable inlineFailure = null;
+        try {
+            if (start < end) kernel.apply(start, end);
+        } catch (RuntimeException | Error e) {
+            inlineFailure = e;
+        }
+
+        try {
+            awaitAll(futures);
+        } catch (RuntimeException e) {
+            if (inlineFailure != null) e.addSuppressed(inlineFailure);
+            throw e;
+        }
+
+        if (inlineFailure instanceof RuntimeException e) throw e;
+        if (inlineFailure instanceof Error e) throw e;
     }
 
 
@@ -226,6 +277,8 @@ public final class ThreadManager {
             } catch (ExecutionException e) {
                 if (failure == null) {
                     failure = new RuntimeException("Concurrent kernel failed.", e.getCause());
+                } else {
+                    failure.addSuppressed(e.getCause());
                 }
             }
         }

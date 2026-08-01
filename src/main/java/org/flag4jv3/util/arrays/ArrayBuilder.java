@@ -24,11 +24,13 @@
 
 package org.flag4jv3.util.arrays;
 
-import org.flag4jv3.scalars.Complex128;
+import org.flag4jv3.algebra.elements.Complex128;
 import org.flag4jv3.util.ErrorMessages;
 import org.flag4jv3.util.ValidateParameters;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 
@@ -36,10 +38,10 @@ import java.util.function.Supplier;
  * <p>The {@code ArrayBuilder} class provides a collection of static utility methods to construct, initialize,
  * and manipulate ndarrays in various ways. It is designed to simplify array handling tasks,
  * such as creating ndarrays with default values, filling ndarrays with specific values, and
- * generating ranges of scalars.
+ * generating ranges of elements.
  *
  * <p>This class supports multiple array types, including primitive types ({@code int[]}, {@code double[]}) as well as
- * {@code Complex128} and {@code Complex64}.
+ * {@code DoublePair} and {@code Complex64}.
  *
  * <h2>Example Usage:</h2>
  * <pre>{@code
@@ -226,7 +228,7 @@ public final class ArrayBuilder {
 
 
     /**
-     * Fills an array of complex scalars with zeros.
+     * Fills an array of complex elements with zeros.
      *
      * @param dest Array to fill with zeros.
      */
@@ -477,5 +479,20 @@ public final class ArrayBuilder {
         }
 
         return rangeArr;
+    }
+
+
+    /// Constructs a generic array of the specified length.
+    ///
+    /// @param template The reference template array. Must not be `null`.
+    /// @param length The length of the array to construct.
+    /// @param <T> The type of the elements of the array.
+    /// @return A new array of the specified `length`.
+    ///
+    /// @throws NullPointerException If `template` is `null`.
+    @SuppressWarnings("unchecked")
+    public static <T> T[] newArrayLike(T[] template, int length) {
+        Objects.requireNonNull(template, "The template array cannot be null.");
+        return (T[]) Array.newInstance(template.getClass().getComponentType(), length);
     }
 }

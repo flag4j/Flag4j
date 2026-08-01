@@ -32,7 +32,7 @@ class ComplexNumberLexer extends Lexer {
     private static final String ERR_MSG = "Unexpected symbol while parsing: %s";
 
 
-    /// Constructs a lexer for complex scalars.
+    /// Constructs a lexer for complex elements.
     ///
     /// @param content String representation of a complex number
     public ComplexNumberLexer(String content) {

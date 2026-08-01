@@ -1,0 +1,733 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2026. Jacob Watters
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+.callout {
+    display: block; /* Guaranteed text-flow layout so code chunks can NEVER split */
+    position: relative; /* Establishes the coordinate boundary for absolute positioning */
+    padding: 42px 16px 16px 54px;
+    margin: 20px 0;
+    border-radius: 6px;
+    border-left: 5px solid;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.callout::before {
+    position: absolute;
+    left: 16px; /* Centers the icon inside the 54px left padding column */
+    top: 14px; /* Pins it to the top line zone */
+    font-size: 22px;
+    line-height: 1;
+    user-select: none;
+}
+
+.callout::after {
+    position: absolute;
+    left: 54px; /* Aligns perfectly inline with the start of the body text */
+    top: 16px; /* Sits safely in the top 42px padding header zone */
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* 100% Inline Guarantee for Code Elements */
+.callout code {
+    display: inline !important;
+    white-space: pre-wrap !important;
+    padding: 2px 5px !important;
+    margin: 0 2px !important;
+    background-color: rgba(0, 0, 0, 0.06) !important;
+    border-radius: 4px !important;
+    font-family: 'Consolas', 'Courier New', monospace !important;
+    font-size: 0.9em !important;
+}
+
+.callout-info {
+    background-color: #9da7c2;
+    border-left-color: #4b82bd;
+    color: #306091;
+}
+
+.callout-info::before {
+    content: "🛈";
+}
+
+.callout-info::after {
+    content: "Info";
+}
+
+.callout-warning {
+    background-color: #c29d9d;
+    border-left-color: #f44336;
+    color: #692929;
+}
+
+.callout-warning::before {
+    content: "⚠️";
+}
+
+.callout-warning::after {
+    content: "Warning";
+}
+
+.callout-example {
+    background-color: #b09dc2;
+    border-left-color: #9836f4;
+    color: #4f2969;
+}
+
+.callout-example::before {
+    content: "📝";
+}
+
+.callout-example::after {
+    content: "Example";
+}
+
+:root {
+    /* Accent — links, buttons, active tabs, selection */
+    --dt-accent: #a0c0f8;
+    --dt-accent-hover: #ffb863;
+    --dt-accent-soft: rgba(65, 134, 245, 0.16); /* washes & highlights */
+
+    /* Surfaces (darkest = chrome, panels are carved *below* the page) */
+    --dt-chrome: #505076; /* top navigation bar                  */
+    --dt-panel: #404040; /* cards, sidebar, dropdowns           */
+    --dt-page: #404040;; /* page background                     */
+    --dt-well: #383838; /* code blocks, signatures             */
+    --dt-raised: #303030; /* inputs, inline-code chips           */
+    --dt-row-even: #484848; /* table striping                      */
+    --dt-row-odd: #383838;
+    --dt-border: #383838;
+
+    /* Ink */
+    --dt-ink-bright: #f2f3f5; /* titles, member names                */
+    --dt-ink: #c9cbd1; /* primary text                        */
+    --dt-ink-prose: #b4b7be; /* doc-comment prose                   */
+    --dt-ink-muted: #8a8d93; /* labels, secondary text              */
+    --dt-ink-faint: #6b6e75; /* separators, placeholders            */
+}
+
+/*
+ * ============================================================================
+ *  Re-map the JDK's own custom properties.
+ *  The default stylesheet is variable-driven, so most of the theme is done
+ *  right here. (Variable names as of JDK 25 / javadoc 25.0.x.)
+ * ============================================================================
+ */
+:root {
+    /* Typography — swap the DejaVu serif/sans defaults for modern stacks */
+    --body-font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+    --block-font-family: var(--body-font-family);
+    --code-font-family: ui-monospace, "Cascadia Code", "JetBrains Mono",
+    "Fira Code", "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+    --body-font-size: 14px;
+    --block-font-size: 14px;
+    --code-font-size: 13.5px;
+    --block-line-height: 1.6;
+
+    /* Text */
+    --body-text-color: var(--dt-ink);
+    --block-text-color: var(--dt-ink-prose);
+    --title-color: var(--dt-ink-bright);
+
+    /* Surfaces */
+    --body-background-color: var(--dt-page);
+    --section-background-color: var(--dt-panel);
+    --detail-background-color: var(--dt-panel);
+    --detail-block-color: #191919;
+    --code-background-color: var(--dt-raised);
+    --mark-background-color: rgba(65, 134, 245, 0.25);
+
+    /* Navigation */
+    --navbar-background-color: var(--dt-chrome);
+    --navbar-text-color: var(--dt-ink-muted);
+    --subnav-background-color: #303030;
+    --subnav-link-color: var(--dt-ink-muted);
+    --member-heading-background-color: #1c1c1e;
+
+    /* Selection (active tab, current nav item, picked search result).
+       A step deeper than the accent so white text clears WCAG AA. */
+    --selected-background-color: #f8981d;
+    --selected-text-color: #253441;
+    --selected-link-color: #1f389c;
+
+    /* Tables */
+    --table-header-color: #505076;
+    --even-row-color: var(--dt-row-even);
+    --odd-row-color: var(--dt-row-odd);
+    --table-border-color: #000000; /* default is #000 — invisible here */
+
+    /* Links */
+    --link-color: var(--dt-accent);
+    --link-color-active: var(--dt-accent-hover);
+
+    /* Sidebar table of contents (JDK 23+) */
+    --toc-background-color: var(--dt-well);
+    --toc-highlight-color: var(--dt-accent-soft);
+    --toc-hover-color: #1d1d1f;
+
+    /* Code blocks & snippets */
+    --snippet-background-color: #383838;
+    --snippet-text-color: var(--block-text-color);
+    --snippet-highlight-color: #f7c590;
+
+    /* Structure */
+    --border-color: var(--dt-border);
+    --tab-border-radius: 6px 6px 0 0;
+    --max-content-width: 1250px;
+
+    /* Search */
+    --search-input-background-color: var(--dt-raised);
+    --search-input-text-color: #d7d9de;
+    --search-input-placeholder-color: var(--dt-ink-faint);
+    --search-tag-highlight-color: #ffff00;
+
+    /* Copy buttons (icons are brightened via filter below) */
+    --button-border-color: #34343a;
+    --button-focus-filter: brightness(135%);
+    --button-active-filter: brightness(170%);
+
+    /* Invalid-tag notices */
+    --invalid-tag-background-color: #3a1d1d;
+    --invalid-tag-text-color: #f0caca;
+}
+
+/*
+ * ============================================================================
+ *  Base elements & chrome
+ * ============================================================================
+ */
+html {
+    color-scheme: dark; /* native form controls, scrollbars */
+    scrollbar-color: #35353b transparent;
+}
+
+hr {
+    border-color: var(--dt-border); /* default hardcodes #aaa */
+}
+
+::selection {
+    background: rgba(65, 134, 245, 0.35);
+    color: var(--dt-ink-bright);
+}
+
+kbd {
+    background-color: #232327;
+    border: 1px solid #3a3a40;
+    color: #dfe1e6;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+details summary {
+    cursor: pointer;
+}
+
+/* WebKit scrollbars, in the spirit of the original BetterJDocs */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 8px;
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #35353b;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4a4a52;
+}
+
+/* Visible keyboard focus everywhere */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+    outline: 2px solid rgba(65, 134, 245, 0.7);
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+/*
+ * ============================================================================
+ *  Top navigation & breadcrumb
+ * ============================================================================
+ */
+.top-nav {
+    background-color: rgba(16, 16, 16, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--dt-border);
+}
+
+div.sub-nav {
+    border-bottom: 1px solid var(--dt-border);
+}
+
+.nav-bar-cell1-rev { /* pill on the current top-nav item */
+    border-radius: 6px;
+}
+
+ol.sub-nav-list a.current-selection {
+    color: var(--dt-ink-bright);
+}
+
+/* Breadcrumb chevron: the stock right.svg is black and vanishes on dark */
+ol.sub-nav-list li:not(:first-child) {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M4 2l4 4-4 4" fill="none" stroke="%236b6e75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+/*
+ * ============================================================================
+ *  Sidebar table of contents (new in JDK 23)
+ * ============================================================================
+ */
+.main-grid nav.toc {
+    border-right: 1px solid var(--dt-border);
+}
+
+nav.toc div.toc-header {
+    color: #dfe1e6;
+    font-weight: 600;
+}
+
+nav.toc a {
+    color: var(--dt-ink-muted);
+    border-radius: 6px;
+}
+
+nav.toc a:hover {
+    color: var(--dt-ink);
+}
+
+nav.toc a.current-selection {
+    color: #cfe0ff;
+    font-weight: 600;
+}
+
+/* Hide/Show sidebar buttons: hardcoded #666 text + black arrow icons */
+.main-grid nav.toc button {
+    color: var(--dt-ink-muted);
+}
+
+.main-grid nav.toc button:hover,
+.main-grid nav.toc button:focus {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.main-grid nav.toc button > img {
+    filter: invert(1);
+    opacity: 0.6;
+}
+
+/*
+ * ============================================================================
+ *  Page headings & metadata labels
+ * ============================================================================
+ */
+main h1, main h2, main h3, main h4 {
+    color: var(--dt-ink-bright);
+    font-weight: 600;
+}
+
+.title {
+    letter-spacing: -0.01em;
+}
+
+.sub-title {
+    color: var(--dt-ink-muted);
+}
+
+/* Member-detail heading bars (method / field names) */
+body.class-declaration-page .details h3 {
+    border-radius: 6px;
+}
+
+/* "Parameters:", "Returns:", "Throws:", "Since:" — set as quiet eyebrows */
+dl.notes > dt {
+    color: var(--dt-ink-muted);
+    text-transform: uppercase;
+    font-size: 11.5px;
+    letter-spacing: 0.07em;
+    font-family: var(--body-font-family);
+}
+
+/*
+ * ============================================================================
+ *  Content panels — carved below the page, BetterJDocs style
+ * ============================================================================
+ */
+section.class-description,
+.summary section[class$="-summary"],
+.details section[class$="-details"],
+.class-uses .detail,
+section.serialized-class-details {
+    border: 1px solid var(--dt-border);
+    border-radius: 10px;
+}
+
+section.class-description {
+    padding: 14px 18px 10px;
+}
+
+.summary section[class$="-summary"],
+.details section[class$="-details"] {
+    padding: 4px 16px 14px;
+}
+
+.inherited-list > code {
+    border-radius: 6px;
+    color: var(--dt-ink-muted);
+}
+
+/*
+ * ============================================================================
+ *  Declarations — the signature treatment
+ *  Every class and member declaration renders as an accent-edged code well.
+ * ============================================================================
+ */
+div.type-signature,
+div.member-signature {
+    background: var(--dt-well);
+    border: 1px solid var(--dt-border);
+    border-left: 3px solid var(--dt-accent);
+    border-radius: 6px;
+    padding: 10px 14px;
+    overflow-x: auto;
+}
+
+.member-signature .modifiers,
+.type-signature .modifiers {
+    color: #8891a6;
+}
+
+.member-signature .element-name {
+    color: var(--dt-ink-bright);
+    font-weight: 600;
+}
+
+.member-signature .annotations,
+.type-signature .annotations {
+    color: #a89467; /* dim annotations, IDE-style */
+}
+
+div.inheritance {
+    color: var(--dt-ink-muted);
+}
+
+/*
+ * ============================================================================
+ *  Inline code & code blocks
+ * ============================================================================
+ */
+div.block code,
+dl.notes code,
+.deprecation-comment code,
+.preview-comment code,
+.restricted-comment code {
+    background: var(--dt-raised);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: #e3e5e9;
+}
+
+pre {
+    color: var(--dt-ink);
+}
+
+div.snippet-container {
+    border-radius: 8px;
+}
+
+pre.snippet {
+    border: 1px solid var(--dt-border);
+    border-radius: 8px;
+}
+
+/* Copy / anchor-link icons ship as dark-grey SVGs — brighten them */
+button.copy img,
+a.anchor-link > img {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+a.anchor-link > img {
+    opacity: 0.55;
+}
+
+button.copy:hover img,
+button.copy:focus img {
+    opacity: 1;
+}
+
+/*
+ * ============================================================================
+ *  Summary & detail tables, tabs
+ * ============================================================================
+ */
+.summary-table,
+.details-table {
+    border: 1px solid var(--dt-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-header {
+    color: #dfe1e6;
+    font-weight: 600;
+}
+
+div.table-tabs > button.table-tab { /* inactive tabs: quiet ghosts */
+    background: transparent;
+    color: var(--dt-ink-muted);
+}
+
+div.table-tabs > button.table-tab:hover {
+    background: var(--dt-row-odd);
+    color: var(--dt-ink);
+}
+
+.caption span { /* single-table caption chip */
+    background-color: var(--dt-raised);
+    color: #dfe1e6;
+}
+
+/* User-authored <table class="striped"> headers */
+table.striped > thead {
+    color: var(--dt-ink-bright);
+}
+
+/*
+ * ============================================================================
+ *  Search — navbar field, dropdown, and the dedicated search page
+ * ============================================================================
+ */
+input[type="text"] {
+    border-radius: 8px;
+    /* stock glass.svg is black — replace with a muted magnifier */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.4" fill="none" stroke="%238a8d93" stroke-width="1.6"/><path d="M10.4 10.4L14 14" stroke="%238a8d93" stroke-width="1.6" stroke-linecap="round"/></svg>');
+}
+
+input[type="text"]:focus {
+    outline: 2px solid rgba(65, 134, 245, 0.55);
+    outline-offset: 1px;
+}
+
+/* Reset (x.svg) buttons are black icons — invert to grey */
+input#reset-search,
+input.reset-filter,
+input#page-search-reset {
+    filter: invert(60%);
+}
+
+/* Autocomplete dropdown (still jQuery UI under the hood in JDK 25) */
+.ui-autocomplete {
+    border: 1px solid var(--dt-border);
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+ul.ui-autocomplete {
+    background-color: var(--dt-panel);
+}
+
+.ui-autocomplete .search-result-desc { /* hardcoded #404040 */
+    color: var(--dt-ink-muted);
+}
+
+.ui-menu .ui-state-active .search-result-desc { /* hardcoded #383838 */
+    color: #eaf0ff;
+}
+
+/* Search page */
+.page-search-header {
+    border-radius: 6px;
+}
+
+#result-container div.result-table > a.search-result-link .search-result-desc {
+    color: var(--dt-ink-muted); /* hardcoded #404040 */
+}
+
+select#search-modules {
+    background: var(--dt-raised);
+    border: 1px solid var(--dt-border);
+    color: var(--dt-ink);
+    border-radius: 6px;
+}
+
+/*
+ * ============================================================================
+ *  Deprecated / preview / restricted notices
+ * ============================================================================
+ */
+.deprecation-block,
+.preview-block,
+.restricted-block {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 10px 14px;
+}
+
+.deprecation-block {
+    border-left: 3px solid #d9a13c;
+    background: rgba(217, 161, 60, 0.08);
+}
+
+.deprecated-label,
+.deprecation-comment {
+    color: #e5b567;
+}
+
+.preview-block {
+    border-left: 3px solid #a78bfa;
+    background: rgba(167, 139, 250, 0.08);
+}
+
+.preview-label,
+.preview-comment {
+    color: #c4b0f7;
+}
+
+.restricted-block {
+    border-left: 3px solid #e0705f;
+    background: rgba(224, 112, 95, 0.08);
+}
+
+.restricted-label,
+.restricted-comment {
+    color: #eb9484;
+}
+
+/*
+ * ============================================================================
+ *  External-link indicator (stock icon is a dark-blue data URI)
+ * ============================================================================
+ */
+main a[href*="://"]::after {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="768" height="768"><path d="M584 664H104V184h216V80H0v688h688V448H584zM384 0l132 132-240 240 120 120 240-240 132 132V0z" fill="%234186f5"/></svg>');
+}
+
+main a[href*="://"]:hover::after,
+main a[href*="://"]:focus::after {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="768" height="768"><path d="M584 664H104V184h216V80H0v688h688V448H584zM384 0l132 132-240 240 120 120 240-240 132 132V0z" fill="%2376a6f4"/></svg>');
+}
+
+/*
+ * ============================================================================
+ *  Syntax highlighting (JDK 25's --syntax-highlight option)
+ *  highlight.css loads *after* additional stylesheets, so these selectors
+ *  carry one extra level of specificity ("pre .hljs-*") to win.
+ *  Palette: One Dark / VS Code hybrid tuned for the well background.
+ * ============================================================================
+ */
+pre .hljs-title.function_,
+pre .hljs-template-variable {
+    color: #dcdcaa;
+}
+
+pre .hljs-code,
+pre .hljs-comment,
+pre .hljs-quote {
+    color: #7d8695;
+    font-style: italic;
+}
+
+pre .hljs-meta { /* annotations: @Override, @Deprecated */
+    color: #e5c07b;
+}
+
+pre .hljs-symbol,
+pre .hljs-template-tag,
+pre .hljs-keyword,
+pre .hljs-literal,
+pre .hljs-name,
+pre .hljs-built_in,
+pre .hljs-char.escape_ {
+    color: #6ea8fe;
+}
+
+pre .hljs-variable,
+pre .hljs-property,
+pre .hljs-attr,
+pre .hljs-section {
+    color: #c678dd;
+}
+
+pre .hljs-attribute {
+    color: #8fb8fe;
+}
+
+pre .hljs-regexp,
+pre .hljs-number {
+    color: #d19a66;
+}
+
+pre .hljs-link {
+    color: var(--dt-accent-hover);
+}
+
+pre .hljs-string {
+    color: #98c379;
+}
+
+/*
+ * ============================================================================
+ *  Print — flip back to light so paper output stays readable and cheap
+ * ============================================================================
+ */
+@media print {
+    :root {
+        --body-background-color: #ffffff;
+        --section-background-color: #ffffff;
+        --detail-background-color: #ffffff;
+        --body-text-color: #e0e0e3;
+        --block-text-color: #e6e7ef;
+        --title-color: #ffffff;
+        --link-color: #1a4b8f;
+        --border-color: #cccccc;
+        --snippet-background-color: #f4f4f4;
+        --snippet-text-color: #222222;
+        --code-background-color: #f0f0f0;
+        --even-row-color: #ffffff;
+        --odd-row-color: #f2f2f2;
+        --table-header-color: #e8e8e8;
+    }
+
+    div.type-signature,
+    div.member-signature {
+        background: #f4f4f4;
+        border-color: #cccccc;
+        border-left-color: #666666;
+    }
+
+    button.copy img,
+    a.anchor-link > img,
+    input#reset-search {
+        filter: none;
+    }
+}

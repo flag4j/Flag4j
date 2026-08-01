@@ -35,13 +35,13 @@ import java.util.Objects;
 
 /// // todo now: DOCS.
 ///
-/// @param <T> The type of the nD array (for fluent API).
-/// @param <U> The type of the nD array's buffer that stores individual elements of the nD array. The elements
-///                 of this type may be mutable, but the size *must not* be mutable. For example, standard Java arrays are valid but
-///                 [java.util.ArrayList] are *not valid*.
+/// @param <T> The type of the nD-array (for fluent API).
+/// @param <U> The type of the nD-array's buffer that stores individual elements of the nD-array. The elements
+/// of this type may be mutable, but the size *must not* be mutable. For example, standard Java arrays are valid but
+/// [java.util.ArrayList] are *not valid*. In addition to this, the buffer type must be "deeply" copyable.
 /// @param <V> The type of an individual element of the buffer (i.e., a representation of what is stored in [U]).
-///                 The buffer, of type [U], need not store this type exactly, but it must be able to convert any element it stores to
-///                 this type.
+/// The buffer, of type [U], need not store this type exactly, but it must be able to convert any element it stores to
+/// this type.
 public abstract class NDArrayBase<T extends NDArrayBase<T, U, V>, U, V> implements AnyNDArray {
     public final int rank;
     public final Shape shape; // Fully immutable so it can be public.
@@ -54,10 +54,18 @@ public abstract class NDArrayBase<T extends NDArrayBase<T, U, V>, U, V> implemen
 
         this.shape = shape;
         this.buffer = buffer;
-        this.rank = shape.rank;
+        this.rank = shape.rank();
     }
 
 
+    /// Constructs an nD-array that is the same type as `this` nD-array.
+    ///
+    /// @param shape Shape of the nD-array.
+    /// @param dataBuffer The dataBuffer of the nD-array.
+    /// @return A new nD-array of the same type as `this` nD-array.
+    ///
+    /// @implSpec `dataBuffer` must be deeply copied to guarantee the resulting nD-array *does not* share
+    /// memory with any other nD-array.
     public abstract T makeLike(Shape shape, U dataBuffer);
 
 

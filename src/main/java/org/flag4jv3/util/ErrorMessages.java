@@ -31,7 +31,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
- * Contains error messages for common errors which may occur.
+ * Contains error messages for scalar errors which may occur.
  */
 public final class ErrorMessages {
 

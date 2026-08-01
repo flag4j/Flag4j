@@ -25,7 +25,7 @@
 package org.flag4jv3.util.tuples;
 
 
-/// Represents an immutible triplet of primitive `doubles`s
+/// Represents an immutible triplet of primitive `double`s
 ///
 /// @param first The first element of the triple.
 /// @param second The second element of the triple.

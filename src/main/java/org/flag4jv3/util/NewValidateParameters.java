@@ -24,24 +24,207 @@
 
 package org.flag4jv3.util;
 
+import org.flag4jv3.ndarrays.Layout;
+import org.flag4jv3.ndarrays.Shape;
+
+// TODO NOW: This needs to replace the old `ValidateParameters`. Also consider if things specific to certain objects should go
+//  somewhere else (e.g., `validateBufferSize` and `ensureNonOverlapping` might go in `LayoutUtils` or something similar).
 public final class NewValidateParameters {
 
     private NewValidateParameters() {
-    } // Hide default constructor for utility class.
+        // Hide default constructor for utility class.
+    }
+
+
+    /// Enum representing various parities of real numbers.
+    public enum Sign {
+        POSITIVE("positive"),
+        NEGATIVE("negative"),
+        NON_NEGATIVE("non-negative"),
+        NON_POSITIVE("non-positive");
+
+        /// Human-readable text representing the sign.
+        private final String readableText;
+
+
+        private Sign(String readableText) {
+            this.readableText = readableText;
+        }
+
+
+        @Override
+        public String toString() {
+            return this.readableText;
+        }
+    }
+
+
+    /// Represents inclusivity of bounds for numeric range.
+    public enum Inclusivity {
+        /// Range with exclusive lower and upper bounds.
+        EXCLUSIVE,
+        /// Range with inclusive lower bound and exclusive upper bound.
+        INCLUSIVE_LOWER,
+        /// Range with inclusive upper bound and exclusive lower bound.
+        INCLUSIVE_UPPER,
+        /// Range with inclusive lower and upper bounds.
+        INCLUSIVE;
+
+
+        /// Formats a range based on this inclusivity.
+        ///
+        /// @param low The lower bound of the range.
+        /// @param high The upper bound of the range.
+        /// @return A string representing the specified range with this inclusivity.
+        String formatRange(double low, double high) {
+            return switch (this) {
+                case EXCLUSIVE -> "(" + low + ", " + high + ")";
+                case INCLUSIVE_LOWER -> "[" + low + ", " + high + ")";
+                case INCLUSIVE_UPPER -> "(" + low + ", " + high + "]";
+                case INCLUSIVE -> "[" + low + ", " + high + "]";
+            };
+        }
+    }
 
 
     /**
      * Validates that a buffer is at least as large as the specified minimum size.
      *
      * @param minSize The minimum allowed size of the buffer.
-     * @param bufferSize The buffers actual size.
-     * @param msg The name of the buffer.
+     * @param bufferSize The buffer's actual size.
+     * @param msg The name of the buffer. If `null`, then a default error message is used.
      */
     public static void validateBufferSize(int minSize, int bufferSize, String msg) {
-        msg = replaceIfNull(msg, "Expected buffer size to be greater than " + minSize + " but got " + bufferSize);
-
         if (bufferSize < minSize) {
+            msg = replaceIfNull(msg, "Expected buffer size to be greater than " + minSize + " but got " + bufferSize);
             throw new IllegalArgumentException(msg);
+        }
+    }
+
+
+    /// Ensures that a layout is [non-overlapping][Layout#mayHaveOverlap()].
+    ///
+    /// @param layout The layout of interest.
+    /// @param msg The error message to use if `layout` is non-overlapping. If `null`, then a default error message is used.
+    /// @throws IllegalArgumentException If it could not be determined that `layout` is non-overlapping.
+    public static void ensureNonOverlapping(Layout layout, String msg) {
+        if (layout.mayHaveOverlap()) {
+            msg = replaceIfNull(msg, "Could not complete operation - layout may have overlap in memory." +
+                    " Try making layout contiguous first.");
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+
+    /// Ensures that two [shapes][Shape] are equal.
+    ///
+    /// @param shape1 First shape to compare.
+    /// @param shape2 Second shape to compare.
+    /// @param msg The message to display if the shapes are *not* equal. If `null`, then a default error message is used.
+    public static void ensureSameShape(Shape shape1, Shape shape2, String msg) {
+        if (!shape1.equals(shape2)) {
+            msg = replaceIfNull(msg, "Expecting shapes to be equal but got " + shape1 + " and " + shape2);
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+
+    /// Ensures that a value is within the specified range.
+    ///
+    /// @param value The value of interest.
+    /// @param low The lower bound of the range.
+    /// @param high The upper bound of the range.
+    /// @param inclusivity The inclusivity of the range bounds.
+    /// @param msg The message to display if the `value` is not within the specified range. If `null`, then a default
+    /// error message is used.
+    public static void ensureInRange(double value, double low, double high, Inclusivity inclusivity, String msg) {
+        boolean inRange = switch (inclusivity) {
+            case EXCLUSIVE -> low < value && value < high;
+            case INCLUSIVE_LOWER -> low <= value && value < high;
+            case INCLUSIVE_UPPER -> low < value && value <= high;
+            case INCLUSIVE -> low <= value && value <= high;
+        };
+
+        if (!inRange) {
+            msg = replaceIfNull(msg, "Expected value to be in range "
+                    + inclusivity.formatRange(low, high) + " but got " + value);
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+
+    /// Ensures that a `value` has the specified `sign`.
+    ///
+    /// @param value The value to check sign of.
+    /// @param sign The desired sign.
+    /// @param msg The error message to display if the `value`'s sign does not match `sign`. If `null`, then a default error
+    /// message is used.
+    /// @throws IllegalArgumentException If `value`'s sign does not match `sign`.
+    /// @see #ensureSign(int[], Sign, String)
+    /// @see #ensureSign(float[], Sign, String)
+    /// @see #ensureSign(double[], Sign, String)
+    public static void ensureSign(double value, Sign sign, String msg) {
+        boolean isValid = switch (sign) {
+            case POSITIVE -> value > 0;
+            case NEGATIVE -> value < 0;
+            case NON_NEGATIVE -> value >= 0;
+            case NON_POSITIVE -> value <= 0;
+        };
+
+        if (!isValid) {
+            msg = replaceIfNull(msg, "Expected value to be " + sign + " but got " + value);
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+
+    /// Ensures that all elements of `values` have the specified `sign`.
+    ///
+    /// @param values The values to check the sign of.
+    /// @param sign The desired sign.
+    /// @param msg The error message to display if any element of `values` sign does not match `sign`.
+    /// If `null`, then a default error message is used.
+    /// @throws IllegalArgumentException If *any* element of `values` sign does not match `sign`.
+    /// @see #ensureSign(double, Sign, String)
+    /// @see #ensureSign(float[], Sign, String)
+    /// @see #ensureSign(double[], Sign, String)
+    public static void ensureSign(int[] values, Sign sign, String msg) {
+        for (int i = 0; i < values.length; i++) {
+            ensureSign(values[i], sign, msg);
+        }
+    }
+
+
+    /// Ensures that all elements of `values` have the specified `sign`.
+    ///
+    /// @param values The values to check the sign of.
+    /// @param sign The desired sign.
+    /// @param msg The error message to display if any element of `values` sign does not match `sign`.
+    /// If `null`, then a default error message is used.
+    /// @throws IllegalArgumentException If *any* element of `values` sign does not match `sign`.
+    /// @see #ensureSign(int[], Sign, String)
+    /// @see #ensureSign(double, Sign, String)
+    /// @see #ensureSign(double[], Sign, String)
+    public static void ensureSign(float[] values, Sign sign, String msg) {
+        for (int i = 0; i < values.length; i++) {
+            ensureSign(values[i], sign, msg);
+        }
+    }
+
+
+    /// Ensures that all elements of `values` have the specified `sign`.
+    ///
+    /// @param values The values to check the sign of.
+    /// @param sign The desired sign.
+    /// @param msg The error message to display if any element of `values` sign does not match `sign`.
+    /// If `null`, then a default error message is used.
+    /// @throws IllegalArgumentException If *any* element of `values` sign does not match `sign`.
+    /// @see #ensureSign(int[], Sign, String)
+    /// @see #ensureSign(float[], Sign, String)
+    /// @see #ensureSign(double, Sign, String)
+    public static void ensureSign(double[] values, Sign sign, String msg) {
+        for (int i = 0; i < values.length; i++) {
+            ensureSign(values[i], sign, msg);
         }
     }
 

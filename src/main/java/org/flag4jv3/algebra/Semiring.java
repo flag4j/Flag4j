@@ -24,35 +24,51 @@
 
 package org.flag4jv3.algebra;
 
-import org.flag4jv3.scalars.SemiringScalar;
+import org.flag4jv3.algebra.elements.SemiringElement;
 
-/// Defines the mathematical structure of a [semiring](https://en.wikipedia.org/wiki/Semiring).
+import java.io.Serializable;
+import java.math.BigInteger;
+
+/// Defines the algebraic structure of a [semiring](https://en.wikipedia.org/wiki/Semiring).
 ///
-/// A **semiring**, `(R, +, *, 0, 1)`, is a set `R` with addition (`+`) and multiplication (`*`), but no
-/// requirement that additive inverses exist. Subtraction is therefore not generally
-/// defined; this is what distinguishes a semiring from a [Ring].
+/// A **semiring**, <span class="latex-inline">(R, +, &middot;, 0, 1)</span>, is a set <span class="latex-inline">R</span>
+/// equipped with two binary operations: addition (<span class="latex-inline">+</span>) and multiplication
+/// (<span class="latex-inline">&middot;</span>).
+/// Semirings generalize [rings][Ring] by dropping the requirement that every element in
+/// <span class="latex-inline">R</span> must have an additive inverse.
 ///
 /// ### Semiring Axioms
-/// For all `a, b, c` in `R`:
-/// - Addition is associative and commutative, with identity `0`: `a + 0 = a`
-/// - Multiplication is associative, with identity `1`: `a * 1 = a`
-/// - Multiplication distributes over addition on both sides
-/// - `0` is absorbing under multiplication: `a * 0 = 0 * a = 0`
+/// For all <span class="latex-replace">a, b, c in R</span><!-- LATEX: $a, b, c \in R$ -->:
+/// - __Additive identity exists__: There exists an element <span class="latex-inline">0&isin;R</span>
+/// such that <span class="latex-inline">a + 0 = a</span>
+/// - __Multiplicative identity exists__: There exists an element <span class="latex-inline">1&isin;R</span> such that
+/// <span class="latex-inline">a &middot; 1 = a</span>
+/// - __Addition is associative__: <span class="latex-inline">a + (b + c) = (a + b) + c</span>
+/// - __Addition is commutative__: <span class="latex-inline">a + b = b + a</span>
+/// - __Multiplication is associative__: <span class="latex-inline">a &middot; (b &middot; c) = (a &middot; b) &middot; c</span>
+/// - __Multiplication is distributive over addition__:
+///     - __Left distributivity__: <span class="latex-inline">a &middot; (b + c) = a &middot; b + a &middot; c</span>
+///     - __Right distributivity__: <span class="latex-inline">(a + b) &middot; c = a &middot; c + b &middot; c</span>
+/// - <span class="latex-inline">0</span> __is absorbing under multiplication__: <span class="latex-inline">a &middot; 0 = 0 &middot; a = 0</span>
 ///
-/// ### Examples
-/// - The natural scalars `ℕ` under ordinary `+` and `*`
-/// - The booleans `{false, true}` under logical OR and AND
-/// - The tropical semiring: reals extended with `+∞`, where "addition" is `min` and
-///   "multiplication" is ordinary real addition
+/// ### Examples of Semirings
+/// - The natural numbers <span class="latex-inline">ℕ</span> under ordinary addition and multiplication
+/// - The booleans `true` and `false` under logical OR and AND as addition and multiplication respectively
+/// - The tropical semiring: reals extended with +&infin; as additive identity, 0 as the multiplicative identity
+/// and where "addition" is <span class="latex-inline">min</span> and "multiplication" is ordinary real addition
 ///
 /// This interface represents the algebraic *structure* itself.
 /// Each element of the semiring exposes a reference back to its
-/// structure via [SemiringScalar#structure()], so that `zero()`/`one()` are always
+/// structure via [SemiringElement#structure()], so that [#zero()]/[#one()] are always
 /// consistent across elements and reachable without an element instance in hand.
 ///
 /// @param <T> the type of element belonging to this semiring.
-/// @see SemiringScalar
-public interface Semiring<T extends SemiringScalar<T>> {
+/// @see SemiringElement
+/// @see Ring
+/// @see Field
+/// @see FiniteField
+public interface Semiring<T extends SemiringElement<T>> extends Serializable {
+
     /// The additive identity element `0` of this semiring satisfying `a + 0 = a`
     /// for every element `a` in this semiring.
     ///
@@ -74,8 +90,72 @@ public interface Semiring<T extends SemiringScalar<T>> {
     /// @return `true` if the other object is a semiring and represents the same algebraic
     ///                 structure as this semiring; `false` otherwise.
     @Override
-    boolean equals(Object b);
+    abstract boolean equals(Object b);
 
     @Override
-    int hashCode();
+    abstract int hashCode();
+
+
+    /// The canonical image of the natural number `n` in this semiring; that is, `n·1`
+    /// (the sum of `n` copies of [#one()], with `valueOf(0)` yielding [#zero()]).
+    ///
+    /// This is the unique semiring homomorphism from the natural numbers into this semiring:
+    /// `valueOf(a + b) = valueOf(a) + valueOf(b)` and `valueOf(a * b) = valueOf(a) * valueOf(b)`.
+    /// Note that it need not be injective: in a structure of non-zero characteristic `p`,
+    /// `valueOf(n)` is equal to `valueOf(n mod p)`.
+    ///
+    /// @throws IllegalArgumentException if `n < 0`. (Semirings need not contain additive inverses;
+    /// see [Ring#valueOf(long)] which lifts this restriction.)
+    /// @implSpec The default implementation performs double-and-add, using O(log n) additions.
+    /// Implementations which admit a more direct construction (e.g. modular reduction) should override
+    /// this method. Overriding implementations should override all `valueOf` overloads consistently.
+    /// @see #valueOf(int)
+    default T valueOf(long n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Cannot map negative value into a semiring: " + n);
+        }
+
+        T result = zero();
+        T powerOfTwo = one();
+
+        while (n != 0) {
+            if ((n & 1L) == 1L) result = result.add(powerOfTwo);
+            n >>>= 1;
+            if (n != 0) powerOfTwo = powerOfTwo.add(powerOfTwo);
+        }
+
+        return result;
+    }
+
+
+    /// The canonical image of the natural number `n` in this semiring; that is, `n·1`
+    /// (the sum of `n` copies of [#one()], with `valueOf(0)` yielding [#zero()]).
+    ///
+    /// This is the unique semiring homomorphism from the natural numbers into this semiring:
+    /// `valueOf(a + b) = valueOf(a) + valueOf(b)` and `valueOf(a * b) = valueOf(a) * valueOf(b)`.
+    /// Note that it need not be injective: in a structure of non-zero characteristic `p`,
+    /// `valueOf(n)` is equal to `valueOf(n mod p)`.
+    ///
+    /// @throws IllegalArgumentException if `n < 0`. (Semirings need not contain additive inverses;
+    /// see [Ring#valueOf(BigInteger)] which lifts this restriction.)
+    /// @implSpec The default implementation performs double-and-add, using O(log n) additions.
+    /// Implementations which admit a more direct construction (e.g. modular reduction) should override
+    /// this method. Overriding implementations should override all `valueOf` overloads consistently.
+    /// @see #valueOf(long)
+    default T valueOf(BigInteger n) {
+        if (n.signum() < 0) {
+            throw new IllegalArgumentException("Cannot map negative value into a semiring: " + n);
+        }
+
+        T result = zero();
+        T powerOfTwo = one();
+        final int len = n.bitLength();
+
+        for (int i = 0; i < len; i++) {
+            if (n.testBit(i)) result = result.add(powerOfTwo);
+            if (i < len - 1) powerOfTwo = powerOfTwo.add(powerOfTwo);
+        }
+
+        return result;
+    }
 }

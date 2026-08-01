@@ -23,5 +23,5 @@
  */
 
 
-/// Provides immutable tuple types for grouping a fixed sequence of values.
+/// Tuples for grouping an immutable fixed-length sequence of values.
 package org.flag4jv3.util.tuples;

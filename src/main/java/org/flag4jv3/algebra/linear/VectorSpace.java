@@ -25,12 +25,12 @@
 package org.flag4jv3.algebra.linear;
 
 import org.flag4jv3.algebra.Field;
-import org.flag4jv3.scalars.FieldScalar;
+import org.flag4jv3.algebra.elements.FieldElement;
 
 // TODO: Docs
 //  Also, do we actually want this? I dont think so. I think just defining interfaces
 //  like TensorOverField, VectorOverField is enough.
-public interface VectorSpace<V extends VectorSpace<V, S>, S extends FieldScalar<S>> {
+public interface VectorSpace<V extends VectorSpace<V, S>, S extends FieldElement<S>> {
     Field<S> scalarField();
 
     default S zeroScalar() {

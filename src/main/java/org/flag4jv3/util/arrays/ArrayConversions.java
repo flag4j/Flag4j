@@ -24,8 +24,8 @@
 
 package org.flag4jv3.util.arrays;
 
-import org.flag4jv3.numbers.Complex64;
-import org.flag4jv3.scalars.Complex128;
+import org.flag4jv3.algebra.elements.Complex128;
+import org.flag4jv3.algebra.elements.Complex64;
 import org.flag4jv3.util.ValidateParameters;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import java.util.List;
  * <p>The {@code ArrayConversions} class provides utility methods for converting between various array types
  * and formats. This includes conversions from primitive ndarrays to object ndarrays and between lists and ndarrays.
  *
- * <p>Designed to handle common conversion use cases efficiently, this class supports operations such as:
+ * <p>Designed to handle scalar conversion use cases efficiently, this class supports operations such as:
  * <ul>
  *   <li>Converting primitive (or boxed primitive) ndarrays to {@link Complex128} and {@link Complex64} representations.</li>
  *   <li>Boxing and unboxing of primitive and object types (e.g., {@code int[]} to {@code Integer[]}).</li>
@@ -47,9 +47,9 @@ import java.util.List;
  *
  * <h2>Usage Examples</h2>
  * <pre>{@code
- * // Convert an array of integers to Complex128 array.
+ * // Convert an array of integers to DoublePair array.
  * int[] intArray = {1, 2, 3};
- * Complex128[] complexArray = ArrayConversions.toComplex128(intArray, null);
+ * DoublePair[] complexArray = ArrayConversions.toComplex128(intArray, null);
  *
  * // Convert an ArrayList of Integers to an int array.
  * List<Integer> integerList = List.of(1, 2, 3);
@@ -320,7 +320,7 @@ public final class ArrayConversions {
 
 
     /**
-     * Converts an array of complex scalars to an {@link ArrayList array list}.
+     * Converts an array of complex elements to an {@link ArrayList array list}.
      *
      * @param src Array to convert.
      * @return An equivalent array list.

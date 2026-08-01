@@ -31,48 +31,92 @@ import org.flag4jv3.util.tuples.Pair;
 
 // TODO NOW: DOCS
 public abstract class DenseNDArrayBase<T extends DenseNDArrayBase<T, U, V>, U, V> extends NDArrayBase<T, U, V> {
-    // TODO NOW: We need to make 100% sure that a user cannot accidently construct an array as a base when it is really a view.
-    //  This means we should always copy data in ANY public facing constructors/factories.
+    /// The layout of this nD-array in memory.
+    final Layout layout;
 
-    /// Indicates if this array is a base array (`true`) or a view (`false`).
-    public final boolean isBase;
-    public final Layout layout; // Layout is immutable, safe to be public.
-    public final boolean isContiguous;
+    /// The strides of this nD-array in memory.
+    final int[] strides; // Cached strides from layout. Absolutely must not be modified or exposed publicly.
 
-    protected final int[] strides; // Cached strides. Must not be modified or exposed externally.
+    /// The base array of this nD-array. If this nD-array is a base, then this will be a reference to `this`.
+    final T base;
 
 
-    protected DenseNDArrayBase(U buffer, Layout layout, boolean isBase) {
-        super(layout.shape, buffer);
-
+    protected DenseNDArrayBase(U buffer, Layout layout, T base) {
+        super(layout.shape(), buffer);
         this.layout = layout;
-        this.isBase = isBase;
-
         this.strides = layout.strides(); // Layout is immutable, cache strides here to avoid re-cloning.
-        this.isContiguous = layout.isContiguous; // Just for convenience.
+        this.base = (base == null) ? self() : base;
     }
 
 
-    public abstract T makeLike(U dataBuffer, Layout layout, boolean isBase);
+    /// Constructs a new dense nD-array of the same type as this nD-array.
+    ///
+    /// @param dataBuffer The backing data buffer of the nD-array.
+    /// @param layout The layout of the nD-array in memory.
+    /// @param base The base nD-array. Unlike with [DenseNDArrayBase], this *may not* be `null`.
+    abstract T makeLike(U dataBuffer, Layout layout, T base);
 
 
+    /// Constructs a new dense nD-array of the same type as this nD-array.
+    ///
+    /// Note that this method differs from [#makeLike(org.flag4jv3.ndarrays.Shape, java.lang.Object)] in that
+    /// `dataBuffer`'s size *need not* be equal to `layout.shape().numelIntValueExact()`.
+    ///
+    /// @param layout The layout of the nD-array in memory.
+    /// @param dataBuffer The buffer contains the data for the new nD-array.
+    /// @return A new dense nD-array of the same type as this nD-array. The returned nD-array will be a [base array][#isBase()] and be
+    /// [contiguous][#isContiguous()].
+    ///
+    /// @implSpec `dataBuffer` *must* be deeply copied to guarantee that the new nD-array does not share memory with any other.
+    /// @see #asContiguous()
+    public abstract T makeLike(Layout layout, U dataBuffer);
+
+
+    /// Checks if this nD-array is contiguous in memory or not.
+    ///
+    /// @return `true` if this nD-array is contiguous in memory; otherwise, `false`.
+    public boolean isContiguous() {
+        return layout.contiguousOrder();
+    }
+
+
+    /// Checks if this nD-array is a base array or a view.
+    ///
+    /// @return `true` if this nD-array is a base array; otherwise, `false`.
+    ///
+    /// @see #base
+    /// @see #isView()
     public boolean isBase() {
-        return isBase;
+        return base == this;
     }
 
 
+    /// Check if this nD-array is a view (i.e., shares memory with another array but it *not* the base array).
+    ///
+    /// @return `true` if this nD-array is a view; otherwise, `false`.
+    ///
+    /// @see #isBase
     public boolean isView() {
-        return !isBase;
+        return !isBase();
     }
 
 
+    /// Gets the initial offset into the backing [data buffer][#bufferCopy()] of this nD-array.
+    /// For [base][#isBase()] arrays, this is always `0`.
+    ///
+    /// @return The initial offset into the backing data [data buffer][#bufferCopy()] of this nD-array.
     public int offset() {
-        return layout.offset();
+        return layout().offset();
     }
 
 
+    /// Gets the strides of this nD-array.
+    ///
+    /// @return The strides of this array.
     public int[] strides() {
-        return layout.strides(); // Use layout strides as they are immutable.
+        /* Use layout strides as they are immutable. Retuning `this.strides` would publicly
+         leak the reference to this array's strides */
+        return layout().strides();
     }
 
 
@@ -80,7 +124,9 @@ public abstract class DenseNDArrayBase<T extends DenseNDArrayBase<T, U, V>, U, V
     ///
     /// @return If `this` array is already contiguous, then `this` array is returned. Otherwise, a new (non-view)
     ///                                 array with the same data as `this` array is returned.
-    public abstract T contiguous();
+    ///
+    /// @see #isContiguous()
+    public abstract T asContiguous();
 
 
     @Override
@@ -109,11 +155,24 @@ public abstract class DenseNDArrayBase<T extends DenseNDArrayBase<T, U, V>, U, V
 
     // TODO NOW: DOCS: note that the returned arrays are always views.
     public Pair<T, T> broadcast(T other) {
-        Pair<Layout, Layout> bInfo = Layout.broadcast(layout, other.layout);
+        Pair<Layout, Layout> bInfo = Layout.broadcast(layout(), other.layout());
 
-        T a = makeLike(buffer, bInfo.first(), false);
-        T b = makeLike(other.buffer, bInfo.second(), false);
+        T a = makeLike(buffer, bInfo.first(), base);
+        T b = makeLike(other.buffer, bInfo.second(), base);
 
         return new Pair<>(a, b);
+    }
+
+
+    /// Gets the [layout][Layout] of this nD-array.
+    ///
+    /// @return The [layout][Layout] of this nD-array.
+    public Layout layout() {
+        return layout;
+    }
+
+
+    public boolean shareMemory(T other) {
+        return buffer == other.buffer;
     }
 }

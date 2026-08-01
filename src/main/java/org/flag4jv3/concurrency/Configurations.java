@@ -56,13 +56,23 @@ public final class Configurations {
      */
     public static final int DEFAULT_PARALLELISM = Runtime.getRuntime().availableProcessors();
     /**
-     * The default block size for blocked algorithms.
+     * The default block size for compute bound blocked algorithms (e.g., matrix multiplication). The units here is number of
+     * elements and is intended to maximize data reuse.
      */
     public static final int DEFAULT_BLOCK_SIZE = 64;
-    /**
-     * The block size to use in blocked algorithms.
-     */
+
+    /// The default number of bytes for a block of a memory-bound blocked algorithm (e.g., physical matrix transpose). The units here
+    /// is bytes and is intended to attempt to help strided operations match cache line boundaries.
+    public static final int DEFAULT_MEM_BLOCK_SIZE_BYTES = 64;
+
+    /// The block size to use for compute-bound blocked algorithms (e.g., matrix multiplication).
+    /// The units here is number of elements and the intended use is to maximize data reuse.
     private static volatile int blockSize = DEFAULT_BLOCK_SIZE;
+
+
+    /// The block size to use for memory-bound blocked algorithms (e.g., physical matrix transpose).
+    /// The units here is bytes and the intended use it to maximize
+    private static volatile int memBlockSizeBase = DEFAULT_MEM_BLOCK_SIZE_BYTES;
 
 
     static {
@@ -147,6 +157,34 @@ public final class Configurations {
     }
 
 
+    /// Gets the memory block size for cache-line alignment for a specific data element with the specified `bytesPerelement`.
+    ///
+    /// Use [ByteSize] and [#getMemBlockSize(ByteSize)] for common data types.
+    ///
+    /// @param bytesPerElement The number of bytes in one logical element.
+    /// @return The block size (derived from the [base memory block size][#setMemBlockSizeBase(int)]).
+    ///
+    /// @see #getMemBlockSize(ByteSize)
+    public static synchronized int getMemBlockSize(int bytesPerElement) {
+        if (bytesPerElement <= 0) {
+            throw new IllegalArgumentException("bytesPerElement must be positive but got: " + bytesPerElement);
+        }
+        return Math.max(1, memBlockSizeBase/bytesPerElement);
+    }
+
+
+    /// Gets the memory block size for cache-line alignment for a specific data element with the specified `byteSize`.
+    ///
+    /// @param byteSize The number of bytes in one logical element.
+    /// @return The block size for the specified element `byteSize`
+    /// (derived from the [base memory block size][#setMemBlockSizeBase(int)]).
+    ///
+    /// @see #getMemBlockSize(int)
+    public static synchronized int getMemBlockSize(ByteSize byteSize) {
+        return getMemBlockSize(byteSize.getNumBytes());
+    }
+
+
     /**
      * Sets the current block size used in blocked algorithms.
      *
@@ -157,11 +195,59 @@ public final class Configurations {
     }
 
 
+    /// Sets the base memory block size.
+    ///
+    /// @param memBlockSizeBase The base memory block size (in bytes).
+    public static synchronized void setMemBlockSizeBase(int memBlockSizeBase) {
+        Configurations.memBlockSizeBase = Math.max(1, memBlockSizeBase);
+    }
+
+
     /**
      * Resets all configurations to their default values.
      */
     public static synchronized void resetAll() {
         ThreadManager.setParallelism(DEFAULT_PARALLELISM);
         blockSize = DEFAULT_BLOCK_SIZE;
+    }
+
+
+    /// Number of bytes in common data types within Flag4j.
+    public enum ByteSize {
+        /// The number of bytes in primitive `boolean`.
+        BOOLEAN(1),
+        /// The number of bytes in primitive `int`.
+        INT(4),
+        /// The number of bytes in primitive `long`.
+        LONG(8),
+        /// The number of bytes in primitive `float`.
+        FLOAT(4),
+        /// The number of bytes in primitive `double`.
+        DOUBLE(8),
+        /// The number of bytes in complex number with two `float` components (e.g., [org.flag4jv3.algebra.elements.Complex64]).
+        COMPLEX64(8),
+        /// The number of bytes in complex number with two `double` components (e.g., [org.flag4jv3.algebra.elements.Complex128]).
+        COMPLEX128(16),
+        /// The number of bytes in quaternion with four `float` components.
+        QUATERNION128(16),
+        /// The number of bytes in quaternion with four `double` components.
+        QUATERNION256(32);
+
+
+        /// The number of bytes of the specific data type.
+        private final int numBytes;
+
+
+        private ByteSize(int numBytes) {
+            this.numBytes = numBytes;
+        }
+
+
+        /// Gets the number of bytes occupied but the data type.
+        ///
+        /// @return The number of bytes occupied by the data type.
+        public int getNumBytes() {
+            return numBytes;
+        }
     }
 }

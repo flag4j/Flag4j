@@ -26,11 +26,12 @@ package org.flag4jv3.io.parsing;
 
 import org.flag4jv3.exceptions.Flag4jParsingException;
 import org.flag4jv3.util.tuples.DoublePair;
+import org.flag4jv3.util.tuples.FloatPair;
 
 import java.util.Objects;
 
 
-/// A parser for parsing complex scalars represented as a string.
+/// A parser for parsing complex elements represented as a string.
 ///
 /// ### Grammar
 /// The grammar for a complex number is given by:
@@ -44,6 +45,9 @@ import java.util.Objects;
 ///
 ///     SIGNED_DOUBLE := DOUBLE | - DOUBLE
 /// ```
+///
+/// > **NOTE**: If using, [#getComponentsAsFloats], the same grammer is used during parsing,
+/// > but the values are cast to `float`s before returning.
 ///
 /// ### Examples of Valid Complex Numbers
 /// - `"3.43"`
@@ -60,35 +64,25 @@ public final class ComplexNumberParser {
     }
 
 
-    // todo now: Uncomment these when the complex objects are implemented.
-//    /**
-//     * Parses a complex number in the form of a string into its real and imaginary parts.
-//     * For example, the string {@code "2+3i"} would be parsed into real and imaginary parts
-//     * {@code 2} and {@code 3} respectively.
-//     *
-//     * @param num Complex number in one of three forms: {@code a + bi, a,} or {@code bi} where a and b are
-//     * 				real scalars and i is the imaginary unit sqrt(-1)
-//     * @return The complex number represented by the {@code num} as a {@link Complex128}.
-//     */
-//    public static Complex128 parseNumberToComplex128(String num) {
-//        double[] components = getComponents(num);
-//        return new Complex128(components[0], components[1]);
-//    }
-//
-//
-//    /**
-//     * Parses a complex number in the form of a string into its real and imaginary parts.
-//     * For example, the string {@code "2+3i"} would be parsed into real and imaginary parts
-//     * {@code 2} and {@code 3} respectively.
-//     *
-//     * @param num Complex number in one of three forms: {@code a + bi, a,} or {@code bi} where a and b are
-//     * 				real scalars and i is the imaginary unit sqrt(-1)
-//     * @return The complex number represented by the {@code num} as a {@link Complex64}.
-//     */
-//    public static Complex64 parseNumberToComplex64(String num) {
-//        double[] components = getComponents(num);
-//        return new Complex64((float) components[0], (float) components[1]);
-//    }
+    /// Parses a complex number in the form of a string into its real and imaginary parts represented as 32-bit floats.
+    /// For example, the string `"2+3i"` would be parsed into real and imaginary parts
+    /// `2` and `3` respectively.
+    ///
+    /// WARNING: This method may result in loss of precision as values will be parsed as `double`s then cast to `float`s.
+    ///
+    /// @param num A complex number in one of three forms: `a + bi`, `a` or `bi` where `a` and `b` are
+    ///                 real elements and `i` is the imaginary unit `sqrt(-1)`
+    /// @return The complex number represented by the string num.
+    ///
+    /// @throws Flag4jParsingException If `num` cannot be parsed as a complex number.
+    /// @throws NullPointerException   If `num` is null.
+    public static FloatPair getComponentsAsFloats(String num) {
+        DoublePair components = getComponents(num);
+        return new FloatPair(
+                (float) components.first(),
+                (float) components.second()
+        );
+    }
 
 
     /// Parses a complex number in the form of a string into its real and imaginary parts.
@@ -96,12 +90,12 @@ public final class ComplexNumberParser {
     /// `2` and `3` respectively.
     ///
     /// @param num A complex number in one of three forms: `a + bi`, `a` or `bi` where `a` and `b` are
-    ///                 real scalars and `i` is the imaginary unit `sqrt(-1)`
+    ///                 real elements and `i` is the imaginary unit `sqrt(-1)`
     /// @return The complex number represented by the string num.
     ///
     /// @throws Flag4jParsingException If `num` cannot be parsed as a complex number.
     /// @throws NullPointerException   If `num` is null.
-    static DoublePair getComponents(String num) {
+    public static DoublePair getComponents(String num) {
         Objects.requireNonNull(num, "num");
 
         ComplexNumberLexer lex = new ComplexNumberLexer(num);

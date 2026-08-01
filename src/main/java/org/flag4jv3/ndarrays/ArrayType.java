@@ -24,5 +24,5 @@
 
 package org.flag4jv3.ndarrays;
 
-public record ArrayType(RankKind kind, Storage storage,) {
+public record ArrayType(RankKind kind, Storage storage) {
 }

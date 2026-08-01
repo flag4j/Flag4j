@@ -64,9 +64,9 @@ public final class ValidateParameters {
      * @throws LinearAlgebraException If shapes do not satisfy the requirements of matrix-matrix or matrix-vector multiplication.
      */
     public static void ensureMatMultShapes(Shape shape1, Shape shape2) {
-        int r2 = shape2.rank;
+        int r2 = shape2.rank();
 
-        if (shape1.rank != 2 || (r2 != 2 && r2 != 1) || shape1.getSize(1) != shape2.getSize(0)) {
+        if (shape1.rank() != 2 || (r2 != 2 && r2 != 1) || shape1.getSize(1) != shape2.getSize(0)) {
             throw new LinearAlgebraException(ErrorMessages.matMultShapeErrMsg(shape1, shape2));
         }
     }
@@ -370,7 +370,7 @@ public final class ValidateParameters {
      * @throws LinearAlgebraException If the shape is not of rank 2 with equal rows and columns.
      */
     public static void ensureSquareMatrix(Shape shape) {
-        if (shape.rank != 2 || shape.getSize(0) != shape.getSize(1)) {
+        if (shape.rank() != 2 || shape.getSize(0) != shape.getSize(1)) {
             throw new LinearAlgebraException(ErrorMessages.getSquareShapeErr(shape));
         }
     }
@@ -409,8 +409,8 @@ public final class ValidateParameters {
      * @throws LinearAlgebraException If the specified shape does not have the expected rank.
      */
     public static void ensureRank(Shape shape, int expRank) {
-        if (shape.rank != expRank) {
-            throw new LinearAlgebraException(ErrorMessages.shapeRankErr(shape.rank, expRank));
+        if (shape.rank() != expRank) {
+            throw new LinearAlgebraException(ErrorMessages.shapeRankErr(shape.rank(), expRank));
         }
     }
 
@@ -515,8 +515,8 @@ public final class ValidateParameters {
      */
     public static void validateTensorIndex(Shape shape, int... index) {
         // TODO: Update to better error messages.
-        if (shape.rank != index.length) {
-            throw new IndexOutOfBoundsException("Expected dimension " + shape.rank
+        if (shape.rank() != index.length) {
+            throw new IndexOutOfBoundsException("Expected dimension " + shape.rank()
                     + " index but got dimension " + index.length + ".");
         }
 
@@ -553,7 +553,7 @@ public final class ValidateParameters {
      * @throws IllegalArgumentException If {@code axis < 0 || axis >= shape.getRank()} for any axis in {@code axes}.
      */
     public static void ensureValidAxes(Shape shape, int... axes) {
-        int rank = shape.rank;
+        int rank = shape.rank();
 
         for (int axis : axes) {
             if (axis < 0 || axis >= rank) {
@@ -588,7 +588,7 @@ public final class ValidateParameters {
      * @param axes The axes to validate.
      */
     public static void ensureValidUniqueAxes(Shape shape, int... axes) {
-        int rank = shape.rank;
+        int rank = shape.rank();
         HashSet<Integer> seenAxes = new HashSet<>(rank);
 
         for (int axis : axes) {

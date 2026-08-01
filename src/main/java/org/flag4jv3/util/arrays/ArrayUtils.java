@@ -24,11 +24,11 @@
 
 package org.flag4jv3.util.arrays;
 
+import org.flag4jv3.algebra.elements.Complex128;
+import org.flag4jv3.algebra.elements.Complex64;
+import org.flag4jv3.algebra.elements.FieldElement;
+import org.flag4jv3.algebra.elements.SemiringElement;
 import org.flag4jv3.ndarrays.Shape;
-import org.flag4jv3.numbers.Complex64;
-import org.flag4jv3.scalars.Complex128;
-import org.flag4jv3.scalars.FieldScalar;
-import org.flag4jv3.scalars.SemiringScalar;
 import org.flag4jv3.util.ValidateParameters;
 
 import java.lang.reflect.Array;
@@ -63,8 +63,8 @@ import java.util.function.UnaryOperator;
  * boolean isEqual = ArrayUtils.deepEquals2D(array1, array2);
  *
  * // Swap elements in an array
- * int[] scalars = {1, 2, 3};
- * ArrayUtils.swap(scalars, 0, 2); // Result: {3, 2, 1}
+ * int[] elements = {1, 2, 3};
+ * ArrayUtils.swap(elements, 0, 2); // Result: {3, 2, 1}
  *
  * // Find unique values in an array
  * int[] values = {1, 2, 2, 3};
@@ -227,7 +227,7 @@ public final class ArrayUtils {
             equal = false;
         } else {
             for (int i = 0, size = src1.length; i < size; i++) {
-                if (src1[i] != src2[i].re || src2[i].im != 0) {
+                if (src1[i] != src2[i].re() || src2[i].im() != 0) {
                     equal = false;
                     break; // No need to continue.
                 }
@@ -266,7 +266,7 @@ public final class ArrayUtils {
 
 
     /**
-     * Performs an array copy similar to {@link System#arraycopy(Object, int, Object, int, int)} but wraps doubles as complex scalars.
+     * Performs an array copy similar to {@link System#arraycopy(Object, int, Object, int, int)} but wraps doubles as complex elements.
      *
      * @param src The source array.
      * @param srcPos The starting position from which to copy elements of the source array.
@@ -283,7 +283,7 @@ public final class ArrayUtils {
 
 
     /**
-     * Performs an array copy similar to {@link System#arraycopy(Object, int, Object, int, int)} but wraps floats as complex scalars.
+     * Performs an array copy similar to {@link System#arraycopy(Object, int, Object, int, int)} but wraps floats as complex elements.
      *
      * @param src The source array.
      * @param srcPos The starting position from which to copy elements of the source array.
@@ -471,7 +471,7 @@ public final class ArrayUtils {
      * Infers the shape of a rectangular nD Java array.
      *
      * @param nDArray The nD Java array to infer the shape from.
-     * @return The shape of the nD array as a {@code Shape} object.
+     * @return The shape of the nD-array as a {@code Shape} object.
      *
      * @throws IllegalArgumentException If {@code nDArray} is not an array or has inconsistent (i.e., non-rectangular) dimensions.
      */
@@ -496,9 +496,9 @@ public final class ArrayUtils {
 
 
     /**
-     * Validates that the nD array has consistent (i.e., rectangular) dimensions.
+     * Validates that the nD-array has consistent (i.e., rectangular) dimensions.
      *
-     * @param array The nD array to validate.
+     * @param array The nD-array to validate.
      * @param dimensions List of dimensions inferred so far.
      * @param level Current recursion level (dimension index).
      * @throws IllegalArgumentException If the dimensions are inconsistent.
@@ -513,7 +513,7 @@ public final class ArrayUtils {
 
         if (actualLength != expectedLength) {
             throw new IllegalArgumentException(
-                    String.format("Inconsistent nD array dimensions at level %d: expected %d, but got %d.", level, expectedLength,
+                    String.format("Inconsistent nD-array dimensions at level %d: expected %d, but got %d.", level, expectedLength,
                             actualLength)
             );
         }
@@ -525,22 +525,22 @@ public final class ArrayUtils {
 
 
     /**
-     * Recursively validates the shape of the nD array and flattens it into the provided 1D array.
+     * Recursively validates the shape of the nD-array and flattens it into the provided 1D array.
      *
-     * @param nDArray The nD array to flatten.
-     * @param shape The expected shape of the nD array.
+     * @param nDArray The nD-array to flatten.
+     * @param shape The expected shape of the nD-array.
      * @param flatArray The 1D array to populate with flattened items.
      * @param offset The starting index for the current level of recursion.
      * @return The next available index in the flatArray after processing the current nDArray.
      *
-     * @throws IllegalArgumentException If the shape of the nD array is inconsistent with the inferred shape.
+     * @throws IllegalArgumentException If the shape of the nD-array is inconsistent with the inferred shape.
      */
     public static <T> int nDFlatten(Object nDArray, Shape shape, T[] flatArray, int offset) {
-        if (shape.rank == 0) {
+        if (shape.rank() == 0) {
             throw new IllegalArgumentException("Shape cannot have rank 0.");
         }
 
-        if (shape.rank == 1) {
+        if (shape.rank() == 1) {
             if (!nDArray.getClass().isArray()) {
                 throw new IllegalArgumentException("Expected a 1D array, but got a non-array object.");
             }
@@ -575,22 +575,22 @@ public final class ArrayUtils {
 
 
     /**
-     * Recursively validates the shape of the nD array and flattens it into the provided 1D array.
+     * Recursively validates the shape of the nD-array and flattens it into the provided 1D array.
      *
-     * @param nDArray The nD array to flatten.
-     * @param shape The expected shape of the nD array.
+     * @param nDArray The nD-array to flatten.
+     * @param shape The expected shape of the nD-array.
      * @param flatArray The 1D array to populate with flattened items.
      * @param offset The starting index for the current level of recursion.
      * @return The next available index in the flatArray after processing the current nDArray.
      *
-     * @throws IllegalArgumentException If the shape of the nD array is inconsistent with the inferred shape.
+     * @throws IllegalArgumentException If the shape of the nD-array is inconsistent with the inferred shape.
      */
     public static int nDFlatten(Object nDArray, Shape shape, double[] flatArray, int offset) {
-        if (shape.rank == 0) {
+        if (shape.rank() == 0) {
             throw new IllegalArgumentException("Shape cannot have rank 0.");
         }
 
-        if (shape.rank == 1) {
+        if (shape.rank() == 1) {
             if (!nDArray.getClass().isArray() || nDArray.getClass().getComponentType() != double.class) {
                 throw new IllegalArgumentException("Expected a 1D array of doubles, but got a different type.");
             }
@@ -704,8 +704,8 @@ public final class ArrayUtils {
      * @param src Array to flatten.
      * @return The flattened array.
      */
-    public static <T extends FieldScalar<T>> T[] flatten(T[][] src) {
-        T[] flat = (T[]) new FieldScalar[src.length*src[0].length];
+    public static <T extends FieldElement<T>> T[] flatten(T[][] src) {
+        T[] flat = (T[]) new FieldElement[src.length*src[0].length];
 
         // Copy 2D array to 1D array.
         int flatIdx = 0;
@@ -723,8 +723,8 @@ public final class ArrayUtils {
      * @param src Array to flatten.
      * @return The flattened array.
      */
-    public static <T extends SemiringScalar<T>> T[] flatten(T[][] src) {
-        T[] flat = (T[]) new SemiringScalar[src.length*src[0].length];
+    public static <T extends SemiringElement<T>> T[] flatten(T[][] src) {
+        T[] flat = (T[]) new SemiringElement[src.length*src[0].length];
 
         // Copy 2D array to 1D array.
         int flatIdx = 0;
