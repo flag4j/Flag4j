@@ -33,7 +33,7 @@ import java.util.Objects;
 
 /// Low-level utility class for operations working on the strides of dense nD arrays.
 ///
-/// <blockquote style="color: #692929; background-color: #c29d9d; border-left: 5px solid #f44336; padding: 10px;">
+/// <blockquote style="color: #c29d9d; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
 ///     <strong>Warning:</strong> This class preforms minimal error checking and is <em>not</em> exhaustive.
 ///     This class is mostly intended for internal use only. Use this class *only* if you absolutely know what you are doing
 ///     and exercise caution.

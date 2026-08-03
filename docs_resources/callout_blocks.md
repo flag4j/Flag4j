@@ -31,13 +31,13 @@ HTML code:
 
 ```html
 
-<blockquote style="color: #306091; background-color: #9da7c2; border-left: 5px solid #4b82bd; padding: 10px;">
+<blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
     <strong>Note:</strong> nD-arrays may be non-contiguous in memory in some cases.
 </blockquote>
 ```
 
 Preview:
-<blockquote style="color: #306091; background-color: #9da7c2; border-left: 5px solid #4b82bd; padding: 10px;">
+<blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
     <strong>Note:</strong> nD-arrays may be non-contiguous in memory in some cases.
 </blockquote>
 
@@ -47,13 +47,13 @@ HTML code:
 
 ```html
 
-<blockquote style="color: #692929; background-color: #c29d9d; border-left: 5px solid #f44336; padding: 10px;">
+<blockquote style="color: #c29d9d; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
     <strong>Warning:</strong> Modifying this parameter may lead to undefined states.
 </blockquote>
 ```
 
 Preview:
-<blockquote style="color: #692929; background-color: #c29d9d; border-left: 5px solid #f44336; padding: 10px;">
+<blockquote style="color: #c29d9d; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
     <strong>Warning:</strong> Modifying this parameter may lead to undefined states.
 </blockquote>
 
@@ -63,13 +63,13 @@ HTML code:
 
 ```html
 
-<blockquote style="color: #4f2969; background-color: #b09dc2; border-left: 5px solid #9836f4; padding: 10px;">
+<blockquote style="color: #b09dc2; background-color: #372445; border-left: 5px solid #9836f4; padding: 10px;">
     <strong>Example:</strong> To create a complex number: <code> var z = new Complex128(1, 1)}</code>.
 </blockquote>
 ```
 
 Preview:
-<blockquote style="color: #4f2969; background-color: #b09dc2; border-left: 5px solid #9836f4; padding: 10px;">
+<blockquote style="color: #b09dc2; background-color: #372445; border-left: 5px solid #9836f4; padding: 10px;">
     <strong>Example:</strong> To create a complex number: <code> var z = new Complex128(1, 1)}</code>.
 </blockquote>
 

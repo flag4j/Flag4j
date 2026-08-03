@@ -90,7 +90,13 @@ public class Layout {
     final int itemSize;
 
 
-    /// Flag indicating if
+    /// Flag indicating if this layout is writable or not. A layout is writable when it can be verified that it is injective.
+    /// This means all indices map to distinct elements within the buffer. This makes it safe to write values to the nD-array.
+    ///
+    /// This is a "soft" property derived from [StrideInternalOverlap#mayHaveOverlap(org.flag4jv3.ndarrays.Layout)]. It may be
+    /// `false` even if the layout *is* injective in reality. However, checking if an arbitrary layout is injective is worst-case
+    /// exponential so an exhaustive check is not performed. However, this will *never* be erroneously be `true`. If this
+    /// is `true`, the layout is provably injective and thus safe to write to.
     final boolean isWritable;
 
 
@@ -133,19 +139,22 @@ public class Layout {
 
     /// Constructs a layout where the [#isWritable] and [#isWritable] flags are specified.
     ///
-    /// **Note**: Using this constructor is dangerous. *only* use this constructor if you are *certain* about the correctness
-    /// of the two flags. Further, *no* input validation is performed. Unlike the public constructor, this constructor
-    /// *does not* clone the `strides`.
+    /// <blockquote style="color: #c29d9d; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
+    ///     <strong>Warning:</strong> Using this constructor is dangerous. *only* use this constructor if you are <em>certain</em>
+    ///     about the correctness of the two flags. Further, <em>no</em> input validation is performed. Unlike the public constructor,
+    ///     this constructor <em>does not/<em> clone the {@code strides} which is dangerous.
+    /// </blockquote>
     ///
     /// @param shape The shape of the layout.
     /// @param offset The initial offset of the first item in the layout. Must be non-negative.
     /// @param strides The strides of the layout. That is, the number of buffer positions needed to store a single element.
-    /// E.g., a complex number with real/imaginay components stored interleaved in a `double[]` buffer would have `itemSize = 2`.
-    /// Must be positive.
     /// @param knownContiguous Flag indicating if the layout is already known to be contiguous or not.
-    /// @param itemSize The size of an individual item of this layout.
-    /// @param isWritable
-    /// @return A [Layout] of an nD-array with.
+    /// @param itemSize The size of an individual item of this layout (in terms of buffer indices).
+    /// For example, a complex number with real/imaginay components stored interleaved in a `double[]` buffer would have `itemSize = 2`.
+    /// Must be positive.
+    /// @param isWritable Flag indicating if the layout [is writable][#isWritable()] or not.
+    /// @return A [Layout] of an [nD-array][org.flag4jv3.ndarrays.dense.DenseNDArrayBase] with the specified attributes
+    /// and properties.
     private Layout(Shape shape, int offset, int[] strides, int itemSize, ContiguousOrder knownContiguous, boolean isWritable) {
         this.shape = shape;
         this.offset = offset;
@@ -181,10 +190,9 @@ public class Layout {
     /// @param order The ordering of the contiguous array. Must be either [ContiguousOrder#C] or [ContiguousOrder#F]
     /// @see #contiguous(Shape, int)
     public static Layout contiguous(Shape shape, int itemSize, ContiguousOrder order) {
-        if (order != ContiguousOrder.C || order != ContiguousOrder.F) {
-            throw new IllegalArgumentException("Contiguous order must be C or F but got: " + order);
-        }
-        return new Layout(shape, 0, shape.getContiguousStridesUnsafe(), itemSize, order, true);
+        ContiguousOrder.ensureCorFExact(order);
+
+        return new Layout(shape, 0, shape.getContiguousStrides(order), itemSize, order, true);
     }
 
 
@@ -535,16 +543,9 @@ public class Layout {
     }
 
 
-    /// Checks if this layout has the canonical contiguous strides for its shape. That is, if its strides match that of
-    /// `shape.getContiguousStrides()`
-    public boolean hasCanonicalStrides() {
-        return Arrays.equals(strides, shape.getContiguousStridesUnsafe());
-    }
-
-
     /// Checks if this layout possibly represents overlapping locations in memory (e.g, zero strides).
     ///
-    /// <blockquote style="color: #306091; background-color: #9da7c2; border-left: 5px solid #4b82bd; padding: 10px;">
+    /// <blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
     ///     <strong>Note:</strong> This method does not exhaustive check for all possible overlaps as that would have worst-case
     ///     exponential time. As such, this method <em>may</em> erroneously return {@code true} even if there is no overlap.
     ///     However, it will <em>never</em> mistakenly return {@code false}.
@@ -593,6 +594,7 @@ public class Layout {
         for (int a = 0; a < idxND.length; a++) {
             p += idxND[a]*strides[a];
         }
+
         return p;
     }
 
@@ -652,7 +654,6 @@ public class Layout {
                 throw new IllegalArgumentException("Cannot broadcast shapes " + left.shape + " and " + right.shape);
             }
         }
-
         Shape broadcastShape = new Shape(broadcastDims);
 
         return new Pair<>(
@@ -680,7 +681,9 @@ public class Layout {
             }
         }
 
-        return new IntPair(min*itemSize, max*itemSize);
+        // itemSize*max will be starting position of final item; itemSize*(max + 1) will be one after last index, hence
+        // itemSize*(max + 1) - 1 will be the final index in the buffer.
+        return new IntPair(min*itemSize, itemSize*(max + 1) - 1);
     }
 
 

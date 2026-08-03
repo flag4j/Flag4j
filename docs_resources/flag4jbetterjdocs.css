@@ -67,7 +67,7 @@
 .callout-info {
     background-color: #9da7c2;
     border-left-color: #4b82bd;
-    color: #306091;
+    color: #1e3a5f;
 }
 
 .callout-info::before {
@@ -81,7 +81,7 @@
 .callout-warning {
     background-color: #c29d9d;
     border-left-color: #f44336;
-    color: #692929;
+    color: #571f1f;
 }
 
 .callout-warning::before {

@@ -26,7 +26,6 @@ package org.flag4jv3.linalg.internal.kernels;
 
 import org.flag4jv3.ndarrays.Layout;
 import org.flag4jv3.ndarrays.Shape;
-import org.flag4jv3.ndarrays.StrideInternalOverlap;
 import org.flag4jv3.ndarrays.dense.DenseData;
 import org.flag4jv3.ndarrays.dense.DenseDoubleData;
 import org.flag4jv3.util.arrays.ArrayBuilder;
@@ -181,10 +180,8 @@ public final class DenseKernelSupport {
 
     // ---- opt-in: catches a stray broadcast passed as a write target ---------
     public static void requireWritable(Layout layout) {
-        var result = StrideInternalOverlap.classifyOverlap(layout);
-
         if (!layout.isWritable()) {
-            throw new IllegalArgumentException("layout is not writeable.");
+            throw new IllegalArgumentException("layout must writeable.");
         }
     }
 

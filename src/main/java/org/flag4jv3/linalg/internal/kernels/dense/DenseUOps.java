@@ -45,7 +45,7 @@ public final class DenseUOps {
     public static <T> DenseData<T> applyUOp(
             DenseData<T> src,
             DenseData<T> out,
-            NDUnaryLoop loop
+            StridedUnaryLoop loop
     ) {
         Objects.requireNonNull(src, "src must not be null");
         Objects.requireNonNull(loop, "loop must not be null");
@@ -69,9 +69,10 @@ public final class DenseUOps {
         //  is up in the air...
         int parallelThreshold = 8192;
 
-        // Fast path when both arrays are contiguous and have the same ordering.
-        if (fSrcL.contiguousOrder() && fOutL.contiguousOrder()
-                && fSrcL.contiguousOrder() == fOutL.contiguousOrder()) {
+        // Fast path when both arrays are contiguous and their ordering match.
+        // The cursor actually handles this path well and degenerates to a single loop run,
+        // but having an explicit fast path here saves on the cursor overhead.
+        if (Layout.areContiguousAndMatchOrder(fSrcL, fOutL)) {
             final int sIS = fSrcL.itemSize(), oIS = fOutL.itemSize();
             final int sOff = fSrcL.offset()*sIS, oOff = fOutL.offset()*oIS;
 
@@ -107,12 +108,12 @@ public final class DenseUOps {
     /// @param cursor The cursor defining runs to apply `loop` to.
     private static <T> void runSequential(
             T[] srcB, T[] outB,
-            NDUnaryLoop loop, StridedRunCursor2 cursor
+            StridedUnaryLoop loop, StridedRunCursor2 cursor
     ) {
         if (cursor.isEmpty()) return; // Nothing to do.
 
         do {
-            loop.apply(srcB, cursor.aPos, cursor.aInnerStride, outB, cursor.bPos, cursor.bInnerStride, cursor.innerN);
+            loop.apply(srcB, cursor.aPos, cursor.aInnerBufStride, outB, cursor.bPos, cursor.bInnerBufStride, cursor.innerN);
         } while (cursor.next());
     }
 
@@ -128,7 +129,7 @@ public final class DenseUOps {
     private static <T> void runConcurrent(
             Layout fSrcL, T[] fSrcB,
             Layout fOutL, T[] fOutB,
-            NDUnaryLoop loop, StridedRunCursor2 cursor
+            StridedUnaryLoop loop, StridedRunCursor2 cursor
     ) {
         final int numel = fSrcL.shape().numelIntValueExact();
         if (numel == 0) return; // Nothing to do.
@@ -143,8 +144,8 @@ public final class DenseUOps {
             int g = gLo;
             while (g < gHi) {
                 int n = Math.min(innerN - off, gHi - g);   // clamp: partial run at either end
-                loop.apply(fSrcB, c.aPos + off*c.aInnerStride, c.aInnerStride,
-                        fOutB, c.bPos + off*c.bInnerStride, c.bInnerStride, n);
+                loop.apply(fSrcB, c.aPos + off*c.aInnerBufStride, c.aInnerBufStride,
+                        fOutB, c.bPos + off*c.bInnerBufStride, c.bInnerBufStride, n);
                 g += n;
                 off = 0;
                 c.next();
@@ -156,7 +157,7 @@ public final class DenseUOps {
     public static DenseDoubleData applyUOp(
             DenseDoubleData src,
             DenseDoubleData out,
-            DoubleNDUnaryLoop loop
+            StridedDoubleUnaryLoop loop
     ) {
         Objects.requireNonNull(src, "src must not be null");
         Objects.requireNonNull(loop, "loop must not be null");
@@ -174,11 +175,12 @@ public final class DenseUOps {
         final var fSrcB = fSrc.buffer();
 
         int numel = fSrc.layout().shape().numelIntValueExact();
-        int parallelThreshold = 8196; // TODO NOW: This is just a place holder...
+        int parallelThreshold = 8192; // TODO NOW: This is just a place holder...
 
-        // Fast path when both arrays are contiguous.
-        if (fSrcL.contiguousOrder() && fOutL.contiguousOrder()
-                && fSrcL.contiguousOrder() == fOutL.contiguousOrder()) {
+        // Fast path when both arrays are contiguous and their ordering match.
+        // The cursor actually handles this path well and degenerates to a single loop run,
+        // but having an explicit fast path here saves on the cursor overhead.
+        if (Layout.areContiguousAndMatchOrder(fSrcL, fOutL)) {
             final int sIS = fSrcL.itemSize(), oIS = fOutL.itemSize();
             final int sOff = fSrcL.offset()*sIS, oOff = fOutL.offset()*oIS;
 
@@ -214,12 +216,12 @@ public final class DenseUOps {
     /// @param cursor The cursor defining runs to apply `loop` to.
     private static void runSequential(
             double[] srcB, double[] outB,
-            DoubleNDUnaryLoop loop, StridedRunCursor2 cursor
+            StridedDoubleUnaryLoop loop, StridedRunCursor2 cursor
     ) {
         if (cursor.isEmpty()) return; // Nothing to do.
 
         do {
-            loop.apply(srcB, cursor.aPos, cursor.aInnerStride, outB, cursor.bPos, cursor.bInnerStride, cursor.innerN);
+            loop.apply(srcB, cursor.aPos, cursor.aInnerBufStride, outB, cursor.bPos, cursor.bInnerBufStride, cursor.innerN);
         } while (cursor.next());
     }
 
@@ -235,7 +237,7 @@ public final class DenseUOps {
     private static void runConcurrent(
             Layout fSrcL, double[] fSrcB,
             Layout fOutL, double[] fOutB,
-            DoubleNDUnaryLoop loop, StridedRunCursor2 cursor
+            StridedDoubleUnaryLoop loop, StridedRunCursor2 cursor
     ) {
         final int numel = fSrcL.shape().numelIntValueExact();
         if (numel == 0) return; // Nothing to do.
@@ -249,8 +251,8 @@ public final class DenseUOps {
             int g = gLo;
             while (g < gHi) {
                 int n = Math.min(innerN - off, gHi - g);   // clamp: partial run at either end
-                loop.apply(fSrcB, c.aPos + off*c.aInnerStride, c.aInnerStride,
-                        fOutB, c.bPos + off*c.bInnerStride, c.bInnerStride, n);
+                loop.apply(fSrcB, c.aPos + off*c.aInnerBufStride, c.aInnerBufStride,
+                        fOutB, c.bPos + off*c.bInnerBufStride, c.bInnerBufStride, n);
                 g += n;
                 off = 0;
                 c.next();

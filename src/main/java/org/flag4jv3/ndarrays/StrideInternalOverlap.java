@@ -60,7 +60,7 @@ public final class StrideInternalOverlap {
 
     /// Checks if any element in an nD-array with the given layout *may* have values which overlap in memory (e.g., a zero stride).
     ///
-    /// <blockquote style="color: #306091; background-color: #9da7c2; border-left: 5px solid #4b82bd; padding: 10px;">
+    /// <blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
     ///     <strong>Note:</strong> This method does not perform an exhaustive check for all possible overlaps as that would have
     ///      worst-case exponential time. As such, this method <em>may</em> erroneously return {@code true} even if there
     ///     is no overlap. However, it will <em>never</em> mistakenly return {@code false}.
@@ -79,7 +79,7 @@ public final class StrideInternalOverlap {
 
     /// Checks if any element in an nD-array with the given layout *may* have values which overlap in memory (e.g., a zero stride).
     ///
-    /// <blockquote style="color: #306091; background-color: #9da7c2; border-left: 5px solid #4b82bd; padding: 10px;">
+    /// <blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
     ///     <strong>Note:</strong> This method does not perform an exhaustive check for all possible overlaps as that would
     ///     have worst-case exponential time. As such, this method may not be able to guarantee if there is or is not overlapping.
     ///     In such cases, {@link Result#UNKNOWN} is returned. See return for details.
@@ -96,7 +96,7 @@ public final class StrideInternalOverlap {
 
     /// Checks if any element in an nD-array with the given layout *may* have values which overlap in memory (e.g., a zero stride).
     ///
-    /// <blockquote style="color: #306091; background-color: #9da7c2; border-left: 5px solid #4b82bd; padding: 10px;">
+    /// <blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
     ///     <strong>Note:</strong> This method does not perform an exhaustive check for all possible overlaps as that would
     ///     have worst-case exponential time. As such, this method may not be able to guarantee if there is or is not overlapping.
     ///     In such cases, {@link Result#UNKNOWN} is returned. See return for details.

@@ -72,11 +72,36 @@ public abstract class DenseNDArrayBase<T extends DenseNDArrayBase<T, U, V>, U, V
     public abstract T makeLike(Layout layout, U dataBuffer);
 
 
-    /// Checks if this nD-array is contiguous in memory or not.
+    /// Checks if this nD-array is contiguous in memory.
     ///
     /// @return `true` if this nD-array is contiguous in memory; otherwise, `false`.
+    ///
+    /// @see #isCContiguous()
+    /// @see #isFContiguous()
     public boolean isContiguous() {
-        return layout.contiguousOrder();
+        return layout.isContiguous();
+    }
+
+
+    /// Checks if this nD-array is [C-contiguous][org.flag4jv3.ndarrays.ContiguousOrder#C] in memory.
+    ///
+    /// @return `true` if this nD-array is [C-contiguous][org.flag4jv3.ndarrays.ContiguousOrder#C] in memory; otherwise, `false`.
+    ///
+    /// @see #isCContiguous()
+    /// @see #isFContiguous()
+    public boolean isCContiguous() {
+        return layout.isCContiguous();
+    }
+
+
+    /// Checks if this nD-array is [F-contiguous][org.flag4jv3.ndarrays.ContiguousOrder#F] in memory.
+    ///
+    /// @return `true` if this nD-array is [F-contiguous][org.flag4jv3.ndarrays.ContiguousOrder#F] in memory; otherwise, `false`.
+    ///
+    /// @see #isCContiguous()
+    /// @see #isFContiguous()
+    public boolean isFContiguous() {
+        return layout.isFContiguous();
     }
 
 

@@ -28,17 +28,22 @@ import org.flag4jv3.ndarrays.Layout;
 
 import static org.flag4jv3.linalg.internal.kernels.DenseKernelSupport.coalesceCOrder2;
 
+/// A cursor for iterating over a source [layout][Layout] and storing results in another output [layout][Layout].
+///
+/// <blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
+///     <strong>Note:</strong> Note: traversal order using a cursor is unspecified beyond visiting each logical index exactly once.
+/// </blockquote>
 public final class StridedRunCursor2 {
     public int aPos;
     public int bPos;
-    public final int aInnerStride;
-    public final int bInnerStride;
+    public final int aInnerBufStride;
+    public final int bInnerBufStride;
     public final int innerN;
     private final int aBase;
     private final int bBase;
     private final int[] dims;
-    private final int[] aStrides;
-    private final int[] bStrides;
+    private final int[] aBufStrides;
+    private final int[] bBufStrides;
     private final int[] odo;
     private final int outerRank;
     private final boolean empty;
@@ -57,8 +62,8 @@ public final class StridedRunCursor2 {
         // Emptiness is a property of the shape alone: any zero extent => no work.
         if (empty) {
             innerN = 0;
-            aInnerStride = bInnerStride = 0;
-            dims = aStrides = bStrides = odo = null;
+            aInnerBufStride = bInnerBufStride = 0;
+            dims = aBufStrides = bBufStrides = odo = null;
             outerRank = 0;
             totalRuns = 0;
             aPos = bPos = 0;
@@ -71,6 +76,25 @@ public final class StridedRunCursor2 {
             d[ax] = a.getSize(ax);
             sa[ax] = a.stride(ax)*aIS;   // slot units before coalescing
             sb[ax] = b.stride(ax)*bIS;
+        }
+
+        // Reorder axes so out (b) strides are |descending| => b's smallest-stride
+        // axis becomes innermost. Legal for element-wise traversal because the same
+        // permutation is applied to both operands. Insertion sort: rank is tiny,
+        // and strict '<' keeps it stable (ties preserve original C order).
+        for (int i = 1; i < rank; i++) {
+            int di = d[i], sai = sa[i], sbi = sb[i];
+            int key = Math.abs(sbi);
+            int j = i - 1;
+            while (j >= 0 && Math.abs(sb[j]) < key) {
+                d[j + 1] = d[j];
+                sa[j + 1] = sa[j];
+                sb[j + 1] = sb[j];
+                j--;
+            }
+            d[j + 1] = di;
+            sa[j + 1] = sai;
+            sb[j + 1] = sbi;
         }
 
         int cRank = (rank == 0) ? 0 : coalesceCOrder2(d, sa, sb, rank, d, sa, sb);
@@ -86,12 +110,12 @@ public final class StridedRunCursor2 {
         }
 
         innerN = d[cRank - 1];
-        aInnerStride = sa[cRank - 1];
-        bInnerStride = sb[cRank - 1];
+        aInnerBufStride = sa[cRank - 1];
+        bInnerBufStride = sb[cRank - 1];
         outerRank = cRank - 1;
         dims = d;
-        aStrides = sa;
-        bStrides = sb;
+        aBufStrides = sa;
+        bBufStrides = sb;
         odo = new int[Math.max(outerRank, 1)];
         aPos = aBase;
         bPos = bBase;
@@ -113,8 +137,8 @@ public final class StridedRunCursor2 {
             int digit = (int) (runIdx%dims[ax]);
             runIdx /= dims[ax];
             odo[ax] = digit;
-            aP += digit*aStrides[ax];
-            bP += digit*bStrides[ax];
+            aP += digit*aBufStrides[ax];
+            bP += digit*bBufStrides[ax];
         }
         aPos = aP;
         bPos = bP;
@@ -135,11 +159,11 @@ public final class StridedRunCursor2 {
     /// Produces the next odometer index.
     public boolean next() {
         for (int ax = outerRank - 1; ax >= 0; ax--) {
-            aPos += aStrides[ax];
-            bPos += bStrides[ax];
+            aPos += aBufStrides[ax];
+            bPos += bBufStrides[ax];
             if (++odo[ax] < dims[ax]) return true;
-            aPos -= aStrides[ax]*dims[ax];   // rewind before carrying
-            bPos -= bStrides[ax]*dims[ax];
+            aPos -= aBufStrides[ax]*dims[ax];   // rewind before carrying
+            bPos -= bBufStrides[ax]*dims[ax];
             odo[ax] = 0;
         }
 

@@ -24,7 +24,7 @@
 
 package org.flag4jv3.ndarrays;
 
-/// Specifies possible contiguous orderings (including [NONE]) of an [nD-array][org.flag4jv3.ndarrays.base.NDArrayBase]
+/// Specifies possible contiguous orderings (including [NONE]) of an [nD-array][org.flag4jv3.ndarrays.dense.DenseNDArrayBase]
 public enum ContiguousOrder {
     /// Is neither [C] nor [F] contiguous.
     NONE,
@@ -44,7 +44,7 @@ public enum ContiguousOrder {
     /// @param order The order of interest.
     /// @throws IllegalArgumentException If `order != C || order != F`.
     public static void ensureCorFExact(ContiguousOrder order) {
-        if (order != C || order != F) {
+        if (order != C && order != F) {
             throw new IllegalArgumentException("Expecting order to be C or F but got " + order);
         }
     }

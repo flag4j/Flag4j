@@ -34,53 +34,54 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.StringJoiner;
 
-/**
- * Represents the shape of an nD-array (e.g., tensor, matrix, vector, etc.) specifying its dimensions and provides
- * utilities for shape-related operations.
- *
- * <p>The {@code Shape} class is immutable with respect to its dimensions, ensuring thread safety and consistency.
- *
- * <h2>Example usage:</h2>
- * <pre>{@code
- * Shape shape = new Shape();  // Creates a shape for a scalar value.
- * shape = new Shape(3, 4, 5);  // Creates a shape for a 3x4x5 nD-array.
- * int rank = shape.rank();  // Gets the rank (number of dimensions).
- * }</pre>
- *
- * @see NDArrayBase
- * @see Layout
- */
+/// Represents the shape of an [nD-array][NDArrayBase] (e.g., tensor, matrix, vector, etc.) specifying its dimensions and provides
+/// utilities for shape-related operations.
+///
+/// The `Shape` class is immutable with respect to its dimensions, ensuring thread safety and consistency.
+///
+/// The [maximum rank][#MAX_RANK] is limited to `32` to provided a realistic upper-bound on the rank of an [nD-array][NDArrayBase].
+/// This allows for some optimizations with fixed size "scratch" arrays.
+///
+/// ## Example usage:
+/// ```java
+/// Shape shape = new Shape();  // Creates a shape for a scalar value.
+/// shape = new Shape(3, 4, 5);  // Creates a shape for a 3x4x5 nD-array.
+/// int rank = shape.rank();  // Gets the rank (number of dimensions).
+/// ```
+///
+/// @see NDArrayBase
+/// @see Layout
 public class Shape implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /// The maximum allowed rank for a `Shape` object.
+    public static final int MAX_RANK = 32;
+
     /// The rank of this shape.
     final int rank;
-    /**
-     * An array containing the size of each dimension in this shape.
-     */
+    /// An array containing the size of each dimension in this shape.
     final int[] dims; // To ensure shape immutability: do not modify here or anywhere else; do not expose this publicly.
-    /**
-     * Total number of entries of this shape. This is only computed on demand by {@link #numel()}.
-     */
+    /// Total number of entries of this shape. Computed lazily.
     private BigInteger numElements = null;
-    /**
-     * Stores the total number of entries in this shape as an exact integer if possible.
-     * This is only computed on demand by {@link #numelIntValueExact()}.
-     */
+    /// The total number of entries in this shape as an exact integer if possible. Computed lazily.
     private int numElementsIntExact = -1;
 
 
-    /**
-     * Constructs a shape object from specified dimensions.
-     *
-     * @param dims The dimension measurements for the shape object. All items must be non-negative.
-     * @throws IllegalArgumentException If any dimension is negative.
-     */
+    /// Constructs a shape object from the specified dimensions.
+    ///
+    /// @param dims dimensions of the shape object. Must be less than [#MAX_RANK] in length.
+    /// @throws IllegalArgumentException If `dims.length > MAX_RANK`.
+    /// @throws IllegalArgumentException If any dimension is negative.
     public Shape(int... dims) {
+        if (dims.length > MAX_RANK) {
+            throw new IllegalArgumentException(
+                    "rank cannot exceed " + MAX_RANK + " but got " + dims.length + ".");
+        }
+
         // Ensure all dimensions for the shape object are non-negative.
         ValidateParameters.ensureNonNegative(dims);
-        this.dims = dims;
+        this.dims = dims.clone();
         rank = dims.length;
     }
 
@@ -130,6 +131,10 @@ public class Shape implements Serializable {
      * @throws IllegalArgumentException  If {@code startIdx > stopIdx}.
      */
     public Shape slice(int startIdx, int stopIdx) {
+        if (stopIdx > rank) {
+            throw new IndexOutOfBoundsException("stopIdx=" + stopIdx + " larger than shapes rank=" + rank);
+        }
+
         return new Shape(Arrays.copyOfRange(dims, startIdx, stopIdx));
     }
 
@@ -221,15 +226,10 @@ public class Shape implements Serializable {
         ValidateParameters.ensureValidAxes(this, axes);
 
         boolean[] squeezeAxes = new boolean[rank];
-        for (int axis : axes) {
-            squeezeAxes[axis] = true;
-        }
-
         int squeezedRank = rank;
         for (int axis : axes) {
-            if (dims[axis] == 1) {
-                squeezedRank--;
-            }
+            if (!squeezeAxes[axis] && dims[axis] == 1) squeezedRank--;
+            squeezeAxes[axis] = true;
         }
 
         if (squeezedRank == rank) {
