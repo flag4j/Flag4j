@@ -30,8 +30,8 @@ import static org.flag4jv3.linalg.internal.kernels.DenseKernelSupport.coalesceCO
 
 /// A cursor for iterating over a source [layout][Layout] and storing results in another output [layout][Layout].
 ///
-/// <blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
-///     <strong>Note:</strong> Note: traversal order using a cursor is unspecified beyond visiting each logical index exactly once.
+/// <blockquote style="color: #b0bbd9; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
+///     <strong>Note:</strong> traversal order using a cursor is unspecified beyond visiting each logical slice exactly once.
 /// </blockquote>
 public final class StridedRunCursor2 {
     public int aPos;
@@ -156,7 +156,7 @@ public final class StridedRunCursor2 {
     }
 
 
-    /// Produces the next odometer index.
+    /// Produces the next odometer slice.
     public boolean next() {
         for (int ax = outerRank - 1; ax >= 0; ax--) {
             aPos += aBufStrides[ax];

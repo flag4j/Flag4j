@@ -37,7 +37,7 @@ import static org.flag4jv3.concurrency.Configurations.DEFAULT_PARALLELISM;
  * <ul>
  *   <li>The size of this pool can be set via {@link #setParallelism(int)} and queried via {@link #getParallelismLevel()}.</li>
  *   <li>
- *       {@link #concurrentKernel(int, TensorKernel)} divides an index range into contiguous chunks for
+ *       {@link #concurrentKernel(int, TensorKernel)} divides an slice range into contiguous chunks for
  *       general parallel kernels. {@link #concurrentBlockedKernel(int, int, TensorKernel)} divides it into
  *       block-aligned bands for kernels that are internally cache-blocked.
  *    </li>
@@ -152,7 +152,7 @@ public final class ThreadManager {
 
 
     /**
-     * <p>Computes a tensor kernel concurrently by partitioning the outer-loop index range
+     * <p>Computes a tensor kernel concurrently by partitioning the outer-loop slice range
      * {@code [0, totalSize)} into contiguous, equal-sized chunks and dispatching one chunk per worker thread
      * (up to the current {@link #getParallelismLevel() parallelism level}).
      *
@@ -195,14 +195,14 @@ public final class ThreadManager {
 
 
     /**
-     * <p>Computes a blocked tensor kernel concurrently by partitioning the outer-loop index range
+     * <p>Computes a blocked tensor kernel concurrently by partitioning the outer-loop slice range
      * {@code [0, totalSize)} into contiguous, block-aligned bands and dispatching one band per worker thread
      * (up to the current {@link #getParallelismLevel() parallelism level}).
      *
      * <p>Unlike {@link #concurrentKernel(int, TensorKernel)}, this method respects {@code blockSize}: every
      * band handed to {@code kernel} begins on a block boundary and spans a whole number of blocks (the final
      * band may be shorter). This keeps each worker's range aligned to the cache-tiling structure of a blocked
-     * kernel so interior tiles stay full-sized and gives each worker a single contiguous band of the index range
+     * kernel so interior tiles stay full-sized and gives each worker a single contiguous band of the slice range
      * for predictable cache locality. Prefer this over {@link #concurrentKernel(int, TensorKernel)}
      * when {@code kernel} is internally blocked.
      *

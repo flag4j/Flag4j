@@ -24,26 +24,27 @@
 
 package org.flag4jv3.ndarrays;
 
+import org.flag4jv3.algebra.elements.Complex128;
+import org.flag4jv3.algebra.elements.Complex64;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Element-type coordinate of an ArrayType. Hash-key friendly by construction:
- * built-ins are enum singletons, generics are records.
- */
+/// Element-type coordinate of an nD-array. Hash-key friendly by construction:
+/// built-ins are enum singletons, generics are records.
 public sealed interface ElemType permits ElemType.Builtin, ElemType.Generic {
 
-    /**
-     * Weakest -> strongest. Gates op legality: sub needs RING, div needs FIELD.
-     */
+    /// Used to gate legality of operations: `sub` needs [RING], `div` needs [FIELD].
+    /// Enumerations are provided weakest -> strongest.
     enum Algebra {
-        SEMIRING, RING, FIELD;
+        SEMIRING, RING, FIELD, FINITE_FIELD;
 
 
         public boolean atLeast(Algebra o) {
+            // Note, this relies on the enumerated algebras to be listed weakest -> strongest.
             return ordinal() >= o.ordinal();
         }
 
@@ -69,10 +70,10 @@ public sealed interface ElemType permits ElemType.Builtin, ElemType.Generic {
         INT32(Algebra.RING, Integer.class),
         INT64(Algebra.RING, Long.class),
         FLT32(Algebra.FIELD, Float.class),
-        FLT64(Algebra.FIELD, Double.class);
-        // todo now: Implement the field, rings, semirings, etc.
-//        CPLX64 (Algebra.FIELD,    Complex64.class),
-//        CPLX128(Algebra.FIELD,    DoublePair.class);
+        FLT64(Algebra.FIELD, Double.class),
+        CPLX64(Algebra.FIELD, Complex64.class),
+        CPLX128(Algebra.FIELD, Complex128.class);
+        // todo now: Implement other fields, rings, semirings, etc.
 
         private final Algebra algebra;
         private final Class<?> elementClass;
@@ -111,7 +112,7 @@ public sealed interface ElemType permits ElemType.Builtin, ElemType.Generic {
         private static final Builtin[][] JOIN = new Builtin[values().length][values().length];
 
         static {
-            for (Builtin t : values()) def(t, t, t);              // idempotence
+            for (Builtin t : values()) def(t, t, t); // idempotence
 
             def(INT32, INT64, INT64);
 
@@ -120,17 +121,20 @@ public sealed interface ElemType permits ElemType.Builtin, ElemType.Generic {
             def(INT64, FLT32, FLT64);
             def(INT32, FLT64, FLT64);
             def(INT64, FLT64, FLT64);
-//            def(INT32, CPLX64,  CPLX128); def(INT64, CPLX64,  CPLX128);
-//            def(INT32, CPLX128, CPLX128); def(INT64, CPLX128, CPLX128);
+            def(INT32, CPLX64, CPLX128);
+            def(INT64, CPLX64, CPLX128);
+            def(INT32, CPLX128, CPLX128);
+            def(INT64, CPLX128, CPLX128);
 
             def(FLT32, FLT64, FLT64);
-//            def(FLT32, CPLX64,  CPLX64);
-//            def(FLT32, CPLX128, CPLX128);
-//            def(FLT64, CPLX64,  CPLX128); // 64-bit real parts need 128-bit complex
-//            def(FLT64, CPLX128, CPLX128);
-//            def(CPLX64, CPLX128, CPLX128);
+            def(FLT32, CPLX64, CPLX64);
+            def(FLT32, CPLX128, CPLX128);
 
-            // Deliberately absent: BOOL with anything. See discussion.
+            def(FLT64, CPLX64, CPLX128); // 64-bit real parts need 128-bit complex
+            def(FLT64, CPLX128, CPLX128);
+            def(CPLX64, CPLX128, CPLX128);
+
+            // Deliberately absent: BOOL with anything. It could be a ring, field, or mask.
         }
 
         private static void def(Builtin a, Builtin b, Builtin r) {

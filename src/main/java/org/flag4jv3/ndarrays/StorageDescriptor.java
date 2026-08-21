@@ -24,5 +24,16 @@
 
 package org.flag4jv3.ndarrays;
 
-public record ArrayType(RankKind kind, Storage storage) {
+/// Array storage formats supported in Flag4j.
+public enum StorageDescriptor {
+    /// Dense.
+    Dense,
+    /// Sparse coordinate.
+    COO,
+    /// Sparse dictionary of keys.
+    DOK,
+    /// Compressed sparse row. Only rank-2 nD-arrays supported.
+    CSR,
+    /// Compressed sparse column. Only rank-2 nD-arrays supported.
+    CSC,
 }

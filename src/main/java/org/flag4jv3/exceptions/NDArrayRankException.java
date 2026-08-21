@@ -24,14 +24,17 @@
 
 package org.flag4jv3.exceptions;
 
-/**
- * Thrown when the number of indices supplied for an N-dimensional array does
- * not match the array rank.
- *
- * <p>For example, this exception may be thrown when two indices are supplied
- * for an array with rank three.
- */
+import java.io.Serial;
+
+/// Thrown when the number of indices supplied for an [nD-array][org.flag4jv3.ndarrays.base.NDArrayBase] does
+/// not match the array [rank][org.flag4jv3.ndarrays.Shape#rank()] or when an operation is attempted on an nD-array with an unsupported rank.
+///
+/// For example, this exception may be thrown when two indices are supplied
+/// for an array with rank three.
 public final class NDArrayRankException extends IllegalArgumentException {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
 
     public NDArrayRankException(String message) {
         super(message);

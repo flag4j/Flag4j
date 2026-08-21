@@ -38,7 +38,7 @@ import org.flag4jv3.math.util.ComplexStability;
 ///
 /// Layout offsets and strides are measured in complex elements rather than raw positions in the interleaved buffer.
 ///
-/// <blockquote style="color: #c29d9d; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
+/// <blockquote style="color: #d4aeae; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
 ///     <strong>Warning:</strong> This class contains low-level implementations primarly intended for internal use.
 ///     As such, the methods in this class perform minimal validation of input parameters. Users of this class are responsible
 ///     for ensuring that the input data is valid and consistent with the intended operation. Malformed inputs <em>may</em>

@@ -1,27 +1,26 @@
 [![Build and Deploy Javadoc](https://github.com/jacobdwatters/Flag4j/actions/workflows/javadoc-gh-pages.yml/badge.svg)](https://github.com/jacobdwatters/Flag4j/actions/workflows/javadoc-gh-pages.yml)
 <!-- TODO: Add coverage badge -->
 <center>
-<img src="figures/flag4j_primary_logo_variant.svg" style="max-height: 350px; width: auto;">
+<img src="docs_resources/resources/figures/flag4j_primary_logo_variant.svg" style="max-height: 350px; width: auto;">
 </center>
 
 # Flag4j – Fast Linear Algebra for Java
 
-Flag4j is a fast and easy-to-use linear algebra library for Java
-and provides operations and linear algebra routines for real/complex sparse/dense tensors,
-matrices, and vectors.
+Flag4j is a fast and easy-to-use linear algebra library for Java and provides operations and linear algebra routines for real/complex
+sparse/dense tensors, matrices, and vectors.
 
 ## State of the Project as of 7-DEC-2024
 
-Flag4j is currently in the final steps of development before an initial beta release.
-Nearly all features have been fully implemented or beta implementations.
+Flag4j is currently in the final steps of development before an initial beta release. Nearly all features have been fully implemented
+or beta implementations.
 
 ### Recent Updates:
 
 - I/O Improvements:
     - All tensors, vectors, and matrices may be serialized.
     - Added support for reading/writing from/to Matrix Market Exchange file formats.
-        - Currently only supports a subset including real/complex/integer dense general matrices
-          and real/complex/integer coordinate general matrices
+        - Currently only supports a subset including real/complex/integer dense general matrices and real/complex/integer coordinate
+          general matrices
     - Added support for reading/writing from/to csv files for real and complex matrices (i.e. `Matrix` and `CMatrix`).
 - Improved API: There have been significant changes to the API, specifically with the inheritance hierarchy of arrays (tensors,
   matrices, vectors). This was in part to serve the creation of general field/ring/semiring tensors.
@@ -29,9 +28,8 @@ Nearly all features have been fully implemented or beta implementations.
     - Added `Field`, `Ring`, and `Semiring` interfaces representing the mathematical objects.
         - Complex numbers are now implemented as a `Field`. There are now 64-bit and 128-bit variants of complex numbers.
         - Several reference implementations of the interfaces are provided, e.g. `Bool`, `RealInt16`, `Complex128`.
-    - Added generic `FieldMatrix<T extends Field<T>>` for creating matrices for a generic field. This allows users
-      to easily create a matrix for a custom field which implements the `Field` interface. Support for generic
-      ring and semiring matrices are planned.
+    - Added generic `FieldMatrix<T extends Field<T>>` for creating matrices for a generic field. This allows users to easily create a
+      matrix for a custom field which implements the `Field` interface. Support for generic ring and semiring matrices are planned.
 
 ___
 

@@ -509,37 +509,6 @@ class ShapeTests {
     class Derived {
 
         @Test
-        @DisplayName("slice(start) takes the trailing axes")
-        void sliceFrom() {
-            Shape shape = new Shape(2, 3, 4, 5);
-
-            assertArrayEquals(new int[]{4, 5}, shape.slice(2).dims());
-            assertArrayEquals(new int[]{2, 3, 4, 5}, shape.slice(0).dims());
-            assertArrayEquals(new int[0], shape.slice(4).dims());
-        }
-
-
-        @Test
-        @DisplayName("slice(start, stop) is half-open")
-        void sliceRange() {
-            Shape shape = new Shape(2, 3, 4, 5);
-
-            assertArrayEquals(new int[]{3, 4}, shape.slice(1, 3).dims());
-            assertArrayEquals(new int[0], shape.slice(2, 2).dims());
-        }
-
-
-        @Test
-        @DisplayName("slice with out-of-bounds indices throws")
-        void sliceOutOfBounds() {
-            Shape shape = new Shape(2, 3, 4);
-
-            assertThrows(RuntimeException.class, () -> shape.slice(1, 9));
-            assertThrows(RuntimeException.class, () -> shape.slice(2, 1));
-        }
-
-
-        @Test
         @DisplayName("flatten produces a rank-1 shape with the same element count")
         void flatten() {
             Shape shape = new Shape(2, 3, 4);

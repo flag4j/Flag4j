@@ -20,11 +20,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /// Tests for [Layout].
 ///
-/// Several tests use a brute-force oracle: enumerate every logical nD index, map it through
+/// Several tests use a brute-force oracle: enumerate every logical nD slice, map it through
 /// [Layout#toBufferIndex(int, int...)], and check a property of the resulting slot set. This is
 /// the strongest available check on the layout invariants (injectivity, extent bounds, and
 /// mapping preservation under [Layout#squeeze()]) because it does not reimplement the stride
-/// arithmetic being tested — it only enumerates the index space.
+/// arithmetic being tested, it only enumerates the slice space.
 @DisplayName("Layout")
 class LayoutTests {
 
@@ -320,11 +320,11 @@ class LayoutTests {
     // Index arithmetic
     // =====================================================================================
     @Nested
-    @DisplayName("index arithmetic")
+    @DisplayName("slice arithmetic")
     class IndexArithmetic {
 
         @Test
-        @DisplayName("linear element index is offset + sum(idx * stride)")
+        @DisplayName("linear element slice is offset + sum(idx * stride)")
         void linearElementIndex() {
             Layout layout = new Layout(new Shape(2, 3, 4), 10, new int[]{12, 4, 1}, 1);
 
@@ -334,7 +334,7 @@ class LayoutTests {
 
 
         @Test
-        @DisplayName("linear element index ignores itemSize entirely")
+        @DisplayName("linear element slice ignores itemSize entirely")
         void linearIndexIgnoresItemSize() {
             Shape shape = new Shape(2, 3);
             int[] strides = {3, 1};
@@ -346,7 +346,7 @@ class LayoutTests {
 
 
         @Test
-        @DisplayName("buffer index scales the element index by itemSize and adds the component")
+        @DisplayName("buffer slice scales the element slice by itemSize and adds the component")
         void bufferIndexScaling() {
             Layout complex = new Layout(new Shape(2, 3), 4, new int[]{3, 1}, 2);
             int element = complex.toLinearElementIndex(1, 2);   // 4 + 3 + 2 = 9
@@ -358,7 +358,7 @@ class LayoutTests {
 
         @ParameterizedTest
         @ValueSource(ints = {-1, 2, 5})
-        @DisplayName("component index outside [0, itemSize) is rejected")
+        @DisplayName("component slice outside [0, itemSize) is rejected")
         void componentIndexBounds(int component) {
             Layout complex = Layout.contiguous(new Shape(2, 3), 2);
 
@@ -368,7 +368,7 @@ class LayoutTests {
 
 
         @Test
-        @DisplayName("an nD index whose length differs from the rank is rejected")
+        @DisplayName("an nD slice whose length differs from the rank is rejected")
         void indexLengthChecked() {
             Layout layout = Layout.contiguous(new Shape(2, 3), 1);
 
@@ -378,7 +378,7 @@ class LayoutTests {
 
 
         @Test
-        @DisplayName("a rank-0 layout maps the empty index to its offset")
+        @DisplayName("a rank-0 layout maps the empty slice to its offset")
         void rankZeroIndexing() {
             Layout scalar = new Layout(new Shape(), 7, new int[0], 1);
 
@@ -464,7 +464,7 @@ class LayoutTests {
     class MinMax {
 
         // NOTE: these assert the *inclusive last reachable slot* convention, i.e. max is the
-        // index of the final slot of the final element. If you settled on an exclusive end
+        // slice of the final slot of the final element. If you settled on an exclusive end
         // bound instead, adjust the expectations here by +1 -- but keep the brute-force
         // containment test below, which is what actually guards resolveSrc's disjointness check.
 
@@ -547,7 +547,7 @@ class LayoutTests {
             Layout layout = new Layout(new Shape(3, 4), 0, new int[]{0, 1}, 1);
 
             assertFalse(layout.isWritable());
-            assertTrue(layout.mayHaveOverlap());
+            assertFalse(layout.mayBeInjective());
         }
 
 
@@ -910,7 +910,7 @@ class LayoutTests {
     // =====================================================================================
 
 
-    /// Enumerates every logical nD index of `shape` in C order, invoking `action` on each.
+    /// Enumerates every logical nD slice of `shape` in C order, invoking `action` on each.
     /// The array passed to `action` is reused; copy it if you need to retain it.
     private static void forEachIndex(Shape shape, Consumer<int[]> action) {
         int rank = shape.rank();

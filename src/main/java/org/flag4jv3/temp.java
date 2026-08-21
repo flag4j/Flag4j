@@ -22,18 +22,13 @@
  * SOFTWARE.
  */
 
-package org.flag4jv3.ndarrays;
+void main() {
+    Object d = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-/// Array storage formats supported in Flag4j.
-public enum Storage {
-    /// Dense.
-    Dense,
-    /// Sparse coordinate.
-    COO,
-    /// Compressed sparse row.
-    CSR,
-    /// Compressed sparse column.
-    CSC,
-    /// Sparse dictionary of keys.
-    DOK
+    System.out.println(Arrays.toString(asD(d)));
+}
+
+
+double[] asD(Object b) {
+    return (double[]) b;
 }

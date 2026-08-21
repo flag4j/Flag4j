@@ -29,7 +29,6 @@ import org.flag4jv3.linalg.internal.kernels.DenseKernelSupport;
 import org.flag4jv3.ndarrays.Layout;
 import org.flag4jv3.ndarrays.Shape;
 import org.flag4jv3.ndarrays.dense.DenseDoubleData;
-import org.flag4jv3.util.NewValidateParameters;
 
 import static org.flag4jv3.math.util.ComplexStability.SAFE_EXP_HI_128;
 import static org.flag4jv3.math.util.ComplexStability.SAFE_EXP_LO_128;
@@ -46,7 +45,7 @@ import static org.flag4jv3.math.util.ComplexStability.SAFE_EXP_LO_128;
 ///
 /// Layout offsets and strides are measured in complex elements rather than raw positions in the interleaved buffer.
 ///
-/// <blockquote style="color: #c29d9d; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
+/// <blockquote style="color: #d4aeae; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
 ///     <strong>Warning:</strong> This class contains low-level implementations primarly intended for internal use.
 ///     As such, the methods in this class perform minimal validation of input parameters. Users of this class are responsible
 ///     for ensuring that the input data is valid and consistent with the intended operation. Malformed inputs <em>may</em>
@@ -69,7 +68,7 @@ public final class DeCm128Sqrt {
 
     /// Computes the element-wise principal square roots of a complex nD-array.
     ///
-    /// <blockquote style="color: #c29d9d; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
+    /// <blockquote style="color: #d4aeae; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
     ///     <strong>Warning:</strong> No check is made to ensure that {@code srcLayout} is a valid layout for the {@code src} array.
     ///     Similarly for {@code outLayout} and {@code out}. If either of these are invalid, the behavior of this method is undefined.
     /// </blockquote>
@@ -84,6 +83,7 @@ public final class DeCm128Sqrt {
     public static void csqrt(DenseDoubleData src, DenseDoubleData out) {
         DenseKernelSupport.requireWritable(out.layout());
         DenseKernelSupport.requireSameShape(out.layout(), src.layout());
+
         final var srcLayout = src.layout();
         final var srcBuffer = src.buffer();
         final var outLayout = out.layout();
@@ -97,8 +97,6 @@ public final class DeCm128Sqrt {
                     "Source and destination share the same backing array "
                             + "but use different layouts.");
         }
-        NewValidateParameters.ensureSameShape(srcLayout.shape(), outLayout.shape(), null);
-
 
         int count = srcLayout.shape().numelIntValueExact();
 

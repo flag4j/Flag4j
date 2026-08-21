@@ -24,37 +24,51 @@
 
 package org.flag4jv3.ndarrays.base;
 
-import org.flag4jv3.ndarrays.AnyNDArray;
-import org.flag4jv3.ndarrays.NDArrayMask;
-import org.flag4jv3.ndarrays.NDArraySlice;
-import org.flag4jv3.ndarrays.Shape;
+import org.flag4jv3.ndarrays.*;
 
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 
-/// // todo now: DOCS.
-///
+// todo now: DOCS.
+
 /// @param <T> The type of the nD-array (for fluent API).
 /// @param <U> The type of the nD-array's buffer that stores individual elements of the nD-array. The elements
 /// of this type may be mutable, but the size *must not* be mutable. For example, standard Java arrays are valid but
-/// [java.util.ArrayList] are *not valid*. In addition to this, the buffer type must be "deeply" copyable.
+/// [java.util.ArrayList]'s are *not valid*. In addition to this, the buffer type must be "deeply" copyable.
 /// @param <V> The type of an individual element of the buffer (i.e., a representation of what is stored in [U]).
 /// The buffer, of type [U], need not store this type exactly, but it must be able to convert any element it stores to
 /// this type.
 public abstract class NDArrayBase<T extends NDArrayBase<T, U, V>, U, V> implements AnyNDArray {
+
+    /// The rank of this nD-array (i.e., the number of dimensions). This specifies the minimum number of indices
+    /// required to uniquely specify an individual element of the nD-array.
     public final int rank;
+
+    /// The shape of this nD-array. This is a tuple of <span class="latex-inline">n</span> non-negative integers
+    /// that specify the size of each dimension within this nD-array.
     public final Shape shape; // Fully immutable so it can be public.
+
+    /// The data buffer containing the elements of this nD-array. This *may* be shared between multiple nD-array instances.
     protected final U buffer; // Elements likely mutable so force getting via bufferView() and bufferCopy().
 
+    /// The size (in [#buffer] indices) of an individual item in the nD-array.
+    /// If this is `2`, then a single item would occupy two successive positions in the [#buffer].
+    public final int itemSize;
 
-    protected NDArrayBase(Shape shape, U buffer) {
+    /// The storage descriptor of this nD-array.
+    private final StorageDescriptor storageDescriptor;
+
+
+    protected NDArrayBase(Shape shape, int itemSize, U buffer, StorageDescriptor storageDescriptor) {
         Objects.requireNonNull(shape, "Shape cannot be null.");
         Objects.requireNonNull(buffer, "nD Array buffer cannot be null.");
 
         this.shape = shape;
-        this.buffer = buffer;
         this.rank = shape.rank();
+        this.itemSize = itemSize;
+        this.buffer = buffer;
+        this.storageDescriptor = storageDescriptor;
     }
 
 
@@ -78,9 +92,18 @@ public abstract class NDArrayBase<T extends NDArrayBase<T, U, V>, U, V> implemen
     }
 
 
+    // TODO NOW: Do we want public shape *and* a getter (similarly for rank)? Seems confusing. I feel it should be one or the other.
+    //  always having to do `.shape()` feels annoying but consistent? Not too sure. I think we need the getters for
+    //  interface reasons.
     @Override
     public Shape shape() {
         return shape;
+    }
+
+
+    @Override
+    public int rank() {
+        return shape.rank();
     }
 
 
@@ -91,9 +114,15 @@ public abstract class NDArrayBase<T extends NDArrayBase<T, U, V>, U, V> implemen
 
     public abstract V get(int... index);
 
-    public abstract V get(NDArrayMask mask);
+    public abstract V get(Mask mask);
 
-    public abstract V get(NDArraySlice slice);
+    public abstract V get(Slice... slices);
+
+
+    public final V slice(Slice... slices) {
+        return get(slices); // Just an alias for get(slices).
+    }
+
 
     public abstract V getFromBuffer(int index);
 
@@ -123,7 +152,7 @@ public abstract class NDArrayBase<T extends NDArrayBase<T, U, V>, U, V> implemen
 
 
     public T flatten(int axis) {
-        int[] dims = new int[rank];
+        int[] dims = new int[shape.rank()];
         Arrays.fill(dims, 1);
         dims[axis] = shape.numel().intValueExact();
         return reshape(new Shape(dims));
@@ -166,7 +195,7 @@ public abstract class NDArrayBase<T extends NDArrayBase<T, U, V>, U, V> implemen
 
 
     public boolean rankEquals(NDArrayBase<?, ?, ?> other) {
-        return rank == other.rank;
+        return shape.rank() == other.shape.rank();
     }
 
 

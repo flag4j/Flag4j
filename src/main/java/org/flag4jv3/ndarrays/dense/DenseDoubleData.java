@@ -31,7 +31,7 @@ import java.util.Objects;
 
 /// Represents the data of a [dense nD-array][DenseNDArrayBase] whose buffer is an array of the primitive type `double`.
 ///
-/// <blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
+/// <blockquote style="color: #b0bbd9; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
 ///     <strong>Note:</strong> [#buffer()] returns a reference to the internal `buffer` array. This is intentional as it allows
 ///     kernels to modify it directly.
 /// </blockquote>

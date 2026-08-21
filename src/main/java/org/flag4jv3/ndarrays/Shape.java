@@ -24,9 +24,11 @@
 
 package org.flag4jv3.ndarrays;
 
+import org.flag4jv3.exceptions.NDArrayShapeException;
 import org.flag4jv3.ndarrays.base.NDArrayBase;
 import org.flag4jv3.util.ValidateParameters;
 import org.flag4jv3.util.arrays.ArrayUtils;
+import org.flag4jv3.util.tuples.IntTuple;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -43,11 +45,11 @@ import java.util.StringJoiner;
 /// This allows for some optimizations with fixed size "scratch" arrays.
 ///
 /// ## Example usage:
-/// ```java
+/// {@snippet :
 /// Shape shape = new Shape();  // Creates a shape for a scalar value.
 /// shape = new Shape(3, 4, 5);  // Creates a shape for a 3x4x5 nD-array.
 /// int rank = shape.rank();  // Gets the rank (number of dimensions).
-/// ```
+///}
 ///
 /// @see NDArrayBase
 /// @see Layout
@@ -74,6 +76,26 @@ public class Shape implements Serializable {
     /// @throws IllegalArgumentException If `dims.length > MAX_RANK`.
     /// @throws IllegalArgumentException If any dimension is negative.
     public Shape(int... dims) {
+        this(dims, true);
+    }
+
+
+    public Shape(IntTuple dims) {
+        this(dims.items(), false); // No need to clone dims as `items()` already does so.
+    }
+
+
+    /// Constructs a shape with option to [clone][Object#clone()] the `dims`.
+    ///
+    /// <blockquote style="color: #d4aeae; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
+    ///     <strong>Warning:</strong> {@code dims} must *not* be able to be modified outside this class. Setting
+    ///     {@code cloneDims} to `false` is dangerous. Only do this if you are sure the `dims` instance prvably cannot
+    ///     be referenced outside this class.
+    /// </blockquote>
+    ///
+    /// @param dims
+    /// @param cloneDims
+    private Shape(int[] dims, boolean cloneDims) {
         if (dims.length > MAX_RANK) {
             throw new IllegalArgumentException(
                     "rank cannot exceed " + MAX_RANK + " but got " + dims.length + ".");
@@ -81,7 +103,7 @@ public class Shape implements Serializable {
 
         // Ensure all dimensions for the shape object are non-negative.
         ValidateParameters.ensureNonNegative(dims);
-        this.dims = dims.clone();
+        this.dims = cloneDims ? dims.clone() : dims;
         rank = dims.length;
     }
 
@@ -104,57 +126,6 @@ public class Shape implements Serializable {
      */
     public int getSize(int i) {
         return dims[i];
-    }
-
-
-    /**
-     * Returns a slice of this shape starting from the specified index to the end of this shape's dimensions.
-     *
-     * @param startIdx The starting index for slicing (inclusive).
-     * @return A new {@code Shape} object containing the dimensions from {@code startIdx} to the end dimension.
-     *
-     * @throws IndexOutOfBoundsException If {@code startIdx} is out of bounds of this shape's rank.
-     */
-    public Shape slice(int startIdx) {
-        return slice(startIdx, dims.length);
-    }
-
-
-    /**
-     * Returns a slice of this shape from the specified start index to the stop index of this shape's dimensions.
-     *
-     * @param startIdx The starting index for slicing (inclusive).
-     * @param stopIdx The stopping index for slicing (exclusive).
-     * @return A new {@code Shape} object containing the dimensions from {@code startIdx} to {@code stopIdx}.
-     *
-     * @throws IndexOutOfBoundsException If {@code startIdx} or {@code stopIdx} is out of bounds.
-     * @throws IllegalArgumentException  If {@code startIdx > stopIdx}.
-     */
-    public Shape slice(int startIdx, int stopIdx) {
-        if (stopIdx > rank) {
-            throw new IndexOutOfBoundsException("stopIdx=" + stopIdx + " larger than shapes rank=" + rank);
-        }
-
-        return new Shape(Arrays.copyOfRange(dims, startIdx, stopIdx));
-    }
-
-
-    // TODO NOW: DOCS + VERIFY
-    public Shape slice(int startIdx, int stopIdx, int stride) {
-        return new Shape(ArrayUtils.copyOfStridedRange(dims, startIdx, stopIdx, stride));
-    }
-
-
-    /// TODO NOW: DOCS + VERIFY (also, is this the best name for this method?)
-    public Shape slice(int[] dimIdxs) {
-        int[] newDims = new int[dimIdxs.length];
-
-        var c = 0;
-        for (int idx : dimIdxs) {
-            newDims[c++] = dims[idx];
-        }
-
-        return new Shape(newDims);
     }
 
 
@@ -507,6 +478,30 @@ public class Shape implements Serializable {
 
 
     /**
+     * Checks if a value fits in an int.
+     *
+     * @param value The value to check.
+     * @return {@code true} if {@code value} fits in an int; {@code false} otherwise.
+     */
+    static boolean fitsInInt(long value) {
+        return value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE;
+    }
+
+
+    /**
+     * Gets the rank of this shape (e.g., the number of dimensions this shape represents).
+     *
+     * @return The rank of this shape.
+     */
+    /// Gets the rank of this shape. (e.g., the number of dimensions of this shape.)
+    ///
+    /// @return
+    public int rank() {
+        return rank;
+    }
+
+
+    /**
      * Checks if an object is equal to this shape.
      *
      * @param b Object to compare with this shape.
@@ -550,23 +545,17 @@ public class Shape implements Serializable {
     }
 
 
-    /**
-     * Checks if a value fits in an int.
-     *
-     * @param value The value to check.
-     * @return {@code true} if {@code value} fits in an int; {@code false} otherwise.
-     */
-    static boolean fitsInInt(long value) {
-        return value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE;
-    }
+    /// Ensures that another shape is [equal][#equals(java.lang.Object)] to `this` shape.
+    ///
+    /// @param other The other shape to check equality with.
+    /// @return A reference to `this` shape.
+    ///
+    /// @throws NDArrayShapeException If `other` is *not* [equal][#equals(java.lang.Object)] to `this`.
+    public Shape requireEqual(Shape other) {
+        if (!equals(other)) {
+            throw new NDArrayShapeException("Expecting equal shapes but got " + this + " and " + other);
+        }
 
-
-    /**
-     * Gets the rank of this shape (e.g., the number of dimensions this shape represents).
-     *
-     * @return The rank of this shape.
-     */
-    public int rank() {
-        return rank;
+        return this;
     }
 }

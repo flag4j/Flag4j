@@ -74,13 +74,14 @@
                 <version>3.12.0</version>
                 <configuration>
                     <javadocDirectory>${basedir}/docs_resources</javadocDirectory>
-
+                    <overview>docs_resources/resources/overview.html</overview>
                     <addStylesheets>
                         <addStylesheet>flag4jbetterjdocs.css</addStylesheet>
                     </addStylesheets>
                     <additionalOptions>
                         <additionalOption>--syntax-highlight</additionalOption>
                     </additionalOptions>
+                    <docfilessubdirs>true</docfilessubdirs>
                 </configuration>
             </plugin>
             <plugin>

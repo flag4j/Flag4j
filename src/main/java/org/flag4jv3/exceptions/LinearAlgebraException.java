@@ -27,12 +27,15 @@ package org.flag4jv3.exceptions;
 
 import java.io.Serial;
 
-/**
- * Base exception for runtime failures in Flag4j linear algebra operations.
- *
- * <p>Examples include singular matrices, failed factorizations, and
- * numerical algorithm failures.
- */
+
+/// Base exception for runtime failures in linear algebra operations.
+///
+/// Examples include expected matrix properties (e.g., positive definite), failed matrix factorizations, and numerical
+/// algorithm failures.
+///
+/// There are cases where a more specific exception may be appropriate:
+/// - [SingularMatrixException] should be thrown when a matrix is expected to be singular but is not.
+/// - [ConvergenceException] should be thrown when a numerical algorithm fails to converge within some criteria.
 public class LinearAlgebraException extends RuntimeException {
 
     @Serial

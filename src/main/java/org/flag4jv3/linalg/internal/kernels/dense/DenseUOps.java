@@ -50,9 +50,9 @@ public final class DenseUOps {
         Objects.requireNonNull(src, "src must not be null");
         Objects.requireNonNull(loop, "loop must not be null");
         var srcL = src.layout();
-        var srcB = src.buffer();
+        var srcBuf = src.buffer();
 
-        final var fOut = resolveOut(srcB, srcL.shape(), srcL.itemSize(), out);
+        final var fOut = resolveOut(srcBuf, srcL.shape(), srcL.itemSize(), out);
         final var fOutL = fOut.layout();
         final var fOutB = fOut.buffer();
 
@@ -102,18 +102,18 @@ public final class DenseUOps {
 
     /// Applies the `loop` unary operation sequentially on all runs of the `cursor`.
     ///
-    /// @param srcB The source buffer providing inputs to the unary operation.
-    /// @param outB The output buffer storing results of the unary operation.
-    /// @param loop The unary operation to apply to a contiguous run of `srcB`.
+    /// @param srcBuf The source buffer providing inputs to the unary operation.
+    /// @param outBuf The output buffer storing results of the unary operation.
+    /// @param loop The unary operation to apply to a contiguous run of `srcBuf`.
     /// @param cursor The cursor defining runs to apply `loop` to.
     private static <T> void runSequential(
-            T[] srcB, T[] outB,
+            T[] srcBuf, T[] outBuf,
             StridedUnaryLoop loop, StridedRunCursor2 cursor
     ) {
         if (cursor.isEmpty()) return; // Nothing to do.
 
         do {
-            loop.apply(srcB, cursor.aPos, cursor.aInnerBufStride, outB, cursor.bPos, cursor.bInnerBufStride, cursor.innerN);
+            loop.apply(srcBuf, cursor.aPos, cursor.aInnerBufStride, outBuf, cursor.bPos, cursor.bInnerBufStride, cursor.innerN);
         } while (cursor.next());
     }
 
@@ -124,7 +124,7 @@ public final class DenseUOps {
     /// @param fSrcB The source buffer providing inputs to the unary operation.
     /// @param fOutL The layout of the output nD-array.
     /// @param fOutB The output buffer storing results of the unary operation.
-    /// @param loop The unary operation to apply to a contiguous run of `srcB`.
+    /// @param loop The unary operation to apply to a contiguous run of `srcBuf`.
     /// @param cursor The cursor defining runs to apply `loop` to.
     private static <T> void runConcurrent(
             Layout fSrcL, T[] fSrcB,
@@ -210,18 +210,18 @@ public final class DenseUOps {
 
     /// Applies the `loop` unary operation sequentially on all runs of the `cursor`.
     ///
-    /// @param srcB The source buffer providing inputs to the unary operation.
-    /// @param outB The output buffer storing results of the unary operation.
-    /// @param loop The unary operation to apply to a contiguous run of `srcB`.
+    /// @param srcBuf The source buffer providing inputs to the unary operation.
+    /// @param outBuf The output buffer storing results of the unary operation.
+    /// @param loop The unary operation to apply to a contiguous run of `srcBuf`.
     /// @param cursor The cursor defining runs to apply `loop` to.
     private static void runSequential(
-            double[] srcB, double[] outB,
+            double[] srcBuf, double[] outBuf,
             StridedDoubleUnaryLoop loop, StridedRunCursor2 cursor
     ) {
         if (cursor.isEmpty()) return; // Nothing to do.
 
         do {
-            loop.apply(srcB, cursor.aPos, cursor.aInnerBufStride, outB, cursor.bPos, cursor.bInnerBufStride, cursor.innerN);
+            loop.apply(srcBuf, cursor.aPos, cursor.aInnerBufStride, outBuf, cursor.bPos, cursor.bInnerBufStride, cursor.innerN);
         } while (cursor.next());
     }
 
@@ -232,7 +232,7 @@ public final class DenseUOps {
     /// @param fSrcB The source buffer providing inputs to the unary operation.
     /// @param fOutL The layout of the output nD-array.
     /// @param fOutB The output buffer storing results of the unary operation.
-    /// @param loop The unary operation to apply to a contiguous run of `srcB`.
+    /// @param loop The unary operation to apply to a contiguous run of `srcBuf`.
     /// @param cursor The cursor defining runs to apply `loop` to.
     private static void runConcurrent(
             Layout fSrcL, double[] fSrcB,

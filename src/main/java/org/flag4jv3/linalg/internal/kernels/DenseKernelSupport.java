@@ -129,6 +129,7 @@ public final class DenseKernelSupport {
     }
 
 
+    // TODO NOW: Move this to layout class.
     public static void requireItemSize(int size1, int size2) {
         if (size1 != size2) {
             throw new IllegalArgumentException("Expecting item sizes to match but got " + size1 + " and " + size2 + ".");
@@ -232,7 +233,7 @@ public final class DenseKernelSupport {
         }
 
         int count = n - last;
-        if (last > 0) { // shift the result down to index 0
+        if (last > 0) { // shift the result down to slice 0
             System.arraycopy(outDims, last, outDims, 0, count);
             System.arraycopy(outStrides, last, outStrides, 0, count);
         }
@@ -284,5 +285,10 @@ public final class DenseKernelSupport {
             System.arraycopy(outSB, last, outSB, 0, count);
         }
         return count;
+    }
+
+
+    public static void insertionSortByStride() {
+
     }
 }

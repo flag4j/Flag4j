@@ -152,7 +152,7 @@ public interface FiniteField<T extends FiniteFieldElement<T>> extends Field<T> {
     /// The coefficients of the monic irreducible polynomial defining this finite field's representation.
     ///
     /// The returned list satisfies the following:
-    /// - Coefficients appear in ascending order of degree: index `i` holds the coefficient of
+    /// - Coefficients appear in ascending order of degree: slice `i` holds the coefficient of
     ///   <span class="latex-inline">x<sup>i</sup></span>.
     /// - The list has length `degree() + 1` and its last element is [BigInteger#ONE] (the modulus is monic).
     /// - Every coefficient lies in `[0, p)` where `p` is this field's characteristic.

@@ -24,13 +24,10 @@
 
 package org.flag4jv3.exceptions;
 
-/**
- * Thrown when an operation requiring a nonsingular matrix is attempted on a
- * singular matrix.
- *
- * <p>For example, this exception may be thrown when attempting to compute the
- * inverse of a singular matrix.
- */
+/// Thrown when an operation requiring a nonsingular matrix is attempted on a singular matrix.
+///
+/// For example, this exception may be thrown when attempting to compute the
+/// inverse of a singular matrix.
 public final class SingularMatrixException extends LinearAlgebraException {
     public SingularMatrixException(String message) {
         super(message);

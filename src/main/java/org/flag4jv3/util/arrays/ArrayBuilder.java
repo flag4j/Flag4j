@@ -26,6 +26,7 @@ package org.flag4jv3.util.arrays;
 
 import org.flag4jv3.algebra.elements.Complex128;
 import org.flag4jv3.util.ErrorMessages;
+import org.flag4jv3.util.NewValidateParameters;
 import org.flag4jv3.util.ValidateParameters;
 
 import java.lang.reflect.Array;
@@ -374,8 +375,8 @@ public final class ArrayBuilder {
      *
      * @param dest Array to fill.
      * @param fillValue Value to fill array with.
-     * @param from Staring index of range (inclusive).
-     * @param to Ending index of range (exclusive).
+     * @param from Staring slice of range (inclusive).
+     * @param to Ending slice of range (exclusive).
      */
     public static void fill(Complex128[] dest, double fillValue, int from, int to) {
         ValidateParameters.ensureLessEq(to, from + 1);
@@ -400,7 +401,7 @@ public final class ArrayBuilder {
      * Constructs an integer array filled with a specific value.
      *
      * @param size Size of the array.
-     * @param value Value to set each index of the array.
+     * @param value Value to set each slice of the array.
      * @return An array of specified {@code size} filled with the specified {@code value}.
      *
      * @throws NegativeArraySizeException If {@code} is negative.
@@ -434,17 +435,26 @@ public final class ArrayBuilder {
     }
 
 
-    /**
-     * Gets an array filled with integers from {@code start} (inclusive) to {@code end} (exclusive)
-     *
-     * @param start Staring value (inclusive).
-     * @param end Stopping value (exclusive).
-     * @return An array containing the integer range {@code [start, end)}.
-     *
-     * @throws IllegalArgumentException If {@code end < start}.
-     */
+    /// Creates an array filled with `int`'s from a range starting with `start` (inclusive) and going to `end` (exclusive)
+    /// where each `int` is repeated {@code stride} times.
+    ///
+    /// <blockquote style="color: #cdb8e0; background-color: #372445; border-left: 5px solid #9836f4; padding: 10px;">
+    ///     <strong>Example:</strong>
+    ///     {@snippet :
+    ///     int[] range = intRange(5, 10);
+    ///     System.out.println(Arrays.toString(range));}
+    ///     Output: <code>[5, 6, 7, 8, 9]</code>
+    /// </blockquote>
+    ///
+    /// @param start Starting slice (inclusive).
+    /// @param end Stopping slice (exclusive). Must be greater than `start`.
+    /// @param stride Number of times to repeat each integer in the range `[start, end)`. Must be positive.
+    /// @return An array of length `end - start` containing exactly the range [start, end).
+    ///
+    /// @throws IllegalArgumentException If `start >= end`.
+    /// @see #intRange(int, int, int)
     public static int[] intRange(int start, int end) {
-        ValidateParameters.ensureGreaterEq(start, end);
+        NewValidateParameters.ensureGreaterThan(end, start, null);
         int[] rangeArr = new int[end - start];
 
         int rangeIdx = 0;
@@ -455,21 +465,28 @@ public final class ArrayBuilder {
     }
 
 
-    /**
-     * Gets an array filled with integers from {@code start} (inclusive) to {@code end} (exclusive) where each int is
-     * repeated {@code stride} times.
-     *
-     * @param start Staring value (inclusive).
-     * @param end Stopping value (exclusive).
-     * @param stride Number of times to repeat each integer.
-     * @return An array containing the integer range {@code [start, end)} and each integer is repeated {@code stride}
-     * times.
-     *
-     * @throws NegativeArraySizeException If {@code stride} is negative.
-     * @throws IllegalArgumentException   If {@code start} is not in {@code [0, end)}
-     */
+    /// Creates an array filled with `int`'s from a range starting with `start` (inclusive) and going to `end` (exclusive)
+    /// where each `int` is repeated {@code stride} times.
+    ///
+    /// <blockquote style="color: #cdb8e0; background-color: #372445; border-left: 5px solid #9836f4; padding: 10px;">
+    ///     <strong>Example:</strong>
+    /// {@snippet :
+    /// int[] range = intRange(5, 8, 3);
+    /// System.out.println(Arrays.toString(range));}
+    ///     Output: <code>[5, 5, 5, 6, 6, 6, 7, 7, 7]</code>
+    /// </blockquote>
+    ///
+    /// @param start Starting slice (inclusive).
+    /// @param end Stopping slice (exclusive). Must be greater than `start`.
+    /// @param stride Number of times to repeat each integer in the range `[start, end)`. Must be positive.
+    /// @return An array containing
+    ///
+    /// @throws IllegalArgumentException If `stride` is non-positive.
+    /// @throws IllegalArgumentException If `start >= end`.
+    /// @see #intRange(int, int)
     public static int[] intRange(int start, int end, int stride) {
-        ValidateParameters.ensureInRange(start, 0, end, "start");
+        NewValidateParameters.ensureGreaterThan(end, start, null);
+        NewValidateParameters.ensureSign(stride, NewValidateParameters.Sign.POSITIVE, null);
         int[] rangeArr = new int[(end - start)*stride];
 
         int k = 0;

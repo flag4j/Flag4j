@@ -29,9 +29,14 @@ import org.flag4jv3.util.ValidateParameters;
 import org.flag4jv3.util.tuples.IntPair;
 import org.flag4jv3.util.tuples.Pair;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.StringJoiner;
+
+import static org.flag4jv3.util.NewValidateParameters.Sign;
 
 
 /// Describes the memory layout of a [dense nD-array][org.flag4jv3.ndarrays.dense.DenseNDArrayBase].
@@ -41,14 +46,14 @@ import java.util.Objects;
 /// A layout is defined by:
 /// - [shape][#shape()]: the size of the array along each axis.
 /// - [strides][#strides()]: the step, per axis, between consecutive logical elements.
-/// - [offset][#offset()]: the logical-element index of the first element.
+/// - [offset][#offset()]: the logical-element slice of the first element.
 /// - [itemSize][#itemSize()]: the number of buffer positions a single logical element occupies.
 ///
 /// ## Element units vs. buffer positions
 /// Both `strides` and `offset` are expressed in **logical elements**, *not* raw buffer positions. This keeps the layout
 /// independent of how an element is stored: a real, complex, or quaternion array with the same shape shares identical
 /// strides and differs only in [itemSize][#itemSize()] (`1`, `2`, and `4` respectively). The `itemSize` factor is
-/// applied only when resolving a buffer position via [#toBufferIndex(int, int...)]; the logical-element index alone is
+/// applied only when resolving a buffer position via [#toBufferIndex(int, int...)]; the logical-element slice alone is
 /// given by [#toLinearElementIndex(int...)].
 ///
 /// For example, a complex array stores each element as interleaved real/imaginary doubles ({@code itemSize == 2}), so
@@ -57,19 +62,21 @@ import java.util.Objects;
 /// ## Views
 /// A layout need not solely own its buffer or represent the full buffer. A non-zero [offset][#offset()], non-canonical
 /// [strides][#strides()] (e.g., zero strides, negative strides, etc.) let a layout describe a *view* into a larger or shared buffer.
-/// Use [#contiguousOrder()] to test for a dense, canonically-strided layout.
+/// Use [#contiguousOrder()] to test for a dense, canonically strided layout.
 ///
 /// ### Non-Writable Views
-/// Views *may not* be [writable][#isWritable()]. Layouts that are not writable indicate that an nD-array with that layout
-/// *can not* be safely used as the output of an operation. For example, a layout with a zero stride means that all indices along
-/// the associated axis point to the same index in the buffer (may happen when extending, repeating, or broadcasting an nD-array).
+/// Views *cannot* be [writable][#isWritable()]. Layouts that are not writable indicate that an nD-array with that layout
+/// *cannot* be safely used as the output of an operation. For example, a layout with a zero stride means that all indices along
+/// the associated axis point to the same slice in the buffer (may happen when extending, repeating, or broadcasting an nD-array).
 /// Thus, attempting to write the outputs of an operation into such a layout would result in values clobbering past results.
 ///
-/// The [#isWritable()] property of a layout is determined at construction time using [#mayHaveOverlap()] to conservatively test
-/// whether distinct logical elements may alias the same buffer index.
+/// The [#isWritable()] property of a layout is determined at construction time using [#mayBeInjective()] to conservatively test
+/// whether distinct logical elements may alias the same buffer slice.
 ///
-/// Instances of [Layout] are immutable and thread safe.
-public class Layout {
+/// Instances of [Layout] are immutable and thread-safe.
+public class Layout implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /// The shape of this layout.
     final Shape shape;
@@ -85,6 +92,8 @@ public class Layout {
     /// Flag indicating if this layout is contiguous in memory (`true`) or not (`false`).
     final ContiguousOrder contiguousOrder;
 
+    // TODO NOW: The item size will also matter for sparse arrays. `Layout`s are only intended for dense arrays.
+    //  It is needed here, but it should also be in the base nD-array object (similar to shape).
     /// The size of an individual item of this layout. That is, the number of buffer positions needed to store a single element.
     /// E.g., a complex number with real/imaginay components stored interleaved in a `double[]` buffer would have `itemSize = 2`.
     final int itemSize;
@@ -93,7 +102,7 @@ public class Layout {
     /// Flag indicating if this layout is writable or not. A layout is writable when it can be verified that it is injective.
     /// This means all indices map to distinct elements within the buffer. This makes it safe to write values to the nD-array.
     ///
-    /// This is a "soft" property derived from [StrideInternalOverlap#mayHaveOverlap(org.flag4jv3.ndarrays.Layout)]. It may be
+    /// This is a "soft" property derived from [StrideInjectivity#mayBeInjective(org.flag4jv3.ndarrays.Layout)]. It may be
     /// `false` even if the layout *is* injective in reality. However, checking if an arbitrary layout is injective is worst-case
     /// exponential so an exhaustive check is not performed. However, this will *never* be erroneously be `true`. If this
     /// is `true`, the layout is provably injective and thus safe to write to.
@@ -104,7 +113,7 @@ public class Layout {
     ///
     /// To create a contiguous layout, use [#contiguous(Shape, int)].
     ///
-    /// @param shape The shape of the layout.
+    /// @param shape The shape of the layout. If `shape.numel()` *must* fit in a primitive `int` (see [Shape#numelIntValueExact()]).
     /// @param offset The initial offset of the first item in the layout. Must be non-negative.
     /// @param strides The strides of the layout. That is, the number of buffer positions needed to store a single element.
     /// E.g., a complex number with real/imaginay components stored interleaved in a `double[]` buffer would have `itemSize = 2`.
@@ -114,48 +123,59 @@ public class Layout {
     ///
     /// @throws NullPointerException     If `shape` or `strides` is `null`.
     /// @throws IllegalArgumentException If `offset` is negative or if `itemSize` is *not* positive.
+    /// @throws ArithmeticException      If `shape.numel()` is *not* int sized.
     /// @see #contiguous(Shape, int)
     public Layout(Shape shape, int offset, int[] strides, int itemSize) {
         // TODO NOW: Should we also verify strides/offset against shape? We could also have a
         //  makeLayoutUnsafe that bypasses that for internal use...
         Objects.requireNonNull(shape, "shape must not be null");
         Objects.requireNonNull(strides, "strides cannot be null.");
-        NewValidateParameters.ensureSign(offset, NewValidateParameters.Sign.NON_NEGATIVE, "offset cannot be negative.");
-        NewValidateParameters.ensureSign(itemSize, NewValidateParameters.Sign.POSITIVE,
+        NewValidateParameters.ensureSign(offset, Sign.NON_NEGATIVE, "offset cannot be negative.");
+        NewValidateParameters.ensureSign(itemSize, Sign.POSITIVE,
                 "item size must be positive but got " + itemSize + "."
         );
+        NewValidateParameters.ensureEqual(strides.length, shape.rank, "Stride rank must match shape rank.");
+
+        // Layouts require that all elements must fit inside a standard array.
+        shape.numelIntValueExact(); // Throws ArithmeticExceptio if the shape can't represent it's number of elements as an int.
 
         this.shape = shape;
         this.offset = offset;
         this.strides = strides.clone();
         this.itemSize = itemSize;
 
-        contiguousOrder = getContiguousOrder(shape, strides);
+        contiguousOrder = getContiguousOrder(this.shape, this.strides);
 
         // This will miss some cases, but we accept that for safety.
-        isWritable = !StrideInternalOverlap.mayHaveOverlap(this);
+        isWritable = StrideInjectivity.mayBeInjective(this);
     }
 
 
-    /// Constructs a layout where the [#isWritable] and [#isWritable] flags are specified.
+    /// Constructs a layout where the [#contiguousOrder] and [#isWritable] flags are specified.
     ///
-    /// <blockquote style="color: #c29d9d; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
+    /// <blockquote style="color: #d4aeae; background-color: #571f1f; border-left: 5px solid #f44336; padding: 10px;">
     ///     <strong>Warning:</strong> Using this constructor is dangerous. *only* use this constructor if you are <em>certain</em>
     ///     about the correctness of the two flags. Further, <em>no</em> input validation is performed. Unlike the public constructor,
-    ///     this constructor <em>does not/<em> clone the {@code strides} which is dangerous.
+    ///     this constructor <em>does not</em> clone the {@code strides} which is dangerous.
     /// </blockquote>
     ///
     /// @param shape The shape of the layout.
     /// @param offset The initial offset of the first item in the layout. Must be non-negative.
     /// @param strides The strides of the layout. That is, the number of buffer positions needed to store a single element.
-    /// @param knownContiguous Flag indicating if the layout is already known to be contiguous or not.
     /// @param itemSize The size of an individual item of this layout (in terms of buffer indices).
     /// For example, a complex number with real/imaginay components stored interleaved in a `double[]` buffer would have `itemSize = 2`.
     /// Must be positive.
+    /// @param knownContiguous Indicates if the layout is already known to be contiguous and what its contiguous ordering is.
+    /// `null` indicates the contiguous ordering is not known and so it will be computed.
     /// @param isWritable Flag indicating if the layout [is writable][#isWritable()] or not.
     /// @return A [Layout] of an [nD-array][org.flag4jv3.ndarrays.dense.DenseNDArrayBase] with the specified attributes
     /// and properties.
     private Layout(Shape shape, int offset, int[] strides, int itemSize, ContiguousOrder knownContiguous, boolean isWritable) {
+        if (strides.length != shape.rank) {
+            throw new IllegalArgumentException(
+                    "Stride rank must match shape rank.");
+        }
+
         this.shape = shape;
         this.offset = offset;
         this.strides = strides;
@@ -192,15 +212,31 @@ public class Layout {
     public static Layout contiguous(Shape shape, int itemSize, ContiguousOrder order) {
         ContiguousOrder.ensureCorFExact(order);
 
-        return new Layout(shape, 0, shape.getContiguousStrides(order), itemSize, order, true);
+        // Despite an order being specified, we still want to check if it is BOTH so pass `null` for `knownContiguous`
+        return new Layout(shape, 0, shape.getContiguousStrides(order), itemSize, null, true);
     }
 
 
-    /// Gets a contiguous [Layout] which has the same [shape][#shape()] and [item size][#itemSize()] as `this` [Layout].
+    /// Gets a C-contiguous [Layout] which has the same [shape][#shape()] and [item size][#itemSize()] as `this` [Layout].
     ///
-    /// @return A contiguous [Layout] that is equivalent to `this` [Layout].
+    /// To specify an F-contiguous layout, use [#asContiguous()].
+    ///
+    /// @return A C-contiguous [Layout] that is equivalent to `this` [Layout].
+    ///
+    /// @see #asContiguous(ContiguousOrder)
     public Layout asContiguous() {
         return contiguous(shape, itemSize);
+    }
+
+
+    /// Gets a contiguous [Layout] with the specified `order` and which has the same
+    ///  [shape][#shape()] and [item size][#itemSize()] as `this` [Layout].
+    ///
+    /// @return A contiguous [Layout] with the specified `order` that is equivalent to `this` [Layout].
+    ///
+    /// @see #asContiguous()
+    public Layout asContiguous(ContiguousOrder order) {
+        return contiguous(shape, itemSize, order);
     }
 
 
@@ -489,10 +525,11 @@ public class Layout {
     private static ContiguousOrder getContiguousOrder(Shape shape, int[] strides) {
         int rank = shape.rank();
 
-        if (strides.length != rank) {
-            throw new IllegalArgumentException(
-                    "Stride rank must match shape rank.");
-        }
+        if (rank == 0) return ContiguousOrder.BOTH; // Scalars are trivially both C and F contiguous.
+
+        // Do a quick scan for empty array.
+        for (int ax = 0; ax < rank; ax++)
+            if (shape.getSize(ax) == 0) return ContiguousOrder.BOTH; // Empty array trivially both C and F contiguous.
 
         boolean cContiguous = true;
         boolean fContiguous = true;
@@ -506,11 +543,6 @@ public class Layout {
 
             int fSize = shape.getSize(fAxis);
             int cSize = shape.getSize(cAxis);
-
-            // NumPy-style semantics: empty arrays are both C- and F-contiguous.
-            if (fSize == 0 || cSize == 0) {
-                return ContiguousOrder.BOTH;
-            }
 
             if (fContiguous && fSize > 1) {
                 if (strides[fAxis] != expectedFStride) {
@@ -545,28 +577,28 @@ public class Layout {
 
     /// Checks if this layout possibly represents overlapping locations in memory (e.g, zero strides).
     ///
-    /// <blockquote style="color: #9da7c2; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
+    /// <blockquote style="color: #b0bbd9; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
     ///     <strong>Note:</strong> This method does not exhaustive check for all possible overlaps as that would have worst-case
     ///     exponential time. As such, this method <em>may</em> erroneously return {@code true} even if there is no overlap.
     ///     However, it will <em>never</em> mistakenly return {@code false}.
     /// </blockquote>
     ///
     /// @return `false` if it can be determined that *absolutely no* elements overlap in memory; otherwise, `true`.
-    public boolean mayHaveOverlap() {
-        return StrideInternalOverlap.mayHaveOverlap(this);
+    public boolean mayBeInjective() {
+        return StrideInjectivity.mayBeInjective(this);
     }
 
 
-    /// Converts an nD index and a component index to a position in the raw data buffer of an nD-array with `this` layout.
+    /// Converts an nD slice and a component slice to a position in the raw data buffer of an nD-array with `this` layout.
     ///
     /// A single logical element occupies [itemSize()][#itemSize()] consecutive buffer positions. The `componentIdx`
     /// selects one of them: `toBufferIndex(0, idxND)` is the first position of the element at `idxND`, and
     /// `toBufferIndex(itemSize() - 1, idxND)` is its last. For example, a complex element stored as interleaved
-    /// real/imaginary doubles (`itemSize == 2`) has its real part at component index `0` and imaginary part at
-    /// component index `1`.
+    /// real/imaginary doubles (`itemSize == 2`) has its real part at component slice `0` and imaginary part at
+    /// component slice `1`.
     ///
     /// @param componentIdx The component within the logical element. Must be in range `[0, itemSize())`.
-    /// @param idxND The nD index of the logical element.
+    /// @param idxND The nD slice of the logical element.
     /// @return The buffer position of the specified component of the element at `idxND`.
     ///
     /// @see #toLinearElementIndex(int...)
@@ -576,12 +608,12 @@ public class Layout {
     }
 
 
-    /// Converts an nD index to a flat logical-element index (in element units, ignoring [itemSize()][#itemSize()]).
+    /// Converts an nD slice to a flat logical-element slice (in element units, ignoring [itemSize()][#itemSize()]).
     ///
     /// This is the element position; use [#toBufferIndex(int, int...)] to get a position within the raw data buffer.
     ///
-    /// @param idxND The nD index of the logical element.
-    /// @return The flat logical-element index of the element at `idxND`.
+    /// @param idxND The nD slice of the logical element.
+    /// @return The flat logical-element slice of the element at `idxND`.
     ///
     /// @see #toBufferIndex(int, int...)
     public int toLinearElementIndex(int... idxND) {
@@ -604,7 +636,7 @@ public class Layout {
     /// The returned layouts share each operand's original offset. Strides for missing
     /// leading axes are expanded and set to 1.
     ///
-    /// Two layouts can be broadcast together if starting from the rightLayout-most dimension of each layout's shape,
+    /// Two layouts can be broadcast together if starting from the right-most dimension of each layout's shape,
     /// 1. they are equal, or
     /// 2. one of them is 1.
     ///
@@ -612,7 +644,7 @@ public class Layout {
     /// @param right The layout of the rightLayout operand.
     /// @return A [Pair] containing the broadcasted and layouts of `left` and `right`.
     ///
-    /// @throws IllegalArgumentException If `leftShape` and `rightShape` cannot be broadcast together.
+    /// @throws IllegalArgumentException If `left.shape()` and `right.shape()` cannot be broadcast together.
     public static Pair<Layout, Layout> broadcast(Layout left, Layout right) {
         if (left.shape.equals(right.shape)) {
             return new Pair<>(left, right);
@@ -681,8 +713,8 @@ public class Layout {
             }
         }
 
-        // itemSize*max will be starting position of final item; itemSize*(max + 1) will be one after last index, hence
-        // itemSize*(max + 1) - 1 will be the final index in the buffer.
+        // itemSize*max will be starting position of final item; itemSize*(max + 1) will be one after last slice, hence
+        // itemSize*(max + 1) - 1 will be the final slice in the buffer.
         return new IntPair(min*itemSize, itemSize*(max + 1) - 1);
     }
 
@@ -719,5 +751,134 @@ public class Layout {
         hash = 31*hash + shape.hashCode();
         hash = 31*hash + Integer.hashCode(itemSize);
         return hash;
+    }
+
+
+    /**
+     * Converts this [Layout] object to a human-readable string format.
+     *
+     * @return The string representation for this [Layout] object.
+     */
+    public String toString() {
+        StringJoiner joiner = new StringJoiner("\n\t", "Layout: (\n\t", "\n)");
+
+        joiner.add("Shape: " + shape);
+        joiner.add("strides: " + Arrays.toString(strides));
+        joiner.add("offset: " + offset);
+
+        return joiner.toString();
+    }
+
+
+    /// Ensures that `this` layout is [non-overlapping][Layout#mayBeInjective()].
+    ///
+    /// @return A reference to `this` layout.
+    ///
+    /// @throws IllegalArgumentException If it could not be determined that `this` layout is non-overlapping.
+    public Layout requireNonOverlapping() {
+        if (mayBeInjective()) {
+            throw new IllegalArgumentException("layout may have overlap in memory. Try making layout contiguous first.");
+        }
+
+        return this;
+    }
+
+
+    /// Derives a view of this layout by applying a multi-axis slicing operation, i.e., an index expression.
+    ///
+    /// The entries of `indexExpr` are matched left to right against the axes of this layout. Each entry either consumes a source
+    /// axis, emits an output axis, or both:
+    ///
+    /// | Variant          | Source axes consumed | Out axes emitted | Effect                                                                             |
+    /// |------------------|----------------------|------------------|------------------------------------------------------------------------------------|
+    /// | [Slice.Point]    | &#x2714;             | &#x2718;         | Selects one position; the axis is dropped.                                         |
+    /// | [Slice.Range]    | &#x2714;             | &#x2714;         | Strided sub-range; the axis is kept, possibly smaller.                             |
+    /// | [Slice#ALL]      | &#x2714;             | &#x2714;         | The whole axis; equivalent to [range(0, n, 1)][Slice#range(Integer, Integer, int)].|
+    /// | [Slice#NEW_AXIS] | &#x2718;             | &#x2714;         | Inserts a new axis of extent `1`.                                                  |
+    /// | [Slice#ELLIPSIS] | *k*                  | *k*              | Expands to as many [Slice#ALL] as needed to cover remaining axes.                  |
+    ///
+    /// Source axes not consumed by `indexExpr` are implicitly [Slice#ALL] and are appended to the result.
+    /// E.g., `indexExpr = [slice(point(i))]` on layout with  shape `(4, 5, 6)` yields a layout with shape `(5, 6)`.
+    ///
+    ///
+    /// <blockquote style="color: #cdb8e0; background-color: #372445; border-left: 5px solid #9836f4; padding: 10px;">
+    ///     <strong>Examples:</strong> The resulting layout shape is shown in the comment on the right hand side.
+    /// {@snippet :
+    /// Layout a = Layout.contiguous(new Shape(4, 5, 6), 1);
+    ///
+    /// a.slice(point(1));                        // (5, 6)
+    /// a.slice(ALL, point(0));                   // (4, 6)
+    /// a.slice(range(1, 3));                     // (2, 5, 6)
+    /// a.slice(ELLIPSIS, point(0));              // (4, 5)
+    /// a.slice(NEW_AXIS);                        // (1, 4, 5, 6)
+    /// a.slice(range(3, 0, -1), ALL, point(2));  // (3, 5)
+    ///}
+    /// </blockquote>
+    ///
+    /// @param indexExpr The index expression to apply. May be empty, in which case a layout equal
+    /// to this one is returned.
+    /// @return A layout describing the specified sliced view of this layout.
+    ///
+    /// @throws NullPointerException      If `indexExpr` or any of its entries is `null`.
+    /// @throws IllegalArgumentException  If `indexExpr` contains more than one [Slice#ELLIPSIS], or
+    /// consumes more axes than this layout has.
+    /// @throws IndexOutOfBoundsException If a [Slice.Point] does not resolve into its axis, or a
+    /// [Slice.AxisRange] start does not resolve into its axis.
+    /// @see Slice
+    public Layout slice(Slice... indexExpr) {
+        int rank = rank();
+        var arity = SliceSupport.arity(indexExpr, rank);
+        int[] outDims = new int[arity.outRank()];
+        int[] outStrides = new int[arity.outRank()];
+        int outOffset = offset();
+        int srcAx = 0, outAx = 0; // source and output axes.
+
+        for (Slice ix : indexExpr) {
+            switch (ix) {
+                case Slice.Point p -> {
+                    outOffset += p.resolve(getSize(srcAx))*strides[srcAx];
+                    srcAx++;
+                }
+                case Slice.AxisRange ar -> {
+                    var rr = ar.resolve(getSize(srcAx));
+                    outOffset += rr.start()*strides[srcAx];
+                    outDims[outAx] = rr.extent();
+                    outStrides[outAx] = rr.step()*strides[srcAx];
+                    srcAx++;
+                    outAx++;
+                }
+                case Slice.Marker.ALL -> {
+                    outDims[outAx] = getSize(srcAx);
+                    outStrides[outAx] = strides[srcAx];
+                    srcAx++;
+                    outAx++;
+                }
+                case Slice.Marker.NEW_AXIS -> {
+                    outDims[outAx] = 1;
+                    /* Extent-1 axes are traversed once, so stride is irrelevant to traversal,
+                    contiguity classification, and overlap analysis. 1 is chosen arbitrarily. */
+                    outStrides[outAx] = 1;
+                    outAx++;
+                }
+                case Slice.Marker.ELLIPSIS -> {
+                    for (int k = 0; k < arity.uncovered(); k++) {
+                        outDims[outAx] = getSize(srcAx);
+                        outStrides[outAx] = strides[srcAx];
+                        srcAx++;
+                        outAx++;
+                    }
+                }
+            }
+        }
+
+        // Tail pass for unspecified axes. Missing axes are implicitly `ALL`. (i.e., a trailing `ELLIPSIS`) is tacked on.
+        while (srcAx < rank) {
+            outDims[outAx] = getSize(srcAx);
+            outStrides[outAx] = strides[srcAx];
+            srcAx++;
+            outAx++;
+        }
+
+        return new Layout(new Shape(outDims), outOffset, outStrides, itemSize(), null, isWritable);
     }
 }

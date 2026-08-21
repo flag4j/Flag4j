@@ -25,11 +25,11 @@
 .callout {
     display: block; /* Guaranteed text-flow layout so code chunks can NEVER split */
     position: relative; /* Establishes the coordinate boundary for absolute positioning */
-    padding: 42px 16px 16px 54px;
+    padding: 16px 16px 16px 54px;
     margin: 20px 0;
     border-radius: 6px;
     border-left: 5px solid;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: var(--body-font-family);
     font-size: 14px;
     line-height: 1.5;
 }
@@ -43,100 +43,106 @@
     user-select: none;
 }
 
-.callout::after {
-    position: absolute;
-    left: 54px; /* Aligns perfectly inline with the start of the body text */
-    top: 16px; /* Sits safely in the top 42px padding header zone */
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1;
-}
-
 /* 100% Inline Guarantee for Code Elements */
-.callout code {
+.callout :not(pre) > code {
     display: inline !important;
     white-space: pre-wrap !important;
     padding: 2px 5px !important;
     margin: 0 2px !important;
-    background-color: rgba(0, 0, 0, 0.06) !important;
     border-radius: 4px !important;
-    font-family: 'Consolas', 'Courier New', monospace !important;
+    font-family: var(--code-font-family) !important;
     font-size: 0.9em !important;
+    background-color: rgba(0, 0, 0, 0.25) !important;
+    color: #e3e5e9 !important;
 }
 
-.callout-info {
-    background-color: #9da7c2;
-    border-left-color: #4b82bd;
-    color: #1e3a5f;
+.callout pre {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin: 10px 0;
+    overflow-x: auto;
+    color: #e3e5e9;
 }
 
-.callout-info::before {
-    content: "🛈";
+.callout pre code {
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: inherit !important;
 }
 
-.callout-info::after {
-    content: "Info";
+.callout-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 10px;
 }
 
-.callout-warning {
-    background-color: #c29d9d;
-    border-left-color: #f44336;
-    color: #571f1f;
+/* Note callout */
+.callout-note {
+    background-color: var(--standard-callout-bg);
+    border-left-color: var(--standard-callout-border-left);
+    color: var(--standard-callout-color);
+}
+
+.callout-example::before {
+    content: "💻";
 }
 
 .callout-warning::before {
     content: "⚠️";
 }
 
-.callout-warning::after {
-    content: "Warning";
-}
-
-.callout-example {
-    background-color: #b09dc2;
-    border-left-color: #9836f4;
-    color: #4f2969;
-}
-
-.callout-example::before {
+.callout-note::before {
     content: "📝";
 }
 
-.callout-example::after {
-    content: "Example";
+.callout-info::before {
+    content: "🛈";
 }
 
-:root {
-    /* Accent — links, buttons, active tabs, selection */
-    --dt-accent: #a0c0f8;
-    --dt-accent-hover: #ffb863;
-    --dt-accent-soft: rgba(65, 134, 245, 0.16); /* washes & highlights */
-
-    /* Surfaces (darkest = chrome, panels are carved *below* the page) */
-    --dt-chrome: #505076; /* top navigation bar                  */
-    --dt-panel: #404040; /* cards, sidebar, dropdowns           */
-    --dt-page: #404040;; /* page background                     */
-    --dt-well: #383838; /* code blocks, signatures             */
-    --dt-raised: #303030; /* inputs, inline-code chips           */
-    --dt-row-even: #484848; /* table striping                      */
-    --dt-row-odd: #383838;
-    --dt-border: #383838;
-
-    /* Ink */
-    --dt-ink-bright: #f2f3f5; /* titles, member names                */
-    --dt-ink: #c9cbd1; /* primary text                        */
-    --dt-ink-prose: #b4b7be; /* doc-comment prose                   */
-    --dt-ink-muted: #8a8d93; /* labels, secondary text              */
-    --dt-ink-faint: #6b6e75; /* separators, placeholders            */
+.callout-tip::before {
+    content: "💡";
 }
 
-/*
- * ============================================================================
- *  Re-map the JDK's own custom properties.
- *  The default stylesheet is variable-driven, so most of the theme is done
- *  right here. (Variable names as of JDK 25 / javadoc 25.0.x.)
- * ============================================================================
- */
+/* Info callout: Same colors as info but different symbol */
+.callout-info {
+    background-color: var(--standard-callout-bg);
+    border-left-color: var(--standard-callout-border-left);
+    color: var(--standard-callout-color);
+}
+
+/* Tip callout: Same colors as info but different symbol */
+.callout-tip {
+    background-color: #103d33;
+    border-left-color: #20a88b;
+    color: #a9cfc7;
+}
+
+/* Warning callout */
+.callout-warning {
+    background-color: #571f1f;
+    border-left-color: #f44336;
+    color: #d4aeae;
+}
+
+/* Example callout */
+.callout-example {
+    background-color: #372445;
+    border-left-color: #9836f4;
+    color: #cdb8e0;
+}
+
+.callout a > code {
+    color: var(--link-color) !important;
+}
+
+.callout a:hover > code,
+.callout a:focus > code {
+    color: var(--link-color-active) !important;
+}
+
 :root {
     /* Typography — swap the DejaVu serif/sans defaults for modern stacks */
     --body-font-family: system-ui, -apple-system, "Segoe UI", Roboto,
@@ -160,7 +166,7 @@
     --section-background-color: var(--dt-panel);
     --detail-background-color: var(--dt-panel);
     --detail-block-color: #191919;
-    --code-background-color: var(--dt-raised);
+    --code-background-color: var(--dt-code-chip);
     --mark-background-color: rgba(65, 134, 245, 0.25);
 
     /* Navigation */
@@ -215,6 +221,36 @@
     /* Invalid-tag notices */
     --invalid-tag-background-color: #3a1d1d;
     --invalid-tag-text-color: #f0caca;
+
+    /* Accent — links, buttons, active tabs, selection */
+    --dt-accent: #81aefc;
+    --dt-accent-hover: #ffb863;
+    --dt-accent-soft: rgba(65, 134, 245, 0.16); /* washes & highlights */
+
+    /* Surfaces (darkest = chrome, panels are carved *below* the page) */
+    --dt-chrome: #505076; /* top navigation bar                  */
+    --dt-panel: #404040; /* cards, sidebar, dropdowns           */
+    --dt-page: #404040; /* page background                     */
+    --dt-well: #383838; /* code blocks, signatures             */
+    --dt-raised: #303030; /* inputs           */
+    --dt-row-even: #484848; /* table striping                      */
+    --dt-row-odd: #383838;
+    --dt-border: #383838;
+
+    /* Ink */
+    --dt-ink-bright: #f2f3f5; /* titles, member names                */
+    --dt-ink: #c9cbd1; /* primary text                        */
+    --dt-ink-prose: #b4b7be; /* doc-comment prose                   */
+    --dt-ink-muted: #8a8d93; /* labels, secondary text              */
+    --dt-ink-faint: #6b6e75; /* separators, placeholders            */
+
+    /* callouts */
+    --standard-callout-bg: #1e3a5f;
+    --standard-callout-border-left: #4b82bd;
+    --standard-callout-color: #b0bbd9;
+
+    /* code chip */
+    --dt-code-chip: #232326; /* darker than --dt-raised (#303030) */
 }
 
 /*
@@ -224,7 +260,7 @@
  */
 html {
     color-scheme: dark; /* native form controls, scrollbars */
-    scrollbar-color: #35353b transparent;
+    scrollbar-color: #242429 transparent;
 }
 
 hr {
@@ -445,15 +481,51 @@ div.inheritance {
  *  Inline code & code blocks
  * ============================================================================
  */
-div.block code,
-dl.notes code,
-.deprecation-comment code,
-.preview-comment code,
-.restricted-comment code {
-    background: var(--dt-raised);
+div.block :not(pre) > code,
+dl.notes :not(pre) > code,
+.deprecation-comment :not(pre) > code,
+.preview-comment :not(pre) > code,
+.restricted-comment :not(pre) > code {
+    background: var(--dt-code-chip) !important;
     border-radius: 4px;
     padding: 1px 5px;
     color: #e3e5e9;
+}
+
+
+div.block pre {
+    background-color: var(--dt-well);
+    border: 1px solid var(--dt-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    overflow-x: auto;
+}
+
+div.block pre > code {
+    background: none;
+    padding: 0;
+    color: inherit;
+}
+
+div.block a > code,
+dl.notes a > code,
+.deprecation-comment a > code,
+.preview-comment a > code,
+.restricted-comment a > code {
+    color: var(--link-color);
+}
+
+div.block a:hover > code,
+div.block a:focus > code,
+dl.notes a:hover > code,
+dl.notes a:focus > code,
+.deprecation-comment a:hover > code,
+.deprecation-comment a:focus > code,
+.preview-comment a:hover > code,
+.preview-comment a:focus > code,
+.restricted-comment a:hover > code,
+.restricted-comment a:focus > code {
+    color: var(--link-color-active);
 }
 
 pre {
@@ -695,6 +767,32 @@ pre .hljs-string {
     color: #98c379;
 }
 
+/* Handle runs of literally-adjacent inline chips render as one continuous box. */
+.code-run > code:not(:last-child),
+.code-run > :not(:last-child) > code {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.code-run > code:not(:first-child),
+.code-run > :not(:first-child) > code {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.about-language {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24'>…</svg>");
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: auto 22px;
+    min-height: 24px;
+    min-width: 100px;
+}
+
 /*
  * ============================================================================
  *  Print — flip back to light so paper output stays readable and cheap
@@ -705,9 +803,9 @@ pre .hljs-string {
         --body-background-color: #ffffff;
         --section-background-color: #ffffff;
         --detail-background-color: #ffffff;
-        --body-text-color: #e0e0e3;
-        --block-text-color: #e6e7ef;
-        --title-color: #ffffff;
+        --body-text-color: #1f2024;
+        --block-text-color: #2a2c31;
+        --title-color: #000000;
         --link-color: #1a4b8f;
         --border-color: #cccccc;
         --snippet-background-color: #f4f4f4;
@@ -729,5 +827,35 @@ pre .hljs-string {
     a.anchor-link > img,
     input#reset-search {
         filter: none;
+    }
+
+    .callout {
+        color: #1f2024;
+    }
+
+    .callout-note, .callout-info {
+        background: #eaf1fb;
+        border-left-color: #4b82bd;
+    }
+
+    .callout-tip {
+        background: #e6f5f0;
+        border-left-color: #20a88b;
+    }
+
+    .callout-warning {
+        background: #fbeaea;
+        border-left-color: #f44336;
+    }
+
+    .callout-example {
+        background: #f3ebf9;
+        border-left-color: #9836f4;
+    }
+
+    .callout code,
+    .callout pre {
+        background: #f0f0f0 !important;
+        color: #1f2024 !important;
     }
 }

@@ -24,7 +24,6 @@
 
 package org.flag4jv3.util;
 
-import org.flag4jv3.ndarrays.Layout;
 import org.flag4jv3.ndarrays.Shape;
 
 // TODO NOW: This needs to replace the old `ValidateParameters`. Also consider if things specific to certain objects should go
@@ -102,20 +101,6 @@ public final class NewValidateParameters {
     }
 
 
-    /// Ensures that a layout is [non-overlapping][Layout#mayHaveOverlap()].
-    ///
-    /// @param layout The layout of interest.
-    /// @param msg The error message to use if `layout` is non-overlapping. If `null`, then a default error message is used.
-    /// @throws IllegalArgumentException If it could not be determined that `layout` is non-overlapping.
-    public static void ensureNonOverlapping(Layout layout, String msg) {
-        if (layout.mayHaveOverlap()) {
-            msg = replaceIfNull(msg, "Could not complete operation - layout may have overlap in memory." +
-                    " Try making layout contiguous first.");
-            throw new IllegalArgumentException(msg);
-        }
-    }
-
-
     /// Ensures that two [shapes][Shape] are equal.
     ///
     /// @param shape1 First shape to compare.
@@ -124,6 +109,35 @@ public final class NewValidateParameters {
     public static void ensureSameShape(Shape shape1, Shape shape2, String msg) {
         if (!shape1.equals(shape2)) {
             msg = replaceIfNull(msg, "Expecting shapes to be equal but got " + shape1 + " and " + shape2);
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+
+    /// Ensures if two `double`'s are equal.
+    ///
+    /// @param a The first `double` to compare.
+    /// @param b The second `double` to compare.
+    /// @param msg The message to display if `a` and `b` are *not* equal. If `null`, then a default error
+    /// message is used.
+    /// @throws IllegalArgumentException If `a != b`.
+    public static void ensureEqual(double a, double b, String msg) {
+        if (a != b) {
+            msg = replaceIfNull(msg, "Expecting values to be equal but got " + a + " and " + b);
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+
+    /// Ensures that `value > min` is true.
+    ///
+    /// @param value The value of interest.
+    /// @param min The minimum allowed value (exclusives).
+    /// @param msg The message to display if `value <= min`. If `null`, then a default error message is used.
+    /// @throws IllegalArgumentException If `value <= min`.
+    public static void ensureGreaterThan(double value, double min, String msg) {
+        if (value <= min) {
+            msg = replaceIfNull(msg, "Expecting value to be greater than " + min + " but got " + value);
             throw new IllegalArgumentException(msg);
         }
     }

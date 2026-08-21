@@ -28,8 +28,8 @@ import org.flag4jv3.algebra.elements.Complex128;
 import org.flag4jv3.algebra.elements.Complex64;
 import org.flag4jv3.algebra.elements.FieldElement;
 import org.flag4jv3.algebra.elements.SemiringElement;
-import org.flag4jv3.ndarrays.Shape;
 import org.flag4jv3.util.ValidateParameters;
+import org.flag4jv3.util.tuples.Pair;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -271,7 +271,7 @@ public final class ArrayUtils {
      * @param src The source array.
      * @param srcPos The starting position from which to copy elements of the source array.
      * @param dest The destination array for the copy.
-     * @param destPos Starting index to place copied elements in the destination array.
+     * @param destPos Starting slice to place copied elements in the destination array.
      * @param length The number of array elements to be copied.
      * @throws ArrayIndexOutOfBoundsException If the destPos parameter plus the length parameter exceeds the length of the
      *                                        source array length or the destination array length.
@@ -288,7 +288,7 @@ public final class ArrayUtils {
      * @param src The source array.
      * @param srcPos The starting position from which to copy elements of the source array.
      * @param dest The destination array for the copy.
-     * @param destPos Starting index to place copied elements in the destination array.
+     * @param destPos Starting slice to place copied elements in the destination array.
      * @param length The number of array elements to be copied.
      * @throws ArrayIndexOutOfBoundsException If the destPos parameter plus the length parameter exceeds the length of the
      *                                        source array length or the destination array length.
@@ -466,159 +466,149 @@ public final class ArrayUtils {
         return Arrays.binarySearch(arr, key) >= 0;
     }
 
+    // TODO NOW: Add a variant multiDimFlatten2Double that converts to a primitive `double[]` using
+    //  Array.getDouble so that things like int[][][], long[][], float[][] can be flattened to `double[]`.
+    //  This would be particularly useful for constructing a dense double nD-array from such objects.
 
-    /**
-     * Infers the shape of a rectangular nD Java array.
-     *
-     * @param nDArray The nD Java array to infer the shape from.
-     * @return The shape of the nD-array as a {@code Shape} object.
-     *
-     * @throws IllegalArgumentException If {@code nDArray} is not an array or has inconsistent (i.e., non-rectangular) dimensions.
-     */
-    public static Shape nDArrayShape(Object nDArray) {
-        if (!nDArray.getClass().isArray()) {
-            throw new IllegalArgumentException("Object is not an array.");
+
+    /// Flattens a Java array of multiple dimensions to a 1D Java array (e.g, double[][][] -> double[]).
+    ///
+    /// <blockquote style="color: #b0bbd9; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
+    ///     <strong>Info:</strong> In general, this is <em>not</em> an efficient method and relies on reflection. This
+    ///     method is provided for convenience but should be avoided if highly performant code is desired.
+    /// </blockquote>
+    ///
+    /// @param src The source multidimensional array to flatten. This *must not* be a jagged array.
+    /// @param out The output 1D array to store the result in. If `null`, then a new output array will be allocated. Otherwise,
+    /// the component type and number of elements must match the component type of `src` and the total number of leaf components
+    /// in `src`.
+    /// @param clazz The required leaf component (i.e., non-array component) class of `src`.
+    /// If `null`, this is ignored and *no* restriction on `src`'s  leaf component type is enforced.
+    /// @return A [Pair] containing, in order, the flattened 1D array and an `int[]` array containing the size of each dimension
+    /// of the multidimensional `src` array. The 1D array will be:
+    /// - A reference to `out` if `out` was not `null`.
+    /// - Otherwise, a freshly allocated 1D array.
+    ///
+    /// @throws NullPointerException     If `src == null`.
+    /// @throws IllegalArgumentException If `src` is not an array or is jagged.
+    /// @throws IllegalArgumentException If `out != null` and is not properly sized or has a different component type as `src`.
+    /// @throws IllegalArgumentException If `clazz != null` and the leaf component type of `src` is not assignable to this.
+    public static Pair<Object, int[]> multiDimFlatten(Object src, Object out, Class<?> clazz) {
+        Objects.requireNonNull(src);
+
+        Class<?> arrayClass = src.getClass();
+        if (!arrayClass.isArray()) {
+            throw new IllegalArgumentException("Input is not an array.");
         }
 
-        List<Integer> dimensions = new ArrayList<>();
-        Object currentLevel = nDArray;
-
-        while (currentLevel != null && currentLevel.getClass().isArray()) {
-            dimensions.add(Array.getLength(currentLevel));
-            currentLevel = (Array.getLength(currentLevel) > 0) ? Array.get(currentLevel, 0) : null;
+        int rank = 0;
+        Class<?> leaf = arrayClass;
+        while (leaf.isArray()) {
+            leaf = leaf.getComponentType();
+            rank++;
         }
 
-        // Verify consistent dimensions.
-        validateConsistentDimensions(nDArray, dimensions, 0);
+        int[] dims = new int[rank];
+        long total = 1;
+        Object current = src;
 
-        return new Shape(ArrayConversions.fromIntegerList(dimensions));
+        for (int d = 0; d < rank; d++) {
+            if (current == null) {
+                throw new IllegalArgumentException("Encountered null sub-array at depth " + d + "; shape cannot be inferred.");
+            }
+
+            int len = Array.getLength(current);
+            dims[d] = len;
+
+            if (len == 0) {
+                total = 0;
+                break;
+            }  // Trailing dims are unknowable; leave them zero. Rank must still increase for broadcasting.
+            total *= len;
+            current = Array.get(current, d == rank - 1 ? 0 : 0);
+        }
+
+        if (total > Integer.MAX_VALUE - 8) {
+            throw new IllegalArgumentException("Flattened array would exceed max Java array length: " + total);
+        }
+
+        // Find the leaf component type in the source multidimensional array.
+        Class<?> leafComponentType = arrayClass;
+        while (leafComponentType.isArray()) {
+            leafComponentType = leafComponentType.getComponentType();
+        }
+
+        if (clazz != null && !clazz.isAssignableFrom(leafComponentType)) {
+            throw new IllegalArgumentException("src component class " + leafComponentType.getName() +
+                    " is not assignable to the required class " + clazz.getName());
+        }
+
+        if (out == null) {
+            // Allocate fresh array.
+            out = Array.newInstance(leafComponentType, (int) total);
+        } else {
+            // Validate the provided array.
+            var outClazz = out.getClass();
+
+            if (!outClazz.isArray() || outClazz.getComponentType().isArray()) {
+                throw new IllegalArgumentException("out is not a 1D array.");
+            }
+
+            if (leafComponentType != outClazz.getComponentType()) {
+                throw new IllegalArgumentException("component classes of src and out do not match: " +
+                        leafComponentType.getName() + " != " + outClazz.getComponentType().getName());
+            }
+
+            int len;
+            if ((len = Array.getLength(out)) != total) {
+                throw new IllegalArgumentException("out array with length " + len + " cannot fit the " +
+                        total + " total elements contained in src.");
+            }
+        }
+
+        // Do the flattening
+        multiDimFlattenRec(src, 0, dims, out, 0);
+
+        return new Pair<>(out, dims);
     }
 
 
-    /**
-     * Validates that the nD-array has consistent (i.e., rectangular) dimensions.
-     *
-     * @param array The nD-array to validate.
-     * @param dimensions List of dimensions inferred so far.
-     * @param level Current recursion level (dimension index).
-     * @throws IllegalArgumentException If the dimensions are inconsistent.
-     */
-    private static void validateConsistentDimensions(Object array, List<Integer> dimensions, int level) {
-        if (array == null || !array.getClass().isArray()) {
-            return;
+    /// Helper to recursively flatten a multidimensional Java array.
+    ///
+    /// @param element The current element (array or component) being flattened.
+    /// @param depth The current depth in the multidimensional array.
+    /// @param dims The expected dimension sized. Used to enforce non-jagged structure.
+    /// @param out The 1D array to write to.
+    /// @param writeIndex An array of length `1` containing the current index of `out` that should be written to.
+    private static int multiDimFlattenRec(
+            Object element, int depth,
+            int[] dims,
+            Object out, int idx
+    ) {
+        if (depth == dims.length) { // Scalar leaf component.
+            Array.set(out, idx++, element);
+            return idx;
+        }
+        if (element == null || !element.getClass().isArray()) {
+            throw new IllegalArgumentException("Jagged array: expected an array at depth " + depth + ".");
         }
 
-        int expectedLength = dimensions.get(level);
-        int actualLength = Array.getLength(array);
-
-        if (actualLength != expectedLength) {
+        int len = Array.getLength(element);
+        if (len != dims[depth]) {
             throw new IllegalArgumentException(
-                    String.format("Inconsistent nD-array dimensions at level %d: expected %d, but got %d.", level, expectedLength,
-                            actualLength)
-            );
+                    "Jagged array at depth " + depth + ": " + len + " != " + dims[depth] + ".");
         }
 
-        for (int i = 0; i < actualLength; i++) {
-            validateConsistentDimensions(Array.get(array, i), dimensions, level + 1);
-        }
-    }
-
-
-    /**
-     * Recursively validates the shape of the nD-array and flattens it into the provided 1D array.
-     *
-     * @param nDArray The nD-array to flatten.
-     * @param shape The expected shape of the nD-array.
-     * @param flatArray The 1D array to populate with flattened items.
-     * @param offset The starting index for the current level of recursion.
-     * @return The next available index in the flatArray after processing the current nDArray.
-     *
-     * @throws IllegalArgumentException If the shape of the nD-array is inconsistent with the inferred shape.
-     */
-    public static <T> int nDFlatten(Object nDArray, Shape shape, T[] flatArray, int offset) {
-        if (shape.rank() == 0) {
-            throw new IllegalArgumentException("Shape cannot have rank 0.");
+        // The innermost axis with a matching component type. Copy the whole thing over at once.
+        if (depth == dims.length - 1 && element.getClass() == out.getClass()) {
+            System.arraycopy(element, 0, out, idx, len);
+            return idx + len;
         }
 
-        if (shape.rank() == 1) {
-            if (!nDArray.getClass().isArray()) {
-                throw new IllegalArgumentException("Expected a 1D array, but got a non-array object.");
-            }
+        for (int i = 0; i < len; i++)
+            idx = multiDimFlattenRec(Array.get(element, i), depth + 1, dims, out, idx);
 
-            int length = Array.getLength(nDArray);
-            if (length != shape.getSize(0)) {
-                throw new IllegalArgumentException("Shape mismatch: expected " + shape.getSize(0) + " elements, but got " + length);
-            }
-
-            for (int i = 0; i < length; i++)
-                flatArray[offset + i] = (T) Array.get(nDArray, i);
-
-            return offset + length;
-        } else {
-            if (!nDArray.getClass().isArray()) {
-                throw new IllegalArgumentException("Expected an array of ndarrays, but got a non-array object.");
-            }
-
-            int length = Array.getLength(nDArray);
-            if (length != shape.getSize(0)) {
-                throw new IllegalArgumentException("Shape mismatch: expected " + shape.getSize(0) + " ndarrays, but got " + length);
-            }
-
-            Shape subShape = shape.slice(1);
-            int currentOffset = offset;
-            for (int i = 0; i < length; i++)
-                currentOffset = nDFlatten(Array.get(nDArray, i), subShape, flatArray, currentOffset);
-
-            return currentOffset;
-        }
-    }
-
-
-    /**
-     * Recursively validates the shape of the nD-array and flattens it into the provided 1D array.
-     *
-     * @param nDArray The nD-array to flatten.
-     * @param shape The expected shape of the nD-array.
-     * @param flatArray The 1D array to populate with flattened items.
-     * @param offset The starting index for the current level of recursion.
-     * @return The next available index in the flatArray after processing the current nDArray.
-     *
-     * @throws IllegalArgumentException If the shape of the nD-array is inconsistent with the inferred shape.
-     */
-    public static int nDFlatten(Object nDArray, Shape shape, double[] flatArray, int offset) {
-        if (shape.rank() == 0) {
-            throw new IllegalArgumentException("Shape cannot have rank 0.");
-        }
-
-        if (shape.rank() == 1) {
-            if (!nDArray.getClass().isArray() || nDArray.getClass().getComponentType() != double.class) {
-                throw new IllegalArgumentException("Expected a 1D array of doubles, but got a different type.");
-            }
-
-            int length = Array.getLength(nDArray);
-            if (length != shape.getSize(0)) {
-                throw new IllegalArgumentException("Shape mismatch: expected " + shape.getSize(0) + " elements, but got " + length);
-            }
-
-            System.arraycopy(nDArray, 0, flatArray, offset, length);
-            return offset + length;
-        } else {
-            if (!nDArray.getClass().isArray()) {
-                throw new IllegalArgumentException("Expected an array of ndarrays, but got a non-array object.");
-            }
-
-            int length = Array.getLength(nDArray);
-            if (length != shape.getSize(0)) {
-                throw new IllegalArgumentException("Shape mismatch: expected " + shape.getSize(0) + " ndarrays, but got " + length);
-            }
-
-            Shape subShape = shape.slice(1);
-            int currentOffset = offset;
-            for (int i = 0; i < length; i++)
-                currentOffset = nDFlatten(Array.get(nDArray, i), subShape, flatArray, currentOffset);
-
-            return currentOffset;
-        }
+        return idx;
     }
 
 
@@ -786,8 +776,8 @@ public final class ArrayUtils {
      *
      * @param shift Amount to shift array elements by.
      * @param arr Array to shift.
-     * @param start Starting index of range to shift (inclusive).
-     * @param stop Stopping index of range to shift (exclusive).
+     * @param start Starting slice of range to shift (inclusive).
+     * @param stop Stopping slice of range to shift (exclusive).
      * @return A reference to {@code arr}.
      *
      * @throws ArrayIndexOutOfBoundsException If start or stop is not within the bounds of the {@code arr} array.
@@ -818,12 +808,12 @@ public final class ArrayUtils {
 
 
     /**
-     * Finds the fist index of the specified {@code key} within an array. If the element does not exist, then {@code -1}
+     * Finds the fist slice of the specified {@code key} within an array. If the element does not exist, then {@code -1}
      * is returned.
      *
      * @param arr Array of interest.
      * @param key Key value to search for.
-     * @return Returns the first index of the value {@code key} within the {@code arr} array. If the {@code key} does
+     * @return Returns the first slice of the value {@code key} within the {@code arr} array. If the {@code key} does
      * not occur in the array, {@code -1} will be returned.
      */
     public static int indexOf(int[] arr, int key) {
@@ -899,15 +889,15 @@ public final class ArrayUtils {
 
 
     /**
-     * Finds the first and last index of a specified key within a sorted array.
+     * Finds the first and last slice of a specified key within a sorted array.
      *
      * @param src The source array to search within. This array is assumed to be sorted. If the array is not sorted,
      * call {@link Arrays#sort(int[]) Arrays.sort(src)} before this method. If this is not done, and an
      * unsorted array is passed to this method, the results are undefined.
-     * @param key The key value to find the first and last index of within the {@code src} array.
-     * @return An array of length 2 containing the first (inclusive) and last (exclusive) index of the {@code key} within the {@code src} array.
-     * If the {@code key} value does not exist in the array, then both first and last index will be
-     * {@code (-insertion_point - 1)} where {@code insertion_point} is defined as the index the {@code key} would be
+     * @param key The key value to find the first and last slice of within the {@code src} array.
+     * @return An array of length 2 containing the first (inclusive) and last (exclusive) slice of the {@code key} within the {@code src} array.
+     * If the {@code key} value does not exist in the array, then both first and last slice will be
+     * {@code (-insertion_point - 1)} where {@code insertion_point} is defined as the slice the {@code key} would be
      * inserted into the sorted array.
      */
     public static int[] findFirstLast(int[] src, int key) {
@@ -1016,8 +1006,8 @@ public final class ArrayUtils {
      * Copies a strided range of an array.
      *
      * @param src The source array to copy.
-     * @param from The starting index in {@code src} of the copy (inclusive).
-     * @param to The ending index in {@code src} of the copy (exclusive).
+     * @param from The starting slice in {@code src} of the copy (inclusive).
+     * @param to The ending slice in {@code src} of the copy (exclusive).
      * @param stride The stride between elements of {@code src} to copy.
      * @return A strided copy of {@code src}.
      */

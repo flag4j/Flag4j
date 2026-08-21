@@ -26,10 +26,24 @@ package org.flag4jv3.ndarrays.dense;
 
 import org.flag4jv3.ndarrays.Layout;
 import org.flag4jv3.ndarrays.Shape;
+import org.flag4jv3.ndarrays.StorageDescriptor;
 import org.flag4jv3.ndarrays.base.NDArrayBase;
 import org.flag4jv3.util.tuples.Pair;
 
 // TODO NOW: DOCS
+
+
+/// @param <T> The type of the dense nD-array. Used for fluent API.
+/// @param <U> The type of the nD-array's buffer that stores individual elements of the nD-array.
+/// The elements of this type may be mutable, but the size must not be mutable. For example, standard Java arrays are
+/// valid but [java.util.ArrayList]'s are not valid. In addition to this, the buffer type must be "deeply" copyable. In addition to this,
+/// two buffer objects *may not* share memory unless they are the *same* object. See implementation requirements for more.
+/// @param <V> The type of an individual element of the buffer (i.e., a representation of what is stored in [U]).
+/// /// The buffer, of type [U], need not store this type exactly, but it must be able to convert any element it stores to
+/// /// this type.
+/// @implSpec The [#buffer] objects implementations of this class must not share memory unless they are the *same* object.
+/// In particular, if `buffer1 != buffer2`, modifications to one buffer *must not* affect the contents of the other. Methods such
+/// as [#mayShareMemory(org.flag4jv3.ndarrays.dense.DenseNDArrayBase)] rely on this assumption holding.
 public abstract class DenseNDArrayBase<T extends DenseNDArrayBase<T, U, V>, U, V> extends NDArrayBase<T, U, V> {
     /// The layout of this nD-array in memory.
     final Layout layout;
@@ -42,7 +56,7 @@ public abstract class DenseNDArrayBase<T extends DenseNDArrayBase<T, U, V>, U, V
 
 
     protected DenseNDArrayBase(U buffer, Layout layout, T base) {
-        super(layout.shape(), buffer);
+        super(layout.shape(), layout.itemSize(), buffer, StorageDescriptor.Dense);
         this.layout = layout;
         this.strides = layout.strides(); // Layout is immutable, cache strides here to avoid re-cloning.
         this.base = (base == null) ? self() : base;
@@ -53,8 +67,8 @@ public abstract class DenseNDArrayBase<T extends DenseNDArrayBase<T, U, V>, U, V
     ///
     /// @param dataBuffer The backing data buffer of the nD-array.
     /// @param layout The layout of the nD-array in memory.
-    /// @param base The base nD-array. Unlike with [DenseNDArrayBase], this *may not* be `null`.
-    abstract T makeLike(U dataBuffer, Layout layout, T base);
+    /// @param base The base nD-array. Unlike with [DenseNDArrayBase], this *can not* be `null`.
+    protected abstract T makeLike(U dataBuffer, Layout layout, T base);
 
 
     /// Constructs a new dense nD-array of the same type as this nD-array.
@@ -179,8 +193,21 @@ public abstract class DenseNDArrayBase<T extends DenseNDArrayBase<T, U, V>, U, V
 
 
     // TODO NOW: DOCS: note that the returned arrays are always views.
+
+
+    /// Broadcasts two dense nD-arrays together.
+    ///
+    /// Two dense nD-arrays can be broadcast together if starting from the right-most dimension of each array's [shape][#shape()],
+    /// 1. they are [equal][Shape#equals(Object)], or
+    /// 2. one of them is `1`.
+    ///
+    /// @param other The other dense nD-array to be broadcast with `this` nD-array.
+    /// @return A [pair][Pair] of [dense nD-array's][DenseNDArrayBase] containing the broadcasted result of `this` and `other`.
+    ///
+    /// @throws IllegalArgumentException If `this` and `other` cannot be broadcast together.
     public Pair<T, T> broadcast(T other) {
-        Pair<Layout, Layout> bInfo = Layout.broadcast(layout(), other.layout());
+        // Layout.boradcast will throw exception if layouts cannot be broadcast.
+        Pair<Layout, Layout> bInfo = Layout.broadcast(layout, other.layout);
 
         T a = makeLike(buffer, bInfo.first(), base);
         T b = makeLike(other.buffer, bInfo.second(), base);
@@ -197,7 +224,20 @@ public abstract class DenseNDArrayBase<T extends DenseNDArrayBase<T, U, V>, U, V
     }
 
 
-    public boolean shareMemory(T other) {
-        return buffer == other.buffer;
+    // TODO NOW: convert this to be `mayShareMemory`
+
+
+    /// Checks if two dense nD-arrays share memory. Two dense nD-arrays share memory if and only if they have the
+    /// same [buffer][#bufferView()].
+    ///
+    /// @param other The other dense nD-array to compare with.
+    /// @return `true` if `this` and `other` share memory; otherwise, `false`.
+    public boolean mayShareMemory(T other) {
+        if (buffer != other.buffer) {
+            return false; // Note: this makes an assumption that two buffer objects cannot share memory (e.g., java arrays).
+        } else {
+            // TODO NOW:
+            return false;
+        }
     }
 }

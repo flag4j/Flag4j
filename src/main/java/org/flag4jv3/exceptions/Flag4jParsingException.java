@@ -26,10 +26,8 @@ package org.flag4jv3.exceptions;
 
 import java.io.Serial;
 
-/**
- * Thrown when a string cannot be parsed as a Flag4j algebraic structure,
- * such as a matrix, tensor, or complex number.
- */
+/// Thrown when a string cannot be parsed as a Flag4j algebraic structure,
+/// such as a matrix, tensor, or complex number.
 public final class Flag4jParsingException extends IllegalArgumentException {
 
     @Serial

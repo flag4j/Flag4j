@@ -26,16 +26,16 @@ package org.flag4jv3.concurrency;
 
 
 /**
- * Functional interface for general tensor kernels over a specified index range.
+ * Functional interface for general tensor kernels over a specified slice range.
  */
 @FunctionalInterface
 public interface TensorKernel {
 
     /**
-     * Applies this tensor kernel over the specified index range.
+     * Applies this tensor kernel over the specified slice range.
      *
-     * @param startIdx Staring index for operation (inclusive).
-     * @param endIdx Ending index for operation (exclusive).
+     * @param startIdx Staring slice for operation (inclusive).
+     * @param endIdx Ending slice for operation (exclusive).
      */
     void apply(int startIdx, int endIdx);
 }

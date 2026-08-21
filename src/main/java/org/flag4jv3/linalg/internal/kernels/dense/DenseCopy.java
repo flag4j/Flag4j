@@ -53,8 +53,11 @@ public final class DenseCopy {
     public static void copyTo(DenseData src, DenseData out) {
         if (src.buffer() == out.buffer() && src.layout().equals(out.layout())) return; // Equivalent, no work to do.
 
+        var srcShape = src.layout().shape();
+        var outShape = out.layout().shape();
+
+        srcShape.requireEqual(outShape);
         DenseKernelSupport.requireItemSize(src.layout().itemSize(), out.layout().itemSize());
-        DenseKernelSupport.requireSameShape(src.layout(), out.layout());
         DenseKernelSupport.requireWritable(out.layout());
 
         if (Layout.areContiguousAndMatchOrder(src.layout(), out.layout())) {

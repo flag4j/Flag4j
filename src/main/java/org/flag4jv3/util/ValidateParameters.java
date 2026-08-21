@@ -32,9 +32,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashSet;
 
-/**
- * This utility class contains several methods for ensuring parameters satisfy some condition.
- */
+/// Utility class containing several methods to validate parameters of an operation.
 public final class ValidateParameters {
 
     private ValidateParameters() {
@@ -42,13 +40,10 @@ public final class ValidateParameters {
     }
 
 
-    /**
-     * Checks if two {@link Shape} objects are equivalent.
-     *
-     * @param shape1 First shape.
-     * @param shape2 Second shape.
-     * @throws NDArrayShapeException If shapes are not equivalent.
-     */
+    /// Checks that two [Shape] objects are equivalent.
+    ///
+    /// @param shape1 First shape in comparison.
+    /// @param shape2 Second shape in comparison.
     public static void ensureEqualShape(Shape shape1, Shape shape2) {
         if (!shape1.equals(shape2)) {
             throw new NDArrayShapeException(ErrorMessages.equalShapeErrMsg(shape1, shape2));
@@ -506,18 +501,18 @@ public final class ValidateParameters {
 
 
     /**
-     * Checks if the provided nD index is contained in a tensor defined by the given {@code shape}.
+     * Checks if the provided nD slice is contained in a tensor defined by the given {@code shape}.
      *
      * @param shape Shape of the tensor.
-     * @param index nD index to check.
-     * @throws IndexOutOfBoundsException If {@code index} is not a valid nD index into a tensor
+     * @param index nD slice to check.
+     * @throws IndexOutOfBoundsException If {@code slice} is not a valid nD slice into a tensor
      *                                   of the specified {@code shape}.
      */
     public static void validateTensorIndex(Shape shape, int... index) {
         // TODO: Update to better error messages.
         if (shape.rank() != index.length) {
             throw new IndexOutOfBoundsException("Expected dimension " + shape.rank()
-                    + " index but got dimension " + index.length + ".");
+                    + " slice but got dimension " + index.length + ".");
         }
 
         for (int i = 0, size = index.length; i < size; i++) {
@@ -609,16 +604,16 @@ public final class ValidateParameters {
      * Validates that the specified slice [{@code startIdx}, {@code endIdx}) is within the bounds of a vector with the specified
      * length.
      *
-     * @param startIdx Staring index of the slice (inclusive).
-     * @param endIdx Ending index of the slice (exclusive).
+     * @param startIdx Staring slice of the slice (inclusive).
+     * @param endIdx Ending slice of the slice (exclusive).
      * @param length The length of the vector to be sliced.
      * @throws IndexOutOfBoundsException If the slice is not within the bounds of the vector.
      * @throws IllegalArgumentException  If {@code startIdx >= endIdx} or {@code startIdx < 0}.
      */
     public static void validateVectorSlice(int startIdx, int endIdx, int length) {
         if (startIdx < 0 || startIdx >= endIdx) {
-            throw new IllegalArgumentException("Invalid slice. Starting index must be positive and " +
-                    "less than the end index but got [" + startIdx + ", " + endIdx + ")");
+            throw new IllegalArgumentException("Invalid slice. Starting slice must be positive and " +
+                    "less than the end slice but got [" + startIdx + ", " + endIdx + ")");
         }
 
         int sliceLength = endIdx - startIdx;

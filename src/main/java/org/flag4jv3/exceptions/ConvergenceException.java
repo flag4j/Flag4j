@@ -25,16 +25,21 @@
 package org.flag4jv3.exceptions;
 
 
-/**
- * Thrown when an iterative numerical algorithm fails to converge within its
- * allowed iteration limit or convergence criteria.
- *
- * <p>This exception may be thrown by algorithms such as QR iteration,
- * iterative linear-system solvers, eigenvalue algorithms, or optimization
- * routines.
- */
+import java.io.Serial;
+
+/// Thrown when an iterative numerical algorithm fails to converge within its
+/// allowed iteration limit or convergence criteria.
+///
+/// <!-- TODO: When QR, solvers, or eigenvalues are implemented, link to them here -->
+/// This exception may be thrown by algorithms such as QR iteration,
+/// iterative linear-system solvers, eigenvalue algorithms, or optimization
+/// routines.
+///
+/// @see LinearAlgebraException
 public final class ConvergenceException extends LinearAlgebraException {
     // TODO: We could include another constructor that takes convergence diagnostics: iterations, residuals, etc.
+    @Serial
+    private static final long serialVersionUID = 1L;
 
 
     /**

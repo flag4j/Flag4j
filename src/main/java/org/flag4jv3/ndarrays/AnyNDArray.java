@@ -27,7 +27,7 @@ package org.flag4jv3.ndarrays;
 public interface AnyNDArray {
     Shape shape();
 
-    ArrayType type();
-
-    Storage storage();
+    int rank();
+    
+    StorageDescriptor storage();
 }

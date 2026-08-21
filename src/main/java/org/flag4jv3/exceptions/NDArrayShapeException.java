@@ -24,14 +24,16 @@
 
 package org.flag4jv3.exceptions;
 
-/**
- * Thrown when an N-dimensional array shape is invalid or incompatible with an
- * operation.
- *
- * <p>For example, this exception may be thrown when attempting an operation
- * on arrays with incompatible shapes.
- */
+import java.io.Serial;
+
+/// Thrown when an nD-array [shape][org.flag4jv3.ndarrays.Shape] is invalid or incompatible with an operation.
+///
+/// For example, this exception may be thrown when attempting an operation on arrays with incompatible shapes.
 public final class NDArrayShapeException extends IllegalArgumentException {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
 
     public NDArrayShapeException(String message) {
         super(message);
