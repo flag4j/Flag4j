@@ -51,7 +51,7 @@ public final class DenseCopy {
     /// @param src The source data container to copy elements from.
     /// @param out The designation to copy elements to.
     public static void copyTo(DenseData src, DenseData out) {
-        if (src.buffer() == out.buffer() && src.layout().equals(out.layout())) return; // Equivalent, no work to do.
+        if (src.buffer() == out.buffer() && src.layout().equals(out.layout())) return; // Equal; no work to do.
 
         var srcShape = src.layout().shape();
         var outShape = out.layout().shape();
@@ -79,7 +79,7 @@ public final class DenseCopy {
     /// @param src The source data container to copy elements from.
     /// @param out The designation to copy elements to.
     public static void copyTo(DenseDoubleData src, DenseDoubleData out) {
-        if (src.buffer() == out.buffer() && src.layout().equals(out.layout())) return; // Equivalent, no work to do.
+        if (src.buffer() == out.buffer() && src.layout().equals(out.layout())) return; // Equal; no work to do.
 
         DenseKernelSupport.requireItemSize(src.layout().itemSize(), out.layout().itemSize());
         DenseKernelSupport.requireSameShape(src.layout(), out.layout());

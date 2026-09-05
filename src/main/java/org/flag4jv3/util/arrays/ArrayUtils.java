@@ -28,6 +28,7 @@ import org.flag4jv3.algebra.elements.Complex128;
 import org.flag4jv3.algebra.elements.Complex64;
 import org.flag4jv3.algebra.elements.FieldElement;
 import org.flag4jv3.algebra.elements.SemiringElement;
+import org.flag4jv3.util.NewValidateParameters;
 import org.flag4jv3.util.ValidateParameters;
 import org.flag4jv3.util.tuples.Pair;
 
@@ -300,21 +301,6 @@ public final class ArrayUtils {
 
 
     /**
-     * Swaps to elements in an array. This is done in-place.
-     *
-     * @param arr Array to swap elements in. This array is modified.
-     * @param i Index of the first value to swap.
-     * @param j Index of the second value to swap.
-     * @throws IndexOutOfBoundsException If {@code i} or {@code j} are out of the bounds of {@code arr}.
-     */
-    public static void swap(int[] arr, int i, int j) {
-        int temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-    }
-
-
-    /**
      * Swaps elements in an array according to a specified permutation.
      *
      * @param src Array to swap elements within.
@@ -351,6 +337,21 @@ public final class ArrayUtils {
             swapped[i++] = src[value];
 
         System.arraycopy(swapped, 0, src, 0, swapped.length);
+    }
+
+
+    /**
+     * Swaps to elements in an array. This is done in-place.
+     *
+     * @param arr Array to swap elements in. This array is modified.
+     * @param i Index of the first value to swap.
+     * @param j Index of the second value to swap.
+     * @throws IndexOutOfBoundsException If {@code i} or {@code j} are out of the bounds of {@code arr}.
+     */
+    public static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
     }
 
 
@@ -471,7 +472,7 @@ public final class ArrayUtils {
     //  This would be particularly useful for constructing a dense double nD-array from such objects.
 
 
-    /// Flattens a Java array of multiple dimensions to a 1D Java array (e.g, double[][][] -> double[]).
+    /// Flattens a Java array of multiple dimensions to a 1D Java array (e.g., double[][][] -> double[]).
     ///
     /// <blockquote style="color: #b0bbd9; background-color: #1e3a5f; border-left: 5px solid #4b82bd; padding: 10px;">
     ///     <strong>Info:</strong> In general, this is <em>not</em> an efficient method and relies on reflection. This
@@ -483,7 +484,7 @@ public final class ArrayUtils {
     /// the component type and number of elements must match the component type of `src` and the total number of leaf components
     /// in `src`.
     /// @param clazz The required leaf component (i.e., non-array component) class of `src`.
-    /// If `null`, this is ignored and *no* restriction on `src`'s  leaf component type is enforced.
+    /// If `null`, this is ignored and *no* restriction on `src`'s leaf component type is enforced.
     /// @return A [Pair] containing, in order, the flattened 1D array and an `int[]` array containing the size of each dimension
     /// of the multidimensional `src` array. The 1D array will be:
     /// - A reference to `out` if `out` was not `null`.
@@ -732,7 +733,7 @@ public final class ArrayUtils {
      * {@code srcAxes}.
      *
      * @param srcAxes Source axes that contain a subset of {@code {0, 1, 2, ...., dim-1}} in no particular order.
-     * @param dim Dimension of space which contains the axes of interest.
+     * @param dim Dimension of space that contains the axes of interest.
      * @return An array containing the set subtraction {@code {0, 1, 2, ...., dim-1}} - srcAxes.
      */
     public static int[] notInAxes(int[] srcAxes, int dim) {
@@ -776,8 +777,8 @@ public final class ArrayUtils {
      *
      * @param shift Amount to shift array elements by.
      * @param arr Array to shift.
-     * @param start Starting slice of range to shift (inclusive).
-     * @param stop Stopping slice of range to shift (exclusive).
+     * @param start Starting index of range to shift (inclusive).
+     * @param stop Stopping index of range to shift (exclusive).
      * @return A reference to {@code arr}.
      *
      * @throws ArrayIndexOutOfBoundsException If start or stop is not within the bounds of the {@code arr} array.
@@ -999,30 +1000,51 @@ public final class ArrayUtils {
         return dest;
     }
 
-    // TODO NOW: Update docs to specify negative slice is supported.
 
+    /// Copies a strided range of an array.
+    ///
+    /// <blockquote style="color: #cdb8e0; background-color: #372445; border-left: 5px solid #9836f4; padding: 10px;">
+    ///     <strong>Examples:</strong>
+    /// {@snippet :
+    /// int[] arr = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    /// copyOfStridedRange(arr, 4, 9, 1);   // [4, 5, 6, 7, 8]
+    /// copyOfStridedRange(arr, 4, 9, 3);   // [4, 7]
+    /// copyOfStridedRange(arr, 9, 4, -1);  // [9, 8, 7, 6, 5]
+    /// copyOfStridedRange(arr, 9, 4, -3);  // [9, 6]}
+    /// </blockquote>
+    ///
+    /// @param src The source array stop copy.
+    /// @param start The starting index in `src` of the copy (inclusive).
+    /// @param stop The ending index in `src` of the range stop copy (exclusive).
+    /// @param stride The stride between elements of `src` stop copy. May be negative; must *not* be zero. If `stride` is negative,
+    /// then the range is copied in reverse order (see examples).
+    /// - If `stride > 0`, then `start <= stop` is required.
+    /// - If `stride < 0`, then `start >= stop` is required.
+    /// @return A copy of the specified strided range of `src`.
+    ///
+    /// @throws IllegalArgumentException If `stride == 0` or if `stride > 0` and `start > stop` or if `stride < 0` and `start < stop`.
+    /// @throws IllegalArgumentException If `start` or `stop` is negative or larger than the length of `src`.
+    public static int[] copyOfStridedRange(int[] src, int start, int stop, int stride) {
+        NewValidateParameters.ensureSign(stride, NewValidateParameters.Sign.NON_ZERO, null);
 
-    /**
-     * Copies a strided range of an array.
-     *
-     * @param src The source array to copy.
-     * @param from The starting slice in {@code src} of the copy (inclusive).
-     * @param to The ending slice in {@code src} of the copy (exclusive).
-     * @param stride The stride between elements of {@code src} to copy.
-     * @return A strided copy of {@code src}.
-     */
-    public static int[] copyOfStridedRange(int[] src, int from, int to, int stride) {
-        ValidateParameters.ensureNonZero(stride);
-        ValidateParameters.ensureGreaterEq(from, to);
+        if (src.length == 0 && start == 0 && stop == 0) return new int[0]; // Quick return for empty src array.
 
-        int[] dest = new int[(to - from)/Math.abs(stride)];
+        NewValidateParameters.ensureInRange(start, 0, src.length, NewValidateParameters.Inclusivity.INCLUSIVE_LOWER, null);
+        NewValidateParameters.ensureInRange(stop, 0, src.length, NewValidateParameters.Inclusivity.INCLUSIVE, null);
 
-        if (stride > 0) {
-            for (int j = from; j < to; j += stride)
-                dest[j] = src[j + stride];
+        boolean reverse = stride < 0;
+        var destSize = Math.ceilDiv(stop - start, stride);
+        int[] dest = new int[Math.abs(destSize)];
+        int c = 0;
+
+        if (!reverse) {
+            NewValidateParameters.ensureGreaterThanEq(stop, start, null);
+            for (int j = start; j < stop; j += stride)
+                dest[c++] = src[j];
         } else {
-            for (int j = to - 1; j >= from; j += stride)
-                dest[j] = src[j + stride];
+            NewValidateParameters.ensureGreaterThanEq(start, stop, null);
+            for (int j = start; j > stop; j += stride)
+                dest[c++] = src[j];
         }
 
         return dest;

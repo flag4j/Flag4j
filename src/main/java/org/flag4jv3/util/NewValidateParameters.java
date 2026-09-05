@@ -40,7 +40,8 @@ public final class NewValidateParameters {
         POSITIVE("positive"),
         NEGATIVE("negative"),
         NON_NEGATIVE("non-negative"),
-        NON_POSITIVE("non-positive");
+        NON_POSITIVE("non-positive"),
+        NON_ZERO("non-zero");
 
         /// Human-readable text representing the sign.
         private final String readableText;
@@ -132,12 +133,28 @@ public final class NewValidateParameters {
     /// Ensures that `value > min` is true.
     ///
     /// @param value The value of interest.
-    /// @param min The minimum allowed value (exclusives).
+    /// @param min The minimum allowed value (exclusive).
     /// @param msg The message to display if `value <= min`. If `null`, then a default error message is used.
     /// @throws IllegalArgumentException If `value <= min`.
+    /// @see #ensureGreaterThanEq(double, double, String)
     public static void ensureGreaterThan(double value, double min, String msg) {
         if (value <= min) {
             msg = replaceIfNull(msg, "Expecting value to be greater than " + min + " but got " + value);
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+
+    /// Ensures that `value >= min` is true.
+    ///
+    /// @param value The value of interest.
+    /// @param min The minimum allowed value (inclusive).
+    /// @param msg The message to display if `value < min`. If `null`, then a default error message is used.
+    /// @throws IllegalArgumentException If `value < min`.
+    /// @see #ensureGreaterThan(double, double, String)
+    public static void ensureGreaterThanEq(double value, double min, String msg) {
+        if (value < min) {
+            msg = replaceIfNull(msg, "Expecting value to be greater than or equal to " + min + " but got " + value);
             throw new IllegalArgumentException(msg);
         }
     }
@@ -183,6 +200,7 @@ public final class NewValidateParameters {
             case NEGATIVE -> value < 0;
             case NON_NEGATIVE -> value >= 0;
             case NON_POSITIVE -> value <= 0;
+            case NON_ZERO -> value != 0;
         };
 
         if (!isValid) {

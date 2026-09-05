@@ -63,7 +63,28 @@ public final class DeCm128Sqrt {
     }
 
 
+    // The actual kernel for computing complex square-roots on inner-runs of strided nd-arrays.
+    enum Cm128SqrtLoop implements Cm128UnaryLoop {
+        INSTANCE;
+
+
+        @Override
+        public void apply(double[] src, int srcSlot, int srcStep,
+                          double[] dest, int destSlot, int destStep,
+                          int count) {
+            for (int i = 0; i < count; i++) {
+                csqrtInto(src[2*srcSlot], src[2*srcSlot + 1], dest, 2*destSlot);
+                srcSlot += srcStep;
+                destSlot += destStep;
+            }
+        }
+    }
+
+
     // -------------------------------- nD-arrays --------------------------------
+    public static void csqrt(DenseDoubleData src, DenseDoubleData out) {
+        DenseCm128UOps.unary(src, out, SqrtLoop.INSTANCE);
+    }
 
 
     /// Computes the element-wise principal square roots of a complex nD-array.

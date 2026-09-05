@@ -22,18 +22,9 @@
  * SOFTWARE.
  */
 
-import org.flag4jv3.util.arrays.ArrayUtils;
+package org.flag4jv3.linalg.internal.kernels.dense.complex;
 
-void main() {
-    int[] arr = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+import org.flag4jv3.linalg.internal.kernels.dense.StridedUnaryLoop;
 
-    int[] o1 = ArrayUtils.copyOfStridedRange(arr, 4, 9, 1);   // [4, 5, 6, 7, 8]
-    int[] o2 = ArrayUtils.copyOfStridedRange(arr, 4, 9, 3);   // [4, 7]
-    int[] o3 = ArrayUtils.copyOfStridedRange(arr, 9, 4, -1);  // [9, 8, 7, 6, 5]
-    int[] o4 = ArrayUtils.copyOfStridedRange(arr, 9, 4, -3);  // [9, 6]
-
-    System.out.println(Arrays.toString(o1));
-    System.out.println(Arrays.toString(o2));
-    System.out.println(Arrays.toString(o3));
-    System.out.println(Arrays.toString(o4));
+public interface Cm128UnaryLoop extends StridedUnaryLoop<double[]> {
 }

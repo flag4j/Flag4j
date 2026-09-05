@@ -34,13 +34,13 @@ import org.flag4jv3.util.tuples.IntPair;
 import java.math.BigInteger;
 
 // TODO Valhalla: when relevant features of Valhalla are completed, this should become a value record.
+// TODO CodeGen:
 
 /// Represents a complex number with a real and imaginary part.
 ///
 /// The real and imaginary parts are represented as doubles (i.e., 63-bit floating point numbers). Hence, this implementation is
 /// referred to as a 128-bit complex number.
 ///
-/// A co
 public final record Complex128(double re, double im) implements F64AnalyticElement<Complex128> {
 
     // TODO NOW: What other constants do we want?
@@ -74,11 +74,6 @@ public final record Complex128(double re, double im) implements F64AnalyticEleme
 
     public Complex128(String value) {
         this(ComplexNumberParser.getComponents(value));
-    }
-
-
-    public Complex128(Complex64 value) {
-        this(value.re(), value.im());
     }
 
 

@@ -39,6 +39,10 @@ public interface F64AnalyticElement<T extends F64AnalyticElement<T>> extends Ana
     }
 
     default T root(double n) {
+        if (n == 0.0) {
+            throw new ArithmeticException("Cannot take the zeroth root.");
+        }
+
         return pow(1.0/n);
     }
 

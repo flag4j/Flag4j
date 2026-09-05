@@ -207,6 +207,8 @@ public final class ValidateParameters {
         }
     }
 
+    // TODO NOW: These docs are wrong...
+
 
     /**
      * Checks if {@code values[i] >= threshold} for all {@code i = 0, 1, ..., values.length}.

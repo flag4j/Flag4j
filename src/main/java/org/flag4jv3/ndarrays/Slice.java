@@ -59,26 +59,26 @@ package org.flag4jv3.ndarrays;
 /// Given an {@link org.flag4jv3.ndarrays.base.NDArrayBase nD-array}, {@code a}, with {@link Shape shape} {@code (4, 5, 6)},
 /// and the <a href="https://numpy.org/doc/stable/user/basics.indexing.html">NumPy</a> equivalent shown on the right:
 /// {@snippet :
-/// // Flag4j Expression                         Out shape:     NumPy Equivalent
-/// a.slice(point(1));                        // (5, 6)         a[1]
-/// a.slice(ALL, point(0));                   // (4, 6)         a[:, 0]
-/// a.slice(range(1, 3));                     // (2, 5, 6)      a[1:3]
-/// a.slice(ALL, range(0, 5, 2));             // (4, 3, 6)      a[:, 0:5:2]
-/// a.slice(from(2));                         // (2, 5, 6)      a[2:]
-/// a.slice(to(2));                           // (2, 5, 6)      a[:2]
-/// a.slice(rev());                           // (4, 5, 6)      a[::-1]
-/// a.slice(ELLIPSIS, point(0));              // (4, 5)         a[..., 0]
-/// a.slice(NEW_AXIS);                        // (1, 4, 5, 6)   a[None]
-/// a.slice(point(0), NEW_AXIS);              // (1, 5, 6)      a[0, None]
-/// a.slice(range(3, 0, -1), ALL, point(2));  // (3, 5)         a[3:0:-1, :, 2]
-/// a.slice(point(-1));                       // (5, 6)         a[-1]
-/// a.slice(range(2, 2));                     // (0, 5, 6)      a[2:2]
-/// a.slice(range(2, null, -1), ELLIPSIS)     // (4, 2, 5)      a[2::-1, ...]
+/// // Flag4j Expression                        // Out shape      NumPy Equivalent
+/// a.slice(point(1));                          // (5, 6)         a[1]
+/// a.slice(ALL, point(0));                     // (4, 6)         a[:, 0]
+/// a.slice(range(1, 3));                       // (2, 5, 6)      a[1:3]
+/// a.slice(ALL, range(0, 5, 2));               // (4, 3, 6)      a[:, 0:5:2]
+/// a.slice(from(2));                           // (2, 5, 6)      a[2:]
+/// a.slice(to(2));                             // (2, 5, 6)      a[:2]
+/// a.slice(rev());                             // (4, 5, 6)      a[::-1]
+/// a.slice(ELLIPSIS, point(0));                // (4, 5)         a[..., 0]
+/// a.slice(NEW_AXIS);                          // (1, 4, 5, 6)   a[None]
+/// a.slice(point(0), NEW_AXIS);                // (1, 5, 6)      a[0, None]
+/// a.slice(range(3, 0, -1), ALL, point(2));    // (3, 5)         a[3:0:-1, :, 2]
+/// a.slice(point(-1));                         // (5, 6)         a[-1]
+/// a.slice(range(2, 2));                       // (0, 5, 6)      a[2:2]
+/// a.slice(range(2, null, -1), ELLIPSIS)       // (4, 2, 5)      a[2::-1, ...]
 ///}
 ///
 /// A more complicated slice expression on a 7D array, `a`, with shape `(4, 2, 5, 8, 2, 15, 7)` might look like:
 /// {@snippet :
-/// // Flag4j Expression                                                             NumPy Equivalent
+/// // Flag4j Expression                                                  // NumPy Equivalent
 /// a.slice(range(2, null, -1), ELLIPSIS, NEW_AXIS, range(2, 11), rev())  // a[2::-1, ..., None, 2:11, ::-1]
 ///}
 /// </blockquote>
@@ -155,7 +155,7 @@ public sealed interface Slice {
             // Check for an empty axis.
             if (axisSize == 0) return new ResolvedRange(0, step, 0);
 
-            // Note: The `stop` of a range can exceed the axis size so we clamp it.
+            // Note: The `stop` of a range can exceed the axis size, so we clamp it.
 
             final int s0, s1;
             if (step > 0) {
@@ -275,6 +275,9 @@ public sealed interface Slice {
 
     /// All positions `start` (inclusive) to the end of the axis.
     ///
+    /// This is equivalent to both [range(start, null][#range(Integer, Integer)]
+    ///  and [range(start, null, 1)][#range(Integer, Integer, int)].
+    ///
     /// @param start The start of the range (inclusive).
     /// @return A slice representing the range `[start, n]` where `n` is the size of the axis being sliced.
     ///
@@ -283,7 +286,10 @@ public sealed interface Slice {
         return new Range(start, null, 1);
     }
 
-    /// All positions from beginning of axis to `stop`.
+    /// All positions from the beginning of the axis to `stop`.
+    ///
+    /// This is equivalent to both [range(null, stop)][#range(Integer, Integer)]
+    ///  and [range(null, stop, 1)][#range(Integer, Integer, int)].
     ///
     /// @param stop The end of the range (exclusive).
     /// @return A slice representing the range `[0, stop)`.
@@ -292,6 +298,7 @@ public sealed interface Slice {
     public static Slice to(int stop) {
         return new Range(null, stop, 1);
     }
+
 
     /// The entire axis in reverse order. This is equivalent to both [range(null, null, -1)][#range(Integer, Integer, int)]
     /// and [rev(null, null)][#rev(Integer, Integer)].

@@ -37,7 +37,7 @@ final class SliceSupport {
     /// @param uncovered The number of source axes the multi-axis slice does not explicitly consume. These are
     /// filled by an [Slice#ELLIPSIS] if present or by implicit [Slice#ALL]'s at the tail end.
     /// @param outRank The rank of the layout the multi-axis slice produces.
-    /// @see [Layout#slice(org.flag4jv3.ndarrays.Slice...)]
+    /// @see Layout#slice(org.flag4jv3.ndarrays.Slice...)
     record SliceArity(int uncovered, int outRank) {
     }
 
