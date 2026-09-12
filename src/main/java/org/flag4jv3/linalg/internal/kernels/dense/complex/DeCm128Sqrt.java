@@ -64,9 +64,11 @@ public final class DeCm128Sqrt {
 
 
     // The actual kernel for computing complex square-roots on inner-runs of strided nd-arrays.
+    // TODO NOW: For an element-wise operation, a sparse operation could also use this kernel. In that case,
+    //  we do need to be careful about `dest` (must have same sparse layout, be null, or be same as src).
+    //  That would probably be handled by the parent sparse method that then uses this kernel.
     enum Cm128SqrtLoop implements Cm128UnaryLoop {
         INSTANCE;
-
 
         @Override
         public void apply(double[] src, int srcSlot, int srcStep,
@@ -83,7 +85,7 @@ public final class DeCm128Sqrt {
 
     // -------------------------------- nD-arrays --------------------------------
     public static void csqrt(DenseDoubleData src, DenseDoubleData out) {
-        DenseCm128UOps.unary(src, out, SqrtLoop.INSTANCE);
+        DeCm128UOps.unary(src, out, Cm128SqrtLoop.INSTANCE);
     }
 
 
@@ -101,34 +103,34 @@ public final class DeCm128Sqrt {
     /// @param out The destination buffer to store the result in. This *may* be the same object as `src` if and only if
     /// `!srcLayout.equals(outLayout)`.
     /// @param outLayout
-    public static void csqrt(DenseDoubleData src, DenseDoubleData out) {
-        DenseKernelSupport.requireWritable(out.layout());
-        DenseKernelSupport.requireSameShape(out.layout(), src.layout());
-
-        final var srcLayout = src.layout();
-        final var srcBuffer = src.buffer();
-        final var outLayout = out.layout();
-        final var outBuffer = out.buffer();
-
-        if (srcBuffer == outBuffer && !srcLayout.equals(outLayout)) {
-            // TODO NOW: Similarly to resolveOut, add a resolveSrc that checks for this and makes temp copy of src
-            // Allowing inplace computation with different layouts is not supported because it would
-            // require copying the data to a temporary buffer to be done safely.
-            throw new IllegalArgumentException(
-                    "Source and destination share the same backing array "
-                            + "but use different layouts.");
-        }
-
-        int count = srcLayout.shape().numelIntValueExact();
-
-        if (count == 0) return;
-
-        if (Layout.areContiguousAndMatchOrder(srcLayout, outLayout)) {
-            csqrtContiguous(srcBuffer, srcLayout.offset(), outBuffer, outLayout.offset(), count);
-        } else {
-            csqrtStrided(srcBuffer, srcLayout, outBuffer, outLayout, count);
-        }
-    }
+//    public static void csqrt(DenseDoubleData src, DenseDoubleData out) {
+//        DenseKernelSupport.requireWritable(out.layout());
+//        DenseKernelSupport.requireSameShape(out.layout(), src.layout());
+//
+//        final var srcLayout = src.layout();
+//        final var srcBuffer = src.buffer();
+//        final var outLayout = out.layout();
+//        final var outBuffer = out.buffer();
+//
+//        if (srcBuffer == outBuffer && !srcLayout.equals(outLayout)) {
+//            // TODO NOW: Similarly to resolveOut, add a resolveSrc that checks for this and makes temp copy of src
+//            // Allowing inplace computation with different layouts is not supported because it would
+//            // require copying the data to a temporary buffer to be done safely.
+//            throw new IllegalArgumentException(
+//                    "Source and destination share the same backing array "
+//                            + "but use different layouts.");
+//        }
+//
+//        int count = srcLayout.shape().numelIntValueExact();
+//
+//        if (count == 0) return;
+//
+//        if (Layout.areContiguousAndMatchOrder(srcLayout, outLayout)) {
+//            csqrtContiguous(srcBuffer, srcLayout.offset(), outBuffer, outLayout.offset(), count);
+//        } else {
+//            csqrtStrided(srcBuffer, srcLayout, outBuffer, outLayout, count);
+//        }
+//    }
 
 
     private static void csqrtContiguous(double[] src,
@@ -297,10 +299,7 @@ public final class DeCm128Sqrt {
      * @param im Imaginary component of the value to take the square root of.
      * @return The principal square root {@code w} as {@code (Re(w), Im(w))}.
      */
-    public static Complex128 csqrt(Complex128 z) {
-        double re = z.re();
-        double im = z.im();
-
+    public static Complex128 csqrt(double re, double im) {
         if (!(Double.isFinite(re) && Double.isFinite(im))) {
             return nonFiniteValues(re, im);
         }

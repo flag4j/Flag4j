@@ -34,14 +34,14 @@ import org.flag4jv3.util.tuples.IntPair;
 import java.math.BigInteger;
 
 // TODO Valhalla: when relevant features of Valhalla are completed, this should become a value record.
-// TODO CodeGen:
+// TODO CodeGen: Tag this class to generate Complex64
 
 /// Represents a complex number with a real and imaginary part.
 ///
 /// The real and imaginary parts are represented as doubles (i.e., 63-bit floating point numbers). Hence, this implementation is
 /// referred to as a 128-bit complex number.
 ///
-public final record Complex128(double re, double im) implements F64AnalyticElement<Complex128> {
+public record Complex128(double re, double im) implements F64AnalyticElement<Complex128> {
 
     // TODO NOW: What other constants do we want?
     public static final Complex128 ZERO = new Complex128(0);
@@ -84,8 +84,7 @@ public final record Complex128(double re, double im) implements F64AnalyticEleme
     /// [Double#equals(Object)] and *not* according to
     public boolean equals(Object other) {
         if (this == other) return true;
-        if (other instanceof Complex128) {
-            Complex128 that = (Complex128) other;
+        if (other instanceof Complex128 that) {
             if (that.isNaN()) {
                 return true;
             } else {
@@ -100,7 +99,7 @@ public final record Complex128(double re, double im) implements F64AnalyticEleme
 
     @Override
     public Complex128 sqrt() {
-        return DeCm128Sqrt.csqrt(this);
+        return DeCm128Sqrt.csqrt(re, im);
     }
 
 

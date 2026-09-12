@@ -26,5 +26,10 @@ package org.flag4jv3.linalg.internal.kernels.dense.complex;
 
 import org.flag4jv3.linalg.internal.kernels.dense.StridedUnaryLoop;
 
+/// Element-wise unary operations on nD-arrays of 128-bit complex numbers should implement
+/// this interface. Their innermost contiguous run of its kernel by overriding
+/// [#apply(java.lang.Object, int, int, java.lang.Object, int, int, int)].
+///
+/// 
 public interface Cm128UnaryLoop extends StridedUnaryLoop<double[]> {
 }
